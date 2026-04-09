@@ -1,0 +1,74 @@
+{
+  "name": "111年臺中市人口特徵 (含年齡/性別/教育)",
+  "region": "台中市",
+  "locale": "zh-TW",
+  "target_count": 10,
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {"value": "男", "weight": 0.49},
+        {"value": "女", "weight": 0.51}
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {"range": "0-5", "weight": 0.04},
+        {"range": "6-11", "weight": 0.05},
+        {"range": "12-17", "weight": 0.04},
+        {"range": "18-19", "weight": 0.02},
+        {"range": "20-29", "weight": 0.15},
+        {"range": "30-39", "weight": 0.20},
+        {"range": "40-49", "weight": 0.22},
+        {"range": "50-59", "weight": 0.20},
+        {"range": "60-69", "weight": 0.15},
+        {"range": "70+", "weight": 0.08}
+      ]
+    },
+    "district": {
+      "type": "categorical",
+      "categories": [
+        {"value": "北屯區", "weight": 0.18},
+        {"value": "西屯區", "weight": 0.15},
+        {"value": "南屯區", "weight": 0.12},
+        {"value": "太平區", "weight": 0.13},
+        {"value": "大里區", "weight": 0.12},
+        {"value": "豐原區", "weight": 0.10},
+        {"value": "中區", "weight": 0.08},
+        {"value": "東區", "weight": 0.06},
+        {"value": "南區", "weight": 0.06}
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {"value": "國中以下", "weight": 0.10},
+        {"value": "高中職", "weight": 0.30},
+        {"value": "大學", "weight": 0.42},
+        {"value": "碩士以上", "weight": 0.18}
+      ]
+    },
+    "occupation": {
+      "type": "categorical",
+      "categories": [
+        {"value": "上班族", "weight": 0.35},
+        {"value": "自營商", "weight": 0.15},
+        {"value": "學生", "weight": 0.12},
+        {"value": "退休", "weight": 0.13},
+        {"value": "家管", "weight": 0.10},
+        {"value": "勞工", "weight": 0.15}
+      ]
+    },
+    "political_leaning": {
+      "type": "categorical",
+      "categories": [
+        {"value": "偏左派", "weight": 0.18},
+        {"value": "偏左派", "weight": 0.15},
+        {"value": "中立", "weight": 0.30},
+        {"value": "偏右派", "weight": 0.22},
+        {"value": "偏右派", "weight": 0.15}
+      ]
+    }
+  }
+}

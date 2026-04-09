@@ -1,0 +1,389 @@
+{
+  "name": "Vermont Sample (US)",
+  "name_zh": "佛蒙特州樣本",
+  "region": "Vermont",
+  "region_code": "VT",
+  "fips": "50",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": 0.165377,
+    "state_pvi_label": "D+17",
+    "county_count": 14,
+    "population_total": 648493
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4937
+        },
+        {
+          "value": "Female",
+          "weight": 0.5063
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.1728
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0958
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1153
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1273
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1213
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1386
+        },
+        {
+          "range": "65+",
+          "weight": 0.229
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Chittenden County",
+          "weight": 0.2623
+        },
+        {
+          "value": "Rutland County",
+          "weight": 0.0934
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0927
+        },
+        {
+          "value": "Windsor County",
+          "weight": 0.0896
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0783
+        },
+        {
+          "value": "Windham County",
+          "weight": 0.071
+        },
+        {
+          "value": "Addison County",
+          "weight": 0.0582
+        },
+        {
+          "value": "Bennington County",
+          "weight": 0.0576
+        },
+        {
+          "value": "Caledonia County",
+          "weight": 0.0471
+        },
+        {
+          "value": "Orange County",
+          "weight": 0.046
+        },
+        {
+          "value": "Orleans County",
+          "weight": 0.0427
+        },
+        {
+          "value": "Lamoille County",
+          "weight": 0.0404
+        },
+        {
+          "value": "Grand Isle County",
+          "weight": 0.0115
+        },
+        {
+          "value": "Essex County",
+          "weight": 0.0092
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0529
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.258
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2381
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.451
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.6232
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.1623
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.2054
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.0091
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.0
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6299
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0173
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0012
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3516
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.7323
+        },
+        {
+          "value": "Renter",
+          "weight": 0.2677
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Vermont."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Vermont."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Vermont."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Vermont presidential context]\nThis template models a generic US presidential race within Vermont (VT). The state's Cook PVI is D+17 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Vermont state issues → pinned on the in-state governing party",
+      "zh-TW": "【Vermont（VT）總統選舉背景】\n本 template 模擬一場 Vermont 內的通用美國總統選舉。該州的 Cook PVI 為 D+17（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Vermont 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Vermont election polling\nVermont (VT) governor senate\nVermont economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

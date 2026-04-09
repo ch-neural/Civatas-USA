@@ -1,0 +1,5429 @@
+{
+  "42101": {
+    "fips": "42101",
+    "name": "Philadelphia County",
+    "state_po": "PA",
+    "population": 1579706.0,
+    "pvi": 0.301103,
+    "pvi_label": "D+30",
+    "median_household_income": 61953.0,
+    "demographics": {
+      "sex": {
+        "male": 747386.0,
+        "female": 832320.0
+      },
+      "age": {
+        "under_18": 334799.0,
+        "18_24": 155837.0,
+        "25_34": 292438.0,
+        "35_44": 216571.0,
+        "45_54": 169055.0,
+        "55_64": 178888.0,
+        "65_plus": 232118.0
+      },
+      "race": {
+        "white": 555069.0,
+        "black": 621637.0,
+        "american_indian": 7518.0,
+        "asian": 125902.0,
+        "pacific_islander": 615.0,
+        "other": 135656.0,
+        "two_or_more": 133309.0
+      },
+      "hispanic_or_latino": 245882.0,
+      "education_25plus": {
+        "less_than_high_school": 133163.0,
+        "high_school": 323153.0,
+        "some_college_or_associate": 247237.0,
+        "bachelors_or_higher": 385517.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 158047.0,
+        "25k_50k": 129176.0,
+        "50k_75k": 106664.0,
+        "75k_100k": 77756.0,
+        "100k_150k": 99216.0,
+        "150k_200k": 48240.0,
+        "gte_200k": 60329.0
+      },
+      "employment": {
+        "in_labor_force": 813889.0,
+        "civilian_employed": 746803.0,
+        "civilian_unemployed": 66252.0,
+        "armed_forces": 834.0,
+        "not_in_labor_force": 465180.0
+      },
+      "tenure": {
+        "owner_occupied": 351905.0,
+        "renter_occupied": 327523.0
+      },
+      "households": {
+        "total": 679428.0,
+        "family": 349287.0,
+        "nonfamily": 330141.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 603790,
+        "rep": 132740,
+        "total": 741377,
+        "dem_share": 0.819777,
+        "delta": 0.297123
+      },
+      "2024": {
+        "dem": 568571,
+        "rep": 144311,
+        "total": 721441,
+        "dem_share": 0.797567,
+        "delta": 0.305084
+      }
+    }
+  },
+  "42003": {
+    "fips": "42003",
+    "name": "Allegheny County",
+    "state_po": "PA",
+    "population": 1238177.0,
+    "pvi": 0.095268,
+    "pvi_label": "D+10",
+    "median_household_income": 78548.0,
+    "demographics": {
+      "sex": {
+        "male": 604204.0,
+        "female": 633973.0
+      },
+      "age": {
+        "under_18": 230228.0,
+        "18_24": 107981.0,
+        "25_34": 182388.0,
+        "35_44": 165501.0,
+        "45_54": 138166.0,
+        "55_64": 164027.0,
+        "65_plus": 249886.0
+      },
+      "race": {
+        "white": 941697.0,
+        "black": 154273.0,
+        "american_indian": 1255.0,
+        "asian": 53826.0,
+        "pacific_islander": 224.0,
+        "other": 15453.0,
+        "two_or_more": 71449.0
+      },
+      "hispanic_or_latino": 36691.0,
+      "education_25plus": {
+        "less_than_high_school": 39075.0,
+        "high_school": 226928.0,
+        "some_college_or_associate": 222195.0,
+        "bachelors_or_higher": 411770.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 86622.0,
+        "25k_50k": 93323.0,
+        "50k_75k": 82657.0,
+        "75k_100k": 67373.0,
+        "100k_150k": 93180.0,
+        "150k_200k": 53234.0,
+        "gte_200k": 69413.0
+      },
+      "employment": {
+        "in_labor_force": 670775.0,
+        "civilian_employed": 636141.0,
+        "civilian_unemployed": 33744.0,
+        "armed_forces": 890.0,
+        "not_in_labor_force": 364285.0
+      },
+      "tenure": {
+        "owner_occupied": 355674.0,
+        "renter_occupied": 190128.0
+      },
+      "households": {
+        "total": 545802.0,
+        "family": 302270.0,
+        "nonfamily": 243532.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 429065,
+        "rep": 282324,
+        "total": 719733,
+        "dem_share": 0.603137,
+        "delta": 0.080483
+      },
+      "2024": {
+        "dem": 429916,
+        "rep": 283595,
+        "total": 720504,
+        "dem_share": 0.602536,
+        "delta": 0.110053
+      }
+    }
+  },
+  "42091": {
+    "fips": "42091",
+    "name": "Montgomery County",
+    "state_po": "PA",
+    "population": 867573.0,
+    "pvi": 0.116417,
+    "pvi_label": "D+12",
+    "median_household_income": 113915.0,
+    "demographics": {
+      "sex": {
+        "male": 425297.0,
+        "female": 442276.0
+      },
+      "age": {
+        "under_18": 184693.0,
+        "18_24": 68855.0,
+        "25_34": 106458.0,
+        "35_44": 117507.0,
+        "45_54": 108591.0,
+        "55_64": 118363.0,
+        "65_plus": 163106.0
+      },
+      "race": {
+        "white": 633871.0,
+        "black": 80978.0,
+        "american_indian": 1047.0,
+        "asian": 69994.0,
+        "pacific_islander": 174.0,
+        "other": 20876.0,
+        "two_or_more": 60633.0
+      },
+      "hispanic_or_latino": 58178.0,
+      "education_25plus": {
+        "less_than_high_school": 30021.0,
+        "high_school": 134423.0,
+        "some_college_or_associate": 124004.0,
+        "bachelors_or_higher": 325577.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 29857.0,
+        "25k_50k": 38792.0,
+        "50k_75k": 40581.0,
+        "75k_100k": 38210.0,
+        "100k_150k": 64869.0,
+        "150k_200k": 41744.0,
+        "gte_200k": 81452.0
+      },
+      "employment": {
+        "in_labor_force": 478653.0,
+        "civilian_employed": 456734.0,
+        "civilian_unemployed": 21318.0,
+        "armed_forces": 601.0,
+        "not_in_labor_force": 226964.0
+      },
+      "tenure": {
+        "owner_occupied": 239495.0,
+        "renter_occupied": 96010.0
+      },
+      "households": {
+        "total": 335505.0,
+        "family": 222312.0,
+        "nonfamily": 113193.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 319511,
+        "rep": 185460,
+        "total": 510157,
+        "dem_share": 0.632731,
+        "delta": 0.110077
+      },
+      "2024": {
+        "dem": 317103,
+        "rep": 198311,
+        "total": 520906,
+        "dem_share": 0.615239,
+        "delta": 0.122756
+      }
+    }
+  },
+  "42017": {
+    "fips": "42017",
+    "name": "Bucks County",
+    "state_po": "PA",
+    "population": 647461.0,
+    "pvi": 0.003308,
+    "pvi_label": "EVEN",
+    "median_household_income": 114764.0,
+    "demographics": {
+      "sex": {
+        "male": 320208.0,
+        "female": 327253.0
+      },
+      "age": {
+        "under_18": 128990.0,
+        "18_24": 49522.0,
+        "25_34": 70728.0,
+        "35_44": 80910.0,
+        "45_54": 83810.0,
+        "55_64": 100515.0,
+        "65_plus": 132986.0
+      },
+      "race": {
+        "white": 525093.0,
+        "black": 24691.0,
+        "american_indian": 1020.0,
+        "asian": 32489.0,
+        "pacific_islander": 69.0,
+        "other": 19941.0,
+        "two_or_more": 44158.0
+      },
+      "hispanic_or_latino": 42668.0,
+      "education_25plus": {
+        "less_than_high_school": 23388.0,
+        "high_school": 128140.0,
+        "some_college_or_associate": 107507.0,
+        "bachelors_or_higher": 209914.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 21074.0,
+        "25k_50k": 27773.0,
+        "50k_75k": 33031.0,
+        "75k_100k": 26917.0,
+        "100k_150k": 48043.0,
+        "150k_200k": 34601.0,
+        "gte_200k": 57748.0
+      },
+      "employment": {
+        "in_labor_force": 353422.0,
+        "civilian_employed": 337473.0,
+        "civilian_unemployed": 15527.0,
+        "armed_forces": 422.0,
+        "not_in_labor_force": 181872.0
+      },
+      "tenure": {
+        "owner_occupied": 193879.0,
+        "renter_occupied": 55308.0
+      },
+      "households": {
+        "total": 249187.0,
+        "family": 178036.0,
+        "nonfamily": 71151.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 204712,
+        "rep": 187367,
+        "total": 396234,
+        "dem_share": 0.522119,
+        "delta": -0.000535
+      },
+      "2024": {
+        "dem": 198431,
+        "rep": 198722,
+        "total": 401028,
+        "dem_share": 0.499634,
+        "delta": 0.007151
+      }
+    }
+  },
+  "42045": {
+    "fips": "42045",
+    "name": "Delaware County",
+    "state_po": "PA",
+    "population": 579222.0,
+    "pvi": 0.120022,
+    "pvi_label": "D+12",
+    "median_household_income": 89546.0,
+    "demographics": {
+      "sex": {
+        "male": 280599.0,
+        "female": 298623.0
+      },
+      "age": {
+        "under_18": 127583.0,
+        "18_24": 56493.0,
+        "25_34": 73254.0,
+        "35_44": 76203.0,
+        "45_54": 68301.0,
+        "55_64": 76422.0,
+        "65_plus": 100966.0
+      },
+      "race": {
+        "white": 366265.0,
+        "black": 128315.0,
+        "american_indian": 417.0,
+        "asian": 36677.0,
+        "pacific_islander": 304.0,
+        "other": 14217.0,
+        "two_or_more": 33027.0
+      },
+      "hispanic_or_latino": 29222.0,
+      "education_25plus": {
+        "less_than_high_school": 24132.0,
+        "high_school": 107779.0,
+        "some_college_or_associate": 97511.0,
+        "bachelors_or_higher": 165724.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 28181.0,
+        "25k_50k": 33527.0,
+        "50k_75k": 30792.0,
+        "75k_100k": 26314.0,
+        "100k_150k": 37591.0,
+        "150k_200k": 21921.0,
+        "gte_200k": 38620.0
+      },
+      "employment": {
+        "in_labor_force": 305246.0,
+        "civilian_employed": 283950.0,
+        "civilian_unemployed": 20905.0,
+        "armed_forces": 391.0,
+        "not_in_labor_force": 160125.0
+      },
+      "tenure": {
+        "owner_occupied": 151016.0,
+        "renter_occupied": 65930.0
+      },
+      "households": {
+        "total": 216946.0,
+        "family": 140756.0,
+        "nonfamily": 76190.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 206423,
+        "rep": 118532,
+        "total": 327931,
+        "dem_share": 0.635236,
+        "delta": 0.112582
+      },
+      "2024": {
+        "dem": 201324,
+        "rep": 123421,
+        "total": 328172,
+        "dem_share": 0.619945,
+        "delta": 0.127462
+      }
+    }
+  },
+  "42071": {
+    "fips": "42071",
+    "name": "Lancaster County",
+    "state_po": "PA",
+    "population": 557931.0,
+    "pvi": -0.088024,
+    "pvi_label": "R+9",
+    "median_household_income": 86959.0,
+    "demographics": {
+      "sex": {
+        "male": 274372.0,
+        "female": 283559.0
+      },
+      "age": {
+        "under_18": 128950.0,
+        "18_24": 48939.0,
+        "25_34": 71719.0,
+        "35_44": 67054.0,
+        "45_54": 61539.0,
+        "55_64": 70296.0,
+        "65_plus": 109434.0
+      },
+      "race": {
+        "white": 455405.0,
+        "black": 22388.0,
+        "american_indian": 1162.0,
+        "asian": 13540.0,
+        "pacific_islander": 454.0,
+        "other": 23131.0,
+        "two_or_more": 41851.0
+      },
+      "hispanic_or_latino": 64326.0,
+      "education_25plus": {
+        "less_than_high_school": 47350.0,
+        "high_school": 128010.0,
+        "some_college_or_associate": 81407.0,
+        "bachelors_or_higher": 123275.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 21533.0,
+        "25k_50k": 33627.0,
+        "50k_75k": 35573.0,
+        "75k_100k": 30947.0,
+        "100k_150k": 44209.0,
+        "150k_200k": 22482.0,
+        "gte_200k": 24377.0
+      },
+      "employment": {
+        "in_labor_force": 291212.0,
+        "civilian_employed": 281193.0,
+        "civilian_unemployed": 9809.0,
+        "armed_forces": 210.0,
+        "not_in_labor_force": 152135.0
+      },
+      "tenure": {
+        "owner_occupied": 148550.0,
+        "renter_occupied": 64198.0
+      },
+      "households": {
+        "total": 212748.0,
+        "family": 146761.0,
+        "nonfamily": 65987.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 115847,
+        "rep": 160209,
+        "total": 280239,
+        "dem_share": 0.41965,
+        "delta": -0.103004
+      },
+      "2024": {
+        "dem": 120119,
+        "rep": 166261,
+        "total": 289257,
+        "dem_share": 0.419439,
+        "delta": -0.073044
+      }
+    }
+  },
+  "42029": {
+    "fips": "42029",
+    "name": "Chester County",
+    "state_po": "PA",
+    "population": 547840.0,
+    "pvi": 0.072218,
+    "pvi_label": "D+7",
+    "median_household_income": 127208.0,
+    "demographics": {
+      "sex": {
+        "male": 271692.0,
+        "female": 276148.0
+      },
+      "age": {
+        "under_18": 120444.0,
+        "18_24": 50513.0,
+        "25_34": 62751.0,
+        "35_44": 71469.0,
+        "45_54": 70462.0,
+        "55_64": 75085.0,
+        "65_plus": 97116.0
+      },
+      "race": {
+        "white": 422108.0,
+        "black": 28542.0,
+        "american_indian": 604.0,
+        "asian": 37240.0,
+        "pacific_islander": 144.0,
+        "other": 15503.0,
+        "two_or_more": 43699.0
+      },
+      "hispanic_or_latino": 45958.0,
+      "education_25plus": {
+        "less_than_high_school": 19305.0,
+        "high_school": 72630.0,
+        "some_college_or_associate": 69619.0,
+        "bachelors_or_higher": 215329.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 14725.0,
+        "25k_50k": 21050.0,
+        "50k_75k": 21816.0,
+        "75k_100k": 22071.0,
+        "100k_150k": 39636.0,
+        "150k_200k": 27697.0,
+        "gte_200k": 57779.0
+      },
+      "employment": {
+        "in_labor_force": 299649.0,
+        "civilian_employed": 288154.0,
+        "civilian_unemployed": 11299.0,
+        "armed_forces": 196.0,
+        "not_in_labor_force": 143570.0
+      },
+      "tenure": {
+        "owner_occupied": 153693.0,
+        "renter_occupied": 51081.0
+      },
+      "households": {
+        "total": 204774.0,
+        "family": 144006.0,
+        "nonfamily": 60768.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 182372,
+        "rep": 128565,
+        "total": 314502,
+        "dem_share": 0.586524,
+        "delta": 0.06387
+      },
+      "2024": {
+        "dem": 184281,
+        "rep": 137299,
+        "total": 324964,
+        "dem_share": 0.573049,
+        "delta": 0.080566
+      }
+    }
+  },
+  "42133": {
+    "fips": "42133",
+    "name": "York County",
+    "state_po": "PA",
+    "population": 462924.0,
+    "pvi": -0.133741,
+    "pvi_label": "R+13",
+    "median_household_income": 84829.0,
+    "demographics": {
+      "sex": {
+        "male": 230316.0,
+        "female": 232608.0
+      },
+      "age": {
+        "under_18": 101294.0,
+        "18_24": 36265.0,
+        "25_34": 57280.0,
+        "35_44": 58597.0,
+        "45_54": 58269.0,
+        "55_64": 64106.0,
+        "65_plus": 87113.0
+      },
+      "race": {
+        "white": 375793.0,
+        "black": 29054.0,
+        "american_indian": 644.0,
+        "asian": 6866.0,
+        "pacific_islander": 119.0,
+        "other": 16461.0,
+        "two_or_more": 33987.0
+      },
+      "hispanic_or_latino": 44412.0,
+      "education_25plus": {
+        "less_than_high_school": 26190.0,
+        "high_school": 124964.0,
+        "some_college_or_associate": 84374.0,
+        "bachelors_or_higher": 89837.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 19529.0,
+        "25k_50k": 30592.0,
+        "50k_75k": 29635.0,
+        "75k_100k": 26859.0,
+        "100k_150k": 37795.0,
+        "150k_200k": 19169.0,
+        "gte_200k": 18004.0
+      },
+      "employment": {
+        "in_labor_force": 246047.0,
+        "civilian_employed": 234667.0,
+        "civilian_unemployed": 11026.0,
+        "armed_forces": 354.0,
+        "not_in_labor_force": 128198.0
+      },
+      "tenure": {
+        "owner_occupied": 138624.0,
+        "renter_occupied": 42959.0
+      },
+      "households": {
+        "total": 181583.0,
+        "family": 123386.0,
+        "nonfamily": 58197.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 88114,
+        "rep": 146733,
+        "total": 238471,
+        "dem_share": 0.375197,
+        "delta": -0.147457
+      },
+      "2024": {
+        "dem": 91926,
+        "rep": 154884,
+        "total": 249210,
+        "dem_share": 0.372457,
+        "delta": -0.120026
+      }
+    }
+  },
+  "42011": {
+    "fips": "42011",
+    "name": "Berks County",
+    "state_po": "PA",
+    "population": 433015.0,
+    "pvi": -0.059087,
+    "pvi_label": "R+6",
+    "median_household_income": 79777.0,
+    "demographics": {
+      "sex": {
+        "male": 214748.0,
+        "female": 218267.0
+      },
+      "age": {
+        "under_18": 95140.0,
+        "18_24": 41262.0,
+        "25_34": 53872.0,
+        "35_44": 53025.0,
+        "45_54": 52457.0,
+        "55_64": 59159.0,
+        "65_plus": 78100.0
+      },
+      "race": {
+        "white": 301447.0,
+        "black": 19969.0,
+        "american_indian": 2854.0,
+        "asian": 5859.0,
+        "pacific_islander": 95.0,
+        "other": 37970.0,
+        "two_or_more": 64821.0
+      },
+      "hispanic_or_latino": 107531.0,
+      "education_25plus": {
+        "less_than_high_school": 34292.0,
+        "high_school": 108419.0,
+        "some_college_or_associate": 71739.0,
+        "bachelors_or_higher": 82163.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 23079.0,
+        "25k_50k": 27410.0,
+        "50k_75k": 26181.0,
+        "75k_100k": 22889.0,
+        "100k_150k": 31009.0,
+        "150k_200k": 16255.0,
+        "gte_200k": 16413.0
+      },
+      "employment": {
+        "in_labor_force": 224959.0,
+        "civilian_employed": 212537.0,
+        "civilian_unemployed": 12197.0,
+        "armed_forces": 225.0,
+        "not_in_labor_force": 124816.0
+      },
+      "tenure": {
+        "owner_occupied": 116334.0,
+        "renter_occupied": 46902.0
+      },
+      "households": {
+        "total": 163236.0,
+        "family": 108511.0,
+        "nonfamily": 54725.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 92895,
+        "rep": 109736,
+        "total": 205540,
+        "dem_share": 0.458444,
+        "delta": -0.06421
+      },
+      "2024": {
+        "dem": 91125,
+        "rep": 116677,
+        "total": 209838,
+        "dem_share": 0.438518,
+        "delta": -0.053965
+      }
+    }
+  },
+  "42077": {
+    "fips": "42077",
+    "name": "Lehigh County",
+    "state_po": "PA",
+    "population": 378792.0,
+    "pvi": 0.018457,
+    "pvi_label": "D+2",
+    "median_household_income": 80079.0,
+    "demographics": {
+      "sex": {
+        "male": 186394.0,
+        "female": 192398.0
+      },
+      "age": {
+        "under_18": 84498.0,
+        "18_24": 33593.0,
+        "25_34": 49152.0,
+        "35_44": 49956.0,
+        "45_54": 46015.0,
+        "55_64": 48570.0,
+        "65_plus": 67008.0
+      },
+      "race": {
+        "white": 236150.0,
+        "black": 24476.0,
+        "american_indian": 1801.0,
+        "asian": 13517.0,
+        "pacific_islander": 53.0,
+        "other": 45824.0,
+        "two_or_more": 56971.0
+      },
+      "hispanic_or_latino": 105976.0,
+      "education_25plus": {
+        "less_than_high_school": 24800.0,
+        "high_school": 82752.0,
+        "some_college_or_associate": 64045.0,
+        "bachelors_or_higher": 89104.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 18709.0,
+        "25k_50k": 25811.0,
+        "50k_75k": 23584.0,
+        "75k_100k": 18666.0,
+        "100k_150k": 25084.0,
+        "150k_200k": 14610.0,
+        "gte_200k": 17922.0
+      },
+      "employment": {
+        "in_labor_force": 197272.0,
+        "civilian_employed": 185591.0,
+        "civilian_unemployed": 11603.0,
+        "armed_forces": 78.0,
+        "not_in_labor_force": 107085.0
+      },
+      "tenure": {
+        "owner_occupied": 94675.0,
+        "renter_occupied": 49711.0
+      },
+      "households": {
+        "total": 144386.0,
+        "family": 96976.0,
+        "nonfamily": 47410.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 98288,
+        "rep": 84259,
+        "total": 184713,
+        "dem_share": 0.538426,
+        "delta": 0.015772
+      },
+      "2024": {
+        "dem": 96317,
+        "rep": 91207,
+        "total": 189810,
+        "dem_share": 0.513625,
+        "delta": 0.021142
+      }
+    }
+  },
+  "42129": {
+    "fips": "42129",
+    "name": "Westmoreland County",
+    "state_po": "PA",
+    "population": 352500.0,
+    "pvi": -0.15092,
+    "pvi_label": "R+15",
+    "median_household_income": 74109.0,
+    "demographics": {
+      "sex": {
+        "male": 174093.0,
+        "female": 178407.0
+      },
+      "age": {
+        "under_18": 64150.0,
+        "18_24": 25167.0,
+        "25_34": 38067.0,
+        "35_44": 40577.0,
+        "45_54": 43897.0,
+        "55_64": 55000.0,
+        "65_plus": 85642.0
+      },
+      "race": {
+        "white": 323709.0,
+        "black": 9148.0,
+        "american_indian": 295.0,
+        "asian": 3406.0,
+        "pacific_islander": 75.0,
+        "other": 1600.0,
+        "two_or_more": 14267.0
+      },
+      "hispanic_or_latino": 5692.0,
+      "education_25plus": {
+        "less_than_high_school": 11715.0,
+        "high_school": 90724.0,
+        "some_college_or_associate": 74464.0,
+        "bachelors_or_higher": 86280.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 24107.0,
+        "25k_50k": 29181.0,
+        "50k_75k": 25040.0,
+        "75k_100k": 20383.0,
+        "100k_150k": 27717.0,
+        "150k_200k": 14481.0,
+        "gte_200k": 14070.0
+      },
+      "employment": {
+        "in_labor_force": 178729.0,
+        "civilian_employed": 170131.0,
+        "civilian_unemployed": 8539.0,
+        "armed_forces": 59.0,
+        "not_in_labor_force": 117743.0
+      },
+      "tenure": {
+        "owner_occupied": 121528.0,
+        "renter_occupied": 33451.0
+      },
+      "households": {
+        "total": 154979.0,
+        "family": 97244.0,
+        "nonfamily": 57735.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 72129,
+        "rep": 130218,
+        "total": 204697,
+        "dem_share": 0.356462,
+        "delta": -0.166192
+      },
+      "2024": {
+        "dem": 74904,
+        "rep": 135008,
+        "total": 211450,
+        "dem_share": 0.356835,
+        "delta": -0.135648
+      }
+    }
+  },
+  "42079": {
+    "fips": "42079",
+    "name": "Luzerne County",
+    "state_po": "PA",
+    "population": 327675.0,
+    "pvi": -0.092199,
+    "pvi_label": "R+9",
+    "median_household_income": 63691.0,
+    "demographics": {
+      "sex": {
+        "male": 163393.0,
+        "female": 164282.0
+      },
+      "age": {
+        "under_18": 66457.0,
+        "18_24": 27931.0,
+        "25_34": 41264.0,
+        "35_44": 39876.0,
+        "45_54": 40828.0,
+        "55_64": 45397.0,
+        "65_plus": 65922.0
+      },
+      "race": {
+        "white": 248337.0,
+        "black": 16461.0,
+        "american_indian": 370.0,
+        "asian": 3957.0,
+        "pacific_islander": 322.0,
+        "other": 26403.0,
+        "two_or_more": 31825.0
+      },
+      "hispanic_or_latino": 56836.0,
+      "education_25plus": {
+        "less_than_high_school": 22818.0,
+        "high_school": 85765.0,
+        "some_college_or_associate": 65652.0,
+        "bachelors_or_higher": 59052.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 25471.0,
+        "25k_50k": 27757.0,
+        "50k_75k": 23507.0,
+        "75k_100k": 17621.0,
+        "100k_150k": 22271.0,
+        "150k_200k": 8923.0,
+        "gte_200k": 9505.0
+      },
+      "employment": {
+        "in_labor_force": 162696.0,
+        "civilian_employed": 153063.0,
+        "civilian_unemployed": 9426.0,
+        "armed_forces": 207.0,
+        "not_in_labor_force": 106612.0
+      },
+      "tenure": {
+        "owner_occupied": 91565.0,
+        "renter_occupied": 43490.0
+      },
+      "households": {
+        "total": 135055.0,
+        "family": 82663.0,
+        "nonfamily": 52392.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 64873,
+        "rep": 86929,
+        "total": 153321,
+        "dem_share": 0.427353,
+        "delta": -0.095301
+      },
+      "2024": {
+        "dem": 62504,
+        "rep": 92444,
+        "total": 156150,
+        "dem_share": 0.403387,
+        "delta": -0.089096
+      }
+    }
+  },
+  "42095": {
+    "fips": "42095",
+    "name": "Northampton County",
+    "state_po": "PA",
+    "population": 318580.0,
+    "pvi": -0.010223,
+    "pvi_label": "R+1",
+    "median_household_income": 89184.0,
+    "demographics": {
+      "sex": {
+        "male": 157820.0,
+        "female": 160760.0
+      },
+      "age": {
+        "under_18": 61011.0,
+        "18_24": 33670.0,
+        "25_34": 37763.0,
+        "35_44": 38564.0,
+        "45_54": 38712.0,
+        "55_64": 44117.0,
+        "65_plus": 64743.0
+      },
+      "race": {
+        "white": 236417.0,
+        "black": 20188.0,
+        "american_indian": 635.0,
+        "asian": 9781.0,
+        "pacific_islander": 155.0,
+        "other": 19876.0,
+        "two_or_more": 31528.0
+      },
+      "hispanic_or_latino": 49253.0,
+      "education_25plus": {
+        "less_than_high_school": 15893.0,
+        "high_school": 71619.0,
+        "some_college_or_associate": 58667.0,
+        "bachelors_or_higher": 77720.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 13391.0,
+        "25k_50k": 19642.0,
+        "50k_75k": 19009.0,
+        "75k_100k": 15422.0,
+        "100k_150k": 25724.0,
+        "150k_200k": 13796.0,
+        "gte_200k": 15640.0
+      },
+      "employment": {
+        "in_labor_force": 167750.0,
+        "civilian_employed": 159944.0,
+        "civilian_unemployed": 7665.0,
+        "armed_forces": 141.0,
+        "not_in_labor_force": 97835.0
+      },
+      "tenure": {
+        "owner_occupied": 87201.0,
+        "renter_occupied": 35423.0
+      },
+      "households": {
+        "total": 122624.0,
+        "family": 82804.0,
+        "nonfamily": 39820.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 85087,
+        "rep": 83854,
+        "total": 170942,
+        "dem_share": 0.503649,
+        "delta": -0.019005
+      },
+      "2024": {
+        "dem": 86655,
+        "rep": 89817,
+        "total": 178215,
+        "dem_share": 0.491041,
+        "delta": -0.001442
+      }
+    }
+  },
+  "42043": {
+    "fips": "42043",
+    "name": "Dauphin County",
+    "state_po": "PA",
+    "population": 289593.0,
+    "pvi": 0.029029,
+    "pvi_label": "D+3",
+    "median_household_income": 76242.0,
+    "demographics": {
+      "sex": {
+        "male": 141460.0,
+        "female": 148133.0
+      },
+      "age": {
+        "under_18": 64718.0,
+        "18_24": 23621.0,
+        "25_34": 39982.0,
+        "35_44": 37051.0,
+        "45_54": 34389.0,
+        "55_64": 37611.0,
+        "65_plus": 52221.0
+      },
+      "race": {
+        "white": 182570.0,
+        "black": 49862.0,
+        "american_indian": 832.0,
+        "asian": 18938.0,
+        "pacific_islander": 57.0,
+        "other": 13718.0,
+        "two_or_more": 23616.0
+      },
+      "hispanic_or_latino": 34032.0,
+      "education_25plus": {
+        "less_than_high_school": 17741.0,
+        "high_school": 63336.0,
+        "some_college_or_associate": 50889.0,
+        "bachelors_or_higher": 69288.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 18254.0,
+        "25k_50k": 20575.0,
+        "50k_75k": 20940.0,
+        "75k_100k": 17269.0,
+        "100k_150k": 22120.0,
+        "150k_200k": 10062.0,
+        "gte_200k": 12138.0
+      },
+      "employment": {
+        "in_labor_force": 149980.0,
+        "civilian_employed": 142626.0,
+        "civilian_unemployed": 6735.0,
+        "armed_forces": 619.0,
+        "not_in_labor_force": 82249.0
+      },
+      "tenure": {
+        "owner_occupied": 76556.0,
+        "renter_occupied": 44802.0
+      },
+      "households": {
+        "total": 121358.0,
+        "family": 73465.0,
+        "nonfamily": 47893.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 78983,
+        "rep": 66408,
+        "total": 147368,
+        "dem_share": 0.543245,
+        "delta": 0.020591
+      },
+      "2024": {
+        "dem": 78327,
+        "rep": 69474,
+        "total": 149526,
+        "dem_share": 0.529949,
+        "delta": 0.037466
+      }
+    }
+  },
+  "42049": {
+    "fips": "42049",
+    "name": "Erie County",
+    "state_po": "PA",
+    "population": 269052.0,
+    "pvi": -0.007533,
+    "pvi_label": "R+1",
+    "median_household_income": 63354.0,
+    "demographics": {
+      "sex": {
+        "male": 133693.0,
+        "female": 135359.0
+      },
+      "age": {
+        "under_18": 55689.0,
+        "18_24": 26980.0,
+        "25_34": 33632.0,
+        "35_44": 32435.0,
+        "45_54": 31144.0,
+        "55_64": 36093.0,
+        "65_plus": 53079.0
+      },
+      "race": {
+        "white": 222619.0,
+        "black": 19375.0,
+        "american_indian": 369.0,
+        "asian": 5909.0,
+        "pacific_islander": 25.0,
+        "other": 3700.0,
+        "two_or_more": 17055.0
+      },
+      "hispanic_or_latino": 12851.0,
+      "education_25plus": {
+        "less_than_high_school": 13178.0,
+        "high_school": 69528.0,
+        "some_college_or_associate": 47199.0,
+        "bachelors_or_higher": 56478.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 21137.0,
+        "25k_50k": 23555.0,
+        "50k_75k": 18655.0,
+        "75k_100k": 14679.0,
+        "100k_150k": 16615.0,
+        "150k_200k": 8469.0,
+        "gte_200k": 7477.0
+      },
+      "employment": {
+        "in_labor_force": 129657.0,
+        "civilian_employed": 122572.0,
+        "civilian_unemployed": 6997.0,
+        "armed_forces": 88.0,
+        "not_in_labor_force": 90468.0
+      },
+      "tenure": {
+        "owner_occupied": 75276.0,
+        "renter_occupied": 35311.0
+      },
+      "households": {
+        "total": 110587.0,
+        "family": 66222.0,
+        "nonfamily": 44365.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 68286,
+        "rep": 66869,
+        "total": 137083,
+        "dem_share": 0.505242,
+        "delta": -0.017412
+      },
+      "2024": {
+        "dem": 67456,
+        "rep": 68866,
+        "total": 137595,
+        "dem_share": 0.494828,
+        "delta": 0.002345
+      }
+    }
+  },
+  "42041": {
+    "fips": "42041",
+    "name": "Cumberland County",
+    "state_po": "PA",
+    "population": 268323.0,
+    "pvi": -0.058307,
+    "pvi_label": "R+6",
+    "median_household_income": 87494.0,
+    "demographics": {
+      "sex": {
+        "male": 133756.0,
+        "female": 134567.0
+      },
+      "age": {
+        "under_18": 54926.0,
+        "18_24": 26654.0,
+        "25_34": 34085.0,
+        "35_44": 35557.0,
+        "45_54": 32222.0,
+        "55_64": 33893.0,
+        "65_plus": 50986.0
+      },
+      "race": {
+        "white": 220348.0,
+        "black": 11921.0,
+        "american_indian": 110.0,
+        "asian": 15553.0,
+        "pacific_islander": 1.0,
+        "other": 4199.0,
+        "two_or_more": 16191.0
+      },
+      "hispanic_or_latino": 13809.0,
+      "education_25plus": {
+        "less_than_high_school": 11680.0,
+        "high_school": 57099.0,
+        "some_college_or_associate": 43258.0,
+        "bachelors_or_higher": 74706.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 10537.0,
+        "25k_50k": 16533.0,
+        "50k_75k": 18153.0,
+        "75k_100k": 14432.0,
+        "100k_150k": 22484.0,
+        "150k_200k": 11223.0,
+        "gte_200k": 13065.0
+      },
+      "employment": {
+        "in_labor_force": 140098.0,
+        "civilian_employed": 134225.0,
+        "civilian_unemployed": 5124.0,
+        "armed_forces": 749.0,
+        "not_in_labor_force": 79700.0
+      },
+      "tenure": {
+        "owner_occupied": 75922.0,
+        "renter_occupied": 30505.0
+      },
+      "households": {
+        "total": 106427.0,
+        "family": 67088.0,
+        "nonfamily": 39339.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 62245,
+        "rep": 77212,
+        "total": 141595,
+        "dem_share": 0.446338,
+        "delta": -0.076316
+      },
+      "2024": {
+        "dem": 66255,
+        "rep": 80267,
+        "total": 148396,
+        "dem_share": 0.452185,
+        "delta": -0.040298
+      }
+    }
+  },
+  "42069": {
+    "fips": "42069",
+    "name": "Lackawanna County",
+    "state_po": "PA",
+    "population": 216146.0,
+    "pvi": 0.020565,
+    "pvi_label": "D+2",
+    "median_household_income": 66223.0,
+    "demographics": {
+      "sex": {
+        "male": 106261.0,
+        "female": 109885.0
+      },
+      "age": {
+        "under_18": 44213.0,
+        "18_24": 19337.0,
+        "25_34": 26070.0,
+        "35_44": 26443.0,
+        "45_54": 25997.0,
+        "55_64": 29676.0,
+        "65_plus": 44410.0
+      },
+      "race": {
+        "white": 175665.0,
+        "black": 6807.0,
+        "american_indian": 180.0,
+        "asian": 6465.0,
+        "pacific_islander": 60.0,
+        "other": 8784.0,
+        "two_or_more": 18185.0
+      },
+      "hispanic_or_latino": 21190.0,
+      "education_25plus": {
+        "less_than_high_school": 12712.0,
+        "high_school": 52467.0,
+        "some_college_or_associate": 40672.0,
+        "bachelors_or_higher": 46745.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 16619.0,
+        "25k_50k": 17547.0,
+        "50k_75k": 14904.0,
+        "75k_100k": 11003.0,
+        "100k_150k": 14562.0,
+        "150k_200k": 7275.0,
+        "gte_200k": 6353.0
+      },
+      "employment": {
+        "in_labor_force": 105739.0,
+        "civilian_employed": 100442.0,
+        "civilian_unemployed": 5182.0,
+        "armed_forces": 115.0,
+        "not_in_labor_force": 71948.0
+      },
+      "tenure": {
+        "owner_occupied": 57744.0,
+        "renter_occupied": 30519.0
+      },
+      "households": {
+        "total": 88263.0,
+        "family": 52943.0,
+        "nonfamily": 35320.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 61991,
+        "rep": 52334,
+        "total": 115410,
+        "dem_share": 0.542235,
+        "delta": 0.019581
+      },
+      "2024": {
+        "dem": 59510,
+        "rep": 56261,
+        "total": 116590,
+        "dem_share": 0.514032,
+        "delta": 0.021549
+      }
+    }
+  },
+  "42125": {
+    "fips": "42125",
+    "name": "Washington County",
+    "state_po": "PA",
+    "population": 210042.0,
+    "pvi": -0.129335,
+    "pvi_label": "R+13",
+    "median_household_income": 78958.0,
+    "demographics": {
+      "sex": {
+        "male": 103894.0,
+        "female": 106148.0
+      },
+      "age": {
+        "under_18": 41070.0,
+        "18_24": 16389.0,
+        "25_34": 23645.0,
+        "35_44": 25719.0,
+        "45_54": 25935.0,
+        "55_64": 31117.0,
+        "65_plus": 46167.0
+      },
+      "race": {
+        "white": 189198.0,
+        "black": 6683.0,
+        "american_indian": 178.0,
+        "asian": 2711.0,
+        "pacific_islander": 12.0,
+        "other": 1562.0,
+        "two_or_more": 9698.0
+      },
+      "hispanic_or_latino": 4335.0,
+      "education_25plus": {
+        "less_than_high_school": 8238.0,
+        "high_school": 54432.0,
+        "some_college_or_associate": 39677.0,
+        "bachelors_or_higher": 50236.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 12506.0,
+        "25k_50k": 15411.0,
+        "50k_75k": 14146.0,
+        "75k_100k": 11694.0,
+        "100k_150k": 16369.0,
+        "150k_200k": 8453.0,
+        "gte_200k": 9926.0
+      },
+      "employment": {
+        "in_labor_force": 106604.0,
+        "civilian_employed": 101341.0,
+        "civilian_unemployed": 5088.0,
+        "armed_forces": 175.0,
+        "not_in_labor_force": 67376.0
+      },
+      "tenure": {
+        "owner_occupied": 67353.0,
+        "renter_occupied": 21152.0
+      },
+      "households": {
+        "total": 88505.0,
+        "family": 56307.0,
+        "nonfamily": 32198.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 45088,
+        "rep": 72080,
+        "total": 118478,
+        "dem_share": 0.384815,
+        "delta": -0.137839
+      },
+      "2024": {
+        "dem": 44910,
+        "rep": 75929,
+        "total": 121617,
+        "dem_share": 0.371652,
+        "delta": -0.120831
+      }
+    }
+  },
+  "42019": {
+    "fips": "42019",
+    "name": "Butler County",
+    "state_po": "PA",
+    "population": 197254.0,
+    "pvi": -0.171113,
+    "pvi_label": "R+17",
+    "median_household_income": 89843.0,
+    "demographics": {
+      "sex": {
+        "male": 98269.0,
+        "female": 98985.0
+      },
+      "age": {
+        "under_18": 37980.0,
+        "18_24": 17336.0,
+        "25_34": 21837.0,
+        "35_44": 24938.0,
+        "45_54": 24694.0,
+        "55_64": 29774.0,
+        "65_plus": 40695.0
+      },
+      "race": {
+        "white": 183018.0,
+        "black": 2113.0,
+        "american_indian": 223.0,
+        "asian": 2846.0,
+        "pacific_islander": 36.0,
+        "other": 1609.0,
+        "two_or_more": 7409.0
+      },
+      "hispanic_or_latino": 3981.0,
+      "education_25plus": {
+        "less_than_high_school": 6114.0,
+        "high_school": 44787.0,
+        "some_college_or_associate": 35168.0,
+        "bachelors_or_higher": 55869.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 10311.0,
+        "25k_50k": 12052.0,
+        "50k_75k": 12542.0,
+        "75k_100k": 9687.0,
+        "100k_150k": 16210.0,
+        "150k_200k": 8795.0,
+        "gte_200k": 11227.0
+      },
+      "employment": {
+        "in_labor_force": 102497.0,
+        "civilian_employed": 97754.0,
+        "civilian_unemployed": 4506.0,
+        "armed_forces": 237.0,
+        "not_in_labor_force": 61386.0
+      },
+      "tenure": {
+        "owner_occupied": 62184.0,
+        "renter_occupied": 18640.0
+      },
+      "households": {
+        "total": 80824.0,
+        "family": 52026.0,
+        "nonfamily": 28798.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 37508,
+        "rep": 74359,
+        "total": 113305,
+        "dem_share": 0.335291,
+        "delta": -0.187363
+      },
+      "2024": {
+        "dem": 40661,
+        "rep": 79773,
+        "total": 121440,
+        "dem_share": 0.337621,
+        "delta": -0.154862
+      }
+    }
+  },
+  "42089": {
+    "fips": "42089",
+    "name": "Monroe County",
+    "state_po": "PA",
+    "population": 167515.0,
+    "pvi": 0.006564,
+    "pvi_label": "D+1",
+    "median_household_income": 83565.0,
+    "demographics": {
+      "sex": {
+        "male": 83954.0,
+        "female": 83561.0
+      },
+      "age": {
+        "under_18": 32041.0,
+        "18_24": 15353.0,
+        "25_34": 19195.0,
+        "35_44": 19245.0,
+        "45_54": 21682.0,
+        "55_64": 27218.0,
+        "65_plus": 32781.0
+      },
+      "race": {
+        "white": 106651.0,
+        "black": 23309.0,
+        "american_indian": 366.0,
+        "asian": 4388.0,
+        "pacific_islander": 55.0,
+        "other": 11853.0,
+        "two_or_more": 20893.0
+      },
+      "hispanic_or_latino": 30408.0,
+      "education_25plus": {
+        "less_than_high_school": 11472.0,
+        "high_school": 43339.0,
+        "some_college_or_associate": 32405.0,
+        "bachelors_or_higher": 32905.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 8116.0,
+        "25k_50k": 10450.0,
+        "50k_75k": 9257.0,
+        "75k_100k": 8056.0,
+        "100k_150k": 12950.0,
+        "150k_200k": 6284.0,
+        "gte_200k": 6099.0
+      },
+      "employment": {
+        "in_labor_force": 84295.0,
+        "civilian_employed": 78465.0,
+        "civilian_unemployed": 5816.0,
+        "armed_forces": 14.0,
+        "not_in_labor_force": 55695.0
+      },
+      "tenure": {
+        "owner_occupied": 49111.0,
+        "renter_occupied": 12101.0
+      },
+      "households": {
+        "total": 61212.0,
+        "family": 42732.0,
+        "nonfamily": 18480.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 44060,
+        "rep": 38726,
+        "total": 83829,
+        "dem_share": 0.532216,
+        "delta": 0.009562
+      },
+      "2024": {
+        "dem": 42007,
+        "rep": 42676,
+        "total": 85525,
+        "dem_share": 0.49605,
+        "delta": 0.003567
+      }
+    }
+  },
+  "42007": {
+    "fips": "42007",
+    "name": "Beaver County",
+    "state_po": "PA",
+    "population": 166324.0,
+    "pvi": -0.104567,
+    "pvi_label": "R+10",
+    "median_household_income": 71089.0,
+    "demographics": {
+      "sex": {
+        "male": 81553.0,
+        "female": 84771.0
+      },
+      "age": {
+        "under_18": 32226.0,
+        "18_24": 11767.0,
+        "25_34": 19448.0,
+        "35_44": 20384.0,
+        "45_54": 19434.0,
+        "55_64": 25440.0,
+        "65_plus": 37625.0
+      },
+      "race": {
+        "white": 144595.0,
+        "black": 10367.0,
+        "american_indian": 143.0,
+        "asian": 795.0,
+        "pacific_islander": 24.0,
+        "other": 1742.0,
+        "two_or_more": 8658.0
+      },
+      "hispanic_or_latino": 3968.0,
+      "education_25plus": {
+        "less_than_high_school": 5630.0,
+        "high_school": 44883.0,
+        "some_college_or_associate": 36691.0,
+        "bachelors_or_higher": 35127.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 11004.0,
+        "25k_50k": 13869.0,
+        "50k_75k": 13130.0,
+        "75k_100k": 9389.0,
+        "100k_150k": 13185.0,
+        "150k_200k": 6165.0,
+        "gte_200k": 5515.0
+      },
+      "employment": {
+        "in_labor_force": 85606.0,
+        "civilian_employed": 81016.0,
+        "civilian_unemployed": 4498.0,
+        "armed_forces": 92.0,
+        "not_in_labor_force": 52367.0
+      },
+      "tenure": {
+        "owner_occupied": 54222.0,
+        "renter_occupied": 18035.0
+      },
+      "households": {
+        "total": 72257.0,
+        "family": 44950.0,
+        "nonfamily": 27307.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 38122,
+        "rep": 54759,
+        "total": 94122,
+        "dem_share": 0.410439,
+        "delta": -0.112215
+      },
+      "2024": {
+        "dem": 37196,
+        "rep": 56837,
+        "total": 94843,
+        "dem_share": 0.395563,
+        "delta": -0.09692
+      }
+    }
+  },
+  "42027": {
+    "fips": "42027",
+    "name": "Centre County",
+    "state_po": "PA",
+    "population": 158576.0,
+    "pvi": 0.01164,
+    "pvi_label": "D+1",
+    "median_household_income": 74291.0,
+    "demographics": {
+      "sex": {
+        "male": 83539.0,
+        "female": 75037.0
+      },
+      "age": {
+        "under_18": 23235.0,
+        "18_24": 37564.0,
+        "25_34": 19945.0,
+        "35_44": 18018.0,
+        "45_54": 16452.0,
+        "55_64": 18090.0,
+        "65_plus": 25272.0
+      },
+      "race": {
+        "white": 133022.0,
+        "black": 5257.0,
+        "american_indian": 475.0,
+        "asian": 9133.0,
+        "pacific_islander": 14.0,
+        "other": 1492.0,
+        "two_or_more": 9183.0
+      },
+      "hispanic_or_latino": 5824.0,
+      "education_25plus": {
+        "less_than_high_school": 5359.0,
+        "high_school": 28137.0,
+        "some_college_or_associate": 19086.0,
+        "bachelors_or_higher": 45195.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 10223.0,
+        "25k_50k": 10808.0,
+        "50k_75k": 8690.0,
+        "75k_100k": 6984.0,
+        "100k_150k": 10520.0,
+        "150k_200k": 5312.0,
+        "gte_200k": 6476.0
+      },
+      "employment": {
+        "in_labor_force": 76950.0,
+        "civilian_employed": 73509.0,
+        "civilian_unemployed": 3263.0,
+        "armed_forces": 178.0,
+        "not_in_labor_force": 61255.0
+      },
+      "tenure": {
+        "owner_occupied": 36467.0,
+        "renter_occupied": 22546.0
+      },
+      "households": {
+        "total": 59013.0,
+        "family": 32262.0,
+        "nonfamily": 26751.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 40055,
+        "rep": 36372,
+        "total": 77493,
+        "dem_share": 0.524095,
+        "delta": 0.001441
+      },
+      "2024": {
+        "dem": 41119,
+        "rep": 38829,
+        "total": 80792,
+        "dem_share": 0.514322,
+        "delta": 0.021839
+      }
+    }
+  },
+  "42055": {
+    "fips": "42055",
+    "name": "Franklin County",
+    "state_po": "PA",
+    "population": 157379.0,
+    "pvi": -0.225271,
+    "pvi_label": "R+23",
+    "median_household_income": 77003.0,
+    "demographics": {
+      "sex": {
+        "male": 77811.0,
+        "female": 79568.0
+      },
+      "age": {
+        "under_18": 34556.0,
+        "18_24": 11546.0,
+        "25_34": 19482.0,
+        "35_44": 18681.0,
+        "45_54": 19814.0,
+        "55_64": 21525.0,
+        "65_plus": 31775.0
+      },
+      "race": {
+        "white": 136565.0,
+        "black": 4870.0,
+        "american_indian": 590.0,
+        "asian": 1632.0,
+        "pacific_islander": 19.0,
+        "other": 4711.0,
+        "two_or_more": 8992.0
+      },
+      "hispanic_or_latino": 11830.0,
+      "education_25plus": {
+        "less_than_high_school": 9699.0,
+        "high_school": 47149.0,
+        "some_college_or_associate": 26910.0,
+        "bachelors_or_higher": 27519.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 6942.0,
+        "25k_50k": 11924.0,
+        "50k_75k": 11965.0,
+        "75k_100k": 9913.0,
+        "100k_150k": 12078.0,
+        "150k_200k": 5647.0,
+        "gte_200k": 5041.0
+      },
+      "employment": {
+        "in_labor_force": 78573.0,
+        "civilian_employed": 75364.0,
+        "civilian_unemployed": 3129.0,
+        "armed_forces": 80.0,
+        "not_in_labor_force": 47953.0
+      },
+      "tenure": {
+        "owner_occupied": 46691.0,
+        "renter_occupied": 16819.0
+      },
+      "households": {
+        "total": 63510.0,
+        "family": 42542.0,
+        "nonfamily": 20968.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 22422,
+        "rep": 57245,
+        "total": 80783,
+        "dem_share": 0.281447,
+        "delta": -0.241207
+      },
+      "2024": {
+        "dem": 23543,
+        "rep": 59604,
+        "total": 83884,
+        "dem_share": 0.283149,
+        "delta": -0.209334
+      }
+    }
+  },
+  "42075": {
+    "fips": "42075",
+    "name": "Lebanon County",
+    "state_po": "PA",
+    "population": 144186.0,
+    "pvi": -0.168856,
+    "pvi_label": "R+17",
+    "median_household_income": 78425.0,
+    "demographics": {
+      "sex": {
+        "male": 71185.0,
+        "female": 73001.0
+      },
+      "age": {
+        "under_18": 32492.0,
+        "18_24": 12002.0,
+        "25_34": 16481.0,
+        "35_44": 17843.0,
+        "45_54": 16725.0,
+        "55_64": 19118.0,
+        "65_plus": 29525.0
+      },
+      "race": {
+        "white": 116318.0,
+        "black": 3168.0,
+        "american_indian": 93.0,
+        "asian": 2331.0,
+        "pacific_islander": 57.0,
+        "other": 10852.0,
+        "two_or_more": 11367.0
+      },
+      "hispanic_or_latino": 21918.0,
+      "education_25plus": {
+        "less_than_high_school": 11432.0,
+        "high_school": 41368.0,
+        "some_college_or_associate": 22698.0,
+        "bachelors_or_higher": 24194.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 7172.0,
+        "25k_50k": 10780.0,
+        "50k_75k": 9296.0,
+        "75k_100k": 7933.0,
+        "100k_150k": 11308.0,
+        "150k_200k": 5444.0,
+        "gte_200k": 4779.0
+      },
+      "employment": {
+        "in_labor_force": 72573.0,
+        "civilian_employed": 69025.0,
+        "civilian_unemployed": 3114.0,
+        "armed_forces": 434.0,
+        "not_in_labor_force": 42442.0
+      },
+      "tenure": {
+        "owner_occupied": 40419.0,
+        "renter_occupied": 16293.0
+      },
+      "households": {
+        "total": 56712.0,
+        "family": 38466.0,
+        "nonfamily": 18246.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 23932,
+        "rep": 46731,
+        "total": 71652,
+        "dem_share": 0.338678,
+        "delta": -0.183976
+      },
+      "2024": {
+        "dem": 24734,
+        "rep": 48282,
+        "total": 73692,
+        "dem_share": 0.338748,
+        "delta": -0.153735
+      }
+    }
+  },
+  "42107": {
+    "fips": "42107",
+    "name": "Schuylkill County",
+    "state_po": "PA",
+    "population": 143558.0,
+    "pvi": -0.214743,
+    "pvi_label": "R+21",
+    "median_household_income": 68313.0,
+    "demographics": {
+      "sex": {
+        "male": 74172.0,
+        "female": 69386.0
+      },
+      "age": {
+        "under_18": 28557.0,
+        "18_24": 10721.0,
+        "25_34": 17205.0,
+        "35_44": 17556.0,
+        "45_54": 18550.0,
+        "55_64": 20743.0,
+        "65_plus": 30226.0
+      },
+      "race": {
+        "white": 125928.0,
+        "black": 4118.0,
+        "american_indian": 104.0,
+        "asian": 697.0,
+        "pacific_islander": 1.0,
+        "other": 3441.0,
+        "two_or_more": 9269.0
+      },
+      "hispanic_or_latino": 11184.0,
+      "education_25plus": {
+        "less_than_high_school": 10178.0,
+        "high_school": 46707.0,
+        "some_college_or_associate": 26658.0,
+        "bachelors_or_higher": 20737.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 9818.0,
+        "25k_50k": 11210.0,
+        "50k_75k": 11012.0,
+        "75k_100k": 8621.0,
+        "100k_150k": 9769.0,
+        "150k_200k": 4395.0,
+        "gte_200k": 3163.0
+      },
+      "employment": {
+        "in_labor_force": 68606.0,
+        "civilian_employed": 64590.0,
+        "civilian_unemployed": 3852.0,
+        "armed_forces": 164.0,
+        "not_in_labor_force": 50045.0
+      },
+      "tenure": {
+        "owner_occupied": 44125.0,
+        "renter_occupied": 13863.0
+      },
+      "households": {
+        "total": 57988.0,
+        "family": 37008.0,
+        "nonfamily": 20980.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 20727,
+        "rep": 48871,
+        "total": 70603,
+        "dem_share": 0.29781,
+        "delta": -0.224844
+      },
+      "2024": {
+        "dem": 20882,
+        "rep": 51665,
+        "total": 73184,
+        "dem_share": 0.287841,
+        "delta": -0.204642
+      }
+    }
+  },
+  "42021": {
+    "fips": "42021",
+    "name": "Cambria County",
+    "state_po": "PA",
+    "population": 131538.0,
+    "pvi": -0.201932,
+    "pvi_label": "R+20",
+    "median_household_income": 58418.0,
+    "demographics": {
+      "sex": {
+        "male": 65599.0,
+        "female": 65939.0
+      },
+      "age": {
+        "under_18": 25261.0,
+        "18_24": 11611.0,
+        "25_34": 13745.0,
+        "35_44": 14263.0,
+        "45_54": 16126.0,
+        "55_64": 19042.0,
+        "65_plus": 31490.0
+      },
+      "race": {
+        "white": 119720.0,
+        "black": 4024.0,
+        "american_indian": 62.0,
+        "asian": 754.0,
+        "pacific_islander": 5.0,
+        "other": 708.0,
+        "two_or_more": 6265.0
+      },
+      "hispanic_or_latino": 2796.0,
+      "education_25plus": {
+        "less_than_high_school": 6541.0,
+        "high_school": 41090.0,
+        "some_college_or_associate": 24406.0,
+        "bachelors_or_higher": 22629.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 10961.0,
+        "25k_50k": 12940.0,
+        "50k_75k": 10233.0,
+        "75k_100k": 7521.0,
+        "100k_150k": 8472.0,
+        "150k_200k": 3177.0,
+        "gte_200k": 2669.0
+      },
+      "employment": {
+        "in_labor_force": 59527.0,
+        "civilian_employed": 56681.0,
+        "civilian_unemployed": 2765.0,
+        "armed_forces": 81.0,
+        "not_in_labor_force": 50037.0
+      },
+      "tenure": {
+        "owner_occupied": 42745.0,
+        "renter_occupied": 13228.0
+      },
+      "households": {
+        "total": 55973.0,
+        "family": 33075.0,
+        "nonfamily": 22898.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 21730,
+        "rep": 48085,
+        "total": 70574,
+        "dem_share": 0.311251,
+        "delta": -0.211403
+      },
+      "2024": {
+        "dem": 21177,
+        "rep": 49408,
+        "total": 71136,
+        "dem_share": 0.300021,
+        "delta": -0.192462
+      }
+    }
+  },
+  "42051": {
+    "fips": "42051",
+    "name": "Fayette County",
+    "state_po": "PA",
+    "population": 125997.0,
+    "pvi": -0.18712,
+    "pvi_label": "R+19",
+    "median_household_income": 58236.0,
+    "demographics": {
+      "sex": {
+        "male": 63231.0,
+        "female": 62766.0
+      },
+      "age": {
+        "under_18": 24221.0,
+        "18_24": 8817.0,
+        "25_34": 14983.0,
+        "35_44": 14278.0,
+        "45_54": 16507.0,
+        "55_64": 18634.0,
+        "65_plus": 28557.0
+      },
+      "race": {
+        "white": 112746.0,
+        "black": 4932.0,
+        "american_indian": 121.0,
+        "asian": 582.0,
+        "pacific_islander": 97.0,
+        "other": 673.0,
+        "two_or_more": 6846.0
+      },
+      "hispanic_or_latino": 1822.0,
+      "education_25plus": {
+        "less_than_high_school": 9118.0,
+        "high_school": 43803.0,
+        "some_college_or_associate": 22295.0,
+        "bachelors_or_higher": 17743.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 12539.0,
+        "25k_50k": 11616.0,
+        "50k_75k": 9574.0,
+        "75k_100k": 7280.0,
+        "100k_150k": 8310.0,
+        "150k_200k": 3516.0,
+        "gte_200k": 2347.0
+      },
+      "employment": {
+        "in_labor_force": 56528.0,
+        "civilian_employed": 52929.0,
+        "civilian_unemployed": 3532.0,
+        "armed_forces": 67.0,
+        "not_in_labor_force": 48066.0
+      },
+      "tenure": {
+        "owner_occupied": 39947.0,
+        "renter_occupied": 15235.0
+      },
+      "households": {
+        "total": 55182.0,
+        "family": 33440.0,
+        "nonfamily": 21742.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 20444,
+        "rep": 41227,
+        "total": 62139,
+        "dem_share": 0.331501,
+        "delta": -0.191153
+      },
+      "2024": {
+        "dem": 19548,
+        "rep": 43633,
+        "total": 63472,
+        "dem_share": 0.309397,
+        "delta": -0.183086
+      }
+    }
+  },
+  "42013": {
+    "fips": "42013",
+    "name": "Blair County",
+    "state_po": "PA",
+    "population": 121277.0,
+    "pvi": -0.226906,
+    "pvi_label": "R+23",
+    "median_household_income": 62382.0,
+    "demographics": {
+      "sex": {
+        "male": 59834.0,
+        "female": 61443.0
+      },
+      "age": {
+        "under_18": 24416.0,
+        "18_24": 10075.0,
+        "25_34": 14569.0,
+        "35_44": 14497.0,
+        "45_54": 14577.0,
+        "55_64": 17075.0,
+        "65_plus": 26068.0
+      },
+      "race": {
+        "white": 111706.0,
+        "black": 2423.0,
+        "american_indian": 37.0,
+        "asian": 849.0,
+        "pacific_islander": 0.0,
+        "other": 521.0,
+        "two_or_more": 5741.0
+      },
+      "hispanic_or_latino": 1925.0,
+      "education_25plus": {
+        "less_than_high_school": 5338.0,
+        "high_school": 39323.0,
+        "some_college_or_associate": 20936.0,
+        "bachelors_or_higher": 21189.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 9202.0,
+        "25k_50k": 11110.0,
+        "50k_75k": 8671.0,
+        "75k_100k": 6823.0,
+        "100k_150k": 8545.0,
+        "150k_200k": 3736.0,
+        "gte_200k": 2471.0
+      },
+      "employment": {
+        "in_labor_force": 58487.0,
+        "civilian_employed": 55855.0,
+        "civilian_unemployed": 2565.0,
+        "armed_forces": 67.0,
+        "not_in_labor_force": 41493.0
+      },
+      "tenure": {
+        "owner_occupied": 36579.0,
+        "renter_occupied": 13979.0
+      },
+      "households": {
+        "total": 50558.0,
+        "family": 30587.0,
+        "nonfamily": 19971.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 17636,
+        "rep": 45306,
+        "total": 63595,
+        "dem_share": 0.280194,
+        "delta": -0.24246
+      },
+      "2024": {
+        "dem": 18127,
+        "rep": 46352,
+        "total": 64949,
+        "dem_share": 0.28113,
+        "delta": -0.211353
+      }
+    }
+  },
+  "42081": {
+    "fips": "42081",
+    "name": "Lycoming County",
+    "state_po": "PA",
+    "population": 113489.0,
+    "pvi": -0.216889,
+    "pvi_label": "R+22",
+    "median_household_income": 63917.0,
+    "demographics": {
+      "sex": {
+        "male": 56006.0,
+        "female": 57483.0
+      },
+      "age": {
+        "under_18": 23296.0,
+        "18_24": 10299.0,
+        "25_34": 13844.0,
+        "35_44": 13997.0,
+        "45_54": 12986.0,
+        "55_64": 15692.0,
+        "65_plus": 23375.0
+      },
+      "race": {
+        "white": 100481.0,
+        "black": 4828.0,
+        "american_indian": 235.0,
+        "asian": 1077.0,
+        "pacific_islander": 22.0,
+        "other": 745.0,
+        "two_or_more": 6101.0
+      },
+      "hispanic_or_latino": 2691.0,
+      "education_25plus": {
+        "less_than_high_school": 6798.0,
+        "high_school": 30891.0,
+        "some_college_or_associate": 22402.0,
+        "bachelors_or_higher": 19803.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 8240.0,
+        "25k_50k": 9689.0,
+        "50k_75k": 8991.0,
+        "75k_100k": 6618.0,
+        "100k_150k": 7169.0,
+        "150k_200k": 3740.0,
+        "gte_200k": 2414.0
+      },
+      "employment": {
+        "in_labor_force": 55588.0,
+        "civilian_employed": 52681.0,
+        "civilian_unemployed": 2854.0,
+        "armed_forces": 53.0,
+        "not_in_labor_force": 37505.0
+      },
+      "tenure": {
+        "owner_occupied": 32375.0,
+        "renter_occupied": 14486.0
+      },
+      "households": {
+        "total": 46861.0,
+        "family": 28796.0,
+        "nonfamily": 18065.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 16971,
+        "rep": 41462,
+        "total": 59254,
+        "dem_share": 0.290435,
+        "delta": -0.232219
+      },
+      "2024": {
+        "dem": 17216,
+        "rep": 41961,
+        "total": 59685,
+        "dem_share": 0.290924,
+        "delta": -0.201559
+      }
+    }
+  },
+  "42085": {
+    "fips": "42085",
+    "name": "Mercer County",
+    "state_po": "PA",
+    "population": 109257.0,
+    "pvi": -0.149503,
+    "pvi_label": "R+15",
+    "median_household_income": 59976.0,
+    "demographics": {
+      "sex": {
+        "male": 54171.0,
+        "female": 55086.0
+      },
+      "age": {
+        "under_18": 20692.0,
+        "18_24": 10087.0,
+        "25_34": 11554.0,
+        "35_44": 12122.0,
+        "45_54": 13252.0,
+        "55_64": 16279.0,
+        "65_plus": 25271.0
+      },
+      "race": {
+        "white": 96236.0,
+        "black": 6358.0,
+        "american_indian": 102.0,
+        "asian": 709.0,
+        "pacific_islander": 19.0,
+        "other": 910.0,
+        "two_or_more": 4923.0
+      },
+      "hispanic_or_latino": 1837.0,
+      "education_25plus": {
+        "less_than_high_school": 6489.0,
+        "high_school": 31608.0,
+        "some_college_or_associate": 20271.0,
+        "bachelors_or_higher": 20110.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 8763.0,
+        "25k_50k": 10381.0,
+        "50k_75k": 8628.0,
+        "75k_100k": 5853.0,
+        "100k_150k": 7540.0,
+        "150k_200k": 3216.0,
+        "gte_200k": 2143.0
+      },
+      "employment": {
+        "in_labor_force": 49812.0,
+        "civilian_employed": 47002.0,
+        "civilian_unemployed": 2651.0,
+        "armed_forces": 159.0,
+        "not_in_labor_force": 41375.0
+      },
+      "tenure": {
+        "owner_occupied": 33679.0,
+        "renter_occupied": 12845.0
+      },
+      "households": {
+        "total": 46524.0,
+        "family": 29072.0,
+        "nonfamily": 17452.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 21067,
+        "rep": 36143,
+        "total": 57954,
+        "dem_share": 0.36824,
+        "delta": -0.154414
+      },
+      "2024": {
+        "dem": 20145,
+        "rep": 37761,
+        "total": 58410,
+        "dem_share": 0.347891,
+        "delta": -0.144592
+      }
+    }
+  },
+  "42001": {
+    "fips": "42001",
+    "name": "Adams County",
+    "state_po": "PA",
+    "population": 106115.0,
+    "pvi": -0.179116,
+    "pvi_label": "R+18",
+    "median_household_income": 84092.0,
+    "demographics": {
+      "sex": {
+        "male": 52832.0,
+        "female": 53283.0
+      },
+      "age": {
+        "under_18": 20638.0,
+        "18_24": 10628.0,
+        "25_34": 11545.0,
+        "35_44": 11583.0,
+        "45_54": 12682.0,
+        "55_64": 15909.0,
+        "65_plus": 23130.0
+      },
+      "race": {
+        "white": 94377.0,
+        "black": 1952.0,
+        "american_indian": 347.0,
+        "asian": 1000.0,
+        "pacific_islander": 21.0,
+        "other": 3376.0,
+        "two_or_more": 5042.0
+      },
+      "hispanic_or_latino": 8213.0,
+      "education_25plus": {
+        "less_than_high_school": 6439.0,
+        "high_school": 29899.0,
+        "some_college_or_associate": 19229.0,
+        "bachelors_or_higher": 19282.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 4170.0,
+        "25k_50k": 7078.0,
+        "50k_75k": 7223.0,
+        "75k_100k": 5632.0,
+        "100k_150k": 8728.0,
+        "150k_200k": 4184.0,
+        "gte_200k": 3826.0
+      },
+      "employment": {
+        "in_labor_force": 56128.0,
+        "civilian_employed": 54143.0,
+        "civilian_unemployed": 1885.0,
+        "armed_forces": 100.0,
+        "not_in_labor_force": 31953.0
+      },
+      "tenure": {
+        "owner_occupied": 32214.0,
+        "renter_occupied": 8627.0
+      },
+      "households": {
+        "total": 40841.0,
+        "family": 28229.0,
+        "nonfamily": 12612.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 18207,
+        "rep": 37523,
+        "total": 56540,
+        "dem_share": 0.3267,
+        "delta": -0.195954
+      },
+      "2024": {
+        "dem": 19842,
+        "rep": 40248,
+        "total": 60650,
+        "dem_share": 0.330205,
+        "delta": -0.162278
+      }
+    }
+  },
+  "42097": {
+    "fips": "42097",
+    "name": "Northumberland County",
+    "state_po": "PA",
+    "population": 90560.0,
+    "pvi": -0.206095,
+    "pvi_label": "R+21",
+    "median_household_income": 60583.0,
+    "demographics": {
+      "sex": {
+        "male": 46147.0,
+        "female": 44413.0
+      },
+      "age": {
+        "under_18": 17819.0,
+        "18_24": 6196.0,
+        "25_34": 10659.0,
+        "35_44": 11179.0,
+        "45_54": 11215.0,
+        "55_64": 13288.0,
+        "65_plus": 20204.0
+      },
+      "race": {
+        "white": 81389.0,
+        "black": 2372.0,
+        "american_indian": 91.0,
+        "asian": 382.0,
+        "pacific_islander": 0.0,
+        "other": 2227.0,
+        "two_or_more": 4099.0
+      },
+      "hispanic_or_latino": 4702.0,
+      "education_25plus": {
+        "less_than_high_school": 6460.0,
+        "high_school": 31258.0,
+        "some_college_or_associate": 15943.0,
+        "bachelors_or_higher": 12884.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 6969.0,
+        "25k_50k": 8128.0,
+        "50k_75k": 7584.0,
+        "75k_100k": 4803.0,
+        "100k_150k": 6132.0,
+        "150k_200k": 2543.0,
+        "gte_200k": 1727.0
+      },
+      "employment": {
+        "in_labor_force": 42531.0,
+        "civilian_employed": 40954.0,
+        "civilian_unemployed": 1568.0,
+        "armed_forces": 9.0,
+        "not_in_labor_force": 32695.0
+      },
+      "tenure": {
+        "owner_occupied": 28594.0,
+        "renter_occupied": 9292.0
+      },
+      "households": {
+        "total": 37886.0,
+        "family": 23678.0,
+        "nonfamily": 14208.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 12677,
+        "rep": 28952,
+        "total": 42283,
+        "dem_share": 0.304523,
+        "delta": -0.218131
+      },
+      "2024": {
+        "dem": 12863,
+        "rep": 30240,
+        "total": 43522,
+        "dem_share": 0.298425,
+        "delta": -0.194058
+      }
+    }
+  },
+  "42073": {
+    "fips": "42073",
+    "name": "Lawrence County",
+    "state_po": "PA",
+    "population": 85024.0,
+    "pvi": -0.167272,
+    "pvi_label": "R+17",
+    "median_household_income": 61931.0,
+    "demographics": {
+      "sex": {
+        "male": 41365.0,
+        "female": 43659.0
+      },
+      "age": {
+        "under_18": 17000.0,
+        "18_24": 6682.0,
+        "25_34": 9497.0,
+        "35_44": 9421.0,
+        "45_54": 10249.0,
+        "55_64": 12273.0,
+        "65_plus": 19902.0
+      },
+      "race": {
+        "white": 76055.0,
+        "black": 3223.0,
+        "american_indian": 11.0,
+        "asian": 252.0,
+        "pacific_islander": 0.0,
+        "other": 891.0,
+        "two_or_more": 4592.0
+      },
+      "hispanic_or_latino": 1872.0,
+      "education_25plus": {
+        "less_than_high_school": 4651.0,
+        "high_school": 25995.0,
+        "some_college_or_associate": 16355.0,
+        "bachelors_or_higher": 14341.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 6683.0,
+        "25k_50k": 7839.0,
+        "50k_75k": 6565.0,
+        "75k_100k": 4427.0,
+        "100k_150k": 6405.0,
+        "150k_200k": 2367.0,
+        "gte_200k": 1835.0
+      },
+      "employment": {
+        "in_labor_force": 40653.0,
+        "civilian_employed": 38314.0,
+        "civilian_unemployed": 2305.0,
+        "armed_forces": 34.0,
+        "not_in_labor_force": 29822.0
+      },
+      "tenure": {
+        "owner_occupied": 27379.0,
+        "renter_occupied": 8742.0
+      },
+      "households": {
+        "total": 36121.0,
+        "family": 22457.0,
+        "nonfamily": 13664.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 15978,
+        "rep": 29597,
+        "total": 46076,
+        "dem_share": 0.350587,
+        "delta": -0.172067
+      },
+      "2024": {
+        "dem": 15440,
+        "rep": 31347,
+        "total": 47110,
+        "dem_share": 0.330006,
+        "delta": -0.162477
+      }
+    }
+  },
+  "42063": {
+    "fips": "42063",
+    "name": "Indiana County",
+    "state_po": "PA",
+    "population": 83042.0,
+    "pvi": -0.200975,
+    "pvi_label": "R+20",
+    "median_household_income": 60208.0,
+    "demographics": {
+      "sex": {
+        "male": 41408.0,
+        "female": 41634.0
+      },
+      "age": {
+        "under_18": 14946.0,
+        "18_24": 13737.0,
+        "25_34": 8512.0,
+        "35_44": 8653.0,
+        "45_54": 8889.0,
+        "55_64": 11229.0,
+        "65_plus": 17076.0
+      },
+      "race": {
+        "white": 76532.0,
+        "black": 1886.0,
+        "american_indian": 16.0,
+        "asian": 743.0,
+        "pacific_islander": 3.0,
+        "other": 294.0,
+        "two_or_more": 3568.0
+      },
+      "hispanic_or_latino": 1546.0,
+      "education_25plus": {
+        "less_than_high_school": 4057.0,
+        "high_school": 22001.0,
+        "some_college_or_associate": 13630.0,
+        "bachelors_or_higher": 14671.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 6790.0,
+        "25k_50k": 6929.0,
+        "50k_75k": 5901.0,
+        "75k_100k": 4550.0,
+        "100k_150k": 4669.0,
+        "150k_200k": 2126.0,
+        "gte_200k": 1522.0
+      },
+      "employment": {
+        "in_labor_force": 39379.0,
+        "civilian_employed": 36688.0,
+        "civilian_unemployed": 2651.0,
+        "armed_forces": 40.0,
+        "not_in_labor_force": 30678.0
+      },
+      "tenure": {
+        "owner_occupied": 23435.0,
+        "renter_occupied": 9052.0
+      },
+      "households": {
+        "total": 32487.0,
+        "family": 19280.0,
+        "nonfamily": 13207.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 12634,
+        "rep": 28089,
+        "total": 41198,
+        "dem_share": 0.310242,
+        "delta": -0.212412
+      },
+      "2024": {
+        "dem": 12697,
+        "rep": 29215,
+        "total": 42229,
+        "dem_share": 0.302944,
+        "delta": -0.189539
+      }
+    }
+  },
+  "42039": {
+    "fips": "42039",
+    "name": "Crawford County",
+    "state_po": "PA",
+    "population": 82716.0,
+    "pvi": -0.200676,
+    "pvi_label": "R+20",
+    "median_household_income": 60476.0,
+    "demographics": {
+      "sex": {
+        "male": 40857.0,
+        "female": 41859.0
+      },
+      "age": {
+        "under_18": 17004.0,
+        "18_24": 7062.0,
+        "25_34": 8911.0,
+        "35_44": 9105.0,
+        "45_54": 9905.0,
+        "55_64": 11946.0,
+        "65_plus": 18783.0
+      },
+      "race": {
+        "white": 77153.0,
+        "black": 1148.0,
+        "american_indian": 46.0,
+        "asian": 457.0,
+        "pacific_islander": 24.0,
+        "other": 601.0,
+        "two_or_more": 3287.0
+      },
+      "hispanic_or_latino": 1327.0,
+      "education_25plus": {
+        "less_than_high_school": 5450.0,
+        "high_school": 27284.0,
+        "some_college_or_associate": 13557.0,
+        "bachelors_or_higher": 12359.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 6205.0,
+        "25k_50k": 7655.0,
+        "50k_75k": 6523.0,
+        "75k_100k": 5040.0,
+        "100k_150k": 5364.0,
+        "150k_200k": 1715.0,
+        "gte_200k": 1336.0
+      },
+      "employment": {
+        "in_labor_force": 36804.0,
+        "civilian_employed": 34924.0,
+        "civilian_unemployed": 1843.0,
+        "armed_forces": 37.0,
+        "not_in_labor_force": 31030.0
+      },
+      "tenure": {
+        "owner_occupied": 25276.0,
+        "renter_occupied": 8562.0
+      },
+      "households": {
+        "total": 33838.0,
+        "family": 21767.0,
+        "nonfamily": 12071.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 12924,
+        "rep": 28559,
+        "total": 42004,
+        "dem_share": 0.311549,
+        "delta": -0.211105
+      },
+      "2024": {
+        "dem": 12858,
+        "rep": 29685,
+        "total": 42872,
+        "dem_share": 0.302235,
+        "delta": -0.190248
+      }
+    }
+  },
+  "42033": {
+    "fips": "42033",
+    "name": "Clearfield County",
+    "state_po": "PA",
+    "population": 78635.0,
+    "pvi": -0.262957,
+    "pvi_label": "R+26",
+    "median_household_income": 62152.0,
+    "demographics": {
+      "sex": {
+        "male": 40974.0,
+        "female": 37661.0
+      },
+      "age": {
+        "under_18": 14337.0,
+        "18_24": 5469.0,
+        "25_34": 9810.0,
+        "35_44": 9435.0,
+        "45_54": 10381.0,
+        "55_64": 12071.0,
+        "65_plus": 17132.0
+      },
+      "race": {
+        "white": 73217.0,
+        "black": 1556.0,
+        "american_indian": 51.0,
+        "asian": 451.0,
+        "pacific_islander": 24.0,
+        "other": 774.0,
+        "two_or_more": 2562.0
+      },
+      "hispanic_or_latino": 2378.0,
+      "education_25plus": {
+        "less_than_high_school": 5481.0,
+        "high_school": 26926.0,
+        "some_college_or_associate": 14517.0,
+        "bachelors_or_higher": 11905.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 6183.0,
+        "25k_50k": 6631.0,
+        "50k_75k": 6210.0,
+        "75k_100k": 5173.0,
+        "100k_150k": 5179.0,
+        "150k_200k": 1778.0,
+        "gte_200k": 1364.0
+      },
+      "employment": {
+        "in_labor_force": 36484.0,
+        "civilian_employed": 34275.0,
+        "civilian_unemployed": 2151.0,
+        "armed_forces": 58.0,
+        "not_in_labor_force": 29591.0
+      },
+      "tenure": {
+        "owner_occupied": 25534.0,
+        "renter_occupied": 6984.0
+      },
+      "households": {
+        "total": 32518.0,
+        "family": 20539.0,
+        "nonfamily": 11979.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 9673,
+        "rep": 29203,
+        "total": 39422,
+        "dem_share": 0.248817,
+        "delta": -0.273837
+      },
+      "2024": {
+        "dem": 9647,
+        "rep": 30481,
+        "total": 40430,
+        "dem_share": 0.240406,
+        "delta": -0.252077
+      }
+    }
+  },
+  "42111": {
+    "fips": "42111",
+    "name": "Somerset County",
+    "state_po": "PA",
+    "population": 72799.0,
+    "pvi": -0.293826,
+    "pvi_label": "R+29",
+    "median_household_income": 61446.0,
+    "demographics": {
+      "sex": {
+        "male": 38084.0,
+        "female": 34715.0
+      },
+      "age": {
+        "under_18": 13227.0,
+        "18_24": 5014.0,
+        "25_34": 7899.0,
+        "35_44": 8741.0,
+        "45_54": 9469.0,
+        "55_64": 11045.0,
+        "65_plus": 17404.0
+      },
+      "race": {
+        "white": 68331.0,
+        "black": 1909.0,
+        "american_indian": 13.0,
+        "asian": 415.0,
+        "pacific_islander": 1.0,
+        "other": 404.0,
+        "two_or_more": 1726.0
+      },
+      "hispanic_or_latino": 1127.0,
+      "education_25plus": {
+        "less_than_high_school": 4977.0,
+        "high_school": 26991.0,
+        "some_college_or_associate": 12802.0,
+        "bachelors_or_higher": 9788.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 5163.0,
+        "25k_50k": 6616.0,
+        "50k_75k": 5534.0,
+        "75k_100k": 4133.0,
+        "100k_150k": 4972.0,
+        "150k_200k": 1746.0,
+        "gte_200k": 1180.0
+      },
+      "employment": {
+        "in_labor_force": 34040.0,
+        "civilian_employed": 32353.0,
+        "civilian_unemployed": 1674.0,
+        "armed_forces": 13.0,
+        "not_in_labor_force": 27080.0
+      },
+      "tenure": {
+        "owner_occupied": 23594.0,
+        "renter_occupied": 5750.0
+      },
+      "households": {
+        "total": 29344.0,
+        "family": 19151.0,
+        "nonfamily": 10193.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 8654,
+        "rep": 31466,
+        "total": 40543,
+        "dem_share": 0.215703,
+        "delta": -0.306951
+      },
+      "2024": {
+        "dem": 8596,
+        "rep": 31993,
+        "total": 40881,
+        "dem_share": 0.211782,
+        "delta": -0.280701
+      }
+    }
+  },
+  "42025": {
+    "fips": "42025",
+    "name": "Carbon County",
+    "state_po": "PA",
+    "population": 65382.0,
+    "pvi": -0.176394,
+    "pvi_label": "R+18",
+    "median_household_income": 67554.0,
+    "demographics": {
+      "sex": {
+        "male": 32828.0,
+        "female": 32554.0
+      },
+      "age": {
+        "under_18": 12375.0,
+        "18_24": 4583.0,
+        "25_34": 7163.0,
+        "35_44": 7714.0,
+        "45_54": 8584.0,
+        "55_64": 10168.0,
+        "65_plus": 14795.0
+      },
+      "race": {
+        "white": 58151.0,
+        "black": 1467.0,
+        "american_indian": 241.0,
+        "asian": 385.0,
+        "pacific_islander": 0.0,
+        "other": 844.0,
+        "two_or_more": 4294.0
+      },
+      "hispanic_or_latino": 4522.0,
+      "education_25plus": {
+        "less_than_high_school": 4584.0,
+        "high_school": 21021.0,
+        "some_college_or_associate": 13523.0,
+        "bachelors_or_higher": 9296.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 4574.0,
+        "25k_50k": 5600.0,
+        "50k_75k": 4913.0,
+        "75k_100k": 3602.0,
+        "100k_150k": 5019.0,
+        "150k_200k": 1878.0,
+        "gte_200k": 1669.0
+      },
+      "employment": {
+        "in_labor_force": 33283.0,
+        "civilian_employed": 30800.0,
+        "civilian_unemployed": 2483.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 21389.0
+      },
+      "tenure": {
+        "owner_occupied": 20824.0,
+        "renter_occupied": 6431.0
+      },
+      "households": {
+        "total": 27255.0,
+        "family": 17002.0,
+        "nonfamily": 10253.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 11212,
+        "rep": 21984,
+        "total": 33629,
+        "dem_share": 0.337752,
+        "delta": -0.184902
+      },
+      "2024": {
+        "dem": 11394,
+        "rep": 23708,
+        "total": 35395,
+        "dem_share": 0.324597,
+        "delta": -0.167886
+      }
+    }
+  },
+  "42037": {
+    "fips": "42037",
+    "name": "Columbia County",
+    "state_po": "PA",
+    "population": 65362.0,
+    "pvi": -0.163939,
+    "pvi_label": "R+16",
+    "median_household_income": 64644.0,
+    "demographics": {
+      "sex": {
+        "male": 31643.0,
+        "female": 33719.0
+      },
+      "age": {
+        "under_18": 11483.0,
+        "18_24": 9868.0,
+        "25_34": 7284.0,
+        "35_44": 7226.0,
+        "45_54": 7481.0,
+        "55_64": 8726.0,
+        "65_plus": 13294.0
+      },
+      "race": {
+        "white": 59749.0,
+        "black": 1184.0,
+        "american_indian": 134.0,
+        "asian": 485.0,
+        "pacific_islander": 121.0,
+        "other": 532.0,
+        "two_or_more": 3157.0
+      },
+      "hispanic_or_latino": 2663.0,
+      "education_25plus": {
+        "less_than_high_school": 3241.0,
+        "high_school": 19353.0,
+        "some_college_or_associate": 9701.0,
+        "bachelors_or_higher": 11716.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 5046.0,
+        "25k_50k": 5476.0,
+        "50k_75k": 4582.0,
+        "75k_100k": 3508.0,
+        "100k_150k": 4439.0,
+        "150k_200k": 1884.0,
+        "gte_200k": 1415.0
+      },
+      "employment": {
+        "in_labor_force": 32710.0,
+        "civilian_employed": 30712.0,
+        "civilian_unemployed": 1954.0,
+        "armed_forces": 44.0,
+        "not_in_labor_force": 22635.0
+      },
+      "tenure": {
+        "owner_occupied": 18313.0,
+        "renter_occupied": 8037.0
+      },
+      "households": {
+        "total": 26350.0,
+        "family": 15800.0,
+        "nonfamily": 10550.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 10532,
+        "rep": 20098,
+        "total": 31171,
+        "dem_share": 0.343846,
+        "delta": -0.178808
+      },
+      "2024": {
+        "dem": 11083,
+        "rep": 21190,
+        "total": 32576,
+        "dem_share": 0.343414,
+        "delta": -0.149069
+      }
+    }
+  },
+  "42005": {
+    "fips": "42005",
+    "name": "Armstrong County",
+    "state_po": "PA",
+    "population": 64622.0,
+    "pvi": -0.273879,
+    "pvi_label": "R+27",
+    "median_household_income": 65008.0,
+    "demographics": {
+      "sex": {
+        "male": 32391.0,
+        "female": 32231.0
+      },
+      "age": {
+        "under_18": 12227.0,
+        "18_24": 4190.0,
+        "25_34": 7031.0,
+        "35_44": 7266.0,
+        "45_54": 8212.0,
+        "55_64": 10175.0,
+        "65_plus": 15521.0
+      },
+      "race": {
+        "white": 61501.0,
+        "black": 608.0,
+        "american_indian": 12.0,
+        "asian": 228.0,
+        "pacific_islander": 0.0,
+        "other": 340.0,
+        "two_or_more": 1933.0
+      },
+      "hispanic_or_latino": 605.0,
+      "education_25plus": {
+        "less_than_high_school": 3353.0,
+        "high_school": 23049.0,
+        "some_college_or_associate": 12649.0,
+        "bachelors_or_higher": 9154.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 4735.0,
+        "25k_50k": 6014.0,
+        "50k_75k": 4868.0,
+        "75k_100k": 4080.0,
+        "100k_150k": 4993.0,
+        "150k_200k": 2016.0,
+        "gte_200k": 1329.0
+      },
+      "employment": {
+        "in_labor_force": 30856.0,
+        "civilian_employed": 29467.0,
+        "civilian_unemployed": 1335.0,
+        "armed_forces": 54.0,
+        "not_in_labor_force": 23158.0
+      },
+      "tenure": {
+        "owner_occupied": 22097.0,
+        "renter_occupied": 5938.0
+      },
+      "households": {
+        "total": 28035.0,
+        "family": 18457.0,
+        "nonfamily": 9578.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 8457,
+        "rep": 27489,
+        "total": 36370,
+        "dem_share": 0.23527,
+        "delta": -0.287384
+      },
+      "2024": {
+        "dem": 8553,
+        "rep": 28296,
+        "total": 37119,
+        "dem_share": 0.232109,
+        "delta": -0.260374
+      }
+    }
+  },
+  "42103": {
+    "fips": "42103",
+    "name": "Pike County",
+    "state_po": "PA",
+    "population": 60621.0,
+    "pvi": -0.11622,
+    "pvi_label": "R+12",
+    "median_household_income": 81323.0,
+    "demographics": {
+      "sex": {
+        "male": 30795.0,
+        "female": 29826.0
+      },
+      "age": {
+        "under_18": 10433.0,
+        "18_24": 4039.0,
+        "25_34": 6068.0,
+        "35_44": 7000.0,
+        "45_54": 7572.0,
+        "55_64": 10777.0,
+        "65_plus": 14732.0
+      },
+      "race": {
+        "white": 47981.0,
+        "black": 3660.0,
+        "american_indian": 60.0,
+        "asian": 829.0,
+        "pacific_islander": 0.0,
+        "other": 2303.0,
+        "two_or_more": 5788.0
+      },
+      "hispanic_or_latino": 7537.0,
+      "education_25plus": {
+        "less_than_high_school": 3140.0,
+        "high_school": 15944.0,
+        "some_college_or_associate": 13370.0,
+        "bachelors_or_higher": 13695.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2915.0,
+        "25k_50k": 3767.0,
+        "50k_75k": 4426.0,
+        "75k_100k": 3758.0,
+        "100k_150k": 4604.0,
+        "150k_200k": 2213.0,
+        "gte_200k": 2579.0
+      },
+      "employment": {
+        "in_labor_force": 28889.0,
+        "civilian_employed": 26694.0,
+        "civilian_unemployed": 2155.0,
+        "armed_forces": 40.0,
+        "not_in_labor_force": 22913.0
+      },
+      "tenure": {
+        "owner_occupied": 21116.0,
+        "renter_occupied": 3146.0
+      },
+      "households": {
+        "total": 24262.0,
+        "family": 16457.0,
+        "nonfamily": 7805.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 13019,
+        "rep": 19213,
+        "total": 32554,
+        "dem_share": 0.403915,
+        "delta": -0.118739
+      },
+      "2024": {
+        "dem": 13132,
+        "rep": 21537,
+        "total": 34950,
+        "dem_share": 0.378782,
+        "delta": -0.113701
+      }
+    }
+  },
+  "42015": {
+    "fips": "42015",
+    "name": "Bradford County",
+    "state_po": "PA",
+    "population": 59858.0,
+    "pvi": -0.242692,
+    "pvi_label": "R+24",
+    "median_household_income": 63675.0,
+    "demographics": {
+      "sex": {
+        "male": 29908.0,
+        "female": 29950.0
+      },
+      "age": {
+        "under_18": 13248.0,
+        "18_24": 4121.0,
+        "25_34": 6785.0,
+        "35_44": 6502.0,
+        "45_54": 6817.0,
+        "55_64": 8972.0,
+        "65_plus": 13413.0
+      },
+      "race": {
+        "white": 56595.0,
+        "black": 563.0,
+        "american_indian": 39.0,
+        "asian": 327.0,
+        "pacific_islander": 0.0,
+        "other": 412.0,
+        "two_or_more": 1922.0
+      },
+      "hispanic_or_latino": 1011.0,
+      "education_25plus": {
+        "less_than_high_school": 3943.0,
+        "high_school": 19789.0,
+        "some_college_or_associate": 10020.0,
+        "bachelors_or_higher": 8737.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 4036.0,
+        "25k_50k": 5519.0,
+        "50k_75k": 4333.0,
+        "75k_100k": 3254.0,
+        "100k_150k": 4267.0,
+        "150k_200k": 1807.0,
+        "gte_200k": 1394.0
+      },
+      "employment": {
+        "in_labor_force": 27038.0,
+        "civilian_employed": 25304.0,
+        "civilian_unemployed": 1714.0,
+        "armed_forces": 20.0,
+        "not_in_labor_force": 21299.0
+      },
+      "tenure": {
+        "owner_occupied": 17759.0,
+        "renter_occupied": 6851.0
+      },
+      "households": {
+        "total": 24610.0,
+        "family": 15290.0,
+        "nonfamily": 9320.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 8046,
+        "rep": 21600,
+        "total": 30159,
+        "dem_share": 0.271403,
+        "delta": -0.251251
+      },
+      "2024": {
+        "dem": 7990,
+        "rep": 22937,
+        "total": 31192,
+        "dem_share": 0.25835,
+        "delta": -0.234133
+      }
+    }
+  },
+  "42127": {
+    "fips": "42127",
+    "name": "Wayne County",
+    "state_po": "PA",
+    "population": 51262.0,
+    "pvi": -0.185864,
+    "pvi_label": "R+19",
+    "median_household_income": 62381.0,
+    "demographics": {
+      "sex": {
+        "male": 27409.0,
+        "female": 23853.0
+      },
+      "age": {
+        "under_18": 8408.0,
+        "18_24": 3172.0,
+        "25_34": 5816.0,
+        "35_44": 5907.0,
+        "45_54": 6421.0,
+        "55_64": 8431.0,
+        "65_plus": 13107.0
+      },
+      "race": {
+        "white": 45605.0,
+        "black": 1657.0,
+        "american_indian": 88.0,
+        "asian": 389.0,
+        "pacific_islander": 25.0,
+        "other": 754.0,
+        "two_or_more": 2744.0
+      },
+      "hispanic_or_latino": 2638.0,
+      "education_25plus": {
+        "less_than_high_school": 3075.0,
+        "high_school": 16795.0,
+        "some_college_or_associate": 10518.0,
+        "bachelors_or_higher": 9294.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 3534.0,
+        "25k_50k": 4445.0,
+        "50k_75k": 4028.0,
+        "75k_100k": 2950.0,
+        "100k_150k": 3166.0,
+        "150k_200k": 1435.0,
+        "gte_200k": 1319.0
+      },
+      "employment": {
+        "in_labor_force": 22335.0,
+        "civilian_employed": 20991.0,
+        "civilian_unemployed": 1342.0,
+        "armed_forces": 2.0,
+        "not_in_labor_force": 21613.0
+      },
+      "tenure": {
+        "owner_occupied": 16811.0,
+        "renter_occupied": 4066.0
+      },
+      "households": {
+        "total": 20877.0,
+        "family": 13193.0,
+        "nonfamily": 7684.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 9191,
+        "rep": 18637,
+        "total": 28089,
+        "dem_share": 0.330279,
+        "delta": -0.192375
+      },
+      "2024": {
+        "dem": 9150,
+        "rep": 20071,
+        "total": 29444,
+        "dem_share": 0.313131,
+        "delta": -0.179352
+      }
+    }
+  },
+  "42121": {
+    "fips": "42121",
+    "name": "Venango County",
+    "state_po": "PA",
+    "population": 49801.0,
+    "pvi": -0.218751,
+    "pvi_label": "R+22",
+    "median_household_income": 61522.0,
+    "demographics": {
+      "sex": {
+        "male": 24788.0,
+        "female": 25013.0
+      },
+      "age": {
+        "under_18": 9469.0,
+        "18_24": 3236.0,
+        "25_34": 4937.0,
+        "35_44": 5640.0,
+        "45_54": 6086.0,
+        "55_64": 8087.0,
+        "65_plus": 12346.0
+      },
+      "race": {
+        "white": 46630.0,
+        "black": 628.0,
+        "american_indian": 45.0,
+        "asian": 156.0,
+        "pacific_islander": 9.0,
+        "other": 470.0,
+        "two_or_more": 1863.0
+      },
+      "hispanic_or_latino": 639.0,
+      "education_25plus": {
+        "less_than_high_school": 3173.0,
+        "high_school": 16909.0,
+        "some_college_or_associate": 9940.0,
+        "bachelors_or_higher": 7074.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 3884.0,
+        "25k_50k": 5014.0,
+        "50k_75k": 3796.0,
+        "75k_100k": 3060.0,
+        "100k_150k": 3603.0,
+        "150k_200k": 1356.0,
+        "gte_200k": 684.0
+      },
+      "employment": {
+        "in_labor_force": 22876.0,
+        "civilian_employed": 21587.0,
+        "civilian_unemployed": 1281.0,
+        "armed_forces": 8.0,
+        "not_in_labor_force": 18693.0
+      },
+      "tenure": {
+        "owner_occupied": 16110.0,
+        "renter_occupied": 5287.0
+      },
+      "households": {
+        "total": 21397.0,
+        "family": 13890.0,
+        "nonfamily": 7507.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 7585,
+        "rep": 18569,
+        "total": 26528,
+        "dem_share": 0.290013,
+        "delta": -0.232641
+      },
+      "2024": {
+        "dem": 7624,
+        "rep": 18883,
+        "total": 26732,
+        "dem_share": 0.287622,
+        "delta": -0.204861
+      }
+    }
+  },
+  "42009": {
+    "fips": "42009",
+    "name": "Bedford County",
+    "state_po": "PA",
+    "population": 47513.0,
+    "pvi": -0.35041,
+    "pvi_label": "R+35",
+    "median_household_income": 59992.0,
+    "demographics": {
+      "sex": {
+        "male": 23727.0,
+        "female": 23786.0
+      },
+      "age": {
+        "under_18": 9234.0,
+        "18_24": 3285.0,
+        "25_34": 5093.0,
+        "35_44": 5002.0,
+        "45_54": 6063.0,
+        "55_64": 7445.0,
+        "65_plus": 11391.0
+      },
+      "race": {
+        "white": 45397.0,
+        "black": 342.0,
+        "american_indian": 31.0,
+        "asian": 247.0,
+        "pacific_islander": 0.0,
+        "other": 195.0,
+        "two_or_more": 1301.0
+      },
+      "hispanic_or_latino": 644.0,
+      "education_25plus": {
+        "less_than_high_school": 3341.0,
+        "high_school": 16781.0,
+        "some_college_or_associate": 9245.0,
+        "bachelors_or_higher": 5627.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 3884.0,
+        "25k_50k": 4417.0,
+        "50k_75k": 3374.0,
+        "75k_100k": 2710.0,
+        "100k_150k": 3392.0,
+        "150k_200k": 1095.0,
+        "gte_200k": 878.0
+      },
+      "employment": {
+        "in_labor_force": 22631.0,
+        "civilian_employed": 21740.0,
+        "civilian_unemployed": 885.0,
+        "armed_forces": 6.0,
+        "not_in_labor_force": 16839.0
+      },
+      "tenure": {
+        "owner_occupied": 15315.0,
+        "renter_occupied": 4435.0
+      },
+      "households": {
+        "total": 19750.0,
+        "family": 12724.0,
+        "nonfamily": 7026.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4367,
+        "rep": 23025,
+        "total": 27574,
+        "dem_share": 0.159426,
+        "delta": -0.363228
+      },
+      "2024": {
+        "dem": 4336,
+        "rep": 23658,
+        "total": 28160,
+        "dem_share": 0.15489,
+        "delta": -0.337593
+      }
+    }
+  },
+  "42099": {
+    "fips": "42099",
+    "name": "Perry County",
+    "state_po": "PA",
+    "population": 46239.0,
+    "pvi": -0.25945,
+    "pvi_label": "R+26",
+    "median_household_income": 79444.0,
+    "demographics": {
+      "sex": {
+        "male": 23411.0,
+        "female": 22828.0
+      },
+      "age": {
+        "under_18": 9699.0,
+        "18_24": 3088.0,
+        "25_34": 5330.0,
+        "35_44": 5582.0,
+        "45_54": 6013.0,
+        "55_64": 7051.0,
+        "65_plus": 9476.0
+      },
+      "race": {
+        "white": 43464.0,
+        "black": 369.0,
+        "american_indian": 29.0,
+        "asian": 145.0,
+        "pacific_islander": 10.0,
+        "other": 337.0,
+        "two_or_more": 1885.0
+      },
+      "hispanic_or_latino": 1164.0,
+      "education_25plus": {
+        "less_than_high_school": 3513.0,
+        "high_school": 15058.0,
+        "some_college_or_associate": 8118.0,
+        "bachelors_or_higher": 6763.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2128.0,
+        "25k_50k": 3281.0,
+        "50k_75k": 3233.0,
+        "75k_100k": 2679.0,
+        "100k_150k": 3900.0,
+        "150k_200k": 1672.0,
+        "gte_200k": 1406.0
+      },
+      "employment": {
+        "in_labor_force": 23159.0,
+        "civilian_employed": 22374.0,
+        "civilian_unemployed": 724.0,
+        "armed_forces": 61.0,
+        "not_in_labor_force": 14439.0
+      },
+      "tenure": {
+        "owner_occupied": 14974.0,
+        "renter_occupied": 3325.0
+      },
+      "households": {
+        "total": 18299.0,
+        "family": 12708.0,
+        "nonfamily": 5591.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 5950,
+        "rep": 18293,
+        "total": 24652,
+        "dem_share": 0.245432,
+        "delta": -0.277222
+      },
+      "2024": {
+        "dem": 6385,
+        "rep": 19073,
+        "total": 25725,
+        "dem_share": 0.250805,
+        "delta": -0.241678
+      }
+    }
+  },
+  "42087": {
+    "fips": "42087",
+    "name": "Mifflin County",
+    "state_po": "PA",
+    "population": 46041.0,
+    "pvi": -0.291368,
+    "pvi_label": "R+29",
+    "median_household_income": 63953.0,
+    "demographics": {
+      "sex": {
+        "male": 22605.0,
+        "female": 23436.0
+      },
+      "age": {
+        "under_18": 10428.0,
+        "18_24": 3199.0,
+        "25_34": 5223.0,
+        "35_44": 4918.0,
+        "45_54": 5695.0,
+        "55_64": 6448.0,
+        "65_plus": 10130.0
+      },
+      "race": {
+        "white": 43044.0,
+        "black": 449.0,
+        "american_indian": 41.0,
+        "asian": 146.0,
+        "pacific_islander": 24.0,
+        "other": 260.0,
+        "two_or_more": 2077.0
+      },
+      "hispanic_or_latino": 1050.0,
+      "education_25plus": {
+        "less_than_high_school": 4991.0,
+        "high_school": 15195.0,
+        "some_college_or_associate": 7388.0,
+        "bachelors_or_higher": 4840.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 3028.0,
+        "25k_50k": 4104.0,
+        "50k_75k": 3512.0,
+        "75k_100k": 3175.0,
+        "100k_150k": 3087.0,
+        "150k_200k": 1054.0,
+        "gte_200k": 550.0
+      },
+      "employment": {
+        "in_labor_force": 21899.0,
+        "civilian_employed": 21290.0,
+        "civilian_unemployed": 581.0,
+        "armed_forces": 28.0,
+        "not_in_labor_force": 14801.0
+      },
+      "tenure": {
+        "owner_occupied": 13166.0,
+        "renter_occupied": 5344.0
+      },
+      "households": {
+        "total": 18510.0,
+        "family": 12137.0,
+        "nonfamily": 6373.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4603,
+        "rep": 16670,
+        "total": 21502,
+        "dem_share": 0.216378,
+        "delta": -0.306276
+      },
+      "2024": {
+        "dem": 4735,
+        "rep": 17184,
+        "total": 22071,
+        "dem_share": 0.216023,
+        "delta": -0.27646
+      }
+    }
+  },
+  "42065": {
+    "fips": "42065",
+    "name": "Jefferson County",
+    "state_po": "PA",
+    "population": 43864.0,
+    "pvi": -0.304326,
+    "pvi_label": "R+30",
+    "median_household_income": 58686.0,
+    "demographics": {
+      "sex": {
+        "male": 22034.0,
+        "female": 21830.0
+      },
+      "age": {
+        "under_18": 9365.0,
+        "18_24": 3123.0,
+        "25_34": 4847.0,
+        "35_44": 5049.0,
+        "45_54": 5208.0,
+        "55_64": 6515.0,
+        "65_plus": 9757.0
+      },
+      "race": {
+        "white": 42057.0,
+        "black": 157.0,
+        "american_indian": 26.0,
+        "asian": 121.0,
+        "pacific_islander": 0.0,
+        "other": 187.0,
+        "two_or_more": 1316.0
+      },
+      "hispanic_or_latino": 446.0,
+      "education_25plus": {
+        "less_than_high_school": 2448.0,
+        "high_school": 15722.0,
+        "some_college_or_associate": 7439.0,
+        "bachelors_or_higher": 5767.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 3568.0,
+        "25k_50k": 4286.0,
+        "50k_75k": 3411.0,
+        "75k_100k": 2535.0,
+        "100k_150k": 2771.0,
+        "150k_200k": 1029.0,
+        "gte_200k": 744.0
+      },
+      "employment": {
+        "in_labor_force": 20620.0,
+        "civilian_employed": 19746.0,
+        "civilian_unemployed": 858.0,
+        "armed_forces": 16.0,
+        "not_in_labor_force": 15072.0
+      },
+      "tenure": {
+        "owner_occupied": 13742.0,
+        "renter_occupied": 4602.0
+      },
+      "households": {
+        "total": 18344.0,
+        "family": 11785.0,
+        "nonfamily": 6559.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4527,
+        "rep": 17960,
+        "total": 22824,
+        "dem_share": 0.201316,
+        "delta": -0.321338
+      },
+      "2024": {
+        "dem": 4707,
+        "rep": 18235,
+        "total": 23129,
+        "dem_share": 0.20517,
+        "delta": -0.287313
+      }
+    }
+  },
+  "42061": {
+    "fips": "42061",
+    "name": "Huntingdon County",
+    "state_po": "PA",
+    "population": 43653.0,
+    "pvi": -0.26988,
+    "pvi_label": "R+27",
+    "median_household_income": 65557.0,
+    "demographics": {
+      "sex": {
+        "male": 23262.0,
+        "female": 20391.0
+      },
+      "age": {
+        "under_18": 7742.0,
+        "18_24": 4162.0,
+        "25_34": 5161.0,
+        "35_44": 5275.0,
+        "45_54": 5485.0,
+        "55_64": 6169.0,
+        "65_plus": 9659.0
+      },
+      "race": {
+        "white": 39268.0,
+        "black": 2020.0,
+        "american_indian": 49.0,
+        "asian": 239.0,
+        "pacific_islander": 1.0,
+        "other": 334.0,
+        "two_or_more": 1742.0
+      },
+      "hispanic_or_latino": 911.0,
+      "education_25plus": {
+        "less_than_high_school": 2726.0,
+        "high_school": 15867.0,
+        "some_college_or_associate": 7053.0,
+        "bachelors_or_higher": 6103.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2700.0,
+        "25k_50k": 3444.0,
+        "50k_75k": 3084.0,
+        "75k_100k": 2272.0,
+        "100k_150k": 2790.0,
+        "150k_200k": 1219.0,
+        "gte_200k": 832.0
+      },
+      "employment": {
+        "in_labor_force": 18831.0,
+        "civilian_employed": 17943.0,
+        "civilian_unemployed": 874.0,
+        "armed_forces": 14.0,
+        "not_in_labor_force": 18004.0
+      },
+      "tenure": {
+        "owner_occupied": 12942.0,
+        "renter_occupied": 3399.0
+      },
+      "households": {
+        "total": 16341.0,
+        "family": 10724.0,
+        "nonfamily": 5617.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 5445,
+        "rep": 17061,
+        "total": 22792,
+        "dem_share": 0.241935,
+        "delta": -0.280719
+      },
+      "2024": {
+        "dem": 5368,
+        "rep": 17627,
+        "total": 23156,
+        "dem_share": 0.233442,
+        "delta": -0.259041
+      }
+    }
+  },
+  "42119": {
+    "fips": "42119",
+    "name": "Union County",
+    "state_po": "PA",
+    "population": 42456.0,
+    "pvi": -0.128122,
+    "pvi_label": "R+13",
+    "median_household_income": 76404.0,
+    "demographics": {
+      "sex": {
+        "male": 22866.0,
+        "female": 19590.0
+      },
+      "age": {
+        "under_18": 7370.0,
+        "18_24": 5936.0,
+        "25_34": 4950.0,
+        "35_44": 5365.0,
+        "45_54": 5175.0,
+        "55_64": 5221.0,
+        "65_plus": 8439.0
+      },
+      "race": {
+        "white": 37633.0,
+        "black": 2526.0,
+        "american_indian": 58.0,
+        "asian": 846.0,
+        "pacific_islander": 0.0,
+        "other": 422.0,
+        "two_or_more": 971.0
+      },
+      "hispanic_or_latino": 2147.0,
+      "education_25plus": {
+        "less_than_high_school": 4037.0,
+        "high_school": 12023.0,
+        "some_college_or_associate": 5365.0,
+        "bachelors_or_higher": 7725.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 1857.0,
+        "25k_50k": 2861.0,
+        "50k_75k": 2405.0,
+        "75k_100k": 2048.0,
+        "100k_150k": 2892.0,
+        "150k_200k": 1239.0,
+        "gte_200k": 1244.0
+      },
+      "employment": {
+        "in_labor_force": 17812.0,
+        "civilian_employed": 17425.0,
+        "civilian_unemployed": 387.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 18164.0
+      },
+      "tenure": {
+        "owner_occupied": 10520.0,
+        "renter_occupied": 4026.0
+      },
+      "households": {
+        "total": 14546.0,
+        "family": 9714.0,
+        "nonfamily": 4832.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 7475,
+        "rep": 12356,
+        "total": 20115,
+        "dem_share": 0.376935,
+        "delta": -0.145719
+      },
+      "2024": {
+        "dem": 8015,
+        "rep": 12969,
+        "total": 21188,
+        "dem_share": 0.381958,
+        "delta": -0.110525
+      }
+    }
+  },
+  "42117": {
+    "fips": "42117",
+    "name": "Tioga County",
+    "state_po": "PA",
+    "population": 40945.0,
+    "pvi": -0.26855,
+    "pvi_label": "R+27",
+    "median_household_income": 64899.0,
+    "demographics": {
+      "sex": {
+        "male": 20583.0,
+        "female": 20362.0
+      },
+      "age": {
+        "under_18": 8038.0,
+        "18_24": 3514.0,
+        "25_34": 4262.0,
+        "35_44": 4612.0,
+        "45_54": 4758.0,
+        "55_64": 6146.0,
+        "65_plus": 9615.0
+      },
+      "race": {
+        "white": 39174.0,
+        "black": 336.0,
+        "american_indian": 25.0,
+        "asian": 156.0,
+        "pacific_islander": 0.0,
+        "other": 140.0,
+        "two_or_more": 1114.0
+      },
+      "hispanic_or_latino": 694.0,
+      "education_25plus": {
+        "less_than_high_school": 2299.0,
+        "high_school": 12707.0,
+        "some_college_or_associate": 7841.0,
+        "bachelors_or_higher": 6546.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2698.0,
+        "25k_50k": 3725.0,
+        "50k_75k": 3275.0,
+        "75k_100k": 2319.0,
+        "100k_150k": 2780.0,
+        "150k_200k": 952.0,
+        "gte_200k": 938.0
+      },
+      "employment": {
+        "in_labor_force": 19264.0,
+        "civilian_employed": 18376.0,
+        "civilian_unemployed": 876.0,
+        "armed_forces": 12.0,
+        "not_in_labor_force": 14659.0
+      },
+      "tenure": {
+        "owner_occupied": 12911.0,
+        "renter_occupied": 3776.0
+      },
+      "households": {
+        "total": 16687.0,
+        "family": 11186.0,
+        "nonfamily": 5501.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4955,
+        "rep": 15742,
+        "total": 21075,
+        "dem_share": 0.239407,
+        "delta": -0.283247
+      },
+      "2024": {
+        "dem": 5100,
+        "rep": 16272,
+        "total": 21587,
+        "dem_share": 0.23863,
+        "delta": -0.253853
+      }
+    }
+  },
+  "42083": {
+    "fips": "42083",
+    "name": "McKean County",
+    "state_po": "PA",
+    "population": 39904.0,
+    "pvi": -0.24363,
+    "pvi_label": "R+24",
+    "median_household_income": 62905.0,
+    "demographics": {
+      "sex": {
+        "male": 20749.0,
+        "female": 19155.0
+      },
+      "age": {
+        "under_18": 7724.0,
+        "18_24": 3667.0,
+        "25_34": 4437.0,
+        "35_44": 4604.0,
+        "45_54": 5220.0,
+        "55_64": 5862.0,
+        "65_plus": 8390.0
+      },
+      "race": {
+        "white": 37055.0,
+        "black": 902.0,
+        "american_indian": 19.0,
+        "asian": 285.0,
+        "pacific_islander": 0.0,
+        "other": 264.0,
+        "two_or_more": 1379.0
+      },
+      "hispanic_or_latino": 784.0,
+      "education_25plus": {
+        "less_than_high_school": 2210.0,
+        "high_school": 13152.0,
+        "some_college_or_associate": 7208.0,
+        "bachelors_or_higher": 5943.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2868.0,
+        "25k_50k": 3482.0,
+        "50k_75k": 3186.0,
+        "75k_100k": 2548.0,
+        "100k_150k": 2625.0,
+        "150k_200k": 954.0,
+        "gte_200k": 706.0
+      },
+      "employment": {
+        "in_labor_force": 18156.0,
+        "civilian_employed": 17258.0,
+        "civilian_unemployed": 885.0,
+        "armed_forces": 13.0,
+        "not_in_labor_force": 15160.0
+      },
+      "tenure": {
+        "owner_occupied": 12760.0,
+        "renter_occupied": 3609.0
+      },
+      "households": {
+        "total": 16369.0,
+        "family": 10282.0,
+        "nonfamily": 6087.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 5098,
+        "rep": 14083,
+        "total": 19466,
+        "dem_share": 0.265784,
+        "delta": -0.25687
+      },
+      "2024": {
+        "dem": 5115,
+        "rep": 14401,
+        "total": 19682,
+        "dem_share": 0.262093,
+        "delta": -0.23039
+      }
+    }
+  },
+  "42109": {
+    "fips": "42109",
+    "name": "Snyder County",
+    "state_po": "PA",
+    "population": 39668.0,
+    "pvi": -0.246013,
+    "pvi_label": "R+25",
+    "median_household_income": 66876.0,
+    "demographics": {
+      "sex": {
+        "male": 19800.0,
+        "female": 19868.0
+      },
+      "age": {
+        "under_18": 8114.0,
+        "18_24": 4808.0,
+        "25_34": 4347.0,
+        "35_44": 4299.0,
+        "45_54": 4694.0,
+        "55_64": 5246.0,
+        "65_plus": 8160.0
+      },
+      "race": {
+        "white": 37487.0,
+        "black": 259.0,
+        "american_indian": 6.0,
+        "asian": 258.0,
+        "pacific_islander": 118.0,
+        "other": 240.0,
+        "two_or_more": 1300.0
+      },
+      "hispanic_or_latino": 1035.0,
+      "education_25plus": {
+        "less_than_high_school": 4294.0,
+        "high_school": 11677.0,
+        "some_college_or_associate": 5258.0,
+        "bachelors_or_higher": 5517.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2013.0,
+        "25k_50k": 3263.0,
+        "50k_75k": 2931.0,
+        "75k_100k": 2050.0,
+        "100k_150k": 2464.0,
+        "150k_200k": 978.0,
+        "gte_200k": 901.0
+      },
+      "employment": {
+        "in_labor_force": 19753.0,
+        "civilian_employed": 19256.0,
+        "civilian_unemployed": 480.0,
+        "armed_forces": 17.0,
+        "not_in_labor_force": 12822.0
+      },
+      "tenure": {
+        "owner_occupied": 11035.0,
+        "renter_occupied": 3565.0
+      },
+      "households": {
+        "total": 14600.0,
+        "family": 9983.0,
+        "nonfamily": 4617.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4910,
+        "rep": 13983,
+        "total": 19140,
+        "dem_share": 0.259885,
+        "delta": -0.262769
+      },
+      "2024": {
+        "dem": 5239,
+        "rep": 14664,
+        "total": 20038,
+        "dem_share": 0.263227,
+        "delta": -0.229256
+      }
+    }
+  },
+  "42115": {
+    "fips": "42115",
+    "name": "Susquehanna County",
+    "state_po": "PA",
+    "population": 38219.0,
+    "pvi": -0.224973,
+    "pvi_label": "R+22",
+    "median_household_income": 68487.0,
+    "demographics": {
+      "sex": {
+        "male": 19327.0,
+        "female": 18892.0
+      },
+      "age": {
+        "under_18": 7194.0,
+        "18_24": 2509.0,
+        "25_34": 3848.0,
+        "35_44": 4204.0,
+        "45_54": 4476.0,
+        "55_64": 6365.0,
+        "65_plus": 9623.0
+      },
+      "race": {
+        "white": 36197.0,
+        "black": 99.0,
+        "american_indian": 31.0,
+        "asian": 177.0,
+        "pacific_islander": 2.0,
+        "other": 209.0,
+        "two_or_more": 1504.0
+      },
+      "hispanic_or_latino": 924.0,
+      "education_25plus": {
+        "less_than_high_school": 2571.0,
+        "high_school": 13014.0,
+        "some_college_or_associate": 7384.0,
+        "bachelors_or_higher": 5547.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2528.0,
+        "25k_50k": 3223.0,
+        "50k_75k": 2676.0,
+        "75k_100k": 2134.0,
+        "100k_150k": 2519.0,
+        "150k_200k": 1162.0,
+        "gte_200k": 1275.0
+      },
+      "employment": {
+        "in_labor_force": 17577.0,
+        "civilian_employed": 16529.0,
+        "civilian_unemployed": 1031.0,
+        "armed_forces": 17.0,
+        "not_in_labor_force": 14278.0
+      },
+      "tenure": {
+        "owner_occupied": 12177.0,
+        "renter_occupied": 3340.0
+      },
+      "households": {
+        "total": 15517.0,
+        "family": 10102.0,
+        "nonfamily": 5415.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 6236,
+        "rep": 15207,
+        "total": 21752,
+        "dem_share": 0.290818,
+        "delta": -0.231836
+      },
+      "2024": {
+        "dem": 6093,
+        "rep": 16114,
+        "total": 22404,
+        "dem_share": 0.274373,
+        "delta": -0.21811
+      }
+    }
+  },
+  "42123": {
+    "fips": "42123",
+    "name": "Warren County",
+    "state_po": "PA",
+    "population": 37920.0,
+    "pvi": -0.20709,
+    "pvi_label": "R+21",
+    "median_household_income": 60480.0,
+    "demographics": {
+      "sex": {
+        "male": 19154.0,
+        "female": 18766.0
+      },
+      "age": {
+        "under_18": 7447.0,
+        "18_24": 2507.0,
+        "25_34": 3924.0,
+        "35_44": 4153.0,
+        "45_54": 4479.0,
+        "55_64": 6026.0,
+        "65_plus": 9384.0
+      },
+      "race": {
+        "white": 35784.0,
+        "black": 314.0,
+        "american_indian": 23.0,
+        "asian": 166.0,
+        "pacific_islander": 45.0,
+        "other": 191.0,
+        "two_or_more": 1397.0
+      },
+      "hispanic_or_latino": 481.0,
+      "education_25plus": {
+        "less_than_high_school": 1895.0,
+        "high_school": 12999.0,
+        "some_college_or_associate": 7501.0,
+        "bachelors_or_higher": 5571.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2561.0,
+        "25k_50k": 3887.0,
+        "50k_75k": 3302.0,
+        "75k_100k": 2390.0,
+        "100k_150k": 2420.0,
+        "150k_200k": 912.0,
+        "gte_200k": 651.0
+      },
+      "employment": {
+        "in_labor_force": 17143.0,
+        "civilian_employed": 16389.0,
+        "civilian_unemployed": 754.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 14239.0
+      },
+      "tenure": {
+        "owner_occupied": 12813.0,
+        "renter_occupied": 3310.0
+      },
+      "households": {
+        "total": 16123.0,
+        "family": 10154.0,
+        "nonfamily": 5969.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 6066,
+        "rep": 14237,
+        "total": 20650,
+        "dem_share": 0.298774,
+        "delta": -0.22388
+      },
+      "2024": {
+        "dem": 6212,
+        "rep": 14345,
+        "total": 20723,
+        "dem_share": 0.302184,
+        "delta": -0.190299
+      }
+    }
+  },
+  "42035": {
+    "fips": "42035",
+    "name": "Clinton County",
+    "state_po": "PA",
+    "population": 37798.0,
+    "pvi": -0.202579,
+    "pvi_label": "R+20",
+    "median_household_income": 60816.0,
+    "demographics": {
+      "sex": {
+        "male": 18906.0,
+        "female": 18892.0
+      },
+      "age": {
+        "under_18": 7620.0,
+        "18_24": 5100.0,
+        "25_34": 4263.0,
+        "35_44": 4089.0,
+        "45_54": 4242.0,
+        "55_64": 4919.0,
+        "65_plus": 7565.0
+      },
+      "race": {
+        "white": 35538.0,
+        "black": 391.0,
+        "american_indian": 19.0,
+        "asian": 224.0,
+        "pacific_islander": 0.0,
+        "other": 299.0,
+        "two_or_more": 1327.0
+      },
+      "hispanic_or_latino": 719.0,
+      "education_25plus": {
+        "less_than_high_school": 2422.0,
+        "high_school": 11562.0,
+        "some_college_or_associate": 5701.0,
+        "bachelors_or_higher": 5393.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2937.0,
+        "25k_50k": 3609.0,
+        "50k_75k": 2516.0,
+        "75k_100k": 2063.0,
+        "100k_150k": 2542.0,
+        "150k_200k": 963.0,
+        "gte_200k": 794.0
+      },
+      "employment": {
+        "in_labor_force": 18209.0,
+        "civilian_employed": 17168.0,
+        "civilian_unemployed": 1027.0,
+        "armed_forces": 14.0,
+        "not_in_labor_force": 13024.0
+      },
+      "tenure": {
+        "owner_occupied": 11152.0,
+        "renter_occupied": 4272.0
+      },
+      "households": {
+        "total": 15424.0,
+        "family": 9911.0,
+        "nonfamily": 5513.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 5502,
+        "rep": 11902,
+        "total": 17625,
+        "dem_share": 0.316134,
+        "delta": -0.20652
+      },
+      "2024": {
+        "dem": 5395,
+        "rep": 12965,
+        "total": 18522,
+        "dem_share": 0.293845,
+        "delta": -0.198638
+      }
+    }
+  },
+  "42031": {
+    "fips": "42031",
+    "name": "Clarion County",
+    "state_po": "PA",
+    "population": 37179.0,
+    "pvi": -0.26971,
+    "pvi_label": "R+27",
+    "median_household_income": 62649.0,
+    "demographics": {
+      "sex": {
+        "male": 18420.0,
+        "female": 18759.0
+      },
+      "age": {
+        "under_18": 7058.0,
+        "18_24": 4848.0,
+        "25_34": 4205.0,
+        "35_44": 3920.0,
+        "45_54": 4272.0,
+        "55_64": 5218.0,
+        "65_plus": 7658.0
+      },
+      "race": {
+        "white": 35093.0,
+        "black": 625.0,
+        "american_indian": 5.0,
+        "asian": 255.0,
+        "pacific_islander": 1.0,
+        "other": 155.0,
+        "two_or_more": 1045.0
+      },
+      "hispanic_or_latino": 435.0,
+      "education_25plus": {
+        "less_than_high_school": 2195.0,
+        "high_school": 11421.0,
+        "some_college_or_associate": 5697.0,
+        "bachelors_or_higher": 5960.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2796.0,
+        "25k_50k": 3144.0,
+        "50k_75k": 2983.0,
+        "75k_100k": 2005.0,
+        "100k_150k": 2476.0,
+        "150k_200k": 964.0,
+        "gte_200k": 681.0
+      },
+      "employment": {
+        "in_labor_force": 18517.0,
+        "civilian_employed": 17562.0,
+        "civilian_unemployed": 937.0,
+        "armed_forces": 18.0,
+        "not_in_labor_force": 12461.0
+      },
+      "tenure": {
+        "owner_occupied": 10909.0,
+        "renter_occupied": 4140.0
+      },
+      "households": {
+        "total": 15049.0,
+        "family": 9631.0,
+        "nonfamily": 5418.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4678,
+        "rep": 14578,
+        "total": 19493,
+        "dem_share": 0.242937,
+        "delta": -0.279717
+      },
+      "2024": {
+        "dem": 4562,
+        "rep": 15036,
+        "total": 19733,
+        "dem_share": 0.232779,
+        "delta": -0.259704
+      }
+    }
+  },
+  "42059": {
+    "fips": "42059",
+    "name": "Greene County",
+    "state_po": "PA",
+    "population": 34835.0,
+    "pvi": -0.231404,
+    "pvi_label": "R+23",
+    "median_household_income": 68041.0,
+    "demographics": {
+      "sex": {
+        "male": 18255.0,
+        "female": 16580.0
+      },
+      "age": {
+        "under_18": 6591.0,
+        "18_24": 3173.0,
+        "25_34": 4280.0,
+        "35_44": 4079.0,
+        "45_54": 4670.0,
+        "55_64": 4849.0,
+        "65_plus": 7193.0
+      },
+      "race": {
+        "white": 31901.0,
+        "black": 967.0,
+        "american_indian": 23.0,
+        "asian": 75.0,
+        "pacific_islander": 0.0,
+        "other": 152.0,
+        "two_or_more": 1717.0
+      },
+      "hispanic_or_latino": 556.0,
+      "education_25plus": {
+        "less_than_high_school": 2535.0,
+        "high_school": 10998.0,
+        "some_college_or_associate": 6105.0,
+        "bachelors_or_higher": 5433.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2558.0,
+        "25k_50k": 2876.0,
+        "50k_75k": 2346.0,
+        "75k_100k": 1993.0,
+        "100k_150k": 2575.0,
+        "150k_200k": 1286.0,
+        "gte_200k": 690.0
+      },
+      "employment": {
+        "in_labor_force": 14723.0,
+        "civilian_employed": 13892.0,
+        "civilian_unemployed": 829.0,
+        "armed_forces": 2.0,
+        "not_in_labor_force": 14334.0
+      },
+      "tenure": {
+        "owner_occupied": 11050.0,
+        "renter_occupied": 3274.0
+      },
+      "households": {
+        "total": 14324.0,
+        "family": 9546.0,
+        "nonfamily": 4778.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4911,
+        "rep": 12579,
+        "total": 17669,
+        "dem_share": 0.280789,
+        "delta": -0.241865
+      },
+      "2024": {
+        "dem": 4592,
+        "rep": 12319,
+        "total": 17236,
+        "dem_share": 0.271539,
+        "delta": -0.220944
+      }
+    }
+  },
+  "42047": {
+    "fips": "42047",
+    "name": "Elk County",
+    "state_po": "PA",
+    "population": 30506.0,
+    "pvi": -0.240219,
+    "pvi_label": "R+24",
+    "median_household_income": 66380.0,
+    "demographics": {
+      "sex": {
+        "male": 15552.0,
+        "female": 14954.0
+      },
+      "age": {
+        "under_18": 5785.0,
+        "18_24": 2073.0,
+        "25_34": 3087.0,
+        "35_44": 3236.0,
+        "45_54": 3885.0,
+        "55_64": 5074.0,
+        "65_plus": 7366.0
+      },
+      "race": {
+        "white": 28966.0,
+        "black": 184.0,
+        "american_indian": 4.0,
+        "asian": 130.0,
+        "pacific_islander": 0.0,
+        "other": 66.0,
+        "two_or_more": 1156.0
+      },
+      "hispanic_or_latino": 314.0,
+      "education_25plus": {
+        "less_than_high_school": 1291.0,
+        "high_school": 10846.0,
+        "some_college_or_associate": 5847.0,
+        "bachelors_or_higher": 4664.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 2051.0,
+        "25k_50k": 2968.0,
+        "50k_75k": 2601.0,
+        "75k_100k": 2185.0,
+        "100k_150k": 2216.0,
+        "150k_200k": 721.0,
+        "gte_200k": 583.0
+      },
+      "employment": {
+        "in_labor_force": 15454.0,
+        "civilian_employed": 14570.0,
+        "civilian_unemployed": 873.0,
+        "armed_forces": 11.0,
+        "not_in_labor_force": 10030.0
+      },
+      "tenure": {
+        "owner_occupied": 10600.0,
+        "renter_occupied": 2725.0
+      },
+      "households": {
+        "total": 13325.0,
+        "family": 8274.0,
+        "nonfamily": 5051.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4522,
+        "rep": 12140,
+        "total": 16906,
+        "dem_share": 0.271396,
+        "delta": -0.251258
+      },
+      "2024": {
+        "dem": 4483,
+        "rep": 12543,
+        "total": 17153,
+        "dem_share": 0.263303,
+        "delta": -0.22918
+      }
+    }
+  },
+  "42131": {
+    "fips": "42131",
+    "name": "Wyoming County",
+    "state_po": "PA",
+    "population": 25967.0,
+    "pvi": -0.189887,
+    "pvi_label": "R+19",
+    "median_household_income": 72460.0,
+    "demographics": {
+      "sex": {
+        "male": 13113.0,
+        "female": 12854.0
+      },
+      "age": {
+        "under_18": 4975.0,
+        "18_24": 2225.0,
+        "25_34": 2809.0,
+        "35_44": 2942.0,
+        "45_54": 3233.0,
+        "55_64": 3828.0,
+        "65_plus": 5955.0
+      },
+      "race": {
+        "white": 24372.0,
+        "black": 153.0,
+        "american_indian": 30.0,
+        "asian": 63.0,
+        "pacific_islander": 0.0,
+        "other": 165.0,
+        "two_or_more": 1184.0
+      },
+      "hispanic_or_latino": 658.0,
+      "education_25plus": {
+        "less_than_high_school": 1372.0,
+        "high_school": 8403.0,
+        "some_college_or_associate": 4837.0,
+        "bachelors_or_higher": 4155.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 1626.0,
+        "25k_50k": 2045.0,
+        "50k_75k": 1950.0,
+        "75k_100k": 1643.0,
+        "100k_150k": 2016.0,
+        "150k_200k": 908.0,
+        "gte_200k": 724.0
+      },
+      "employment": {
+        "in_labor_force": 12634.0,
+        "civilian_employed": 12004.0,
+        "civilian_unemployed": 630.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 9017.0
+      },
+      "tenure": {
+        "owner_occupied": 8502.0,
+        "renter_occupied": 2410.0
+      },
+      "households": {
+        "total": 10912.0,
+        "family": 7079.0,
+        "nonfamily": 3833.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 4704,
+        "rep": 9936,
+        "total": 14858,
+        "dem_share": 0.321311,
+        "delta": -0.201343
+      },
+      "2024": {
+        "dem": 4680,
+        "rep": 10222,
+        "total": 15052,
+        "dem_share": 0.314052,
+        "delta": -0.178431
+      }
+    }
+  },
+  "42067": {
+    "fips": "42067",
+    "name": "Juniata County",
+    "state_po": "PA",
+    "population": 23379.0,
+    "pvi": -0.317591,
+    "pvi_label": "R+32",
+    "median_household_income": 66318.0,
+    "demographics": {
+      "sex": {
+        "male": 11726.0,
+        "female": 11653.0
+      },
+      "age": {
+        "under_18": 5161.0,
+        "18_24": 1786.0,
+        "25_34": 2624.0,
+        "35_44": 2645.0,
+        "45_54": 2788.0,
+        "55_64": 3419.0,
+        "65_plus": 4956.0
+      },
+      "race": {
+        "white": 21660.0,
+        "black": 233.0,
+        "american_indian": 34.0,
+        "asian": 112.0,
+        "pacific_islander": 0.0,
+        "other": 317.0,
+        "two_or_more": 1023.0
+      },
+      "hispanic_or_latino": 969.0,
+      "education_25plus": {
+        "less_than_high_school": 2667.0,
+        "high_school": 8218.0,
+        "some_college_or_associate": 3083.0,
+        "bachelors_or_higher": 2464.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 1228.0,
+        "25k_50k": 2034.0,
+        "50k_75k": 1810.0,
+        "75k_100k": 1196.0,
+        "100k_150k": 1664.0,
+        "150k_200k": 621.0,
+        "gte_200k": 472.0
+      },
+      "employment": {
+        "in_labor_force": 11387.0,
+        "civilian_employed": 11131.0,
+        "civilian_unemployed": 240.0,
+        "armed_forces": 16.0,
+        "not_in_labor_force": 7534.0
+      },
+      "tenure": {
+        "owner_occupied": 6661.0,
+        "renter_occupied": 2364.0
+      },
+      "households": {
+        "total": 9025.0,
+        "family": 6335.0,
+        "nonfamily": 2690.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 2253,
+        "rep": 9649,
+        "total": 12043,
+        "dem_share": 0.189296,
+        "delta": -0.333358
+      },
+      "2024": {
+        "dem": 2290,
+        "rep": 9721,
+        "total": 12104,
+        "dem_share": 0.190659,
+        "delta": -0.301824
+      }
+    }
+  },
+  "42093": {
+    "fips": "42093",
+    "name": "Montour County",
+    "state_po": "PA",
+    "population": 18103.0,
+    "pvi": -0.114548,
+    "pvi_label": "R+11",
+    "median_household_income": 76976.0,
+    "demographics": {
+      "sex": {
+        "male": 8882.0,
+        "female": 9221.0
+      },
+      "age": {
+        "under_18": 3642.0,
+        "18_24": 1101.0,
+        "25_34": 2298.0,
+        "35_44": 2540.0,
+        "45_54": 1905.0,
+        "55_64": 2676.0,
+        "65_plus": 3941.0
+      },
+      "race": {
+        "white": 16230.0,
+        "black": 439.0,
+        "american_indian": 15.0,
+        "asian": 622.0,
+        "pacific_islander": 0.0,
+        "other": 115.0,
+        "two_or_more": 682.0
+      },
+      "hispanic_or_latino": 564.0,
+      "education_25plus": {
+        "less_than_high_school": 843.0,
+        "high_school": 4593.0,
+        "some_college_or_associate": 2756.0,
+        "bachelors_or_higher": 5168.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 1249.0,
+        "25k_50k": 1309.0,
+        "50k_75k": 1324.0,
+        "75k_100k": 1067.0,
+        "100k_150k": 1293.0,
+        "150k_200k": 687.0,
+        "gte_200k": 933.0
+      },
+      "employment": {
+        "in_labor_force": 8785.0,
+        "civilian_employed": 8481.0,
+        "civilian_unemployed": 255.0,
+        "armed_forces": 49.0,
+        "not_in_labor_force": 6181.0
+      },
+      "tenure": {
+        "owner_occupied": 5385.0,
+        "renter_occupied": 2477.0
+      },
+      "households": {
+        "total": 7862.0,
+        "family": 5060.0,
+        "nonfamily": 2802.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 3771,
+        "rep": 5844,
+        "total": 9771,
+        "dem_share": 0.3922,
+        "delta": -0.130454
+      },
+      "2024": {
+        "dem": 3862,
+        "rep": 5944,
+        "total": 9908,
+        "dem_share": 0.393841,
+        "delta": -0.098642
+      }
+    }
+  },
+  "42105": {
+    "fips": "42105",
+    "name": "Potter County",
+    "state_po": "PA",
+    "population": 16188.0,
+    "pvi": -0.318343,
+    "pvi_label": "R+32",
+    "median_household_income": 59020.0,
+    "demographics": {
+      "sex": {
+        "male": 8121.0,
+        "female": 8067.0
+      },
+      "age": {
+        "under_18": 3237.0,
+        "18_24": 1047.0,
+        "25_34": 1618.0,
+        "35_44": 1651.0,
+        "45_54": 1880.0,
+        "55_64": 2559.0,
+        "65_plus": 4196.0
+      },
+      "race": {
+        "white": 15410.0,
+        "black": 72.0,
+        "american_indian": 12.0,
+        "asian": 63.0,
+        "pacific_islander": 12.0,
+        "other": 102.0,
+        "two_or_more": 517.0
+      },
+      "hispanic_or_latino": 279.0,
+      "education_25plus": {
+        "less_than_high_school": 984.0,
+        "high_school": 5642.0,
+        "some_college_or_associate": 3117.0,
+        "bachelors_or_higher": 2161.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 1157.0,
+        "25k_50k": 1838.0,
+        "50k_75k": 1252.0,
+        "75k_100k": 986.0,
+        "100k_150k": 1130.0,
+        "150k_200k": 366.0,
+        "gte_200k": 263.0
+      },
+      "employment": {
+        "in_labor_force": 7306.0,
+        "civilian_employed": 7020.0,
+        "civilian_unemployed": 279.0,
+        "armed_forces": 7.0,
+        "not_in_labor_force": 6043.0
+      },
+      "tenure": {
+        "owner_occupied": 5571.0,
+        "renter_occupied": 1421.0
+      },
+      "households": {
+        "total": 6992.0,
+        "family": 4520.0,
+        "nonfamily": 2472.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 1726,
+        "rep": 7239,
+        "total": 9064,
+        "dem_share": 0.192526,
+        "delta": -0.330128
+      },
+      "2024": {
+        "dem": 1675,
+        "rep": 7334,
+        "total": 9085,
+        "dem_share": 0.185925,
+        "delta": -0.306558
+      }
+    }
+  },
+  "42057": {
+    "fips": "42057",
+    "name": "Fulton County",
+    "state_po": "PA",
+    "population": 14531.0,
+    "pvi": -0.371294,
+    "pvi_label": "R+37",
+    "median_household_income": 65836.0,
+    "demographics": {
+      "sex": {
+        "male": 7487.0,
+        "female": 7044.0
+      },
+      "age": {
+        "under_18": 2865.0,
+        "18_24": 1010.0,
+        "25_34": 1586.0,
+        "35_44": 1609.0,
+        "45_54": 1912.0,
+        "55_64": 2234.0,
+        "65_plus": 3315.0
+      },
+      "race": {
+        "white": 13601.0,
+        "black": 187.0,
+        "american_indian": 6.0,
+        "asian": 33.0,
+        "pacific_islander": 0.0,
+        "other": 220.0,
+        "two_or_more": 484.0
+      },
+      "hispanic_or_latino": 188.0,
+      "education_25plus": {
+        "less_than_high_school": 1142.0,
+        "high_school": 5071.0,
+        "some_college_or_associate": 2554.0,
+        "bachelors_or_higher": 1889.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 1037.0,
+        "25k_50k": 1344.0,
+        "50k_75k": 1140.0,
+        "75k_100k": 809.0,
+        "100k_150k": 1157.0,
+        "150k_200k": 553.0,
+        "gte_200k": 299.0
+      },
+      "employment": {
+        "in_labor_force": 7084.0,
+        "civilian_employed": 6875.0,
+        "civilian_unemployed": 206.0,
+        "armed_forces": 3.0,
+        "not_in_labor_force": 4977.0
+      },
+      "tenure": {
+        "owner_occupied": 4920.0,
+        "renter_occupied": 1419.0
+      },
+      "households": {
+        "total": 6339.0,
+        "family": 4195.0,
+        "nonfamily": 2144.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 1085,
+        "rep": 6824,
+        "total": 7977,
+        "dem_share": 0.137185,
+        "delta": -0.385469
+      },
+      "2024": {
+        "dem": 1102,
+        "rep": 7039,
+        "total": 8177,
+        "dem_share": 0.135364,
+        "delta": -0.357119
+      }
+    }
+  },
+  "42053": {
+    "fips": "42053",
+    "name": "Forest County",
+    "state_po": "PA",
+    "population": 6715.0,
+    "pvi": -0.230253,
+    "pvi_label": "R+23",
+    "median_household_income": 52191.0,
+    "demographics": {
+      "sex": {
+        "male": 4793.0,
+        "female": 1922.0
+      },
+      "age": {
+        "under_18": 248.0,
+        "18_24": 577.0,
+        "25_34": 1323.0,
+        "35_44": 922.0,
+        "45_54": 886.0,
+        "55_64": 1083.0,
+        "65_plus": 1676.0
+      },
+      "race": {
+        "white": 5290.0,
+        "black": 961.0,
+        "american_indian": 24.0,
+        "asian": 31.0,
+        "pacific_islander": 0.0,
+        "other": 164.0,
+        "two_or_more": 245.0
+      },
+      "hispanic_or_latino": 344.0,
+      "education_25plus": {
+        "less_than_high_school": 869.0,
+        "high_school": 2987.0,
+        "some_college_or_associate": 1310.0,
+        "bachelors_or_higher": 724.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 341.0,
+        "25k_50k": 548.0,
+        "50k_75k": 423.0,
+        "75k_100k": 266.0,
+        "100k_150k": 207.0,
+        "150k_200k": 103.0,
+        "gte_200k": 32.0
+      },
+      "employment": {
+        "in_labor_force": 1913.0,
+        "civilian_employed": 1866.0,
+        "civilian_unemployed": 47.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 4619.0
+      },
+      "tenure": {
+        "owner_occupied": 1504.0,
+        "renter_occupied": 416.0
+      },
+      "households": {
+        "total": 1920.0,
+        "family": 1052.0,
+        "nonfamily": 868.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 728,
+        "rep": 1882,
+        "total": 2646,
+        "dem_share": 0.278927,
+        "delta": -0.243727
+      },
+      "2024": {
+        "dem": 724,
+        "rep": 1902,
+        "total": 2650,
+        "dem_share": 0.275704,
+        "delta": -0.216779
+      }
+    }
+  },
+  "42113": {
+    "fips": "42113",
+    "name": "Sullivan County",
+    "state_po": "PA",
+    "population": 5888.0,
+    "pvi": -0.245485,
+    "pvi_label": "R+25",
+    "median_household_income": 69764.0,
+    "demographics": {
+      "sex": {
+        "male": 3113.0,
+        "female": 2775.0
+      },
+      "age": {
+        "under_18": 615.0,
+        "18_24": 401.0,
+        "25_34": 528.0,
+        "35_44": 631.0,
+        "45_54": 698.0,
+        "55_64": 1163.0,
+        "65_plus": 1852.0
+      },
+      "race": {
+        "white": 5520.0,
+        "black": 138.0,
+        "american_indian": 18.0,
+        "asian": 5.0,
+        "pacific_islander": 0.0,
+        "other": 47.0,
+        "two_or_more": 160.0
+      },
+      "hispanic_or_latino": 138.0,
+      "education_25plus": {
+        "less_than_high_school": 363.0,
+        "high_school": 2321.0,
+        "some_college_or_associate": 1140.0,
+        "bachelors_or_higher": 1048.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 460.0,
+        "25k_50k": 486.0,
+        "50k_75k": 427.0,
+        "75k_100k": 390.0,
+        "100k_150k": 415.0,
+        "150k_200k": 184.0,
+        "gte_200k": 189.0
+      },
+      "employment": {
+        "in_labor_force": 2674.0,
+        "civilian_employed": 2518.0,
+        "civilian_unemployed": 156.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 2681.0
+      },
+      "tenure": {
+        "owner_occupied": 2167.0,
+        "renter_occupied": 384.0
+      },
+      "households": {
+        "total": 2551.0,
+        "family": 1620.0,
+        "nonfamily": 931.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 921,
+        "rep": 2619,
+        "total": 3595,
+        "dem_share": 0.260169,
+        "delta": -0.262485
+      },
+      "2024": {
+        "dem": 976,
+        "rep": 2721,
+        "total": 3721,
+        "dem_share": 0.263998,
+        "delta": -0.228485
+      }
+    }
+  },
+  "42023": {
+    "fips": "42023",
+    "name": "Cameron County",
+    "state_po": "PA",
+    "population": 4427.0,
+    "pvi": -0.253041,
+    "pvi_label": "R+25",
+    "median_household_income": 50573.0,
+    "demographics": {
+      "sex": {
+        "male": 2275.0,
+        "female": 2152.0
+      },
+      "age": {
+        "under_18": 748.0,
+        "18_24": 279.0,
+        "25_34": 340.0,
+        "35_44": 475.0,
+        "45_54": 525.0,
+        "55_64": 756.0,
+        "65_plus": 1304.0
+      },
+      "race": {
+        "white": 4101.0,
+        "black": 4.0,
+        "american_indian": 13.0,
+        "asian": 20.0,
+        "pacific_islander": 0.0,
+        "other": 40.0,
+        "two_or_more": 249.0
+      },
+      "hispanic_or_latino": 31.0,
+      "education_25plus": {
+        "less_than_high_school": 252.0,
+        "high_school": 1695.0,
+        "some_college_or_associate": 1025.0,
+        "bachelors_or_higher": 428.0
+      },
+      "household_income_brackets": {
+        "lt_25k": 492.0,
+        "25k_50k": 605.0,
+        "50k_75k": 461.0,
+        "75k_100k": 243.0,
+        "100k_150k": 318.0,
+        "150k_200k": 46.0,
+        "gte_200k": 51.0
+      },
+      "employment": {
+        "in_labor_force": 1962.0,
+        "civilian_employed": 1809.0,
+        "civilian_unemployed": 153.0,
+        "armed_forces": 0.0,
+        "not_in_labor_force": 1771.0
+      },
+      "tenure": {
+        "owner_occupied": 1605.0,
+        "renter_occupied": 611.0
+      },
+      "households": {
+        "total": 2216.0,
+        "family": 1287.0,
+        "nonfamily": 929.0
+      }
+    },
+    "elections": {
+      "2020": {
+        "dem": 634,
+        "rep": 1771,
+        "total": 2434,
+        "dem_share": 0.263617,
+        "delta": -0.259037
+      },
+      "2024": {
+        "dem": 538,
+        "rep": 1654,
+        "total": 2219,
+        "dem_share": 0.245438,
+        "delta": -0.247045
+      }
+    }
+  }
+}

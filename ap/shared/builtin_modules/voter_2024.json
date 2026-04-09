@@ -1,0 +1,1658 @@
+{
+  "南投縣|中寮鄉": {
+    "vote_rate": 0.7213,
+    "avg_age": 55.7,
+    "male_ratio": 0.623,
+    "sample_size": 61
+  },
+  "南投縣|仁愛鄉": {
+    "vote_rate": 0.599,
+    "avg_age": 45.3,
+    "male_ratio": 0.5533,
+    "sample_size": 197
+  },
+  "南投縣|信義鄉": {
+    "vote_rate": 0.6595,
+    "avg_age": 49.7,
+    "male_ratio": 0.5092,
+    "sample_size": 326
+  },
+  "南投縣|南投市": {
+    "vote_rate": 0.7298,
+    "avg_age": 50.4,
+    "male_ratio": 0.5047,
+    "sample_size": 1484
+  },
+  "南投縣|名間鄉": {
+    "vote_rate": 0.716,
+    "avg_age": 51.1,
+    "male_ratio": 0.5224,
+    "sample_size": 1162
+  },
+  "南投縣|國姓鄉": {
+    "vote_rate": 0.6861,
+    "avg_age": 55.3,
+    "male_ratio": 0.521,
+    "sample_size": 309
+  },
+  "南投縣|埔里鎮": {
+    "vote_rate": 0.7004,
+    "avg_age": 49.7,
+    "male_ratio": 0.5127,
+    "sample_size": 1145
+  },
+  "南投縣|水里鄉": {
+    "vote_rate": 0.6313,
+    "avg_age": 53.7,
+    "male_ratio": 0.53,
+    "sample_size": 217
+  },
+  "南投縣|竹山鎮": {
+    "vote_rate": 0.7162,
+    "avg_age": 50.6,
+    "male_ratio": 0.5057,
+    "sample_size": 437
+  },
+  "南投縣|草屯鎮": {
+    "vote_rate": 0.7063,
+    "avg_age": 50.9,
+    "male_ratio": 0.5026,
+    "sample_size": 756
+  },
+  "南投縣|集集鎮": {
+    "vote_rate": 0.6508,
+    "avg_age": 55.8,
+    "male_ratio": 0.5873,
+    "sample_size": 63
+  },
+  "南投縣|魚池鄉": {
+    "vote_rate": 0.6194,
+    "avg_age": 53.2,
+    "male_ratio": 0.5677,
+    "sample_size": 155
+  },
+  "南投縣|鹿谷鄉": {
+    "vote_rate": 0.6552,
+    "avg_age": 55.0,
+    "male_ratio": 0.532,
+    "sample_size": 203
+  },
+  "嘉義市|東區": {
+    "vote_rate": 0.7405,
+    "avg_age": 50.2,
+    "male_ratio": 0.4678,
+    "sample_size": 2813
+  },
+  "嘉義市|西區": {
+    "vote_rate": 0.7321,
+    "avg_age": 49.8,
+    "male_ratio": 0.4725,
+    "sample_size": 3729
+  },
+  "嘉義縣|中埔鄉": {
+    "vote_rate": 0.7176,
+    "avg_age": 51.8,
+    "male_ratio": 0.5285,
+    "sample_size": 386
+  },
+  "嘉義縣|六腳鄉": {
+    "vote_rate": 0.7194,
+    "avg_age": 53.8,
+    "male_ratio": 0.5357,
+    "sample_size": 196
+  },
+  "嘉義縣|大埔鄉": {
+    "vote_rate": 0.6,
+    "avg_age": 51.0,
+    "male_ratio": 0.496,
+    "sample_size": 125
+  },
+  "嘉義縣|大林鎮": {
+    "vote_rate": 0.7469,
+    "avg_age": 51.6,
+    "male_ratio": 0.5206,
+    "sample_size": 557
+  },
+  "嘉義縣|太保市": {
+    "vote_rate": 0.7015,
+    "avg_age": 50.4,
+    "male_ratio": 0.5408,
+    "sample_size": 392
+  },
+  "嘉義縣|布袋鎮": {
+    "vote_rate": 0.6258,
+    "avg_age": 55.1,
+    "male_ratio": 0.4969,
+    "sample_size": 326
+  },
+  "嘉義縣|新港鄉": {
+    "vote_rate": 0.7178,
+    "avg_age": 51.3,
+    "male_ratio": 0.4969,
+    "sample_size": 326
+  },
+  "嘉義縣|朴子市": {
+    "vote_rate": 0.7136,
+    "avg_age": 51.4,
+    "male_ratio": 0.5155,
+    "sample_size": 873
+  },
+  "嘉義縣|東石鄉": {
+    "vote_rate": 0.6771,
+    "avg_age": 51.2,
+    "male_ratio": 0.5373,
+    "sample_size": 415
+  },
+  "嘉義縣|梅山鄉": {
+    "vote_rate": 0.6911,
+    "avg_age": 57.3,
+    "male_ratio": 0.5691,
+    "sample_size": 123
+  },
+  "嘉義縣|民雄鄉": {
+    "vote_rate": 0.7332,
+    "avg_age": 51.4,
+    "male_ratio": 0.5382,
+    "sample_size": 641
+  },
+  "嘉義縣|水上鄉": {
+    "vote_rate": 0.7179,
+    "avg_age": 50.4,
+    "male_ratio": 0.5299,
+    "sample_size": 904
+  },
+  "嘉義縣|番路鄉": {
+    "vote_rate": 0.6692,
+    "avg_age": 52.2,
+    "male_ratio": 0.5538,
+    "sample_size": 130
+  },
+  "嘉義縣|竹崎鄉": {
+    "vote_rate": 0.7083,
+    "avg_age": 50.5,
+    "male_ratio": 0.4819,
+    "sample_size": 552
+  },
+  "嘉義縣|義竹鄉": {
+    "vote_rate": 0.7024,
+    "avg_age": 52.9,
+    "male_ratio": 0.4881,
+    "sample_size": 504
+  },
+  "嘉義縣|鹿草鄉": {
+    "vote_rate": 0.619,
+    "avg_age": 53.1,
+    "male_ratio": 0.6349,
+    "sample_size": 63
+  },
+  "基隆市|七堵區": {
+    "vote_rate": 0.6989,
+    "avg_age": 48.7,
+    "male_ratio": 0.4989,
+    "sample_size": 1345
+  },
+  "基隆市|中山區": {
+    "vote_rate": 0.6616,
+    "avg_age": 52.6,
+    "male_ratio": 0.5183,
+    "sample_size": 328
+  },
+  "基隆市|中正區": {
+    "vote_rate": 0.6679,
+    "avg_age": 50.2,
+    "male_ratio": 0.5082,
+    "sample_size": 1840
+  },
+  "基隆市|仁愛區": {
+    "vote_rate": 0.7326,
+    "avg_age": 53.0,
+    "male_ratio": 0.5116,
+    "sample_size": 475
+  },
+  "基隆市|信義區": {
+    "vote_rate": 0.7095,
+    "avg_age": 50.8,
+    "male_ratio": 0.4969,
+    "sample_size": 809
+  },
+  "基隆市|安樂區": {
+    "vote_rate": 0.7219,
+    "avg_age": 51.7,
+    "male_ratio": 0.5126,
+    "sample_size": 1147
+  },
+  "基隆市|暖暖區": {
+    "vote_rate": 0.725,
+    "avg_age": 48.8,
+    "male_ratio": 0.4886,
+    "sample_size": 571
+  },
+  "宜蘭縣|三星鄉": {
+    "vote_rate": 0.7273,
+    "avg_age": 52.7,
+    "male_ratio": 0.5265,
+    "sample_size": 264
+  },
+  "宜蘭縣|五結鄉": {
+    "vote_rate": 0.7081,
+    "avg_age": 51.0,
+    "male_ratio": 0.5231,
+    "sample_size": 346
+  },
+  "宜蘭縣|冬山鄉": {
+    "vote_rate": 0.7554,
+    "avg_age": 51.3,
+    "male_ratio": 0.5187,
+    "sample_size": 507
+  },
+  "宜蘭縣|南澳鄉": {
+    "vote_rate": 0.6133,
+    "avg_age": 45.6,
+    "male_ratio": 0.4917,
+    "sample_size": 181
+  },
+  "宜蘭縣|員山鄉": {
+    "vote_rate": 0.7059,
+    "avg_age": 49.4,
+    "male_ratio": 0.5374,
+    "sample_size": 374
+  },
+  "宜蘭縣|壯圍鄉": {
+    "vote_rate": 0.7348,
+    "avg_age": 49.9,
+    "male_ratio": 0.5355,
+    "sample_size": 577
+  },
+  "宜蘭縣|大同鄉": {
+    "vote_rate": 0.7081,
+    "avg_age": 48.4,
+    "male_ratio": 0.5676,
+    "sample_size": 185
+  },
+  "宜蘭縣|宜蘭市": {
+    "vote_rate": 0.7284,
+    "avg_age": 50.4,
+    "male_ratio": 0.4724,
+    "sample_size": 1484
+  },
+  "宜蘭縣|礁溪鄉": {
+    "vote_rate": 0.7065,
+    "avg_age": 51.2,
+    "male_ratio": 0.5452,
+    "sample_size": 310
+  },
+  "宜蘭縣|羅東鎮": {
+    "vote_rate": 0.7247,
+    "avg_age": 50.5,
+    "male_ratio": 0.4516,
+    "sample_size": 1373
+  },
+  "宜蘭縣|蘇澳鎮": {
+    "vote_rate": 0.7332,
+    "avg_age": 50.7,
+    "male_ratio": 0.4926,
+    "sample_size": 611
+  },
+  "宜蘭縣|頭城鎮": {
+    "vote_rate": 0.7391,
+    "avg_age": 52.6,
+    "male_ratio": 0.5251,
+    "sample_size": 299
+  },
+  "屏東縣|九如鄉": {
+    "vote_rate": 0.6667,
+    "avg_age": 51.1,
+    "male_ratio": 0.4949,
+    "sample_size": 99
+  },
+  "屏東縣|佳冬鄉": {
+    "vote_rate": 0.6893,
+    "avg_age": 53.1,
+    "male_ratio": 0.534,
+    "sample_size": 103
+  },
+  "屏東縣|屏東市": {
+    "vote_rate": 0.6932,
+    "avg_age": 49.8,
+    "male_ratio": 0.4769,
+    "sample_size": 2122
+  },
+  "屏東縣|恆春鎮": {
+    "vote_rate": 0.5907,
+    "avg_age": 50.8,
+    "male_ratio": 0.5368,
+    "sample_size": 408
+  },
+  "屏東縣|新園鄉": {
+    "vote_rate": 0.7898,
+    "avg_age": 49.2,
+    "male_ratio": 0.4943,
+    "sample_size": 176
+  },
+  "屏東縣|新埤鄉": {
+    "vote_rate": 0.6353,
+    "avg_age": 51.7,
+    "male_ratio": 0.5529,
+    "sample_size": 170
+  },
+  "屏東縣|春日鄉": {
+    "vote_rate": 0.6484,
+    "avg_age": 48.7,
+    "male_ratio": 0.511,
+    "sample_size": 182
+  },
+  "屏東縣|東港鎮": {
+    "vote_rate": 0.7053,
+    "avg_age": 51.7,
+    "male_ratio": 0.5012,
+    "sample_size": 431
+  },
+  "屏東縣|林邊鄉": {
+    "vote_rate": 0.7119,
+    "avg_age": 55.0,
+    "male_ratio": 0.5141,
+    "sample_size": 177
+  },
+  "屏東縣|泰武鄉": {
+    "vote_rate": 0.7619,
+    "avg_age": 46.9,
+    "male_ratio": 0.5595,
+    "sample_size": 84
+  },
+  "屏東縣|滿州鄉": {
+    "vote_rate": 0.6186,
+    "avg_age": 51.3,
+    "male_ratio": 0.5155,
+    "sample_size": 97
+  },
+  "屏東縣|潮州鎮": {
+    "vote_rate": 0.7005,
+    "avg_age": 50.0,
+    "male_ratio": 0.4437,
+    "sample_size": 631
+  },
+  "屏東縣|牡丹鄉": {
+    "vote_rate": 0.6774,
+    "avg_age": 49.3,
+    "male_ratio": 0.4731,
+    "sample_size": 93
+  },
+  "屏東縣|獅子鄉": {
+    "vote_rate": 0.6897,
+    "avg_age": 47.7,
+    "male_ratio": 0.5517,
+    "sample_size": 87
+  },
+  "屏東縣|琉球鄉": {
+    "vote_rate": 0.6125,
+    "avg_age": 51.3,
+    "male_ratio": 0.5203,
+    "sample_size": 271
+  },
+  "屏東縣|萬丹鄉": {
+    "vote_rate": 0.7091,
+    "avg_age": 49.6,
+    "male_ratio": 0.5086,
+    "sample_size": 464
+  },
+  "屏東縣|車城鄉": {
+    "vote_rate": 0.6667,
+    "avg_age": 53.8,
+    "male_ratio": 0.6222,
+    "sample_size": 90
+  },
+  "屏東縣|里港鄉": {
+    "vote_rate": 0.7189,
+    "avg_age": 51.4,
+    "male_ratio": 0.5207,
+    "sample_size": 338
+  },
+  "屏東縣|霧臺鄉": {
+    "vote_rate": 0.8191,
+    "avg_age": 52.6,
+    "male_ratio": 0.5106,
+    "sample_size": 94
+  },
+  "屏東縣|高樹鄉": {
+    "vote_rate": 0.6409,
+    "avg_age": 53.7,
+    "male_ratio": 0.5671,
+    "sample_size": 298
+  },
+  "屏東縣|麟洛鄉": {
+    "vote_rate": 0.7826,
+    "avg_age": 55.0,
+    "male_ratio": 0.5109,
+    "sample_size": 92
+  },
+  "彰化縣|二林鎮": {
+    "vote_rate": 0.6203,
+    "avg_age": 51.1,
+    "male_ratio": 0.4726,
+    "sample_size": 237
+  },
+  "彰化縣|二水鄉": {
+    "vote_rate": 0.7584,
+    "avg_age": 50.3,
+    "male_ratio": 0.513,
+    "sample_size": 269
+  },
+  "彰化縣|伸港鄉": {
+    "vote_rate": 0.7608,
+    "avg_age": 45.1,
+    "male_ratio": 0.5359,
+    "sample_size": 209
+  },
+  "彰化縣|北斗鎮": {
+    "vote_rate": 0.8,
+    "avg_age": 51.4,
+    "male_ratio": 0.5364,
+    "sample_size": 110
+  },
+  "彰化縣|和美鎮": {
+    "vote_rate": 0.7312,
+    "avg_age": 48.8,
+    "male_ratio": 0.5,
+    "sample_size": 640
+  },
+  "彰化縣|員林市": {
+    "vote_rate": 0.7489,
+    "avg_age": 47.6,
+    "male_ratio": 0.4756,
+    "sample_size": 450
+  },
+  "彰化縣|埔心鄉": {
+    "vote_rate": 0.7222,
+    "avg_age": 52.3,
+    "male_ratio": 0.4815,
+    "sample_size": 108
+  },
+  "彰化縣|埔鹽鄉": {
+    "vote_rate": 0.6422,
+    "avg_age": 52.5,
+    "male_ratio": 0.4312,
+    "sample_size": 109
+  },
+  "彰化縣|埤頭鄉": {
+    "vote_rate": 0.7795,
+    "avg_age": 50.8,
+    "male_ratio": 0.5197,
+    "sample_size": 127
+  },
+  "彰化縣|大城鄉": {
+    "vote_rate": 0.5783,
+    "avg_age": 57.6,
+    "male_ratio": 0.6506,
+    "sample_size": 83
+  },
+  "彰化縣|彰化市": {
+    "vote_rate": 0.774,
+    "avg_age": 49.7,
+    "male_ratio": 0.4813,
+    "sample_size": 1367
+  },
+  "彰化縣|永靖鄉": {
+    "vote_rate": 0.6974,
+    "avg_age": 49.5,
+    "male_ratio": 0.5532,
+    "sample_size": 423
+  },
+  "彰化縣|溪湖鎮": {
+    "vote_rate": 0.7339,
+    "avg_age": 48.4,
+    "male_ratio": 0.4912,
+    "sample_size": 511
+  },
+  "彰化縣|田尾鄉": {
+    "vote_rate": 0.7352,
+    "avg_age": 51.3,
+    "male_ratio": 0.5257,
+    "sample_size": 253
+  },
+  "彰化縣|社頭鄉": {
+    "vote_rate": 0.7215,
+    "avg_age": 50.7,
+    "male_ratio": 0.5638,
+    "sample_size": 298
+  },
+  "彰化縣|秀水鄉": {
+    "vote_rate": 0.7286,
+    "avg_age": 48.0,
+    "male_ratio": 0.4944,
+    "sample_size": 538
+  },
+  "彰化縣|芬園鄉": {
+    "vote_rate": 0.7252,
+    "avg_age": 50.2,
+    "male_ratio": 0.6031,
+    "sample_size": 131
+  },
+  "彰化縣|鹿港鎮": {
+    "vote_rate": 0.7247,
+    "avg_age": 49.2,
+    "male_ratio": 0.5008,
+    "sample_size": 643
+  },
+  "新北市|三峽區": {
+    "vote_rate": 0.7288,
+    "avg_age": 47.2,
+    "male_ratio": 0.5074,
+    "sample_size": 542
+  },
+  "新北市|三重區": {
+    "vote_rate": 0.7509,
+    "avg_age": 50.3,
+    "male_ratio": 0.4875,
+    "sample_size": 558
+  },
+  "新北市|中和區": {
+    "vote_rate": 0.7574,
+    "avg_age": 51.2,
+    "male_ratio": 0.4808,
+    "sample_size": 676
+  },
+  "新北市|土城區": {
+    "vote_rate": 0.7318,
+    "avg_age": 49.2,
+    "male_ratio": 0.5566,
+    "sample_size": 548
+  },
+  "新北市|坪林區": {
+    "vote_rate": 0.8462,
+    "avg_age": 56.1,
+    "male_ratio": 0.641,
+    "sample_size": 39
+  },
+  "新北市|新店區": {
+    "vote_rate": 0.7036,
+    "avg_age": 52.1,
+    "male_ratio": 0.4427,
+    "sample_size": 253
+  },
+  "新北市|新莊區": {
+    "vote_rate": 0.7322,
+    "avg_age": 49.5,
+    "male_ratio": 0.4863,
+    "sample_size": 183
+  },
+  "新北市|板橋區": {
+    "vote_rate": 0.7536,
+    "avg_age": 50.1,
+    "male_ratio": 0.4655,
+    "sample_size": 1392
+  },
+  "新北市|林口區": {
+    "vote_rate": 0.755,
+    "avg_age": 49.7,
+    "male_ratio": 0.5563,
+    "sample_size": 151
+  },
+  "新北市|樹林區": {
+    "vote_rate": 0.8352,
+    "avg_age": 47.9,
+    "male_ratio": 0.5055,
+    "sample_size": 91
+  },
+  "新北市|永和區": {
+    "vote_rate": 0.7829,
+    "avg_age": 51.2,
+    "male_ratio": 0.4495,
+    "sample_size": 327
+  },
+  "新北市|汐止區": {
+    "vote_rate": 0.7081,
+    "avg_age": 49.6,
+    "male_ratio": 0.4578,
+    "sample_size": 675
+  },
+  "新北市|泰山區": {
+    "vote_rate": 0.7178,
+    "avg_age": 47.4,
+    "male_ratio": 0.5153,
+    "sample_size": 163
+  },
+  "新北市|淡水區": {
+    "vote_rate": 0.7411,
+    "avg_age": 50.6,
+    "male_ratio": 0.4906,
+    "sample_size": 479
+  },
+  "新北市|瑞芳區": {
+    "vote_rate": 0.625,
+    "avg_age": 55.5,
+    "male_ratio": 0.55,
+    "sample_size": 40
+  },
+  "新北市|萬里區": {
+    "vote_rate": 0.6629,
+    "avg_age": 54.4,
+    "male_ratio": 0.5281,
+    "sample_size": 89
+  },
+  "新北市|蘆洲區": {
+    "vote_rate": 0.7285,
+    "avg_age": 46.1,
+    "male_ratio": 0.4816,
+    "sample_size": 733
+  },
+  "新北市|金山區": {
+    "vote_rate": 0.6076,
+    "avg_age": 52.4,
+    "male_ratio": 0.519,
+    "sample_size": 79
+  },
+  "新竹市|北區": {
+    "vote_rate": 0.7372,
+    "avg_age": 47.8,
+    "male_ratio": 0.4909,
+    "sample_size": 1933
+  },
+  "新竹市|東區": {
+    "vote_rate": 0.7648,
+    "avg_age": 49.1,
+    "male_ratio": 0.4825,
+    "sample_size": 3351
+  },
+  "新竹市|香山區": {
+    "vote_rate": 0.7326,
+    "avg_age": 47.9,
+    "male_ratio": 0.5094,
+    "sample_size": 1219
+  },
+  "新竹縣|五峰鄉": {
+    "vote_rate": 0.6055,
+    "avg_age": 51.5,
+    "male_ratio": 0.5596,
+    "sample_size": 109
+  },
+  "新竹縣|北埔鄉": {
+    "vote_rate": 0.5614,
+    "avg_age": 51.3,
+    "male_ratio": 0.5088,
+    "sample_size": 57
+  },
+  "新竹縣|寶山鄉": {
+    "vote_rate": 0.7826,
+    "avg_age": 51.3,
+    "male_ratio": 0.6087,
+    "sample_size": 69
+  },
+  "新竹縣|尖石鄉": {
+    "vote_rate": 0.6279,
+    "avg_age": 47.8,
+    "male_ratio": 0.5194,
+    "sample_size": 129
+  },
+  "新竹縣|新埔鎮": {
+    "vote_rate": 0.7258,
+    "avg_age": 52.1,
+    "male_ratio": 0.5161,
+    "sample_size": 372
+  },
+  "新竹縣|新豐鄉": {
+    "vote_rate": 0.7111,
+    "avg_age": 47.6,
+    "male_ratio": 0.5217,
+    "sample_size": 623
+  },
+  "新竹縣|湖口鄉": {
+    "vote_rate": 0.7138,
+    "avg_age": 48.6,
+    "male_ratio": 0.5127,
+    "sample_size": 552
+  },
+  "新竹縣|竹北市": {
+    "vote_rate": 0.7594,
+    "avg_age": 47.6,
+    "male_ratio": 0.5044,
+    "sample_size": 2502
+  },
+  "新竹縣|竹東鎮": {
+    "vote_rate": 0.6821,
+    "avg_age": 48.4,
+    "male_ratio": 0.4868,
+    "sample_size": 1557
+  },
+  "新竹縣|芎林鄉": {
+    "vote_rate": 0.7473,
+    "avg_age": 51.2,
+    "male_ratio": 0.511,
+    "sample_size": 182
+  },
+  "新竹縣|關西鎮": {
+    "vote_rate": 0.7703,
+    "avg_age": 50.1,
+    "male_ratio": 0.493,
+    "sample_size": 357
+  },
+  "桃園市|中壢區": {
+    "vote_rate": 0.7651,
+    "avg_age": 48.9,
+    "male_ratio": 0.4775,
+    "sample_size": 911
+  },
+  "桃園市|八德區": {
+    "vote_rate": 0.6867,
+    "avg_age": 48.8,
+    "male_ratio": 0.5183,
+    "sample_size": 1063
+  },
+  "桃園市|大園區": {
+    "vote_rate": 0.6882,
+    "avg_age": 46.5,
+    "male_ratio": 0.5235,
+    "sample_size": 170
+  },
+  "桃園市|大溪區": {
+    "vote_rate": 0.7306,
+    "avg_age": 49.5,
+    "male_ratio": 0.4898,
+    "sample_size": 245
+  },
+  "桃園市|平鎮區": {
+    "vote_rate": 0.7896,
+    "avg_age": 47.8,
+    "male_ratio": 0.4678,
+    "sample_size": 808
+  },
+  "桃園市|桃園區": {
+    "vote_rate": 0.7491,
+    "avg_age": 47.5,
+    "male_ratio": 0.48,
+    "sample_size": 1152
+  },
+  "桃園市|楊梅區": {
+    "vote_rate": 0.7191,
+    "avg_age": 48.3,
+    "male_ratio": 0.4935,
+    "sample_size": 922
+  },
+  "桃園市|蘆竹區": {
+    "vote_rate": 0.7332,
+    "avg_age": 47.0,
+    "male_ratio": 0.4613,
+    "sample_size": 581
+  },
+  "桃園市|龍潭區": {
+    "vote_rate": 0.7171,
+    "avg_age": 51.5,
+    "male_ratio": 0.4803,
+    "sample_size": 152
+  },
+  "桃園市|龜山區": {
+    "vote_rate": 0.718,
+    "avg_age": 47.4,
+    "male_ratio": 0.486,
+    "sample_size": 1000
+  },
+  "澎湖縣|七美鄉": {
+    "vote_rate": 0.3824,
+    "avg_age": 52.4,
+    "male_ratio": 0.5798,
+    "sample_size": 238
+  },
+  "澎湖縣|望安鄉": {
+    "vote_rate": 0.2379,
+    "avg_age": 52.6,
+    "male_ratio": 0.5524,
+    "sample_size": 248
+  },
+  "澎湖縣|湖西鄉": {
+    "vote_rate": 0.5683,
+    "avg_age": 51.2,
+    "male_ratio": 0.5124,
+    "sample_size": 1575
+  },
+  "澎湖縣|白沙鄉": {
+    "vote_rate": 0.4384,
+    "avg_age": 50.7,
+    "male_ratio": 0.5172,
+    "sample_size": 787
+  },
+  "澎湖縣|西嶼鄉": {
+    "vote_rate": 0.4754,
+    "avg_age": 52.5,
+    "male_ratio": 0.5029,
+    "sample_size": 873
+  },
+  "澎湖縣|馬公市": {
+    "vote_rate": 0.5878,
+    "avg_age": 48.8,
+    "male_ratio": 0.4837,
+    "sample_size": 2295
+  },
+  "臺中市|中區": {
+    "vote_rate": 0.6949,
+    "avg_age": 53.8,
+    "male_ratio": 0.5593,
+    "sample_size": 59
+  },
+  "臺中市|北區": {
+    "vote_rate": 0.756,
+    "avg_age": 50.8,
+    "male_ratio": 0.4725,
+    "sample_size": 455
+  },
+  "臺中市|北屯區": {
+    "vote_rate": 0.7535,
+    "avg_age": 48.1,
+    "male_ratio": 0.4717,
+    "sample_size": 937
+  },
+  "臺中市|南區": {
+    "vote_rate": 0.7584,
+    "avg_age": 47.8,
+    "male_ratio": 0.4614,
+    "sample_size": 505
+  },
+  "臺中市|南屯區": {
+    "vote_rate": 0.7423,
+    "avg_age": 48.8,
+    "male_ratio": 0.4871,
+    "sample_size": 388
+  },
+  "臺中市|和平區": {
+    "vote_rate": 0.6949,
+    "avg_age": 50.3,
+    "male_ratio": 0.6441,
+    "sample_size": 59
+  },
+  "臺中市|大甲區": {
+    "vote_rate": 0.7222,
+    "avg_age": 48.1,
+    "male_ratio": 0.5556,
+    "sample_size": 216
+  },
+  "臺中市|大肚區": {
+    "vote_rate": 0.7358,
+    "avg_age": 47.1,
+    "male_ratio": 0.4892,
+    "sample_size": 511
+  },
+  "臺中市|大里區": {
+    "vote_rate": 0.7254,
+    "avg_age": 47.9,
+    "male_ratio": 0.5424,
+    "sample_size": 295
+  },
+  "臺中市|太平區": {
+    "vote_rate": 0.6919,
+    "avg_age": 47.2,
+    "male_ratio": 0.5378,
+    "sample_size": 370
+  },
+  "臺中市|新社區": {
+    "vote_rate": 0.7107,
+    "avg_age": 48.4,
+    "male_ratio": 0.4545,
+    "sample_size": 121
+  },
+  "臺中市|東勢區": {
+    "vote_rate": 0.755,
+    "avg_age": 51.3,
+    "male_ratio": 0.4758,
+    "sample_size": 351
+  },
+  "臺中市|東區": {
+    "vote_rate": 0.7449,
+    "avg_age": 53.6,
+    "male_ratio": 0.4388,
+    "sample_size": 98
+  },
+  "臺中市|清水區": {
+    "vote_rate": 0.697,
+    "avg_age": 52.2,
+    "male_ratio": 0.5051,
+    "sample_size": 99
+  },
+  "臺中市|烏日區": {
+    "vote_rate": 0.8556,
+    "avg_age": 48.2,
+    "male_ratio": 0.5111,
+    "sample_size": 180
+  },
+  "臺中市|西區": {
+    "vote_rate": 0.7861,
+    "avg_age": 47.3,
+    "male_ratio": 0.4327,
+    "sample_size": 416
+  },
+  "臺中市|西屯區": {
+    "vote_rate": 0.7231,
+    "avg_age": 46.7,
+    "male_ratio": 0.4574,
+    "sample_size": 903
+  },
+  "臺中市|豐原區": {
+    "vote_rate": 0.7245,
+    "avg_age": 49.6,
+    "male_ratio": 0.4537,
+    "sample_size": 421
+  },
+  "臺中市|霧峰區": {
+    "vote_rate": 0.7516,
+    "avg_age": 47.1,
+    "male_ratio": 0.4706,
+    "sample_size": 153
+  },
+  "臺中市|龍井區": {
+    "vote_rate": 0.7384,
+    "avg_age": 46.8,
+    "male_ratio": 0.4789,
+    "sample_size": 474
+  },
+  "臺北市|中山區": {
+    "vote_rate": 0.7321,
+    "avg_age": 52.1,
+    "male_ratio": 0.4496,
+    "sample_size": 1101
+  },
+  "臺北市|中正區": {
+    "vote_rate": 0.7527,
+    "avg_age": 50.9,
+    "male_ratio": 0.4945,
+    "sample_size": 639
+  },
+  "臺北市|信義區": {
+    "vote_rate": 0.734,
+    "avg_age": 52.6,
+    "male_ratio": 0.4604,
+    "sample_size": 391
+  },
+  "臺北市|內湖區": {
+    "vote_rate": 0.7384,
+    "avg_age": 49.8,
+    "male_ratio": 0.4942,
+    "sample_size": 344
+  },
+  "臺北市|北投區": {
+    "vote_rate": 0.7155,
+    "avg_age": 52.1,
+    "male_ratio": 0.46,
+    "sample_size": 587
+  },
+  "臺北市|南港區": {
+    "vote_rate": 0.7473,
+    "avg_age": 49.0,
+    "male_ratio": 0.5055,
+    "sample_size": 91
+  },
+  "臺北市|士林區": {
+    "vote_rate": 0.7383,
+    "avg_age": 52.5,
+    "male_ratio": 0.4642,
+    "sample_size": 405
+  },
+  "臺北市|大同區": {
+    "vote_rate": 0.7246,
+    "avg_age": 53.3,
+    "male_ratio": 0.5246,
+    "sample_size": 345
+  },
+  "臺北市|大安區": {
+    "vote_rate": 0.7122,
+    "avg_age": 52.4,
+    "male_ratio": 0.4491,
+    "sample_size": 1209
+  },
+  "臺北市|文山區": {
+    "vote_rate": 0.7966,
+    "avg_age": 50.1,
+    "male_ratio": 0.4343,
+    "sample_size": 472
+  },
+  "臺北市|松山區": {
+    "vote_rate": 0.7826,
+    "avg_age": 52.7,
+    "male_ratio": 0.4575,
+    "sample_size": 929
+  },
+  "臺北市|萬華區": {
+    "vote_rate": 0.6588,
+    "avg_age": 52.1,
+    "male_ratio": 0.4931,
+    "sample_size": 507
+  },
+  "臺南市|七股區": {
+    "vote_rate": 0.6824,
+    "avg_age": 46.7,
+    "male_ratio": 0.6118,
+    "sample_size": 85
+  },
+  "臺南市|下營區": {
+    "vote_rate": 0.7193,
+    "avg_age": 53.0,
+    "male_ratio": 0.4737,
+    "sample_size": 57
+  },
+  "臺南市|中西區": {
+    "vote_rate": 0.7385,
+    "avg_age": 53.1,
+    "male_ratio": 0.5138,
+    "sample_size": 218
+  },
+  "臺南市|六甲區": {
+    "vote_rate": 0.6836,
+    "avg_age": 51.3,
+    "male_ratio": 0.5311,
+    "sample_size": 177
+  },
+  "臺南市|北區": {
+    "vote_rate": 0.7371,
+    "avg_age": 51.2,
+    "male_ratio": 0.4544,
+    "sample_size": 658
+  },
+  "臺南市|南區": {
+    "vote_rate": 0.7494,
+    "avg_age": 51.1,
+    "male_ratio": 0.4776,
+    "sample_size": 1181
+  },
+  "臺南市|善化區": {
+    "vote_rate": 0.7356,
+    "avg_age": 50.3,
+    "male_ratio": 0.4828,
+    "sample_size": 87
+  },
+  "臺南市|安南區": {
+    "vote_rate": 0.7188,
+    "avg_age": 47.6,
+    "male_ratio": 0.4761,
+    "sample_size": 754
+  },
+  "臺南市|安定區": {
+    "vote_rate": 0.7448,
+    "avg_age": 52.0,
+    "male_ratio": 0.5103,
+    "sample_size": 145
+  },
+  "臺南市|安平區": {
+    "vote_rate": 0.7325,
+    "avg_age": 47.8,
+    "male_ratio": 0.4204,
+    "sample_size": 314
+  },
+  "臺南市|官田區": {
+    "vote_rate": 0.7394,
+    "avg_age": 53.7,
+    "male_ratio": 0.5986,
+    "sample_size": 142
+  },
+  "臺南市|將軍區": {
+    "vote_rate": 0.6667,
+    "avg_age": 59.3,
+    "male_ratio": 0.4386,
+    "sample_size": 57
+  },
+  "臺南市|後壁區": {
+    "vote_rate": 0.7007,
+    "avg_age": 53.4,
+    "male_ratio": 0.5109,
+    "sample_size": 137
+  },
+  "臺南市|新化區": {
+    "vote_rate": 0.7394,
+    "avg_age": 49.2,
+    "male_ratio": 0.4718,
+    "sample_size": 142
+  },
+  "臺南市|新營區": {
+    "vote_rate": 0.7321,
+    "avg_age": 55.1,
+    "male_ratio": 0.5045,
+    "sample_size": 224
+  },
+  "臺南市|東區": {
+    "vote_rate": 0.6946,
+    "avg_age": 50.0,
+    "male_ratio": 0.5027,
+    "sample_size": 740
+  },
+  "臺南市|東山區": {
+    "vote_rate": 0.7576,
+    "avg_age": 52.9,
+    "male_ratio": 0.5404,
+    "sample_size": 198
+  },
+  "臺南市|歸仁區": {
+    "vote_rate": 0.7616,
+    "avg_age": 50.9,
+    "male_ratio": 0.5196,
+    "sample_size": 281
+  },
+  "臺南市|永康區": {
+    "vote_rate": 0.7356,
+    "avg_age": 49.8,
+    "male_ratio": 0.4764,
+    "sample_size": 764
+  },
+  "臺南市|玉井區": {
+    "vote_rate": 0.6557,
+    "avg_age": 57.4,
+    "male_ratio": 0.5574,
+    "sample_size": 61
+  },
+  "臺南市|白河區": {
+    "vote_rate": 0.6068,
+    "avg_age": 52.6,
+    "male_ratio": 0.5299,
+    "sample_size": 117
+  },
+  "臺南市|西港區": {
+    "vote_rate": 0.7315,
+    "avg_age": 50.2,
+    "male_ratio": 0.4954,
+    "sample_size": 216
+  },
+  "臺南市|鹽水區": {
+    "vote_rate": 0.6749,
+    "avg_age": 54.1,
+    "male_ratio": 0.5123,
+    "sample_size": 203
+  },
+  "臺南市|龍崎區": {
+    "vote_rate": 0.7241,
+    "avg_age": 52.3,
+    "male_ratio": 0.4828,
+    "sample_size": 58
+  },
+  "臺東縣|卑南鄉": {
+    "vote_rate": 0.6283,
+    "avg_age": 50.8,
+    "male_ratio": 0.5228,
+    "sample_size": 417
+  },
+  "臺東縣|大武鄉": {
+    "vote_rate": 0.5868,
+    "avg_age": 52.3,
+    "male_ratio": 0.5486,
+    "sample_size": 288
+  },
+  "臺東縣|太麻里鄉": {
+    "vote_rate": 0.6238,
+    "avg_age": 53.4,
+    "male_ratio": 0.5446,
+    "sample_size": 202
+  },
+  "臺東縣|延平鄉": {
+    "vote_rate": 0.6821,
+    "avg_age": 47.2,
+    "male_ratio": 0.5029,
+    "sample_size": 173
+  },
+  "臺東縣|成功鎮": {
+    "vote_rate": 0.5145,
+    "avg_age": 51.2,
+    "male_ratio": 0.5531,
+    "sample_size": 311
+  },
+  "臺東縣|池上鄉": {
+    "vote_rate": 0.5101,
+    "avg_age": 51.5,
+    "male_ratio": 0.5235,
+    "sample_size": 149
+  },
+  "臺東縣|海端鄉": {
+    "vote_rate": 0.5091,
+    "avg_age": 47.3,
+    "male_ratio": 0.4727,
+    "sample_size": 55
+  },
+  "臺東縣|綠島鄉": {
+    "vote_rate": 0.4645,
+    "avg_age": 43.8,
+    "male_ratio": 0.5118,
+    "sample_size": 211
+  },
+  "臺東縣|臺東市": {
+    "vote_rate": 0.6854,
+    "avg_age": 49.5,
+    "male_ratio": 0.4872,
+    "sample_size": 3239
+  },
+  "臺東縣|達仁鄉": {
+    "vote_rate": 0.6395,
+    "avg_age": 48.4,
+    "male_ratio": 0.6122,
+    "sample_size": 147
+  },
+  "臺東縣|長濱鄉": {
+    "vote_rate": 0.558,
+    "avg_age": 57.5,
+    "male_ratio": 0.5507,
+    "sample_size": 138
+  },
+  "臺東縣|關山鎮": {
+    "vote_rate": 0.6436,
+    "avg_age": 51.4,
+    "male_ratio": 0.4653,
+    "sample_size": 303
+  },
+  "臺東縣|鹿野鄉": {
+    "vote_rate": 0.6492,
+    "avg_age": 52.4,
+    "male_ratio": 0.5052,
+    "sample_size": 382
+  },
+  "花蓮縣|光復鄉": {
+    "vote_rate": 0.5823,
+    "avg_age": 54.5,
+    "male_ratio": 0.5703,
+    "sample_size": 249
+  },
+  "花蓮縣|卓溪鄉": {
+    "vote_rate": 0.6579,
+    "avg_age": 42.9,
+    "male_ratio": 0.4737,
+    "sample_size": 76
+  },
+  "花蓮縣|吉安鄉": {
+    "vote_rate": 0.7048,
+    "avg_age": 49.5,
+    "male_ratio": 0.4909,
+    "sample_size": 1809
+  },
+  "花蓮縣|壽豐鄉": {
+    "vote_rate": 0.595,
+    "avg_age": 52.7,
+    "male_ratio": 0.5161,
+    "sample_size": 279
+  },
+  "花蓮縣|富里鄉": {
+    "vote_rate": 0.4953,
+    "avg_age": 53.9,
+    "male_ratio": 0.5425,
+    "sample_size": 212
+  },
+  "花蓮縣|新城鄉": {
+    "vote_rate": 0.6939,
+    "avg_age": 53.0,
+    "male_ratio": 0.5102,
+    "sample_size": 147
+  },
+  "花蓮縣|玉里鎮": {
+    "vote_rate": 0.5635,
+    "avg_age": 53.0,
+    "male_ratio": 0.5635,
+    "sample_size": 197
+  },
+  "花蓮縣|瑞穗鄉": {
+    "vote_rate": 0.6233,
+    "avg_age": 52.3,
+    "male_ratio": 0.4863,
+    "sample_size": 146
+  },
+  "花蓮縣|秀林鄉": {
+    "vote_rate": 0.6303,
+    "avg_age": 45.2,
+    "male_ratio": 0.5385,
+    "sample_size": 468
+  },
+  "花蓮縣|花蓮市": {
+    "vote_rate": 0.6803,
+    "avg_age": 50.7,
+    "male_ratio": 0.4806,
+    "sample_size": 2449
+  },
+  "花蓮縣|萬榮鄉": {
+    "vote_rate": 0.6071,
+    "avg_age": 46.1,
+    "male_ratio": 0.4881,
+    "sample_size": 168
+  },
+  "花蓮縣|鳳林鎮": {
+    "vote_rate": 0.6615,
+    "avg_age": 53.9,
+    "male_ratio": 0.5248,
+    "sample_size": 322
+  },
+  "苗栗縣|公館鄉": {
+    "vote_rate": 0.7248,
+    "avg_age": 50.5,
+    "male_ratio": 0.5252,
+    "sample_size": 516
+  },
+  "苗栗縣|卓蘭鎮": {
+    "vote_rate": 0.6429,
+    "avg_age": 52.3,
+    "male_ratio": 0.4762,
+    "sample_size": 126
+  },
+  "苗栗縣|南庄鄉": {
+    "vote_rate": 0.5556,
+    "avg_age": 54.0,
+    "male_ratio": 0.5139,
+    "sample_size": 72
+  },
+  "苗栗縣|大湖鄉": {
+    "vote_rate": 0.597,
+    "avg_age": 52.2,
+    "male_ratio": 0.597,
+    "sample_size": 201
+  },
+  "苗栗縣|後龍鎮": {
+    "vote_rate": 0.6928,
+    "avg_age": 51.0,
+    "male_ratio": 0.6209,
+    "sample_size": 153
+  },
+  "苗栗縣|獅潭鄉": {
+    "vote_rate": 0.725,
+    "avg_age": 55.5,
+    "male_ratio": 0.6,
+    "sample_size": 80
+  },
+  "苗栗縣|竹南鎮": {
+    "vote_rate": 0.7361,
+    "avg_age": 47.9,
+    "male_ratio": 0.5085,
+    "sample_size": 1652
+  },
+  "苗栗縣|苑裡鎮": {
+    "vote_rate": 0.7075,
+    "avg_age": 50.9,
+    "male_ratio": 0.545,
+    "sample_size": 400
+  },
+  "苗栗縣|苗栗市": {
+    "vote_rate": 0.7405,
+    "avg_age": 53.6,
+    "male_ratio": 0.4989,
+    "sample_size": 447
+  },
+  "苗栗縣|西湖鄉": {
+    "vote_rate": 0.6759,
+    "avg_age": 51.9,
+    "male_ratio": 0.6138,
+    "sample_size": 145
+  },
+  "苗栗縣|通霄鎮": {
+    "vote_rate": 0.7381,
+    "avg_age": 50.4,
+    "male_ratio": 0.483,
+    "sample_size": 294
+  },
+  "苗栗縣|造橋鄉": {
+    "vote_rate": 0.7184,
+    "avg_age": 51.1,
+    "male_ratio": 0.5485,
+    "sample_size": 206
+  },
+  "苗栗縣|銅鑼鄉": {
+    "vote_rate": 0.708,
+    "avg_age": 51.4,
+    "male_ratio": 0.52,
+    "sample_size": 250
+  },
+  "苗栗縣|頭份市": {
+    "vote_rate": 0.716,
+    "avg_age": 47.9,
+    "male_ratio": 0.4993,
+    "sample_size": 1454
+  },
+  "苗栗縣|頭屋鄉": {
+    "vote_rate": 0.7437,
+    "avg_age": 51.3,
+    "male_ratio": 0.5417,
+    "sample_size": 515
+  },
+  "連江縣|北竿鄉": {
+    "vote_rate": 0.4551,
+    "avg_age": 46.9,
+    "male_ratio": 0.5783,
+    "sample_size": 1380
+  },
+  "連江縣|南竿鄉": {
+    "vote_rate": 0.5576,
+    "avg_age": 47.8,
+    "male_ratio": 0.5724,
+    "sample_size": 3300
+  },
+  "連江縣|東引鄉": {
+    "vote_rate": 0.5022,
+    "avg_age": 44.0,
+    "male_ratio": 0.6215,
+    "sample_size": 679
+  },
+  "連江縣|莒光鄉": {
+    "vote_rate": 0.4456,
+    "avg_age": 50.2,
+    "male_ratio": 0.6183,
+    "sample_size": 689
+  },
+  "金門縣|烈嶼鄉": {
+    "vote_rate": 0.3352,
+    "avg_age": 50.6,
+    "male_ratio": 0.4954,
+    "sample_size": 549
+  },
+  "金門縣|金城鎮": {
+    "vote_rate": 0.3767,
+    "avg_age": 49.8,
+    "male_ratio": 0.5049,
+    "sample_size": 1935
+  },
+  "金門縣|金寧鄉": {
+    "vote_rate": 0.3816,
+    "avg_age": 46.5,
+    "male_ratio": 0.5028,
+    "sample_size": 1263
+  },
+  "金門縣|金沙鎮": {
+    "vote_rate": 0.3441,
+    "avg_age": 51.2,
+    "male_ratio": 0.4884,
+    "sample_size": 1212
+  },
+  "金門縣|金湖鎮": {
+    "vote_rate": 0.3736,
+    "avg_age": 48.5,
+    "male_ratio": 0.5019,
+    "sample_size": 1052
+  },
+  "雲林縣|二崙鄉": {
+    "vote_rate": 0.7087,
+    "avg_age": 51.8,
+    "male_ratio": 0.5583,
+    "sample_size": 206
+  },
+  "雲林縣|北港鎮": {
+    "vote_rate": 0.7287,
+    "avg_age": 53.7,
+    "male_ratio": 0.5479,
+    "sample_size": 188
+  },
+  "雲林縣|口湖鄉": {
+    "vote_rate": 0.6117,
+    "avg_age": 52.3,
+    "male_ratio": 0.5377,
+    "sample_size": 703
+  },
+  "雲林縣|土庫鎮": {
+    "vote_rate": 0.6578,
+    "avg_age": 53.0,
+    "male_ratio": 0.5059,
+    "sample_size": 678
+  },
+  "雲林縣|大埤鄉": {
+    "vote_rate": 0.7434,
+    "avg_age": 48.8,
+    "male_ratio": 0.4408,
+    "sample_size": 152
+  },
+  "雲林縣|崙背鄉": {
+    "vote_rate": 0.7171,
+    "avg_age": 53.0,
+    "male_ratio": 0.4868,
+    "sample_size": 152
+  },
+  "雲林縣|斗六市": {
+    "vote_rate": 0.7372,
+    "avg_age": 47.7,
+    "male_ratio": 0.5149,
+    "sample_size": 1408
+  },
+  "雲林縣|斗南鎮": {
+    "vote_rate": 0.7542,
+    "avg_age": 52.7,
+    "male_ratio": 0.5337,
+    "sample_size": 594
+  },
+  "雲林縣|東勢鄉": {
+    "vote_rate": 0.6137,
+    "avg_age": 52.8,
+    "male_ratio": 0.5858,
+    "sample_size": 466
+  },
+  "雲林縣|水林鄉": {
+    "vote_rate": 0.631,
+    "avg_age": 54.2,
+    "male_ratio": 0.5119,
+    "sample_size": 168
+  },
+  "雲林縣|臺西鄉": {
+    "vote_rate": 0.5535,
+    "avg_age": 53.9,
+    "male_ratio": 0.5581,
+    "sample_size": 215
+  },
+  "雲林縣|莿桐鄉": {
+    "vote_rate": 0.7436,
+    "avg_age": 49.4,
+    "male_ratio": 0.5282,
+    "sample_size": 195
+  },
+  "雲林縣|虎尾鎮": {
+    "vote_rate": 0.7135,
+    "avg_age": 50.0,
+    "male_ratio": 0.5018,
+    "sample_size": 548
+  },
+  "雲林縣|西螺鎮": {
+    "vote_rate": 0.6892,
+    "avg_age": 50.9,
+    "male_ratio": 0.5538,
+    "sample_size": 251
+  },
+  "雲林縣|麥寮鄉": {
+    "vote_rate": 0.6308,
+    "avg_age": 48.7,
+    "male_ratio": 0.5026,
+    "sample_size": 577
+  },
+  "高雄市|三民區": {
+    "vote_rate": 0.7285,
+    "avg_age": 49.9,
+    "male_ratio": 0.4416,
+    "sample_size": 1164
+  },
+  "高雄市|前金區": {
+    "vote_rate": 0.7059,
+    "avg_age": 56.2,
+    "male_ratio": 0.5735,
+    "sample_size": 68
+  },
+  "高雄市|前鎮區": {
+    "vote_rate": 0.7339,
+    "avg_age": 51.1,
+    "male_ratio": 0.4823,
+    "sample_size": 481
+  },
+  "高雄市|大寮區": {
+    "vote_rate": 0.6892,
+    "avg_age": 49.0,
+    "male_ratio": 0.4863,
+    "sample_size": 769
+  },
+  "高雄市|大社區": {
+    "vote_rate": 0.7381,
+    "avg_age": 50.2,
+    "male_ratio": 0.5031,
+    "sample_size": 485
+  },
+  "高雄市|小港區": {
+    "vote_rate": 0.6737,
+    "avg_age": 47.9,
+    "male_ratio": 0.5225,
+    "sample_size": 377
+  },
+  "高雄市|左營區": {
+    "vote_rate": 0.7928,
+    "avg_age": 51.5,
+    "male_ratio": 0.4414,
+    "sample_size": 111
+  },
+  "高雄市|彌陀區": {
+    "vote_rate": 0.7239,
+    "avg_age": 48.7,
+    "male_ratio": 0.4701,
+    "sample_size": 134
+  },
+  "高雄市|新興區": {
+    "vote_rate": 0.6518,
+    "avg_age": 55.3,
+    "male_ratio": 0.4375,
+    "sample_size": 112
+  },
+  "高雄市|梓官區": {
+    "vote_rate": 0.7464,
+    "avg_age": 51.8,
+    "male_ratio": 0.5024,
+    "sample_size": 209
+  },
+  "高雄市|楠梓區": {
+    "vote_rate": 0.7436,
+    "avg_age": 48.9,
+    "male_ratio": 0.4689,
+    "sample_size": 546
+  },
+  "高雄市|美濃區": {
+    "vote_rate": 0.6944,
+    "avg_age": 56.6,
+    "male_ratio": 0.5208,
+    "sample_size": 144
+  },
+  "高雄市|苓雅區": {
+    "vote_rate": 0.6942,
+    "avg_age": 52.2,
+    "male_ratio": 0.5069,
+    "sample_size": 363
+  },
+  "高雄市|茂林區": {
+    "vote_rate": 0.6585,
+    "avg_age": 46.2,
+    "male_ratio": 0.4634,
+    "sample_size": 41
+  },
+  "高雄市|茄萣區": {
+    "vote_rate": 0.7206,
+    "avg_age": 51.7,
+    "male_ratio": 0.5441,
+    "sample_size": 136
+  },
+  "高雄市|路竹區": {
+    "vote_rate": 0.7643,
+    "avg_age": 50.0,
+    "male_ratio": 0.5032,
+    "sample_size": 157
+  },
+  "高雄市|阿蓮區": {
+    "vote_rate": 0.7358,
+    "avg_age": 50.0,
+    "male_ratio": 0.4843,
+    "sample_size": 159
+  },
+  "高雄市|鳥松區": {
+    "vote_rate": 0.7442,
+    "avg_age": 53.1,
+    "male_ratio": 0.3953,
+    "sample_size": 43
+  },
+  "高雄市|鳳山區": {
+    "vote_rate": 0.7101,
+    "avg_age": 50.2,
+    "male_ratio": 0.4686,
+    "sample_size": 1511
+  }
+}

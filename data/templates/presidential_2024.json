@@ -1,0 +1,534 @@
+{
+  "name": "US Presidential — 2024 (Trump vs Harris)",
+  "name_zh": "美國總統大選 — 2024（川普對賀錦麗）",
+  "region": "United States",
+  "region_code": "US",
+  "fips": "00",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "national_pvi": -0.004178,
+    "national_pvi_label": "R+0",
+    "county_count": 3142,
+    "counties_with_lean": 3106,
+    "state_count": 51,
+    "population_total": 334913011
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4951
+        },
+        {
+          "value": "Female",
+          "weight": 0.5049
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2195
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0914
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1368
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1321
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1217
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1266
+        },
+        {
+          "range": "65+",
+          "weight": 0.1721
+        }
+      ]
+    },
+    "state": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "CA",
+          "weight": 0.1177
+        },
+        {
+          "value": "TX",
+          "weight": 0.0901
+        },
+        {
+          "value": "FL",
+          "weight": 0.0669
+        },
+        {
+          "value": "NY",
+          "weight": 0.0593
+        },
+        {
+          "value": "PA",
+          "weight": 0.0389
+        },
+        {
+          "value": "IL",
+          "weight": 0.0379
+        },
+        {
+          "value": "OH",
+          "weight": 0.0353
+        },
+        {
+          "value": "GA",
+          "weight": 0.0327
+        },
+        {
+          "value": "NC",
+          "weight": 0.032
+        },
+        {
+          "value": "MI",
+          "weight": 0.0301
+        },
+        {
+          "value": "NJ",
+          "weight": 0.0279
+        },
+        {
+          "value": "VA",
+          "weight": 0.026
+        },
+        {
+          "value": "WA",
+          "weight": 0.0233
+        },
+        {
+          "value": "AZ",
+          "weight": 0.022
+        },
+        {
+          "value": "TN",
+          "weight": 0.0211
+        },
+        {
+          "value": "MA",
+          "weight": 0.021
+        },
+        {
+          "value": "IN",
+          "weight": 0.0205
+        },
+        {
+          "value": "MD",
+          "weight": 0.0185
+        },
+        {
+          "value": "MO",
+          "weight": 0.0185
+        },
+        {
+          "value": "WI",
+          "weight": 0.0177
+        },
+        {
+          "value": "CO",
+          "weight": 0.0175
+        },
+        {
+          "value": "MN",
+          "weight": 0.0171
+        },
+        {
+          "value": "SC",
+          "weight": 0.0158
+        },
+        {
+          "value": "AL",
+          "weight": 0.0152
+        },
+        {
+          "value": "LA",
+          "weight": 0.0138
+        },
+        {
+          "value": "KY",
+          "weight": 0.0135
+        },
+        {
+          "value": "OR",
+          "weight": 0.0127
+        },
+        {
+          "value": "OK",
+          "weight": 0.012
+        },
+        {
+          "value": "CT",
+          "weight": 0.0108
+        },
+        {
+          "value": "UT",
+          "weight": 0.0101
+        },
+        {
+          "value": "IA",
+          "weight": 0.0096
+        },
+        {
+          "value": "NV",
+          "weight": 0.0095
+        },
+        {
+          "value": "AR",
+          "weight": 0.0091
+        },
+        {
+          "value": "KS",
+          "weight": 0.0088
+        },
+        {
+          "value": "MS",
+          "weight": 0.0088
+        },
+        {
+          "value": "NM",
+          "weight": 0.0063
+        },
+        {
+          "value": "NE",
+          "weight": 0.0059
+        },
+        {
+          "value": "ID",
+          "weight": 0.0058
+        },
+        {
+          "value": "WV",
+          "weight": 0.0053
+        },
+        {
+          "value": "HI",
+          "weight": 0.0043
+        },
+        {
+          "value": "NH",
+          "weight": 0.0042
+        },
+        {
+          "value": "ME",
+          "weight": 0.0041
+        },
+        {
+          "value": "MT",
+          "weight": 0.0033
+        },
+        {
+          "value": "RI",
+          "weight": 0.0033
+        },
+        {
+          "value": "DE",
+          "weight": 0.003
+        },
+        {
+          "value": "SD",
+          "weight": 0.0027
+        },
+        {
+          "value": "ND",
+          "weight": 0.0023
+        },
+        {
+          "value": "AK",
+          "weight": 0.0022
+        },
+        {
+          "value": "DC",
+          "weight": 0.002
+        },
+        {
+          "value": "VT",
+          "weight": 0.0019
+        },
+        {
+          "value": "WY",
+          "weight": 0.0017
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.104
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2604
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2788
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3568
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.1867
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.1965
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.2425
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1637
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.2106
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.597
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0329
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0048
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3653
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6516
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3484
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "national",
+    "cycle": 2024,
+    "is_generic": false,
+    "candidates": [
+      {
+        "id": "harris_2024",
+        "name": "Kamala Harris",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": true,
+        "color": "#3b82f6",
+        "description": "Sitting Vice President under Biden. Became the Democratic nominee in July 2024 after Biden withdrew. Former US Senator from California and former Attorney General of California."
+      },
+      {
+        "id": "trump_2024",
+        "name": "Donald Trump",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Republican nominee, 45th president (2017-2021). Seeking a non-consecutive second term. Facing multiple legal proceedings. Strong support among rural and non-college-educated white voters."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[2024 US presidential election — pre-election simulation]\nJoe Biden is the incumbent president (Democratic). Kamala Harris is the sitting Vice President and became the Democratic nominee in July 2024 after Biden withdrew from the race.\nDonald Trump is the Republican nominee and 45th president (2017-2021), seeking a return to office.\nThe race is extremely close in polls; key battleground states include PA, GA, MI, WI, AZ, NV, NC.\nEconomic issues (inflation, grocery prices, housing costs) dominate voter concerns.\nImmigration and border security are top priorities for Republican-leaning voters.\nAbortion rights remain a mobilizing issue for Democratic-leaning voters after the Dobbs decision.\nBlame dynamics: voters unhappy with the economy tend to blame the incumbent administration (Biden/Harris); voters concerned about democratic norms tend to blame Trump and the Republican Party.",
+      "zh-TW": "[2024 美國總統大選 — 選前模擬]\n現任總統為民主黨拜登。副總統乃賀錦麗（Kamala Harris），2024年7月拜登退選後成為民主黨提名人。\n共和黨提名人為川普（Donald Trump），第45任總統（2017-2021），尋求重返白宮。\n民調顯示選情極度膠著；關鍵搖擺州包括 PA、GA、MI、WI、AZ、NV、NC。\n經濟議題（通膨、物價、住房成本）主導選民關切。\n移民與邊境安全是共和黨傾向選民的首要議題。\n墮胎權在 Dobbs 判決後持續動員民主黨傾向選民。\n歸責方向：對經濟不滿的選民傾向歸咎現任政府（拜登/賀錦麗）；關注民主規範的選民傾向歸咎川普與共和黨。"
+    },
+    "default_search_keywords": {
+      "local": "Harris Trump swing state polling\nPennsylvania Michigan Wisconsin election 2024\nGeorgia Arizona Nevada North Carolina",
+      "national": "Harris Trump 2024 election\ninflation economy gas prices voters\nBiden withdrawal Harris nomination\nabortion rights Dobbs 2024\nJanuary 6 Trump trials"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    },
+    "default_evolution_window": {
+      "start_date": "2024-05-05",
+      "end_date": "2024-11-03"
+    }
+  }
+}

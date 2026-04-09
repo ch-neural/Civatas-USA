@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.env
+node_modules/
+.next/
+outputs/*.db
+outputs/*.csv
+outputs/*.json
+uploads/*
+!uploads/.gitkeep
+!outputs/.gitkeep
+*.egg-info/
+dist/
+build/
+.DS_Store

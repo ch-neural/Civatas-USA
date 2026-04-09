@@ -1,0 +1,3113 @@
+{
+  "01": {
+    "fips": "01",
+    "name": "Alabama",
+    "population_total": 5157699.0,
+    "sex": {
+      "male": 2490551.0,
+      "female": 2667148.0
+    },
+    "age": {
+      "under_18": 1132203.0,
+      "18_24": 485435.0,
+      "25_34": 655347.0,
+      "35_44": 658385.0,
+      "45_54": 623347.0,
+      "55_64": 647816.0,
+      "65_plus": 955166.0
+    },
+    "race": {
+      "white": 3301529.0,
+      "black": 1302107.0,
+      "american_indian": 25582.0,
+      "asian": 79589.0,
+      "pacific_islander": 5771.0,
+      "other": 128575.0,
+      "two_or_more": 314546.0
+    },
+    "hispanic_or_latino": 306966.0,
+    "not_hispanic_or_latino": 4850733.0,
+    "education_25plus": {
+      "less_than_high_school": 369935.0,
+      "high_school": 1058670.0,
+      "some_college_or_associate": 1054621.0,
+      "bachelors_or_higher": 1056835.0
+    },
+    "median_household_income": 66659.0,
+    "household_income_brackets": {
+      "lt_25k": 389621.0,
+      "25k_50k": 394144.0,
+      "50k_75k": 346365.0,
+      "75k_100k": 274048.0,
+      "100k_150k": 329682.0,
+      "150k_200k": 154519.0,
+      "gte_200k": 171149.0
+    },
+    "employment": {
+      "in_labor_force": 2463085.0,
+      "civilian_employed": 2344294.0,
+      "civilian_unemployed": 103581.0,
+      "armed_forces": 15210.0,
+      "not_in_labor_force": 1697053.0
+    },
+    "tenure": {
+      "owner_occupied": 1461271.0,
+      "renter_occupied": 598257.0
+    },
+    "households": {
+      "total": 2059528.0,
+      "family": 1328397.0,
+      "nonfamily": 731131.0
+    }
+  },
+  "02": {
+    "fips": "02",
+    "name": "Alaska",
+    "population_total": 740133.0,
+    "sex": {
+      "male": 390301.0,
+      "female": 349832.0
+    },
+    "age": {
+      "under_18": 174198.0,
+      "18_24": 68011.0,
+      "25_34": 113311.0,
+      "35_44": 108198.0,
+      "45_54": 82620.0,
+      "55_64": 84380.0,
+      "65_plus": 109415.0
+    },
+    "race": {
+      "white": 434520.0,
+      "black": 18548.0,
+      "american_indian": 104023.0,
+      "asian": 44077.0,
+      "pacific_islander": 12648.0,
+      "other": 15526.0,
+      "two_or_more": 110791.0
+    },
+    "hispanic_or_latino": 57229.0,
+    "not_hispanic_or_latino": 682904.0,
+    "education_25plus": {
+      "less_than_high_school": 32832.0,
+      "high_school": 141789.0,
+      "some_college_or_associate": 160210.0,
+      "bachelors_or_higher": 163093.0
+    },
+    "median_household_income": 95665.0,
+    "household_income_brackets": {
+      "lt_25k": 29696.0,
+      "25k_50k": 37733.0,
+      "50k_75k": 40120.0,
+      "75k_100k": 35124.0,
+      "100k_150k": 56560.0,
+      "150k_200k": 34918.0,
+      "gte_200k": 39894.0
+    },
+    "employment": {
+      "in_labor_force": 390591.0,
+      "civilian_employed": 342028.0,
+      "civilian_unemployed": 21681.0,
+      "armed_forces": 26882.0,
+      "not_in_labor_force": 195492.0
+    },
+    "tenure": {
+      "owner_occupied": 182292.0,
+      "renter_occupied": 91753.0
+    },
+    "households": {
+      "total": 274045.0,
+      "family": 176794.0,
+      "nonfamily": 97251.0
+    }
+  },
+  "04": {
+    "fips": "04",
+    "name": "Arizona",
+    "population_total": 7582384.0,
+    "sex": {
+      "male": 3782883.0,
+      "female": 3799501.0
+    },
+    "age": {
+      "under_18": 1585751.0,
+      "18_24": 726880.0,
+      "25_34": 1047734.0,
+      "35_44": 981056.0,
+      "45_54": 869056.0,
+      "55_64": 880749.0,
+      "65_plus": 1491158.0
+    },
+    "race": {
+      "white": 4345673.0,
+      "black": 360868.0,
+      "american_indian": 304625.0,
+      "asian": 302736.0,
+      "pacific_islander": 13619.0,
+      "other": 707919.0,
+      "two_or_more": 1546944.0
+    },
+    "hispanic_or_latino": 2435661.0,
+    "not_hispanic_or_latino": 5146723.0,
+    "education_25plus": {
+      "less_than_high_school": 540938.0,
+      "high_school": 1228886.0,
+      "some_college_or_associate": 1669517.0,
+      "bachelors_or_higher": 1830412.0
+    },
+    "median_household_income": 81486.0,
+    "household_income_brackets": {
+      "lt_25k": 387285.0,
+      "25k_50k": 490699.0,
+      "50k_75k": 488134.0,
+      "75k_100k": 415849.0,
+      "100k_150k": 545428.0,
+      "150k_200k": 291012.0,
+      "gte_200k": 364068.0
+    },
+    "employment": {
+      "in_labor_force": 3802740.0,
+      "civilian_employed": 3606425.0,
+      "civilian_unemployed": 172459.0,
+      "armed_forces": 23856.0,
+      "not_in_labor_force": 2391066.0
+    },
+    "tenure": {
+      "owner_occupied": 2020822.0,
+      "renter_occupied": 961653.0
+    },
+    "households": {
+      "total": 2982475.0,
+      "family": 1910979.0,
+      "nonfamily": 1071496.0
+    }
+  },
+  "05": {
+    "fips": "05",
+    "name": "Arkansas",
+    "population_total": 3088354.0,
+    "sex": {
+      "male": 1517526.0,
+      "female": 1570828.0
+    },
+    "age": {
+      "under_18": 698141.0,
+      "18_24": 291543.0,
+      "25_34": 390523.0,
+      "35_44": 406119.0,
+      "45_54": 367148.0,
+      "55_64": 372173.0,
+      "65_plus": 562707.0
+    },
+    "race": {
+      "white": 2105944.0,
+      "black": 437805.0,
+      "american_indian": 16956.0,
+      "asian": 55184.0,
+      "pacific_islander": 11756.0,
+      "other": 96607.0,
+      "two_or_more": 364102.0
+    },
+    "hispanic_or_latino": 294671.0,
+    "not_hispanic_or_latino": 2793683.0,
+    "education_25plus": {
+      "less_than_high_school": 224683.0,
+      "high_school": 695330.0,
+      "some_college_or_associate": 609554.0,
+      "bachelors_or_higher": 569103.0
+    },
+    "median_household_income": 62106.0,
+    "household_income_brackets": {
+      "lt_25k": 235690.0,
+      "25k_50k": 270763.0,
+      "50k_75k": 219350.0,
+      "75k_100k": 159514.0,
+      "100k_150k": 197133.0,
+      "150k_200k": 82479.0,
+      "gte_200k": 81825.0
+    },
+    "employment": {
+      "in_labor_force": 1461175.0,
+      "civilian_employed": 1399240.0,
+      "civilian_unemployed": 55540.0,
+      "armed_forces": 6395.0,
+      "not_in_labor_force": 1016030.0
+    },
+    "tenure": {
+      "owner_occupied": 836697.0,
+      "renter_occupied": 410057.0
+    },
+    "households": {
+      "total": 1246754.0,
+      "family": 806922.0,
+      "nonfamily": 439832.0
+    }
+  },
+  "06": {
+    "fips": "06",
+    "name": "California",
+    "population_total": 39431264.0,
+    "sex": {
+      "male": 19675104.0,
+      "female": 19756160.0
+    },
+    "age": {
+      "under_18": 8411338.0,
+      "18_24": 3644130.0,
+      "25_34": 5708737.0,
+      "35_44": 5601979.0,
+      "45_54": 4861460.0,
+      "55_64": 4678758.0,
+      "65_plus": 6524861.0
+    },
+    "race": {
+      "white": 15013785.0,
+      "black": 2110721.0,
+      "american_indian": 560852.0,
+      "asian": 6349574.0,
+      "pacific_islander": 155816.0,
+      "other": 7433192.0,
+      "two_or_more": 7807323.0
+    },
+    "hispanic_or_latino": 16069214.0,
+    "not_hispanic_or_latino": 23362048.0,
+    "education_25plus": {
+      "less_than_high_school": 4147954.0,
+      "high_school": 5602709.0,
+      "some_college_or_associate": 7188480.0,
+      "bachelors_or_higher": 10436652.0
+    },
+    "median_household_income": 100149.0,
+    "household_income_brackets": {
+      "lt_25k": 1721481.0,
+      "25k_50k": 1778178.0,
+      "50k_75k": 1813120.0,
+      "75k_100k": 1572708.0,
+      "100k_150k": 2471376.0,
+      "150k_200k": 1546127.0,
+      "gte_200k": 2894648.0
+    },
+    "employment": {
+      "in_labor_force": 20603340.0,
+      "civilian_employed": 19240700.0,
+      "civilian_unemployed": 1213681.0,
+      "armed_forces": 148959.0,
+      "not_in_labor_force": 11486404.0
+    },
+    "tenure": {
+      "owner_occupied": 7701876.0,
+      "renter_occupied": 6095762.0
+    },
+    "households": {
+      "total": 13797638.0,
+      "family": 9297773.0,
+      "nonfamily": 4499865.0
+    }
+  },
+  "08": {
+    "fips": "08",
+    "name": "Colorado",
+    "population_total": 5957494.0,
+    "sex": {
+      "male": 3016719.0,
+      "female": 2940775.0
+    },
+    "age": {
+      "under_18": 1206847.0,
+      "18_24": 545685.0,
+      "25_34": 943431.0,
+      "35_44": 892672.0,
+      "45_54": 718423.0,
+      "55_64": 670072.0,
+      "65_plus": 980364.0
+    },
+    "race": {
+      "white": 4132111.0,
+      "black": 253267.0,
+      "american_indian": 69907.0,
+      "asian": 207526.0,
+      "pacific_islander": 9900.0,
+      "other": 376693.0,
+      "two_or_more": 908090.0
+    },
+    "hispanic_or_latino": 1382948.0,
+    "not_hispanic_or_latino": 4574546.0,
+    "education_25plus": {
+      "less_than_high_school": 287469.0,
+      "high_school": 799641.0,
+      "some_college_or_associate": 1109294.0,
+      "bachelors_or_higher": 2008558.0
+    },
+    "median_household_income": 97113.0,
+    "household_income_brackets": {
+      "lt_25k": 278076.0,
+      "25k_50k": 313279.0,
+      "50k_75k": 363509.0,
+      "75k_100k": 318141.0,
+      "100k_150k": 471906.0,
+      "150k_200k": 292303.0,
+      "gte_200k": 442678.0
+    },
+    "employment": {
+      "in_labor_force": 3368049.0,
+      "civilian_employed": 3182088.0,
+      "civilian_unemployed": 142180.0,
+      "armed_forces": 43781.0,
+      "not_in_labor_force": 1533908.0
+    },
+    "tenure": {
+      "owner_occupied": 1635345.0,
+      "renter_occupied": 844547.0
+    },
+    "households": {
+      "total": 2479892.0,
+      "family": 1528321.0,
+      "nonfamily": 951571.0
+    }
+  },
+  "09": {
+    "fips": "09",
+    "name": "Connecticut",
+    "population_total": 3675069.0,
+    "sex": {
+      "male": 1804896.0,
+      "female": 1870173.0
+    },
+    "age": {
+      "under_18": 727220.0,
+      "18_24": 341838.0,
+      "25_34": 468204.0,
+      "35_44": 479552.0,
+      "45_54": 440464.0,
+      "55_64": 504454.0,
+      "65_plus": 713337.0
+    },
+    "race": {
+      "white": 2340945.0,
+      "black": 395358.0,
+      "american_indian": 15051.0,
+      "asian": 176534.0,
+      "pacific_islander": 1185.0,
+      "other": 293928.0,
+      "two_or_more": 452068.0
+    },
+    "hispanic_or_latino": 706806.0,
+    "not_hispanic_or_latino": 2968263.0,
+    "education_25plus": {
+      "less_than_high_school": 213365.0,
+      "high_school": 660969.0,
+      "some_college_or_associate": 622419.0,
+      "bachelors_or_higher": 1109258.0
+    },
+    "median_household_income": 96049.0,
+    "household_income_brackets": {
+      "lt_25k": 185224.0,
+      "25k_50k": 195661.0,
+      "50k_75k": 200330.0,
+      "75k_100k": 170000.0,
+      "100k_150k": 252456.0,
+      "150k_200k": 168949.0,
+      "gte_200k": 282615.0
+    },
+    "employment": {
+      "in_labor_force": 2011120.0,
+      "civilian_employed": 1903478.0,
+      "civilian_unemployed": 99093.0,
+      "armed_forces": 8549.0,
+      "not_in_labor_force": 1031140.0
+    },
+    "tenure": {
+      "owner_occupied": 970236.0,
+      "renter_occupied": 484999.0
+    },
+    "households": {
+      "total": 1455235.0,
+      "family": 924268.0,
+      "nonfamily": 530967.0
+    }
+  },
+  "10": {
+    "fips": "10",
+    "name": "Delaware",
+    "population_total": 1051917.0,
+    "sex": {
+      "male": 506763.0,
+      "female": 545154.0
+    },
+    "age": {
+      "under_18": 213746.0,
+      "18_24": 91460.0,
+      "25_34": 127148.0,
+      "35_44": 132242.0,
+      "45_54": 116275.0,
+      "55_64": 143222.0,
+      "65_plus": 227824.0
+    },
+    "race": {
+      "white": 611856.0,
+      "black": 231835.0,
+      "american_indian": 4202.0,
+      "asian": 50819.0,
+      "pacific_islander": 1008.0,
+      "other": 56704.0,
+      "two_or_more": 95493.0
+    },
+    "hispanic_or_latino": 122813.0,
+    "not_hispanic_or_latino": 929104.0,
+    "education_25plus": {
+      "less_than_high_school": 61061.0,
+      "high_school": 216211.0,
+      "some_college_or_associate": 200686.0,
+      "bachelors_or_higher": 268753.0
+    },
+    "median_household_income": 87534.0,
+    "household_income_brackets": {
+      "lt_25k": 48823.0,
+      "25k_50k": 62162.0,
+      "50k_75k": 64455.0,
+      "75k_100k": 59347.0,
+      "100k_150k": 79775.0,
+      "150k_200k": 44632.0,
+      "gte_200k": 53110.0
+    },
+    "employment": {
+      "in_labor_force": 540535.0,
+      "civilian_employed": 508349.0,
+      "civilian_unemployed": 27357.0,
+      "armed_forces": 4829.0,
+      "not_in_labor_force": 322868.0
+    },
+    "tenure": {
+      "owner_occupied": 304189.0,
+      "renter_occupied": 108115.0
+    },
+    "households": {
+      "total": 412304.0,
+      "family": 271399.0,
+      "nonfamily": 140905.0
+    }
+  },
+  "11": {
+    "fips": "11",
+    "name": "District of Columbia",
+    "population_total": 702250.0,
+    "sex": {
+      "male": 332062.0,
+      "female": 370188.0
+    },
+    "age": {
+      "under_18": 130018.0,
+      "18_24": 70860.0,
+      "25_34": 151316.0,
+      "35_44": 120494.0,
+      "45_54": 74551.0,
+      "55_64": 64337.0,
+      "65_plus": 90674.0
+    },
+    "race": {
+      "white": 263797.0,
+      "black": 290136.0,
+      "american_indian": 4452.0,
+      "asian": 34796.0,
+      "pacific_islander": 126.0,
+      "other": 39969.0,
+      "two_or_more": 68974.0
+    },
+    "hispanic_or_latino": 88430.0,
+    "not_hispanic_or_latino": 613820.0,
+    "education_25plus": {
+      "less_than_high_school": 40346.0,
+      "high_school": 71626.0,
+      "some_college_or_associate": 61177.0,
+      "bachelors_or_higher": 328223.0
+    },
+    "median_household_income": 109707.0,
+    "household_income_brackets": {
+      "lt_25k": 55983.0,
+      "25k_50k": 30235.0,
+      "50k_75k": 34762.0,
+      "75k_100k": 32189.0,
+      "100k_150k": 55393.0,
+      "150k_200k": 33314.0,
+      "gte_200k": 87811.0
+    },
+    "employment": {
+      "in_labor_force": 416702.0,
+      "civilian_employed": 389016.0,
+      "civilian_unemployed": 23218.0,
+      "armed_forces": 4468.0,
+      "not_in_labor_force": 167804.0
+    },
+    "tenure": {
+      "owner_occupied": 134836.0,
+      "renter_occupied": 194851.0
+    },
+    "households": {
+      "total": 329687.0,
+      "family": 137241.0,
+      "nonfamily": 192446.0
+    }
+  },
+  "12": {
+    "fips": "12",
+    "name": "Florida",
+    "population_total": 23372216.0,
+    "sex": {
+      "male": 11488598.0,
+      "female": 11883617.0
+    },
+    "age": {
+      "under_18": 4491936.0,
+      "18_24": 1906324.0,
+      "25_34": 2925033.0,
+      "35_44": 3064472.0,
+      "45_54": 2833700.0,
+      "55_64": 3056397.0,
+      "65_plus": 5094353.0
+    },
+    "race": {
+      "white": 12663611.0,
+      "black": 3451885.0,
+      "american_indian": 100235.0,
+      "asian": 722622.0,
+      "pacific_islander": 20138.0,
+      "other": 1610549.0,
+      "two_or_more": 4803175.0
+    },
+    "hispanic_or_latino": 6706088.0,
+    "not_hispanic_or_latino": 16666127.0,
+    "education_25plus": {
+      "less_than_high_school": 1636478.0,
+      "high_school": 4489041.0,
+      "some_college_or_associate": 4765585.0,
+      "bachelors_or_higher": 6082851.0
+    },
+    "median_household_income": 77735.0,
+    "household_income_brackets": {
+      "lt_25k": 1314077.0,
+      "25k_50k": 1579824.0,
+      "50k_75k": 1523634.0,
+      "75k_100k": 1205051.0,
+      "100k_150k": 1620339.0,
+      "150k_200k": 809445.0,
+      "gte_200k": 1089305.0
+    },
+    "employment": {
+      "in_labor_force": 11810121.0,
+      "civilian_employed": 11202980.0,
+      "civilian_unemployed": 534706.0,
+      "armed_forces": 72435.0,
+      "not_in_labor_force": 7622253.0
+    },
+    "tenure": {
+      "owner_occupied": 6220116.0,
+      "renter_occupied": 2921559.0
+    },
+    "households": {
+      "total": 9141675.0,
+      "family": 5922660.0,
+      "nonfamily": 3219015.0
+    }
+  },
+  "13": {
+    "fips": "13",
+    "name": "Georgia",
+    "population_total": 11180878.0,
+    "sex": {
+      "male": 5441586.0,
+      "female": 5739292.0
+    },
+    "age": {
+      "under_18": 2531131.0,
+      "18_24": 1060982.0,
+      "25_34": 1526208.0,
+      "35_44": 1529977.0,
+      "45_54": 1419828.0,
+      "55_64": 1347149.0,
+      "65_plus": 1765603.0
+    },
+    "race": {
+      "white": 5571578.0,
+      "black": 3421874.0,
+      "american_indian": 56022.0,
+      "asian": 547463.0,
+      "pacific_islander": 8908.0,
+      "other": 598698.0,
+      "two_or_more": 976335.0
+    },
+    "hispanic_or_latino": 1299200.0,
+    "not_hispanic_or_latino": 9881678.0,
+    "education_25plus": {
+      "less_than_high_school": 775542.0,
+      "high_school": 1991289.0,
+      "some_college_or_associate": 2066432.0,
+      "bachelors_or_higher": 2755502.0
+    },
+    "median_household_income": 79991.0,
+    "household_income_brackets": {
+      "lt_25k": 620718.0,
+      "25k_50k": 700513.0,
+      "50k_75k": 671710.0,
+      "75k_100k": 556917.0,
+      "100k_150k": 749348.0,
+      "150k_200k": 401284.0,
+      "gte_200k": 520242.0
+    },
+    "employment": {
+      "in_labor_force": 5787115.0,
+      "civilian_employed": 5463559.0,
+      "civilian_unemployed": 269070.0,
+      "armed_forces": 54486.0,
+      "not_in_labor_force": 3185291.0
+    },
+    "tenure": {
+      "owner_occupied": 2798409.0,
+      "renter_occupied": 1422323.0
+    },
+    "households": {
+      "total": 4220732.0,
+      "family": 2793843.0,
+      "nonfamily": 1426889.0
+    }
+  },
+  "15": {
+    "fips": "15",
+    "name": "Hawaii",
+    "population_total": 1446146.0,
+    "sex": {
+      "male": 723923.0,
+      "female": 722223.0
+    },
+    "age": {
+      "under_18": 293560.0,
+      "18_24": 115613.0,
+      "25_34": 185706.0,
+      "35_44": 197164.0,
+      "45_54": 169289.0,
+      "55_64": 173509.0,
+      "65_plus": 311305.0
+    },
+    "race": {
+      "white": 317359.0,
+      "black": 25487.0,
+      "american_indian": 5041.0,
+      "asian": 524385.0,
+      "pacific_islander": 137894.0,
+      "other": 25573.0,
+      "two_or_more": 410407.0
+    },
+    "hispanic_or_latino": 147896.0,
+    "not_hispanic_or_latino": 1298250.0,
+    "education_25plus": {
+      "less_than_high_school": 65209.0,
+      "high_school": 281576.0,
+      "some_college_or_associate": 298653.0,
+      "bachelors_or_higher": 391535.0
+    },
+    "median_household_income": 100745.0,
+    "household_income_brackets": {
+      "lt_25k": 56002.0,
+      "25k_50k": 57077.0,
+      "50k_75k": 74744.0,
+      "75k_100k": 56253.0,
+      "100k_150k": 99505.0,
+      "150k_200k": 58439.0,
+      "gte_200k": 91131.0
+    },
+    "employment": {
+      "in_labor_force": 759273.0,
+      "civilian_employed": 686176.0,
+      "civilian_unemployed": 23984.0,
+      "armed_forces": 49113.0,
+      "not_in_labor_force": 425213.0
+    },
+    "tenure": {
+      "owner_occupied": 304026.0,
+      "renter_occupied": 189125.0
+    },
+    "households": {
+      "total": 493151.0,
+      "family": 331709.0,
+      "nonfamily": 161442.0
+    }
+  },
+  "16": {
+    "fips": "16",
+    "name": "Idaho",
+    "population_total": 2001619.0,
+    "sex": {
+      "male": 1007233.0,
+      "female": 994386.0
+    },
+    "age": {
+      "under_18": 467247.0,
+      "18_24": 198965.0,
+      "25_34": 259321.0,
+      "35_44": 267350.0,
+      "45_54": 225615.0,
+      "55_64": 227570.0,
+      "65_plus": 355551.0
+    },
+    "race": {
+      "white": 1619182.0,
+      "black": 15547.0,
+      "american_indian": 22537.0,
+      "asian": 30172.0,
+      "pacific_islander": 3095.0,
+      "other": 97790.0,
+      "two_or_more": 213296.0
+    },
+    "hispanic_or_latino": 286185.0,
+    "not_hispanic_or_latino": 1715434.0,
+    "education_25plus": {
+      "less_than_high_school": 100295.0,
+      "high_school": 351241.0,
+      "some_college_or_associate": 442832.0,
+      "bachelors_or_higher": 441039.0
+    },
+    "median_household_income": 81166.0,
+    "household_income_brackets": {
+      "lt_25k": 91671.0,
+      "25k_50k": 125636.0,
+      "50k_75k": 127445.0,
+      "75k_100k": 106013.0,
+      "100k_150k": 160208.0,
+      "150k_200k": 68850.0,
+      "gte_200k": 71358.0
+    },
+    "employment": {
+      "in_labor_force": 1007851.0,
+      "civilian_employed": 965244.0,
+      "civilian_unemployed": 37396.0,
+      "armed_forces": 5211.0,
+      "not_in_labor_force": 585943.0
+    },
+    "tenure": {
+      "owner_occupied": 538468.0,
+      "renter_occupied": 212713.0
+    },
+    "households": {
+      "total": 751181.0,
+      "family": 512450.0,
+      "nonfamily": 238731.0
+    }
+  },
+  "17": {
+    "fips": "17",
+    "name": "Illinois",
+    "population_total": 12710158.0,
+    "sex": {
+      "male": 6280259.0,
+      "female": 6429899.0
+    },
+    "age": {
+      "under_18": 2692660.0,
+      "18_24": 1168050.0,
+      "25_34": 1737093.0,
+      "35_44": 1704974.0,
+      "45_54": 1564403.0,
+      "55_64": 1568396.0,
+      "65_plus": 2274582.0
+    },
+    "race": {
+      "white": 7650197.0,
+      "black": 1679701.0,
+      "american_indian": 105434.0,
+      "asian": 812604.0,
+      "pacific_islander": 4453.0,
+      "other": 1100865.0,
+      "two_or_more": 1356904.0
+    },
+    "hispanic_or_latino": 2462768.0,
+    "not_hispanic_or_latino": 10247390.0,
+    "education_25plus": {
+      "less_than_high_school": 821359.0,
+      "high_school": 2178046.0,
+      "some_college_or_associate": 2378338.0,
+      "bachelors_or_higher": 3471705.0
+    },
+    "median_household_income": 83211.0,
+    "household_income_brackets": {
+      "lt_25k": 730269.0,
+      "25k_50k": 821881.0,
+      "50k_75k": 754046.0,
+      "75k_100k": 639584.0,
+      "100k_150k": 927227.0,
+      "150k_200k": 514343.0,
+      "gte_200k": 718098.0
+    },
+    "employment": {
+      "in_labor_force": 6784086.0,
+      "civilian_employed": 6415320.0,
+      "civilian_unemployed": 346721.0,
+      "armed_forces": 22045.0,
+      "not_in_labor_force": 3578528.0
+    },
+    "tenure": {
+      "owner_occupied": 3449961.0,
+      "renter_occupied": 1655487.0
+    },
+    "households": {
+      "total": 5105448.0,
+      "family": 3139340.0,
+      "nonfamily": 1966108.0
+    }
+  },
+  "18": {
+    "fips": "18",
+    "name": "Indiana",
+    "population_total": 6924275.0,
+    "sex": {
+      "male": 3431764.0,
+      "female": 3492511.0
+    },
+    "age": {
+      "under_18": 1578728.0,
+      "18_24": 659956.0,
+      "25_34": 929702.0,
+      "35_44": 889095.0,
+      "45_54": 815867.0,
+      "55_64": 832526.0,
+      "65_plus": 1218401.0
+    },
+    "race": {
+      "white": 5263322.0,
+      "black": 631469.0,
+      "american_indian": 35823.0,
+      "asian": 187569.0,
+      "pacific_islander": 4982.0,
+      "other": 245332.0,
+      "two_or_more": 555778.0
+    },
+    "hispanic_or_latino": 626616.0,
+    "not_hispanic_or_latino": 6297659.0,
+    "education_25plus": {
+      "less_than_high_school": 441458.0,
+      "high_school": 1501417.0,
+      "some_college_or_associate": 1306289.0,
+      "bachelors_or_higher": 1436427.0
+    },
+    "median_household_income": 71959.0,
+    "household_income_brackets": {
+      "lt_25k": 407419.0,
+      "25k_50k": 535973.0,
+      "50k_75k": 498390.0,
+      "75k_100k": 384224.0,
+      "100k_150k": 479358.0,
+      "150k_200k": 234677.0,
+      "gte_200k": 235596.0
+    },
+    "employment": {
+      "in_labor_force": 3555783.0,
+      "civilian_employed": 3406179.0,
+      "civilian_unemployed": 145489.0,
+      "armed_forces": 4115.0,
+      "not_in_labor_force": 1986259.0
+    },
+    "tenure": {
+      "owner_occupied": 1962896.0,
+      "renter_occupied": 812741.0
+    },
+    "households": {
+      "total": 2775637.0,
+      "family": 1766749.0,
+      "nonfamily": 1008888.0
+    }
+  },
+  "19": {
+    "fips": "19",
+    "name": "Iowa",
+    "population_total": 3241488.0,
+    "sex": {
+      "male": 1622686.0,
+      "female": 1618802.0
+    },
+    "age": {
+      "under_18": 727370.0,
+      "18_24": 321744.0,
+      "25_34": 410098.0,
+      "35_44": 412467.0,
+      "45_54": 367681.0,
+      "55_64": 389525.0,
+      "65_plus": 612603.0
+    },
+    "race": {
+      "white": 2696030.0,
+      "black": 134568.0,
+      "american_indian": 11988.0,
+      "asian": 83909.0,
+      "pacific_islander": 6115.0,
+      "other": 80480.0,
+      "two_or_more": 228398.0
+    },
+    "hispanic_or_latino": 253224.0,
+    "not_hispanic_or_latino": 2988264.0,
+    "education_25plus": {
+      "less_than_high_school": 153765.0,
+      "high_school": 636194.0,
+      "some_college_or_associate": 699742.0,
+      "bachelors_or_higher": 702673.0
+    },
+    "median_household_income": 75501.0,
+    "household_income_brackets": {
+      "lt_25k": 182077.0,
+      "25k_50k": 251282.0,
+      "50k_75k": 233859.0,
+      "75k_100k": 191448.0,
+      "100k_150k": 259264.0,
+      "150k_200k": 114222.0,
+      "gte_200k": 111270.0
+    },
+    "employment": {
+      "in_labor_force": 1731311.0,
+      "civilian_employed": 1674133.0,
+      "civilian_unemployed": 55020.0,
+      "armed_forces": 2158.0,
+      "not_in_labor_force": 870508.0
+    },
+    "tenure": {
+      "owner_occupied": 958213.0,
+      "renter_occupied": 385209.0
+    },
+    "households": {
+      "total": 1343422.0,
+      "family": 832872.0,
+      "nonfamily": 510550.0
+    }
+  },
+  "20": {
+    "fips": "20",
+    "name": "Kansas",
+    "population_total": 2970606.0,
+    "sex": {
+      "male": 1487233.0,
+      "female": 1483373.0
+    },
+    "age": {
+      "under_18": 686628.0,
+      "18_24": 297448.0,
+      "25_34": 386725.0,
+      "35_44": 392861.0,
+      "45_54": 329091.0,
+      "55_64": 344079.0,
+      "65_plus": 533774.0
+    },
+    "race": {
+      "white": 2229436.0,
+      "black": 158710.0,
+      "american_indian": 24129.0,
+      "asian": 89924.0,
+      "pacific_islander": 4186.0,
+      "other": 117272.0,
+      "two_or_more": 346949.0
+    },
+    "hispanic_or_latino": 422762.0,
+    "not_hispanic_or_latino": 2547844.0,
+    "education_25plus": {
+      "less_than_high_school": 158879.0,
+      "high_school": 504596.0,
+      "some_college_or_associate": 606940.0,
+      "bachelors_or_higher": 716115.0
+    },
+    "median_household_income": 75514.0,
+    "household_income_brackets": {
+      "lt_25k": 163146.0,
+      "25k_50k": 218950.0,
+      "50k_75k": 215410.0,
+      "75k_100k": 168680.0,
+      "100k_150k": 210549.0,
+      "150k_200k": 107438.0,
+      "gte_200k": 120201.0
+    },
+    "employment": {
+      "in_labor_force": 1576752.0,
+      "civilian_employed": 1497364.0,
+      "civilian_unemployed": 57070.0,
+      "armed_forces": 22318.0,
+      "not_in_labor_force": 789001.0
+    },
+    "tenure": {
+      "owner_occupied": 820255.0,
+      "renter_occupied": 384119.0
+    },
+    "households": {
+      "total": 1204374.0,
+      "family": 758824.0,
+      "nonfamily": 445550.0
+    }
+  },
+  "21": {
+    "fips": "21",
+    "name": "Kentucky",
+    "population_total": 4588372.0,
+    "sex": {
+      "male": 2274627.0,
+      "female": 2313745.0
+    },
+    "age": {
+      "under_18": 1020211.0,
+      "18_24": 421989.0,
+      "25_34": 599428.0,
+      "35_44": 592232.0,
+      "45_54": 553876.0,
+      "55_64": 574786.0,
+      "65_plus": 825850.0
+    },
+    "race": {
+      "white": 3736188.0,
+      "black": 326331.0,
+      "american_indian": 12438.0,
+      "asian": 86161.0,
+      "pacific_islander": 1672.0,
+      "other": 80862.0,
+      "two_or_more": 344720.0
+    },
+    "hispanic_or_latino": 252640.0,
+    "not_hispanic_or_latino": 4335732.0,
+    "education_25plus": {
+      "less_than_high_school": 346650.0,
+      "high_school": 1011235.0,
+      "some_college_or_associate": 909118.0,
+      "bachelors_or_higher": 879169.0
+    },
+    "median_household_income": 64526.0,
+    "household_income_brackets": {
+      "lt_25k": 365228.0,
+      "25k_50k": 362826.0,
+      "50k_75k": 328965.0,
+      "75k_100k": 232114.0,
+      "100k_150k": 300317.0,
+      "150k_200k": 136513.0,
+      "gte_200k": 139493.0
+    },
+    "employment": {
+      "in_labor_force": 2223973.0,
+      "civilian_employed": 2102332.0,
+      "civilian_unemployed": 107639.0,
+      "armed_forces": 14002.0,
+      "not_in_labor_force": 1467682.0
+    },
+    "tenure": {
+      "owner_occupied": 1270744.0,
+      "renter_occupied": 594712.0
+    },
+    "households": {
+      "total": 1865456.0,
+      "family": 1189969.0,
+      "nonfamily": 675487.0
+    }
+  },
+  "22": {
+    "fips": "22",
+    "name": "Louisiana",
+    "population_total": 4597740.0,
+    "sex": {
+      "male": 2242572.0,
+      "female": 2355168.0
+    },
+    "age": {
+      "under_18": 1062537.0,
+      "18_24": 418749.0,
+      "25_34": 591010.0,
+      "35_44": 618609.0,
+      "45_54": 535438.0,
+      "55_64": 551533.0,
+      "65_plus": 819864.0
+    },
+    "race": {
+      "white": 2594108.0,
+      "black": 1398231.0,
+      "american_indian": 30184.0,
+      "asian": 83831.0,
+      "pacific_islander": 2005.0,
+      "other": 116569.0,
+      "two_or_more": 372812.0
+    },
+    "hispanic_or_latino": 357628.0,
+    "not_hispanic_or_latino": 4240112.0,
+    "education_25plus": {
+      "less_than_high_school": 366784.0,
+      "high_school": 1024093.0,
+      "some_college_or_associate": 858066.0,
+      "bachelors_or_higher": 867511.0
+    },
+    "median_household_income": 60986.0,
+    "household_income_brackets": {
+      "lt_25k": 410284.0,
+      "25k_50k": 362871.0,
+      "50k_75k": 305601.0,
+      "75k_100k": 211630.0,
+      "100k_150k": 280282.0,
+      "150k_200k": 130809.0,
+      "gte_200k": 147488.0
+    },
+    "employment": {
+      "in_labor_force": 2191021.0,
+      "civilian_employed": 2064084.0,
+      "civilian_unemployed": 112107.0,
+      "armed_forces": 14830.0,
+      "not_in_labor_force": 1466171.0
+    },
+    "tenure": {
+      "owner_occupied": 1258598.0,
+      "renter_occupied": 590367.0
+    },
+    "households": {
+      "total": 1848965.0,
+      "family": 1154304.0,
+      "nonfamily": 694661.0
+    }
+  },
+  "23": {
+    "fips": "23",
+    "name": "Maine",
+    "population_total": 1405012.0,
+    "sex": {
+      "male": 692688.0,
+      "female": 712324.0
+    },
+    "age": {
+      "under_18": 244679.0,
+      "18_24": 110476.0,
+      "25_34": 172085.0,
+      "35_44": 176966.0,
+      "45_54": 166810.0,
+      "55_64": 204070.0,
+      "65_plus": 329926.0
+    },
+    "race": {
+      "white": 1260038.0,
+      "black": 29245.0,
+      "american_indian": 6153.0,
+      "asian": 18794.0,
+      "pacific_islander": 299.0,
+      "other": 10286.0,
+      "two_or_more": 80197.0
+    },
+    "hispanic_or_latino": 32869.0,
+    "not_hispanic_or_latino": 1372143.0,
+    "education_25plus": {
+      "less_than_high_school": 54902.0,
+      "high_school": 309569.0,
+      "some_college_or_associate": 295774.0,
+      "bachelors_or_higher": 389612.0
+    },
+    "median_household_income": 76442.0,
+    "household_income_brackets": {
+      "lt_25k": 89491.0,
+      "25k_50k": 107105.0,
+      "50k_75k": 105550.0,
+      "75k_100k": 80263.0,
+      "100k_150k": 111453.0,
+      "150k_200k": 57701.0,
+      "gte_200k": 63672.0
+    },
+    "employment": {
+      "in_labor_force": 736754.0,
+      "civilian_employed": 713799.0,
+      "civilian_unemployed": 19982.0,
+      "armed_forces": 2973.0,
+      "not_in_labor_force": 453768.0
+    },
+    "tenure": {
+      "owner_occupied": 451090.0,
+      "renter_occupied": 164145.0
+    },
+    "households": {
+      "total": 615235.0,
+      "family": 370334.0,
+      "nonfamily": 244901.0
+    }
+  },
+  "24": {
+    "fips": "24",
+    "name": "Maryland",
+    "population_total": 6263220.0,
+    "sex": {
+      "male": 3038142.0,
+      "female": 3225078.0
+    },
+    "age": {
+      "under_18": 1368343.0,
+      "18_24": 530791.0,
+      "25_34": 807590.0,
+      "35_44": 876495.0,
+      "45_54": 766968.0,
+      "55_64": 813281.0,
+      "65_plus": 1099752.0
+    },
+    "race": {
+      "white": 2937410.0,
+      "black": 1825122.0,
+      "american_indian": 29485.0,
+      "asian": 434405.0,
+      "pacific_islander": 3589.0,
+      "other": 460043.0,
+      "two_or_more": 573166.0
+    },
+    "hispanic_or_latino": 830948.0,
+    "not_hispanic_or_latino": 5432272.0,
+    "education_25plus": {
+      "less_than_high_school": 374293.0,
+      "high_school": 1008475.0,
+      "some_college_or_associate": 1031039.0,
+      "bachelors_or_higher": 1950279.0
+    },
+    "median_household_income": 102905.0,
+    "household_income_brackets": {
+      "lt_25k": 272449.0,
+      "25k_50k": 297807.0,
+      "50k_75k": 310288.0,
+      "75k_100k": 277612.0,
+      "100k_150k": 442977.0,
+      "150k_200k": 299725.0,
+      "gte_200k": 500536.0
+    },
+    "employment": {
+      "in_labor_force": 3434246.0,
+      "civilian_employed": 3249570.0,
+      "civilian_unemployed": 147630.0,
+      "armed_forces": 37046.0,
+      "not_in_labor_force": 1625139.0
+    },
+    "tenure": {
+      "owner_occupied": 1628167.0,
+      "renter_occupied": 773227.0
+    },
+    "households": {
+      "total": 2401394.0,
+      "family": 1541015.0,
+      "nonfamily": 860379.0
+    }
+  },
+  "25": {
+    "fips": "25",
+    "name": "Massachusetts",
+    "population_total": 7136171.0,
+    "sex": {
+      "male": 3481139.0,
+      "female": 3655032.0
+    },
+    "age": {
+      "under_18": 1354765.0,
+      "18_24": 707064.0,
+      "25_34": 996756.0,
+      "35_44": 959162.0,
+      "45_54": 846019.0,
+      "55_64": 936463.0,
+      "65_plus": 1335942.0
+    },
+    "race": {
+      "white": 4761129.0,
+      "black": 489490.0,
+      "american_indian": 17332.0,
+      "asian": 551579.0,
+      "pacific_islander": 1265.0,
+      "other": 449063.0,
+      "two_or_more": 866313.0
+    },
+    "hispanic_or_latino": 998795.0,
+    "not_hispanic_or_latino": 6137376.0,
+    "education_25plus": {
+      "less_than_high_school": 436647.0,
+      "high_school": 1128382.0,
+      "some_college_or_associate": 1059743.0,
+      "bachelors_or_higher": 2449570.0
+    },
+    "median_household_income": 104828.0,
+    "household_income_brackets": {
+      "lt_25k": 359107.0,
+      "25k_50k": 346516.0,
+      "50k_75k": 342021.0,
+      "75k_100k": 300648.0,
+      "100k_150k": 510545.0,
+      "150k_200k": 334249.0,
+      "gte_200k": 636718.0
+    },
+    "employment": {
+      "in_labor_force": 4000434.0,
+      "civilian_employed": 3831790.0,
+      "civilian_unemployed": 162597.0,
+      "armed_forces": 6047.0,
+      "not_in_labor_force": 1953387.0
+    },
+    "tenure": {
+      "owner_occupied": 1765324.0,
+      "renter_occupied": 1064480.0
+    },
+    "households": {
+      "total": 2829804.0,
+      "family": 1761366.0,
+      "nonfamily": 1068438.0
+    }
+  },
+  "26": {
+    "fips": "26",
+    "name": "Michigan",
+    "population_total": 10140459.0,
+    "sex": {
+      "male": 5015542.0,
+      "female": 5124917.0
+    },
+    "age": {
+      "under_18": 2103755.0,
+      "18_24": 934316.0,
+      "25_34": 1344657.0,
+      "35_44": 1255178.0,
+      "45_54": 1191085.0,
+      "55_64": 1323609.0,
+      "65_plus": 1987859.0
+    },
+    "race": {
+      "white": 7406982.0,
+      "black": 1319957.0,
+      "american_indian": 53570.0,
+      "asian": 379956.0,
+      "pacific_islander": 4620.0,
+      "other": 198661.0,
+      "two_or_more": 776713.0
+    },
+    "hispanic_or_latino": 621831.0,
+    "not_hispanic_or_latino": 9518628.0,
+    "education_25plus": {
+      "less_than_high_school": 551071.0,
+      "high_school": 1956108.0,
+      "some_college_or_associate": 2228264.0,
+      "bachelors_or_higher": 2366945.0
+    },
+    "median_household_income": 72389.0,
+    "household_income_brackets": {
+      "lt_25k": 651176.0,
+      "25k_50k": 758780.0,
+      "50k_75k": 714224.0,
+      "75k_100k": 537972.0,
+      "100k_150k": 729092.0,
+      "150k_200k": 351110.0,
+      "gte_200k": 388927.0
+    },
+    "employment": {
+      "in_labor_force": 5115629.0,
+      "civilian_employed": 4879201.0,
+      "civilian_unemployed": 229894.0,
+      "armed_forces": 6534.0,
+      "not_in_labor_force": 3186755.0
+    },
+    "tenure": {
+      "owner_occupied": 3034798.0,
+      "renter_occupied": 1096483.0
+    },
+    "households": {
+      "total": 4131281.0,
+      "family": 2566245.0,
+      "nonfamily": 1565036.0
+    }
+  },
+  "27": {
+    "fips": "27",
+    "name": "Minnesota",
+    "population_total": 5793151.0,
+    "sex": {
+      "male": 2897870.0,
+      "female": 2895281.0
+    },
+    "age": {
+      "under_18": 1290824.0,
+      "18_24": 519877.0,
+      "25_34": 749154.0,
+      "35_44": 796895.0,
+      "45_54": 666487.0,
+      "55_64": 713641.0,
+      "65_plus": 1056273.0
+    },
+    "race": {
+      "white": 4398985.0,
+      "black": 438523.0,
+      "american_indian": 55851.0,
+      "asian": 304164.0,
+      "pacific_islander": 3578.0,
+      "other": 167125.0,
+      "two_or_more": 424925.0
+    },
+    "hispanic_or_latino": 388435.0,
+    "not_hispanic_or_latino": 5404716.0,
+    "education_25plus": {
+      "less_than_high_school": 231063.0,
+      "high_school": 915183.0,
+      "some_college_or_associate": 1242012.0,
+      "bachelors_or_higher": 1594192.0
+    },
+    "median_household_income": 87117.0,
+    "household_income_brackets": {
+      "lt_25k": 285057.0,
+      "25k_50k": 345711.0,
+      "50k_75k": 382022.0,
+      "75k_100k": 308923.0,
+      "100k_150k": 463785.0,
+      "150k_200k": 251774.0,
+      "gte_200k": 326170.0
+    },
+    "employment": {
+      "in_labor_force": 3177958.0,
+      "civilian_employed": 3056310.0,
+      "civilian_unemployed": 118033.0,
+      "armed_forces": 3615.0,
+      "not_in_labor_force": 1485329.0
+    },
+    "tenure": {
+      "owner_occupied": 1692435.0,
+      "renter_occupied": 671007.0
+    },
+    "households": {
+      "total": 2363442.0,
+      "family": 1453940.0,
+      "nonfamily": 909502.0
+    }
+  },
+  "28": {
+    "fips": "28",
+    "name": "Mississippi",
+    "population_total": 2943045.0,
+    "sex": {
+      "male": 1421300.0,
+      "female": 1521745.0
+    },
+    "age": {
+      "under_18": 671997.0,
+      "18_24": 287446.0,
+      "25_34": 359127.0,
+      "35_44": 373705.0,
+      "45_54": 359366.0,
+      "55_64": 360057.0,
+      "65_plus": 531347.0
+    },
+    "race": {
+      "white": 1635264.0,
+      "black": 1055971.0,
+      "american_indian": 14801.0,
+      "asian": 36241.0,
+      "pacific_islander": 505.0,
+      "other": 59068.0,
+      "two_or_more": 141195.0
+    },
+    "hispanic_or_latino": 118529.0,
+    "not_hispanic_or_latino": 2824516.0,
+    "education_25plus": {
+      "less_than_high_school": 237997.0,
+      "high_school": 582355.0,
+      "some_college_or_associate": 627331.0,
+      "bachelors_or_higher": 535919.0
+    },
+    "median_household_income": 59127.0,
+    "household_income_brackets": {
+      "lt_25k": 254736.0,
+      "25k_50k": 257235.0,
+      "50k_75k": 192233.0,
+      "75k_100k": 142090.0,
+      "100k_150k": 183879.0,
+      "150k_200k": 76303.0,
+      "gte_200k": 70214.0
+    },
+    "employment": {
+      "in_labor_force": 1390845.0,
+      "civilian_employed": 1314226.0,
+      "civilian_unemployed": 63438.0,
+      "armed_forces": 13181.0,
+      "not_in_labor_force": 970374.0
+    },
+    "tenure": {
+      "owner_occupied": 829682.0,
+      "renter_occupied": 347008.0
+    },
+    "households": {
+      "total": 1176690.0,
+      "family": 769191.0,
+      "nonfamily": 407499.0
+    }
+  },
+  "29": {
+    "fips": "29",
+    "name": "Missouri",
+    "population_total": 6245466.0,
+    "sex": {
+      "male": 3080058.0,
+      "female": 3165408.0
+    },
+    "age": {
+      "under_18": 1366801.0,
+      "18_24": 575388.0,
+      "25_34": 817633.0,
+      "35_44": 817778.0,
+      "45_54": 719520.0,
+      "55_64": 779145.0,
+      "65_plus": 1169201.0
+    },
+    "race": {
+      "white": 4845736.0,
+      "black": 653876.0,
+      "american_indian": 21364.0,
+      "asian": 141648.0,
+      "pacific_islander": 9070.0,
+      "other": 117967.0,
+      "two_or_more": 455805.0
+    },
+    "hispanic_or_latino": 346700.0,
+    "not_hispanic_or_latino": 5898766.0,
+    "education_25plus": {
+      "less_than_high_school": 343931.0,
+      "high_school": 1267999.0,
+      "some_college_or_associate": 1250971.0,
+      "bachelors_or_higher": 1440376.0
+    },
+    "median_household_income": 71589.0,
+    "household_income_brackets": {
+      "lt_25k": 398704.0,
+      "25k_50k": 484706.0,
+      "50k_75k": 449891.0,
+      "75k_100k": 348182.0,
+      "100k_150k": 437415.0,
+      "150k_200k": 210313.0,
+      "gte_200k": 234033.0
+    },
+    "employment": {
+      "in_labor_force": 3207136.0,
+      "civilian_employed": 3082178.0,
+      "civilian_unemployed": 103542.0,
+      "armed_forces": 21416.0,
+      "not_in_labor_force": 1842060.0
+    },
+    "tenure": {
+      "owner_occupied": 1757433.0,
+      "renter_occupied": 805811.0
+    },
+    "households": {
+      "total": 2563244.0,
+      "family": 1591484.0,
+      "nonfamily": 971760.0
+    }
+  },
+  "30": {
+    "fips": "30",
+    "name": "Montana",
+    "population_total": 1137233.0,
+    "sex": {
+      "male": 575447.0,
+      "female": 561786.0
+    },
+    "age": {
+      "under_18": 230015.0,
+      "18_24": 103469.0,
+      "25_34": 142328.0,
+      "35_44": 151419.0,
+      "45_54": 130159.0,
+      "55_64": 138420.0,
+      "65_plus": 241423.0
+    },
+    "race": {
+      "white": 962408.0,
+      "black": 3515.0,
+      "american_indian": 61550.0,
+      "asian": 9405.0,
+      "pacific_islander": 1248.0,
+      "other": 11549.0,
+      "two_or_more": 87558.0
+    },
+    "hispanic_or_latino": 55506.0,
+    "not_hispanic_or_latino": 1081727.0,
+    "education_25plus": {
+      "less_than_high_school": 43652.0,
+      "high_school": 211178.0,
+      "some_college_or_associate": 256875.0,
+      "bachelors_or_higher": 292044.0
+    },
+    "median_household_income": 75340.0,
+    "household_income_brackets": {
+      "lt_25k": 65815.0,
+      "25k_50k": 84075.0,
+      "50k_75k": 83547.0,
+      "75k_100k": 63678.0,
+      "100k_150k": 87803.0,
+      "150k_200k": 40517.0,
+      "gte_200k": 43546.0
+    },
+    "employment": {
+      "in_labor_force": 592495.0,
+      "civilian_employed": 571950.0,
+      "civilian_unemployed": 17462.0,
+      "armed_forces": 3083.0,
+      "not_in_labor_force": 344443.0
+    },
+    "tenure": {
+      "owner_occupied": 321733.0,
+      "renter_occupied": 147248.0
+    },
+    "households": {
+      "total": 468981.0,
+      "family": 285217.0,
+      "nonfamily": 183764.0
+    }
+  },
+  "31": {
+    "fips": "31",
+    "name": "Nebraska",
+    "population_total": 2005466.0,
+    "sex": {
+      "male": 1009629.0,
+      "female": 995837.0
+    },
+    "age": {
+      "under_18": 479649.0,
+      "18_24": 199010.0,
+      "25_34": 261403.0,
+      "35_44": 265290.0,
+      "45_54": 222844.0,
+      "55_64": 229218.0,
+      "65_plus": 348052.0
+    },
+    "race": {
+      "white": 1536801.0,
+      "black": 96111.0,
+      "american_indian": 25488.0,
+      "asian": 55380.0,
+      "pacific_islander": 1663.0,
+      "other": 92000.0,
+      "two_or_more": 198023.0
+    },
+    "hispanic_or_latino": 271524.0,
+    "not_hispanic_or_latino": 1733942.0,
+    "education_25plus": {
+      "less_than_high_school": 97538.0,
+      "high_school": 333900.0,
+      "some_college_or_associate": 426225.0,
+      "bachelors_or_higher": 469144.0
+    },
+    "median_household_income": 76376.0,
+    "household_income_brackets": {
+      "lt_25k": 112539.0,
+      "25k_50k": 148593.0,
+      "50k_75k": 143457.0,
+      "75k_100k": 109505.0,
+      "100k_150k": 157372.0,
+      "150k_200k": 79109.0,
+      "gte_200k": 73437.0
+    },
+    "employment": {
+      "in_labor_force": 1088999.0,
+      "civilian_employed": 1045068.0,
+      "civilian_unemployed": 36785.0,
+      "armed_forces": 7146.0,
+      "not_in_labor_force": 496015.0
+    },
+    "tenure": {
+      "owner_occupied": 549417.0,
+      "renter_occupied": 274595.0
+    },
+    "households": {
+      "total": 824012.0,
+      "family": 514383.0,
+      "nonfamily": 309629.0
+    }
+  },
+  "32": {
+    "fips": "32",
+    "name": "Nevada",
+    "population_total": 3267467.0,
+    "sex": {
+      "male": 1647319.0,
+      "female": 1620148.0
+    },
+    "age": {
+      "under_18": 687705.0,
+      "18_24": 262085.0,
+      "25_34": 471024.0,
+      "35_44": 463528.0,
+      "45_54": 405362.0,
+      "55_64": 402412.0,
+      "65_plus": 575351.0
+    },
+    "race": {
+      "white": 1568971.0,
+      "black": 310896.0,
+      "american_indian": 45777.0,
+      "asian": 308815.0,
+      "pacific_islander": 27025.0,
+      "other": 439413.0,
+      "two_or_more": 566570.0
+    },
+    "hispanic_or_latino": 999427.0,
+    "not_hispanic_or_latino": 2268040.0,
+    "education_25plus": {
+      "less_than_high_school": 284974.0,
+      "high_school": 649794.0,
+      "some_college_or_associate": 721701.0,
+      "bachelors_or_higher": 661208.0
+    },
+    "median_household_income": 81134.0,
+    "household_income_brackets": {
+      "lt_25k": 162851.0,
+      "25k_50k": 209490.0,
+      "50k_75k": 201808.0,
+      "75k_100k": 165826.0,
+      "100k_150k": 233406.0,
+      "150k_200k": 122682.0,
+      "gte_200k": 142862.0
+    },
+    "employment": {
+      "in_labor_force": 1719889.0,
+      "civilian_employed": 1598223.0,
+      "civilian_unemployed": 107149.0,
+      "armed_forces": 14517.0,
+      "not_in_labor_force": 942603.0
+    },
+    "tenure": {
+      "owner_occupied": 744844.0,
+      "renter_occupied": 494081.0
+    },
+    "households": {
+      "total": 1238925.0,
+      "family": 781761.0,
+      "nonfamily": 457164.0
+    }
+  },
+  "33": {
+    "fips": "33",
+    "name": "New Hampshire",
+    "population_total": 1409032.0,
+    "sex": {
+      "male": 702191.0,
+      "female": 706841.0
+    },
+    "age": {
+      "under_18": 248169.0,
+      "18_24": 122828.0,
+      "25_34": 177448.0,
+      "35_44": 179419.0,
+      "45_54": 166972.0,
+      "55_64": 210964.0,
+      "65_plus": 303232.0
+    },
+    "race": {
+      "white": 1233738.0,
+      "black": 21273.0,
+      "american_indian": 2802.0,
+      "asian": 37847.0,
+      "pacific_islander": 337.0,
+      "other": 22629.0,
+      "two_or_more": 90406.0
+    },
+    "hispanic_or_latino": 70912.0,
+    "not_hispanic_or_latino": 1338120.0,
+    "education_25plus": {
+      "less_than_high_school": 51423.0,
+      "high_school": 272910.0,
+      "some_college_or_associate": 282727.0,
+      "bachelors_or_higher": 430975.0
+    },
+    "median_household_income": 99782.0,
+    "household_income_brackets": {
+      "lt_25k": 62392.0,
+      "25k_50k": 74092.0,
+      "50k_75k": 82833.0,
+      "75k_100k": 66571.0,
+      "100k_150k": 114470.0,
+      "150k_200k": 73303.0,
+      "gte_200k": 97028.0
+    },
+    "employment": {
+      "in_labor_force": 792689.0,
+      "civilian_employed": 769380.0,
+      "civilian_unemployed": 21972.0,
+      "armed_forces": 1337.0,
+      "not_in_labor_force": 401601.0
+    },
+    "tenure": {
+      "owner_occupied": 414145.0,
+      "renter_occupied": 156544.0
+    },
+    "households": {
+      "total": 570689.0,
+      "family": 361715.0,
+      "nonfamily": 208974.0
+    }
+  },
+  "34": {
+    "fips": "34",
+    "name": "New Jersey",
+    "population_total": 9500851.0,
+    "sex": {
+      "male": 4677607.0,
+      "female": 4823244.0
+    },
+    "age": {
+      "under_18": 2043575.0,
+      "18_24": 800206.0,
+      "25_34": 1234980.0,
+      "35_44": 1279434.0,
+      "45_54": 1192059.0,
+      "55_64": 1243932.0,
+      "65_plus": 1706665.0
+    },
+    "race": {
+      "white": 4972387.0,
+      "black": 1225718.0,
+      "american_indian": 67634.0,
+      "asian": 1013268.0,
+      "pacific_islander": 3366.0,
+      "other": 1072103.0,
+      "two_or_more": 1146375.0
+    },
+    "hispanic_or_latino": 2229464.0,
+    "not_hispanic_or_latino": 7271387.0,
+    "education_25plus": {
+      "less_than_high_school": 641650.0,
+      "high_school": 1642960.0,
+      "some_college_or_associate": 1406928.0,
+      "bachelors_or_higher": 2965532.0
+    },
+    "median_household_income": 104294.0,
+    "household_income_brackets": {
+      "lt_25k": 393041.0,
+      "25k_50k": 435013.0,
+      "50k_75k": 459095.0,
+      "75k_100k": 404809.0,
+      "100k_150k": 657516.0,
+      "150k_200k": 423318.0,
+      "gte_200k": 771152.0
+    },
+    "employment": {
+      "in_labor_force": 5156226.0,
+      "civilian_employed": 4867170.0,
+      "civilian_unemployed": 278179.0,
+      "armed_forces": 10877.0,
+      "not_in_labor_force": 2554260.0
+    },
+    "tenure": {
+      "owner_occupied": 2264820.0,
+      "renter_occupied": 1279124.0
+    },
+    "households": {
+      "total": 3543944.0,
+      "family": 2414189.0,
+      "nonfamily": 1129755.0
+    }
+  },
+  "35": {
+    "fips": "35",
+    "name": "New Mexico",
+    "population_total": 2130256.0,
+    "sex": {
+      "male": 1065400.0,
+      "female": 1064856.0
+    },
+    "age": {
+      "under_18": 443837.0,
+      "18_24": 200903.0,
+      "25_34": 274996.0,
+      "35_44": 287355.0,
+      "45_54": 239133.0,
+      "55_64": 254799.0,
+      "65_plus": 429233.0
+    },
+    "race": {
+      "white": 987403.0,
+      "black": 50050.0,
+      "american_indian": 205793.0,
+      "asian": 42644.0,
+      "pacific_islander": 1809.0,
+      "other": 292071.0,
+      "two_or_more": 550486.0
+    },
+    "hispanic_or_latino": 1046253.0,
+    "not_hispanic_or_latino": 1084003.0,
+    "education_25plus": {
+      "less_than_high_school": 180168.0,
+      "high_school": 391278.0,
+      "some_college_or_associate": 441927.0,
+      "bachelors_or_higher": 472143.0
+    },
+    "median_household_income": 67816.0,
+    "household_income_brackets": {
+      "lt_25k": 163251.0,
+      "25k_50k": 157717.0,
+      "50k_75k": 142606.0,
+      "75k_100k": 107393.0,
+      "100k_150k": 143155.0,
+      "150k_200k": 66891.0,
+      "gte_200k": 75957.0
+    },
+    "employment": {
+      "in_labor_force": 1024006.0,
+      "civilian_employed": 954860.0,
+      "civilian_unemployed": 53097.0,
+      "armed_forces": 16049.0,
+      "not_in_labor_force": 719928.0
+    },
+    "tenure": {
+      "owner_occupied": 608986.0,
+      "renter_occupied": 247984.0
+    },
+    "households": {
+      "total": 856970.0,
+      "family": 522330.0,
+      "nonfamily": 334640.0
+    }
+  },
+  "36": {
+    "fips": "36",
+    "name": "New York",
+    "population_total": 19867248.0,
+    "sex": {
+      "male": 9704610.0,
+      "female": 10162638.0
+    },
+    "age": {
+      "under_18": 3972535.0,
+      "18_24": 1776645.0,
+      "25_34": 2800474.0,
+      "35_44": 2619417.0,
+      "45_54": 2364864.0,
+      "55_64": 2576140.0,
+      "65_plus": 3757173.0
+    },
+    "race": {
+      "white": 10793935.0,
+      "black": 2828127.0,
+      "american_indian": 118866.0,
+      "asian": 1893851.0,
+      "pacific_islander": 8246.0,
+      "other": 2231063.0,
+      "two_or_more": 1993160.0
+    },
+    "hispanic_or_latino": 4019288.0,
+    "not_hispanic_or_latino": 15847960.0,
+    "education_25plus": {
+      "less_than_high_school": 1687940.0,
+      "high_school": 3393998.0,
+      "some_college_or_associate": 3217065.0,
+      "bachelors_or_higher": 5819065.0
+    },
+    "median_household_income": 85820.0,
+    "household_income_brackets": {
+      "lt_25k": 1267851.0,
+      "25k_50k": 1143576.0,
+      "50k_75k": 1077570.0,
+      "75k_100k": 901540.0,
+      "100k_150k": 1307317.0,
+      "150k_200k": 773418.0,
+      "gte_200k": 1356802.0
+    },
+    "employment": {
+      "in_labor_force": 10306457.0,
+      "civilian_employed": 9737212.0,
+      "civilian_unemployed": 547371.0,
+      "armed_forces": 21874.0,
+      "not_in_labor_force": 6064042.0
+    },
+    "tenure": {
+      "owner_occupied": 4252571.0,
+      "renter_occupied": 3575503.0
+    },
+    "households": {
+      "total": 7828074.0,
+      "family": 4760304.0,
+      "nonfamily": 3067770.0
+    }
+  },
+  "37": {
+    "fips": "37",
+    "name": "North Carolina",
+    "population_total": 11046024.0,
+    "sex": {
+      "male": 5396017.0,
+      "female": 5650007.0
+    },
+    "age": {
+      "under_18": 2349516.0,
+      "18_24": 1049988.0,
+      "25_34": 1481768.0,
+      "35_44": 1455164.0,
+      "45_54": 1355415.0,
+      "55_64": 1373483.0,
+      "65_plus": 1980690.0
+    },
+    "race": {
+      "white": 6720153.0,
+      "black": 2189327.0,
+      "american_indian": 129569.0,
+      "asian": 400663.0,
+      "pacific_islander": 8442.0,
+      "other": 617585.0,
+      "two_or_more": 980285.0
+    },
+    "hispanic_or_latino": 1324570.0,
+    "not_hispanic_or_latino": 9721454.0,
+    "education_25plus": {
+      "less_than_high_school": 699483.0,
+      "high_school": 1891283.0,
+      "some_college_or_associate": 2215830.0,
+      "bachelors_or_higher": 2839924.0
+    },
+    "median_household_income": 73958.0,
+    "household_income_brackets": {
+      "lt_25k": 689572.0,
+      "25k_50k": 814298.0,
+      "50k_75k": 768125.0,
+      "75k_100k": 580808.0,
+      "100k_150k": 765919.0,
+      "150k_200k": 378975.0,
+      "gte_200k": 498662.0
+    },
+    "employment": {
+      "in_labor_force": 5697035.0,
+      "civilian_employed": 5369487.0,
+      "civilian_unemployed": 223064.0,
+      "armed_forces": 104484.0,
+      "not_in_labor_force": 3285188.0
+    },
+    "tenure": {
+      "owner_occupied": 3004713.0,
+      "renter_occupied": 1491646.0
+    },
+    "households": {
+      "total": 4496359.0,
+      "family": 2878473.0,
+      "nonfamily": 1617886.0
+    }
+  },
+  "38": {
+    "fips": "38",
+    "name": "North Dakota",
+    "population_total": 796568.0,
+    "sex": {
+      "male": 408714.0,
+      "female": 387854.0
+    },
+    "age": {
+      "under_18": 178027.0,
+      "18_24": 87325.0,
+      "25_34": 114857.0,
+      "35_44": 110415.0,
+      "45_54": 79135.0,
+      "55_64": 86514.0,
+      "65_plus": 140295.0
+    },
+    "race": {
+      "white": 653171.0,
+      "black": 29903.0,
+      "american_indian": 33953.0,
+      "asian": 15416.0,
+      "pacific_islander": 721.0,
+      "other": 10368.0,
+      "two_or_more": 53036.0
+    },
+    "hispanic_or_latino": 39853.0,
+    "not_hispanic_or_latino": 756715.0,
+    "education_25plus": {
+      "less_than_high_school": 31102.0,
+      "high_school": 129264.0,
+      "some_college_or_associate": 190493.0,
+      "bachelors_or_higher": 180357.0
+    },
+    "median_household_income": 77871.0,
+    "household_income_brackets": {
+      "lt_25k": 46953.0,
+      "25k_50k": 63301.0,
+      "50k_75k": 57508.0,
+      "75k_100k": 48921.0,
+      "100k_150k": 68169.0,
+      "150k_200k": 29556.0,
+      "gte_200k": 35297.0
+    },
+    "employment": {
+      "in_labor_force": 435870.0,
+      "civilian_employed": 419172.0,
+      "civilian_unemployed": 8163.0,
+      "armed_forces": 8535.0,
+      "not_in_labor_force": 201238.0
+    },
+    "tenure": {
+      "owner_occupied": 213886.0,
+      "renter_occupied": 135819.0
+    },
+    "households": {
+      "total": 349705.0,
+      "family": 200025.0,
+      "nonfamily": 149680.0
+    }
+  },
+  "39": {
+    "fips": "39",
+    "name": "Ohio",
+    "population_total": 11883304.0,
+    "sex": {
+      "male": 5867389.0,
+      "female": 6015915.0
+    },
+    "age": {
+      "under_18": 2568566.0,
+      "18_24": 1061428.0,
+      "25_34": 1562307.0,
+      "35_44": 1527758.0,
+      "45_54": 1391385.0,
+      "55_64": 1500463.0,
+      "65_plus": 2271397.0
+    },
+    "race": {
+      "white": 9029891.0,
+      "black": 1444642.0,
+      "american_indian": 25508.0,
+      "asian": 328217.0,
+      "pacific_islander": 6015.0,
+      "other": 221958.0,
+      "two_or_more": 827073.0
+    },
+    "hispanic_or_latino": 606933.0,
+    "not_hispanic_or_latino": 11276371.0,
+    "education_25plus": {
+      "less_than_high_school": 645605.0,
+      "high_school": 2581995.0,
+      "some_college_or_associate": 2355667.0,
+      "bachelors_or_higher": 2670043.0
+    },
+    "median_household_income": 72212.0,
+    "household_income_brackets": {
+      "lt_25k": 774905.0,
+      "25k_50k": 915266.0,
+      "50k_75k": 849558.0,
+      "75k_100k": 652185.0,
+      "100k_150k": 861200.0,
+      "150k_200k": 423560.0,
+      "gte_200k": 452648.0
+    },
+    "employment": {
+      "in_labor_force": 6113345.0,
+      "civilian_employed": 5855326.0,
+      "civilian_unemployed": 243410.0,
+      "armed_forces": 14609.0,
+      "not_in_labor_force": 3521329.0
+    },
+    "tenure": {
+      "owner_occupied": 3351814.0,
+      "renter_occupied": 1577508.0
+    },
+    "households": {
+      "total": 4929322.0,
+      "family": 3017765.0,
+      "nonfamily": 1911557.0
+    }
+  },
+  "40": {
+    "fips": "40",
+    "name": "Oklahoma",
+    "population_total": 4095393.0,
+    "sex": {
+      "male": 2040182.0,
+      "female": 2055211.0
+    },
+    "age": {
+      "under_18": 963347.0,
+      "18_24": 404802.0,
+      "25_34": 542366.0,
+      "35_44": 554637.0,
+      "45_54": 469658.0,
+      "55_64": 468502.0,
+      "65_plus": 692081.0
+    },
+    "race": {
+      "white": 2626931.0,
+      "black": 269583.0,
+      "american_indian": 290584.0,
+      "asian": 104476.0,
+      "pacific_islander": 10432.0,
+      "other": 174962.0,
+      "two_or_more": 618425.0
+    },
+    "hispanic_or_latino": 551226.0,
+    "not_hispanic_or_latino": 3544167.0,
+    "education_25plus": {
+      "less_than_high_school": 266596.0,
+      "high_school": 839768.0,
+      "some_college_or_associate": 821270.0,
+      "bachelors_or_higher": 799610.0
+    },
+    "median_household_income": 66148.0,
+    "household_income_brackets": {
+      "lt_25k": 283247.0,
+      "25k_50k": 319274.0,
+      "50k_75k": 293515.0,
+      "75k_100k": 209476.0,
+      "100k_150k": 264204.0,
+      "150k_200k": 115219.0,
+      "gte_200k": 118813.0
+    },
+    "employment": {
+      "in_labor_force": 1997490.0,
+      "civilian_employed": 1883561.0,
+      "civilian_unemployed": 92553.0,
+      "armed_forces": 21376.0,
+      "not_in_labor_force": 1251477.0
+    },
+    "tenure": {
+      "owner_occupied": 1053182.0,
+      "renter_occupied": 550566.0
+    },
+    "households": {
+      "total": 1603748.0,
+      "family": 1030442.0,
+      "nonfamily": 573306.0
+    }
+  },
+  "41": {
+    "fips": "41",
+    "name": "Oregon",
+    "population_total": 4272371.0,
+    "sex": {
+      "male": 2128207.0,
+      "female": 2144164.0
+    },
+    "age": {
+      "under_18": 825249.0,
+      "18_24": 362169.0,
+      "25_34": 585020.0,
+      "35_44": 617438.0,
+      "45_54": 530674.0,
+      "55_64": 501604.0,
+      "65_plus": 850217.0
+    },
+    "race": {
+      "white": 3139528.0,
+      "black": 82776.0,
+      "american_indian": 48996.0,
+      "asian": 211228.0,
+      "pacific_islander": 15767.0,
+      "other": 252157.0,
+      "two_or_more": 521919.0
+    },
+    "hispanic_or_latino": 662740.0,
+    "not_hispanic_or_latino": 3609631.0,
+    "education_25plus": {
+      "less_than_high_school": 237500.0,
+      "high_school": 699405.0,
+      "some_college_or_associate": 980603.0,
+      "bachelors_or_higher": 1167445.0
+    },
+    "median_household_income": 85220.0,
+    "household_income_brackets": {
+      "lt_25k": 241906.0,
+      "25k_50k": 275296.0,
+      "50k_75k": 257301.0,
+      "75k_100k": 232475.0,
+      "100k_150k": 334059.0,
+      "150k_200k": 183358.0,
+      "gte_200k": 219875.0
+    },
+    "employment": {
+      "in_labor_force": 2235006.0,
+      "civilian_employed": 2123643.0,
+      "civilian_unemployed": 108341.0,
+      "armed_forces": 3022.0,
+      "not_in_labor_force": 1318826.0
+    },
+    "tenure": {
+      "owner_occupied": 1100905.0,
+      "renter_occupied": 643365.0
+    },
+    "households": {
+      "total": 1744270.0,
+      "family": 1072174.0,
+      "nonfamily": 672096.0
+    }
+  },
+  "42": {
+    "fips": "42",
+    "name": "Pennsylvania",
+    "population_total": 13078751.0,
+    "sex": {
+      "male": 6448942.0,
+      "female": 6629809.0
+    },
+    "age": {
+      "under_18": 2624989.0,
+      "18_24": 1188407.0,
+      "25_34": 1665429.0,
+      "35_44": 1705462.0,
+      "45_54": 1516912.0,
+      "55_64": 1711578.0,
+      "65_plus": 2665974.0
+    },
+    "race": {
+      "white": 9612302.0,
+      "black": 1378148.0,
+      "american_indian": 35928.0,
+      "asian": 546264.0,
+      "pacific_islander": 3448.0,
+      "other": 505424.0,
+      "two_or_more": 997237.0
+    },
+    "hispanic_or_latino": 1232617.0,
+    "not_hispanic_or_latino": 11846134.0,
+    "education_25plus": {
+      "less_than_high_school": 708539.0,
+      "high_school": 3002687.0,
+      "some_college_or_associate": 2184619.0,
+      "bachelors_or_higher": 3369510.0
+    },
+    "median_household_income": 77545.0,
+    "household_income_brackets": {
+      "lt_25k": 799289.0,
+      "25k_50k": 932620.0,
+      "50k_75k": 864555.0,
+      "75k_100k": 680810.0,
+      "100k_150k": 945882.0,
+      "150k_200k": 499219.0,
+      "gte_200k": 639349.0
+    },
+    "employment": {
+      "in_labor_force": 6811261.0,
+      "civilian_employed": 6506979.0,
+      "civilian_unemployed": 295588.0,
+      "armed_forces": 8694.0,
+      "not_in_labor_force": 3974271.0
+    },
+    "tenure": {
+      "owner_occupied": 3713956.0,
+      "renter_occupied": 1647768.0
+    },
+    "households": {
+      "total": 5361724.0,
+      "family": 3329815.0,
+      "nonfamily": 2031909.0
+    }
+  },
+  "44": {
+    "fips": "44",
+    "name": "Rhode Island",
+    "population_total": 1112308.0,
+    "sex": {
+      "male": 547371.0,
+      "female": 564937.0
+    },
+    "age": {
+      "under_18": 203536.0,
+      "18_24": 111702.0,
+      "25_34": 150668.0,
+      "35_44": 149159.0,
+      "45_54": 127196.0,
+      "55_64": 149879.0,
+      "65_plus": 220168.0
+    },
+    "race": {
+      "white": 762360.0,
+      "black": 61764.0,
+      "american_indian": 6760.0,
+      "asian": 41755.0,
+      "pacific_islander": 583.0,
+      "other": 95036.0,
+      "two_or_more": 144050.0
+    },
+    "hispanic_or_latino": 208976.0,
+    "not_hispanic_or_latino": 903332.0,
+    "education_25plus": {
+      "less_than_high_school": 76371.0,
+      "high_school": 218793.0,
+      "some_college_or_associate": 191024.0,
+      "bachelors_or_higher": 310882.0
+    },
+    "median_household_income": 83504.0,
+    "household_income_brackets": {
+      "lt_25k": 69376.0,
+      "25k_50k": 63879.0,
+      "50k_75k": 69643.0,
+      "75k_100k": 55353.0,
+      "100k_150k": 76601.0,
+      "150k_200k": 48027.0,
+      "gte_200k": 65439.0
+    },
+    "employment": {
+      "in_labor_force": 613737.0,
+      "civilian_employed": 579286.0,
+      "civilian_unemployed": 30755.0,
+      "armed_forces": 3696.0,
+      "not_in_labor_force": 322060.0
+    },
+    "tenure": {
+      "owner_occupied": 284679.0,
+      "renter_occupied": 163639.0
+    },
+    "households": {
+      "total": 448318.0,
+      "family": 269995.0,
+      "nonfamily": 178323.0
+    }
+  },
+  "45": {
+    "fips": "45",
+    "name": "South Carolina",
+    "population_total": 5478831.0,
+    "sex": {
+      "male": 2671064.0,
+      "female": 2807767.0
+    },
+    "age": {
+      "under_18": 1149839.0,
+      "18_24": 503116.0,
+      "25_34": 688592.0,
+      "35_44": 702954.0,
+      "45_54": 650430.0,
+      "55_64": 701176.0,
+      "65_plus": 1082724.0
+    },
+    "race": {
+      "white": 3462009.0,
+      "black": 1294946.0,
+      "american_indian": 25246.0,
+      "asian": 109707.0,
+      "pacific_islander": 3210.0,
+      "other": 143627.0,
+      "two_or_more": 440086.0
+    },
+    "hispanic_or_latino": 434217.0,
+    "not_hispanic_or_latino": 5044614.0,
+    "education_25plus": {
+      "less_than_high_school": 346084.0,
+      "high_school": 1058648.0,
+      "some_college_or_associate": 1145855.0,
+      "bachelors_or_higher": 1275289.0
+    },
+    "median_household_income": 72350.0,
+    "household_income_brackets": {
+      "lt_25k": 358429.0,
+      "25k_50k": 406275.0,
+      "50k_75k": 378465.0,
+      "75k_100k": 300320.0,
+      "100k_150k": 375048.0,
+      "150k_200k": 193613.0,
+      "gte_200k": 210740.0
+    },
+    "employment": {
+      "in_labor_force": 2743170.0,
+      "civilian_employed": 2578529.0,
+      "civilian_unemployed": 121600.0,
+      "armed_forces": 43041.0,
+      "not_in_labor_force": 1733926.0
+    },
+    "tenure": {
+      "owner_occupied": 1607358.0,
+      "renter_occupied": 615532.0
+    },
+    "households": {
+      "total": 2222890.0,
+      "family": 1460157.0,
+      "nonfamily": 762733.0
+    }
+  },
+  "46": {
+    "fips": "46",
+    "name": "South Dakota",
+    "population_total": 924669.0,
+    "sex": {
+      "male": 474961.0,
+      "female": 449708.0
+    },
+    "age": {
+      "under_18": 217535.0,
+      "18_24": 83838.0,
+      "25_34": 116985.0,
+      "35_44": 119888.0,
+      "45_54": 99894.0,
+      "55_64": 110627.0,
+      "65_plus": 175902.0
+    },
+    "race": {
+      "white": 739067.0,
+      "black": 18750.0,
+      "american_indian": 69839.0,
+      "asian": 15776.0,
+      "pacific_islander": 152.0,
+      "other": 15527.0,
+      "two_or_more": 65558.0
+    },
+    "hispanic_or_latino": 44947.0,
+    "not_hispanic_or_latino": 879722.0,
+    "education_25plus": {
+      "less_than_high_school": 37237.0,
+      "high_school": 173625.0,
+      "some_college_or_associate": 199381.0,
+      "bachelors_or_higher": 213053.0
+    },
+    "median_household_income": 76881.0,
+    "household_income_brackets": {
+      "lt_25k": 50412.0,
+      "25k_50k": 66249.0,
+      "50k_75k": 70153.0,
+      "75k_100k": 55098.0,
+      "100k_150k": 74479.0,
+      "150k_200k": 32535.0,
+      "gte_200k": 33376.0
+    },
+    "employment": {
+      "in_labor_force": 498141.0,
+      "civilian_employed": 480631.0,
+      "civilian_unemployed": 13884.0,
+      "armed_forces": 3626.0,
+      "not_in_labor_force": 235492.0
+    },
+    "tenure": {
+      "owner_occupied": 261078.0,
+      "renter_occupied": 121224.0
+    },
+    "households": {
+      "total": 382302.0,
+      "family": 236510.0,
+      "nonfamily": 145792.0
+    }
+  },
+  "47": {
+    "fips": "47",
+    "name": "Tennessee",
+    "population_total": 7227750.0,
+    "sex": {
+      "male": 3544910.0,
+      "female": 3682840.0
+    },
+    "age": {
+      "under_18": 1576399.0,
+      "18_24": 654793.0,
+      "25_34": 992689.0,
+      "35_44": 945131.0,
+      "45_54": 876070.0,
+      "55_64": 908689.0,
+      "65_plus": 1273979.0
+    },
+    "race": {
+      "white": 5201024.0,
+      "black": 1083961.0,
+      "american_indian": 25886.0,
+      "asian": 145954.0,
+      "pacific_islander": 3469.0,
+      "other": 212606.0,
+      "two_or_more": 554850.0
+    },
+    "hispanic_or_latino": 566839.0,
+    "not_hispanic_or_latino": 6660911.0,
+    "education_25plus": {
+      "less_than_high_school": 471248.0,
+      "high_school": 1532795.0,
+      "some_college_or_associate": 1372761.0,
+      "bachelors_or_higher": 1619754.0
+    },
+    "median_household_income": 71997.0,
+    "household_income_brackets": {
+      "lt_25k": 468321.0,
+      "25k_50k": 538645.0,
+      "50k_75k": 505647.0,
+      "75k_100k": 395500.0,
+      "100k_150k": 501634.0,
+      "150k_200k": 240098.0,
+      "gte_200k": 278920.0
+    },
+    "employment": {
+      "in_labor_force": 3700754.0,
+      "civilian_employed": 3525120.0,
+      "civilian_unemployed": 155583.0,
+      "armed_forces": 20051.0,
+      "not_in_labor_force": 2149556.0
+    },
+    "tenure": {
+      "owner_occupied": 1957004.0,
+      "renter_occupied": 971761.0
+    },
+    "households": {
+      "total": 2928765.0,
+      "family": 1874168.0,
+      "nonfamily": 1054597.0
+    }
+  },
+  "48": {
+    "fips": "48",
+    "name": "Texas",
+    "population_total": 31290832.0,
+    "sex": {
+      "male": 15608512.0,
+      "female": 15682319.0
+    },
+    "age": {
+      "under_18": 7657490.0,
+      "18_24": 3056382.0,
+      "25_34": 4514557.0,
+      "35_44": 4491641.0,
+      "45_54": 3834379.0,
+      "55_64": 3370913.0,
+      "65_plus": 4365469.0
+    },
+    "race": {
+      "white": 14780203.0,
+      "black": 3862943.0,
+      "american_indian": 268376.0,
+      "asian": 1917758.0,
+      "pacific_islander": 26245.0,
+      "other": 2931351.0,
+      "two_or_more": 7503955.0
+    },
+    "hispanic_or_latino": 12602305.0,
+    "not_hispanic_or_latino": 18688526.0,
+    "education_25plus": {
+      "less_than_high_school": 2739315.0,
+      "high_school": 5011574.0,
+      "some_college_or_associate": 5590423.0,
+      "bachelors_or_higher": 7235647.0
+    },
+    "median_household_income": 79721.0,
+    "household_income_brackets": {
+      "lt_25k": 1647532.0,
+      "25k_50k": 1905231.0,
+      "50k_75k": 1865126.0,
+      "75k_100k": 1448602.0,
+      "100k_150k": 1981257.0,
+      "150k_200k": 1090177.0,
+      "gte_200k": 1511844.0
+    },
+    "employment": {
+      "in_labor_force": 16153610.0,
+      "civilian_employed": 15259450.0,
+      "civilian_unemployed": 775249.0,
+      "armed_forces": 118911.0,
+      "not_in_labor_force": 8415947.0
+    },
+    "tenure": {
+      "owner_occupied": 7134877.0,
+      "renter_occupied": 4314892.0
+    },
+    "households": {
+      "total": 11449769.0,
+      "family": 7739539.0,
+      "nonfamily": 3710230.0
+    }
+  },
+  "49": {
+    "fips": "49",
+    "name": "Utah",
+    "population_total": 3503613.0,
+    "sex": {
+      "male": 1778121.0,
+      "female": 1725492.0
+    },
+    "age": {
+      "under_18": 932753.0,
+      "18_24": 417656.0,
+      "25_34": 528334.0,
+      "35_44": 473227.0,
+      "45_54": 405255.0,
+      "55_64": 311466.0,
+      "65_plus": 434922.0
+    },
+    "race": {
+      "white": 2714710.0,
+      "black": 43219.0,
+      "american_indian": 36594.0,
+      "asian": 95743.0,
+      "pacific_islander": 30497.0,
+      "other": 202796.0,
+      "two_or_more": 380054.0
+    },
+    "hispanic_or_latino": 592412.0,
+    "not_hispanic_or_latino": 2911201.0,
+    "education_25plus": {
+      "less_than_high_school": 137406.0,
+      "high_school": 481509.0,
+      "some_college_or_associate": 692008.0,
+      "bachelors_or_higher": 842281.0
+    },
+    "median_household_income": 96658.0,
+    "household_income_brackets": {
+      "lt_25k": 104931.0,
+      "25k_50k": 157379.0,
+      "50k_75k": 179121.0,
+      "75k_100k": 171140.0,
+      "100k_150k": 261893.0,
+      "150k_200k": 139501.0,
+      "gte_200k": 170463.0
+    },
+    "employment": {
+      "in_labor_force": 1875908.0,
+      "civilian_employed": 1798140.0,
+      "civilian_unemployed": 70585.0,
+      "armed_forces": 7183.0,
+      "not_in_labor_force": 812370.0
+    },
+    "tenure": {
+      "owner_occupied": 824019.0,
+      "renter_occupied": 360409.0
+    },
+    "households": {
+      "total": 1184428.0,
+      "family": 849439.0,
+      "nonfamily": 334989.0
+    }
+  },
+  "50": {
+    "fips": "50",
+    "name": "Vermont",
+    "population_total": 648493.0,
+    "sex": {
+      "male": 320167.0,
+      "female": 328326.0
+    },
+    "age": {
+      "under_18": 112028.0,
+      "18_24": 62118.0,
+      "25_34": 74766.0,
+      "35_44": 82575.0,
+      "45_54": 78635.0,
+      "55_64": 89886.0,
+      "65_plus": 148485.0
+    },
+    "race": {
+      "white": 584330.0,
+      "black": 6276.0,
+      "american_indian": 1168.0,
+      "asian": 13343.0,
+      "pacific_islander": 7.0,
+      "other": 4277.0,
+      "two_or_more": 39092.0
+    },
+    "hispanic_or_latino": 17401.0,
+    "not_hispanic_or_latino": 631092.0,
+    "education_25plus": {
+      "less_than_high_school": 25113.0,
+      "high_school": 122399.0,
+      "some_college_or_associate": 112923.0,
+      "bachelors_or_higher": 213912.0
+    },
+    "median_household_income": 82730.0,
+    "household_income_brackets": {
+      "lt_25k": 35787.0,
+      "25k_50k": 47073.0,
+      "50k_75k": 47291.0,
+      "75k_100k": 39043.0,
+      "100k_150k": 54589.0,
+      "150k_200k": 29884.0,
+      "gte_200k": 31881.0
+    },
+    "employment": {
+      "in_labor_force": 358864.0,
+      "civilian_employed": 348622.0,
+      "civilian_unemployed": 9554.0,
+      "armed_forces": 688.0,
+      "not_in_labor_force": 194632.0
+    },
+    "tenure": {
+      "owner_occupied": 209117.0,
+      "renter_occupied": 76431.0
+    },
+    "households": {
+      "total": 285548.0,
+      "family": 164873.0,
+      "nonfamily": 120675.0
+    }
+  },
+  "51": {
+    "fips": "51",
+    "name": "Virginia",
+    "population_total": 8811195.0,
+    "sex": {
+      "male": 4356641.0,
+      "female": 4454554.0
+    },
+    "age": {
+      "under_18": 1874030.0,
+      "18_24": 824337.0,
+      "25_34": 1160123.0,
+      "35_44": 1231509.0,
+      "45_54": 1077368.0,
+      "55_64": 1093443.0,
+      "65_plus": 1550385.0
+    },
+    "race": {
+      "white": 5224503.0,
+      "black": 1605505.0,
+      "american_indian": 36525.0,
+      "asian": 632236.0,
+      "pacific_islander": 6612.0,
+      "other": 407953.0,
+      "two_or_more": 897861.0
+    },
+    "hispanic_or_latino": 1017833.0,
+    "not_hispanic_or_latino": 7793362.0,
+    "education_25plus": {
+      "less_than_high_school": 506685.0,
+      "high_school": 1443412.0,
+      "some_college_or_associate": 1513349.0,
+      "bachelors_or_higher": 2649382.0
+    },
+    "median_household_income": 92090.0,
+    "household_income_brackets": {
+      "lt_25k": 417553.0,
+      "25k_50k": 492923.0,
+      "50k_75k": 507674.0,
+      "75k_100k": 422562.0,
+      "100k_150k": 619942.0,
+      "150k_200k": 384460.0,
+      "gte_200k": 604193.0
+    },
+    "employment": {
+      "in_labor_force": 4679200.0,
+      "civilian_employed": 4381889.0,
+      "civilian_unemployed": 164596.0,
+      "armed_forces": 132715.0,
+      "not_in_labor_force": 2494496.0
+    },
+    "tenure": {
+      "owner_occupied": 2315258.0,
+      "renter_occupied": 1134049.0
+    },
+    "households": {
+      "total": 3449307.0,
+      "family": 2231548.0,
+      "nonfamily": 1217759.0
+    }
+  },
+  "53": {
+    "fips": "53",
+    "name": "Washington",
+    "population_total": 7958180.0,
+    "sex": {
+      "male": 4009969.0,
+      "female": 3948211.0
+    },
+    "age": {
+      "under_18": 1652049.0,
+      "18_24": 674671.0,
+      "25_34": 1209813.0,
+      "35_44": 1179467.0,
+      "45_54": 944968.0,
+      "55_64": 918704.0,
+      "65_plus": 1378508.0
+    },
+    "race": {
+      "white": 5093664.0,
+      "black": 326086.0,
+      "american_indian": 98215.0,
+      "asian": 852985.0,
+      "pacific_islander": 60426.0,
+      "other": 447338.0,
+      "two_or_more": 1079466.0
+    },
+    "hispanic_or_latino": 1194522.0,
+    "not_hispanic_or_latino": 6763658.0,
+    "education_25plus": {
+      "less_than_high_school": 435412.0,
+      "high_school": 1186799.0,
+      "some_college_or_associate": 1699386.0,
+      "bachelors_or_higher": 2309863.0
+    },
+    "median_household_income": 99389.0,
+    "household_income_brackets": {
+      "lt_25k": 352497.0,
+      "25k_50k": 405014.0,
+      "50k_75k": 439953.0,
+      "75k_100k": 394127.0,
+      "100k_150k": 605764.0,
+      "150k_200k": 358622.0,
+      "gte_200k": 612103.0
+    },
+    "employment": {
+      "in_labor_force": 4229462.0,
+      "civilian_employed": 3964612.0,
+      "civilian_unemployed": 203073.0,
+      "armed_forces": 61777.0,
+      "not_in_labor_force": 2276029.0
+    },
+    "tenure": {
+      "owner_occupied": 1992341.0,
+      "renter_occupied": 1175739.0
+    },
+    "households": {
+      "total": 3168080.0,
+      "family": 1980171.0,
+      "nonfamily": 1187909.0
+    }
+  },
+  "54": {
+    "fips": "54",
+    "name": "West Virginia",
+    "population_total": 1769979.0,
+    "sex": {
+      "male": 881512.0,
+      "female": 888467.0
+    },
+    "age": {
+      "under_18": 347578.0,
+      "18_24": 153712.0,
+      "25_34": 213124.0,
+      "35_44": 215956.0,
+      "45_54": 219364.0,
+      "55_64": 233394.0,
+      "65_plus": 386851.0
+    },
+    "race": {
+      "white": 1582278.0,
+      "black": 56949.0,
+      "american_indian": 3369.0,
+      "asian": 12501.0,
+      "pacific_islander": 251.0,
+      "other": 18888.0,
+      "two_or_more": 95743.0
+    },
+    "hispanic_or_latino": 41002.0,
+    "not_hispanic_or_latino": 1728977.0,
+    "education_25plus": {
+      "less_than_high_school": 125978.0,
+      "high_school": 499621.0,
+      "some_college_or_associate": 333809.0,
+      "bachelors_or_higher": 309281.0
+    },
+    "median_household_income": 60798.0,
+    "household_income_brackets": {
+      "lt_25k": 155096.0,
+      "25k_50k": 155428.0,
+      "50k_75k": 127153.0,
+      "75k_100k": 98105.0,
+      "100k_150k": 114465.0,
+      "150k_200k": 47012.0,
+      "gte_200k": 43581.0
+    },
+    "employment": {
+      "in_labor_force": 806719.0,
+      "civilian_employed": 766794.0,
+      "civilian_unemployed": 37264.0,
+      "armed_forces": 2661.0,
+      "not_in_labor_force": 662909.0
+    },
+    "tenure": {
+      "owner_occupied": 559415.0,
+      "renter_occupied": 181425.0
+    },
+    "households": {
+      "total": 740840.0,
+      "family": 472539.0,
+      "nonfamily": 268301.0
+    }
+  },
+  "55": {
+    "fips": "55",
+    "name": "Wisconsin",
+    "population_total": 5960975.0,
+    "sex": {
+      "male": 2984118.0,
+      "female": 2976857.0
+    },
+    "age": {
+      "under_18": 1233276.0,
+      "18_24": 555061.0,
+      "25_34": 757466.0,
+      "35_44": 761404.0,
+      "45_54": 693334.0,
+      "55_64": 789392.0,
+      "65_plus": 1171042.0
+    },
+    "race": {
+      "white": 4741979.0,
+      "black": 364289.0,
+      "american_indian": 50562.0,
+      "asian": 186141.0,
+      "pacific_islander": 3185.0,
+      "other": 151075.0,
+      "two_or_more": 463744.0
+    },
+    "hispanic_or_latino": 499904.0,
+    "not_hispanic_or_latino": 5461071.0,
+    "education_25plus": {
+      "less_than_high_school": 262283.0,
+      "high_school": 1202481.0,
+      "some_college_or_associate": 1265978.0,
+      "bachelors_or_higher": 1441896.0
+    },
+    "median_household_income": 77488.0,
+    "household_income_brackets": {
+      "lt_25k": 337767.0,
+      "25k_50k": 450042.0,
+      "50k_75k": 437482.0,
+      "75k_100k": 350739.0,
+      "100k_150k": 492532.0,
+      "150k_200k": 227254.0,
+      "gte_200k": 239382.0
+    },
+    "employment": {
+      "in_labor_force": 3191606.0,
+      "civilian_employed": 3090398.0,
+      "civilian_unemployed": 97244.0,
+      "armed_forces": 3964.0,
+      "not_in_labor_force": 1691367.0
+    },
+    "tenure": {
+      "owner_occupied": 1723526.0,
+      "renter_occupied": 811672.0
+    },
+    "households": {
+      "total": 2535198.0,
+      "family": 1520495.0,
+      "nonfamily": 1014703.0
+    }
+  },
+  "56": {
+    "fips": "56",
+    "name": "Wyoming",
+    "population_total": 587618.0,
+    "sex": {
+      "male": 301319.0,
+      "female": 286299.0
+    },
+    "age": {
+      "under_18": 124986.0,
+      "18_24": 53288.0,
+      "25_34": 73811.0,
+      "35_44": 81161.0,
+      "45_54": 67033.0,
+      "55_64": 69966.0,
+      "65_plus": 117373.0
+    },
+    "race": {
+      "white": 489502.0,
+      "black": 4599.0,
+      "american_indian": 10218.0,
+      "asian": 5818.0,
+      "pacific_islander": 822.0,
+      "other": 23840.0,
+      "two_or_more": 52819.0
+    },
+    "hispanic_or_latino": 65030.0,
+    "not_hispanic_or_latino": 522588.0,
+    "education_25plus": {
+      "less_than_high_school": 22830.0,
+      "high_school": 114226.0,
+      "some_college_or_associate": 140138.0,
+      "bachelors_or_higher": 132150.0
+    },
+    "median_household_income": 75532.0,
+    "household_income_brackets": {
+      "lt_25k": 35431.0,
+      "25k_50k": 47186.0,
+      "50k_75k": 44591.0,
+      "75k_100k": 34974.0,
+      "100k_150k": 46330.0,
+      "150k_200k": 26226.0,
+      "gte_200k": 21551.0
+    },
+    "employment": {
+      "in_labor_force": 311849.0,
+      "civilian_employed": 297101.0,
+      "civilian_unemployed": 10546.0,
+      "armed_forces": 4202.0,
+      "not_in_labor_force": 168634.0
+    },
+    "tenure": {
+      "owner_occupied": 183683.0,
+      "renter_occupied": 72606.0
+    },
+    "households": {
+      "total": 256289.0,
+      "family": 160123.0,
+      "nonfamily": 96166.0
+    }
+  }
+}

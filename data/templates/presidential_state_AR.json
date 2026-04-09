@@ -1,0 +1,633 @@
+{
+  "name": "Arkansas Sample (US)",
+  "name_zh": "阿肯色州樣本",
+  "region": "Arkansas",
+  "region_code": "AR",
+  "fips": "05",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.159019,
+    "state_pvi_label": "R+16",
+    "county_count": 75,
+    "population_total": 3088354
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4914
+        },
+        {
+          "value": "Female",
+          "weight": 0.5086
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2261
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0944
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1265
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1315
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1189
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1205
+        },
+        {
+          "range": "65+",
+          "weight": 0.1822
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Pulaski County",
+          "weight": 0.1318
+        },
+        {
+          "value": "Benton County",
+          "weight": 0.0996
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0842
+        },
+        {
+          "value": "Sebastian County",
+          "weight": 0.0423
+        },
+        {
+          "value": "Faulkner County",
+          "weight": 0.0419
+        },
+        {
+          "value": "Saline County",
+          "weight": 0.0418
+        },
+        {
+          "value": "Craighead County",
+          "weight": 0.0371
+        },
+        {
+          "value": "Garland County",
+          "weight": 0.0328
+        },
+        {
+          "value": "White County",
+          "weight": 0.0255
+        },
+        {
+          "value": "Lonoke County",
+          "weight": 0.0247
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0213
+        },
+        {
+          "value": "Pope County",
+          "weight": 0.021
+        },
+        {
+          "value": "Crawford County",
+          "weight": 0.02
+        },
+        {
+          "value": "Crittenden County",
+          "weight": 0.0155
+        },
+        {
+          "value": "Greene County",
+          "weight": 0.0152
+        },
+        {
+          "value": "Baxter County",
+          "weight": 0.0139
+        },
+        {
+          "value": "Miller County",
+          "weight": 0.0139
+        },
+        {
+          "value": "Mississippi County",
+          "weight": 0.0128
+        },
+        {
+          "value": "Independence County",
+          "weight": 0.0125
+        },
+        {
+          "value": "Boone County",
+          "weight": 0.0125
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0124
+        },
+        {
+          "value": "Hot Spring County",
+          "weight": 0.0109
+        },
+        {
+          "value": "Carroll County",
+          "weight": 0.0094
+        },
+        {
+          "value": "Johnson County",
+          "weight": 0.0085
+        },
+        {
+          "value": "Cleburne County",
+          "weight": 0.0083
+        },
+        {
+          "value": "Poinsett County",
+          "weight": 0.0074
+        },
+        {
+          "value": "St. Francis County",
+          "weight": 0.0073
+        },
+        {
+          "value": "Columbia County",
+          "weight": 0.0073
+        },
+        {
+          "value": "Ouachita County",
+          "weight": 0.0072
+        },
+        {
+          "value": "Logan County",
+          "weight": 0.007
+        },
+        {
+          "value": "Clark County",
+          "weight": 0.0069
+        },
+        {
+          "value": "Conway County",
+          "weight": 0.0069
+        },
+        {
+          "value": "Yell County",
+          "weight": 0.0066
+        },
+        {
+          "value": "Hempstead County",
+          "weight": 0.0064
+        },
+        {
+          "value": "Polk County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Randolph County",
+          "weight": 0.0062
+        },
+        {
+          "value": "Ashley County",
+          "weight": 0.006
+        },
+        {
+          "value": "Grant County",
+          "weight": 0.006
+        },
+        {
+          "value": "Sharp County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Marion County",
+          "weight": 0.0056
+        },
+        {
+          "value": "Drew County",
+          "weight": 0.0056
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Cross County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Arkansas County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Lawrence County",
+          "weight": 0.0053
+        },
+        {
+          "value": "Van Buren County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Sevier County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Phillips County",
+          "weight": 0.0051
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0047
+        },
+        {
+          "value": "Izard County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Howard County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Stone County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Fulton County",
+          "weight": 0.004
+        },
+        {
+          "value": "Little River County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Desha County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Bradley County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Pike County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Perry County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Scott County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Chicot County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Lee County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Nevada County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Prairie County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Searcy County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Cleveland County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Newton County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Monroe County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Dallas County",
+          "weight": 0.002
+        },
+        {
+          "value": "Lafayette County",
+          "weight": 0.002
+        },
+        {
+          "value": "Woodruff County",
+          "weight": 0.002
+        },
+        {
+          "value": "Calhoun County",
+          "weight": 0.0015
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.1071
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.3313
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2904
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.2712
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.1523
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.1069
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1352
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.6056
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.5648
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0224
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0026
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.4102
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6711
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3289
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Arkansas."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Arkansas."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Arkansas."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Arkansas presidential context]\nThis template models a generic US presidential race within Arkansas (AR). The state's Cook PVI is R+16 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Arkansas state issues → pinned on the in-state governing party",
+      "zh-TW": "【Arkansas（AR）總統選舉背景】\n本 template 模擬一場 Arkansas 內的通用美國總統選舉。該州的 Cook PVI 為 R+16（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Arkansas 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Arkansas election polling\nArkansas (AR) governor senate\nArkansas economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

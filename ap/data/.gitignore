@@ -1,0 +1,4 @@
+# Persistent data (bind-mounted into containers)
+# Keep directory structure, ignore contents
+**/
+!.gitignore

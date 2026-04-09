@@ -1,0 +1,42 @@
+{
+  "llm_mode": "multi",
+  "llm_vendors": [
+    {
+      "id": "openai",
+      "display_name": "OpenAI",
+      "vendor_type": "openai",
+      "api_key": "",
+      "model": "gpt-4o-mini",
+      "base_url": "",
+      "temperature": null
+    },
+    {
+      "id": "gemini",
+      "display_name": "Gemini",
+      "vendor_type": "gemini",
+      "api_key": "",
+      "model": "gemini-2.0-flash",
+      "base_url": "",
+      "temperature": null
+    },
+    {
+      "id": "xai",
+      "display_name": "xAI",
+      "vendor_type": "xai",
+      "api_key": "",
+      "model": "grok-4-1-fast",
+      "base_url": "https://api.x.ai/v1",
+      "temperature": null
+    },
+    {
+      "id": "deepseek",
+      "display_name": "DeepSeek",
+      "vendor_type": "deepseek",
+      "api_key": "",
+      "model": "deepseek-chat",
+      "base_url": "https://api.deepseek.com",
+      "temperature": null
+    }
+  ],
+  "serper_api_key": ""
+}

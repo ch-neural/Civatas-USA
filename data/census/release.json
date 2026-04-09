@@ -1,0 +1,21 @@
+{
+  "states_release": {
+    "id": "acs2024_1yr",
+    "name": "ACS 2024 1-year",
+    "years": "2024"
+  },
+  "tables": [
+    "B01001",
+    "B02001",
+    "B03003",
+    "B11001",
+    "B15003",
+    "B19001",
+    "B19013",
+    "B23025",
+    "B25003"
+  ],
+  "source": "https://censusreporter.org",
+  "license": "ACS data is public domain (US Census Bureau)",
+  "note": "censusreporter auto-falls-back from acs2024_1yr to acs2024_5yr for geographies under 65k population."
+}

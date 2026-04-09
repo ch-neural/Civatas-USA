@@ -1,0 +1,793 @@
+{
+  "name": "Missouri Sample (US)",
+  "name_zh": "密蘇里州樣本",
+  "region": "Missouri",
+  "region_code": "MO",
+  "fips": "29",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.114185,
+    "state_pvi_label": "R+11",
+    "county_count": 115,
+    "population_total": 6245466
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4932
+        },
+        {
+          "value": "Female",
+          "weight": 0.5068
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2188
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0921
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1309
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1309
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1152
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1248
+        },
+        {
+          "range": "65+",
+          "weight": 0.1872
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "St. Louis County",
+          "weight": 0.1607
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.1163
+        },
+        {
+          "value": "St. Charles County",
+          "weight": 0.0669
+        },
+        {
+          "value": "Greene County",
+          "weight": 0.049
+        },
+        {
+          "value": "St. Louis city",
+          "weight": 0.0466
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0417
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0371
+        },
+        {
+          "value": "Boone County",
+          "weight": 0.0304
+        },
+        {
+          "value": "Jasper County",
+          "weight": 0.0201
+        },
+        {
+          "value": "Cass County",
+          "weight": 0.0179
+        },
+        {
+          "value": "Platte County",
+          "weight": 0.0178
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0171
+        },
+        {
+          "value": "Christian County",
+          "weight": 0.015
+        },
+        {
+          "value": "Buchanan County",
+          "weight": 0.0135
+        },
+        {
+          "value": "Cape Girardeau County",
+          "weight": 0.0134
+        },
+        {
+          "value": "Cole County",
+          "weight": 0.0124
+        },
+        {
+          "value": "St. Francois County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0102
+        },
+        {
+          "value": "Newton County",
+          "weight": 0.0097
+        },
+        {
+          "value": "Taney County",
+          "weight": 0.0091
+        },
+        {
+          "value": "Johnson County",
+          "weight": 0.0088
+        },
+        {
+          "value": "Pulaski County",
+          "weight": 0.0087
+        },
+        {
+          "value": "Phelps County",
+          "weight": 0.0073
+        },
+        {
+          "value": "Callaway County",
+          "weight": 0.0072
+        },
+        {
+          "value": "Camden County",
+          "weight": 0.0071
+        },
+        {
+          "value": "Pettis County",
+          "weight": 0.007
+        },
+        {
+          "value": "Butler County",
+          "weight": 0.0068
+        },
+        {
+          "value": "Webster County",
+          "weight": 0.0065
+        },
+        {
+          "value": "Howell County",
+          "weight": 0.0065
+        },
+        {
+          "value": "Lawrence County",
+          "weight": 0.0062
+        },
+        {
+          "value": "Scott County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Warren County",
+          "weight": 0.006
+        },
+        {
+          "value": "Laclede County",
+          "weight": 0.0059
+        },
+        {
+          "value": "Barry County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Lafayette County",
+          "weight": 0.0053
+        },
+        {
+          "value": "Polk County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Stone County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Stoddard County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Marion County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Dunklin County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Adair County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Miller County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Texas County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Audrain County",
+          "weight": 0.004
+        },
+        {
+          "value": "Randolph County",
+          "weight": 0.0039
+        },
+        {
+          "value": "McDonald County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Saline County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Ray County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Crawford County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Henry County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Morgan County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Clinton County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Nodaway County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Benton County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Vernon County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Perry County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Wright County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Ste. Genevieve County",
+          "weight": 0.003
+        },
+        {
+          "value": "Andrew County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Pike County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Dallas County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Cooper County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Bates County",
+          "weight": 0.0026
+        },
+        {
+          "value": "New Madrid County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Moniteau County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Macon County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Pemiscot County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Gasconade County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Cedar County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Dent County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Livingston County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Osage County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Douglas County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Mississippi County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Linn County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Barton County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0018
+        },
+        {
+          "value": "DeKalb County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Wayne County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Ripley County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Bollinger County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Ralls County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Howard County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Lewis County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Grundy County",
+          "weight": 0.0016
+        },
+        {
+          "value": "St. Clair County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Iron County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Caldwell County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Ozark County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Monroe County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Oregon County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Hickory County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Daviess County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Maries County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Carroll County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Harrison County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Dade County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Chariton County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Shannon County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Clark County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Gentry County",
+          "weight": 0.001
+        },
+        {
+          "value": "Reynolds County",
+          "weight": 0.001
+        },
+        {
+          "value": "Shelby County",
+          "weight": 0.001
+        },
+        {
+          "value": "Sullivan County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Carter County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Atchison County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Scotland County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Putnam County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Holt County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Schuyler County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Knox County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Mercer County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Worth County",
+          "weight": 0.0003
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0799
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2947
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2907
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3347
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0402
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.1744
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.1639
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1413
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.4802
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6105
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0205
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0042
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3648
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6856
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3144
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Missouri."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Missouri."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Missouri."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Missouri presidential context]\nThis template models a generic US presidential race within Missouri (MO). The state's Cook PVI is R+11 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Missouri state issues → pinned on the in-state governing party",
+      "zh-TW": "【Missouri（MO）總統選舉背景】\n本 template 模擬一場 Missouri 內的通用美國總統選舉。該州的 Cook PVI 為 R+11（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Missouri 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Missouri election polling\nMissouri (MO) governor senate\nMissouri economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

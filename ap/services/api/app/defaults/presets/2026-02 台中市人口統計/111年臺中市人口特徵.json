@@ -1,0 +1,2045 @@
+{
+  "name": "111年臺中市人口特徵（含全區分佈）",
+  "region": "台中市",
+  "locale": "zh-TW",
+  "target_count": 50,
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "男",
+          "weight": 0.4873
+        },
+        {
+          "value": "女",
+          "weight": 0.5127
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "0-5",
+          "weight": 0.0395
+        },
+        {
+          "range": "6-11",
+          "weight": 0.0574
+        },
+        {
+          "range": "12-17",
+          "weight": 0.0558
+        },
+        {
+          "range": "18-19",
+          "weight": 0.0189
+        },
+        {
+          "range": "20-29",
+          "weight": 0.1196
+        },
+        {
+          "range": "30-39",
+          "weight": 0.1461
+        },
+        {
+          "range": "40-49",
+          "weight": 0.1704
+        },
+        {
+          "range": "50-59",
+          "weight": 0.1454
+        },
+        {
+          "range": "60-69",
+          "weight": 0.1345
+        },
+        {
+          "range": "70+",
+          "weight": 0.1124
+        }
+      ]
+    },
+    "district": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "北屯區",
+          "weight": 0.1107
+        },
+        {
+          "value": "西屯區",
+          "weight": 0.083
+        },
+        {
+          "value": "大里區",
+          "weight": 0.0735
+        },
+        {
+          "value": "太平區",
+          "weight": 0.0703
+        },
+        {
+          "value": "南屯區",
+          "weight": 0.0649
+        },
+        {
+          "value": "豐原區",
+          "weight": 0.0563
+        },
+        {
+          "value": "北區",
+          "weight": 0.05
+        },
+        {
+          "value": "南區",
+          "weight": 0.0447
+        },
+        {
+          "value": "西區",
+          "weight": 0.0395
+        },
+        {
+          "value": "潭子區",
+          "weight": 0.0381
+        },
+        {
+          "value": "沙鹿區",
+          "weight": 0.0354
+        },
+        {
+          "value": "大雅區",
+          "weight": 0.033
+        },
+        {
+          "value": "清水區",
+          "weight": 0.0316
+        },
+        {
+          "value": "烏日區",
+          "weight": 0.0287
+        },
+        {
+          "value": "龍井區",
+          "weight": 0.0276
+        },
+        {
+          "value": "東區",
+          "weight": 0.0271
+        },
+        {
+          "value": "大甲區",
+          "weight": 0.0254
+        },
+        {
+          "value": "梧棲區",
+          "weight": 0.0231
+        },
+        {
+          "value": "神岡區",
+          "weight": 0.022
+        },
+        {
+          "value": "霧峰區",
+          "weight": 0.0218
+        },
+        {
+          "value": "大肚區",
+          "weight": 0.0192
+        },
+        {
+          "value": "后里區",
+          "weight": 0.0184
+        },
+        {
+          "value": "東勢區",
+          "weight": 0.0162
+        },
+        {
+          "value": "外埔區",
+          "weight": 0.0107
+        },
+        {
+          "value": "新社區",
+          "weight": 0.0079
+        },
+        {
+          "value": "中區",
+          "weight": 0.0063
+        },
+        {
+          "value": "大安區",
+          "weight": 0.0061
+        },
+        {
+          "value": "石岡區",
+          "weight": 0.0048
+        },
+        {
+          "value": "和平區",
+          "weight": 0.0036
+        }
+      ]
+    }
+  },
+  "district_profiles": {
+    "北屯區": {
+      "name": "北屯區",
+      "population": 317532,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4726
+            },
+            {
+              "value": "女",
+              "weight": 0.5274
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0451
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0627
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0557
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0176
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1128
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1596
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1749
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1437
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1279
+            },
+            {
+              "range": "70+",
+              "weight": 0.1
+            }
+          ]
+        }
+      }
+    },
+    "西屯區": {
+      "name": "西屯區",
+      "population": 237978,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4739
+            },
+            {
+              "value": "女",
+              "weight": 0.5261
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0401
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0628
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0616
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0191
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1195
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1426
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1682
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1549
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1332
+            },
+            {
+              "range": "70+",
+              "weight": 0.098
+            }
+          ]
+        }
+      }
+    },
+    "大里區": {
+      "name": "大里區",
+      "population": 210922,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4858
+            },
+            {
+              "value": "女",
+              "weight": 0.5142
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.038
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0597
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0599
+            },
+            {
+              "range": "18-19",
+              "weight": 0.02
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1217
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1471
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1753
+            },
+            {
+              "range": "50-59",
+              "weight": 0.138
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1365
+            },
+            {
+              "range": "70+",
+              "weight": 0.1039
+            }
+          ]
+        }
+      }
+    },
+    "太平區": {
+      "name": "太平區",
+      "population": 201696,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4904
+            },
+            {
+              "value": "女",
+              "weight": 0.5096
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0434
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0576
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0526
+            },
+            {
+              "range": "18-19",
+              "weight": 0.018
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1178
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1603
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1769
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1376
+            },
+            {
+              "range": "60-69",
+              "weight": 0.133
+            },
+            {
+              "range": "70+",
+              "weight": 0.1028
+            }
+          ]
+        }
+      }
+    },
+    "南屯區": {
+      "name": "南屯區",
+      "population": 186106,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4729
+            },
+            {
+              "value": "女",
+              "weight": 0.5271
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0444
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0677
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0619
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0197
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1249
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1452
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1668
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1592
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1234
+            },
+            {
+              "range": "70+",
+              "weight": 0.0868
+            }
+          ]
+        }
+      }
+    },
+    "豐原區": {
+      "name": "豐原區",
+      "population": 161597,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4895
+            },
+            {
+              "value": "女",
+              "weight": 0.5105
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.037
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0596
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0589
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0191
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1161
+            },
+            {
+              "range": "30-39",
+              "weight": 0.137
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1679
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1385
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1388
+            },
+            {
+              "range": "70+",
+              "weight": 0.1271
+            }
+          ]
+        }
+      }
+    },
+    "北區": {
+      "name": "北區",
+      "population": 143563,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4723
+            },
+            {
+              "value": "女",
+              "weight": 0.5277
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0331
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0464
+            },
+            {
+              "range": "12-17",
+              "weight": 0.047
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0169
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1088
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1449
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1624
+            },
+            {
+              "range": "50-59",
+              "weight": 0.147
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1506
+            },
+            {
+              "range": "70+",
+              "weight": 0.1429
+            }
+          ]
+        }
+      }
+    },
+    "南區": {
+      "name": "南區",
+      "population": 128261,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4742
+            },
+            {
+              "value": "女",
+              "weight": 0.5258
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0362
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0458
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0504
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0201
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1265
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1454
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1715
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1697
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1283
+            },
+            {
+              "range": "70+",
+              "weight": 0.1061
+            }
+          ]
+        }
+      }
+    },
+    "西區": {
+      "name": "西區",
+      "population": 113237,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4676
+            },
+            {
+              "value": "女",
+              "weight": 0.5324
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0312
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0684
+            },
+            {
+              "range": "12-17",
+              "weight": 0.06
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0169
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1064
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1252
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1584
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1489
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1426
+            },
+            {
+              "range": "70+",
+              "weight": 0.142
+            }
+          ]
+        }
+      }
+    },
+    "潭子區": {
+      "name": "潭子區",
+      "population": 109275,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4908
+            },
+            {
+              "value": "女",
+              "weight": 0.5092
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0392
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0521
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0532
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0191
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1259
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1497
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1673
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1524
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1387
+            },
+            {
+              "range": "70+",
+              "weight": 0.1025
+            }
+          ]
+        }
+      }
+    },
+    "沙鹿區": {
+      "name": "沙鹿區",
+      "population": 101540,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4994
+            },
+            {
+              "value": "女",
+              "weight": 0.5006
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0454
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0703
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0671
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0219
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1198
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1433
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1885
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1406
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1074
+            },
+            {
+              "range": "70+",
+              "weight": 0.0958
+            }
+          ]
+        }
+      }
+    },
+    "大雅區": {
+      "name": "大雅區",
+      "population": 94683,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.496
+            },
+            {
+              "value": "女",
+              "weight": 0.504
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0421
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0606
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0598
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0206
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1275
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1504
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1701
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1422
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1347
+            },
+            {
+              "range": "70+",
+              "weight": 0.092
+            }
+          ]
+        }
+      }
+    },
+    "清水區": {
+      "name": "清水區",
+      "population": 90585,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5086
+            },
+            {
+              "value": "女",
+              "weight": 0.4914
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0404
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0525
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0531
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0189
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1219
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1447
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1772
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1392
+            },
+            {
+              "range": "60-69",
+              "weight": 0.129
+            },
+            {
+              "range": "70+",
+              "weight": 0.1231
+            }
+          ]
+        }
+      }
+    },
+    "烏日區": {
+      "name": "烏日區",
+      "population": 82190,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4943
+            },
+            {
+              "value": "女",
+              "weight": 0.5057
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0452
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0589
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0551
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0186
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1189
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1566
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1788
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1381
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1256
+            },
+            {
+              "range": "70+",
+              "weight": 0.1043
+            }
+          ]
+        }
+      }
+    },
+    "龍井區": {
+      "name": "龍井區",
+      "population": 79263,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5008
+            },
+            {
+              "value": "女",
+              "weight": 0.4992
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0416
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0525
+            },
+            {
+              "range": "12-17",
+              "weight": 0.056
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0207
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1296
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1561
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1745
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1419
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1287
+            },
+            {
+              "range": "70+",
+              "weight": 0.0984
+            }
+          ]
+        }
+      }
+    },
+    "東區": {
+      "name": "東區",
+      "population": 77762,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4894
+            },
+            {
+              "value": "女",
+              "weight": 0.5106
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0361
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0467
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0489
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0177
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1127
+            },
+            {
+              "range": "30-39",
+              "weight": 0.145
+            },
+            {
+              "range": "40-49",
+              "weight": 0.171
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1481
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1419
+            },
+            {
+              "range": "70+",
+              "weight": 0.132
+            }
+          ]
+        }
+      }
+    },
+    "大甲區": {
+      "name": "大甲區",
+      "population": 72999,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5001
+            },
+            {
+              "value": "女",
+              "weight": 0.4999
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0395
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0616
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0595
+            },
+            {
+              "range": "18-19",
+              "weight": 0.019
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1232
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1386
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1587
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1327
+            },
+            {
+              "range": "60-69",
+              "weight": 0.14
+            },
+            {
+              "range": "70+",
+              "weight": 0.1273
+            }
+          ]
+        }
+      }
+    },
+    "梧棲區": {
+      "name": "梧棲區",
+      "population": 66349,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4963
+            },
+            {
+              "value": "女",
+              "weight": 0.5037
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0447
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0611
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0566
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0206
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1257
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1575
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1903
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1313
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1161
+            },
+            {
+              "range": "70+",
+              "weight": 0.096
+            }
+          ]
+        }
+      }
+    },
+    "神岡區": {
+      "name": "神岡區",
+      "population": 63212,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5101
+            },
+            {
+              "value": "女",
+              "weight": 0.4899
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0368
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0482
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0527
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0199
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1272
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1419
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1684
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1415
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1434
+            },
+            {
+              "range": "70+",
+              "weight": 0.1199
+            }
+          ]
+        }
+      }
+    },
+    "霧峰區": {
+      "name": "霧峰區",
+      "population": 62494,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.507
+            },
+            {
+              "value": "女",
+              "weight": 0.493
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0343
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0465
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0468
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0164
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1206
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1435
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1605
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1389
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1569
+            },
+            {
+              "range": "70+",
+              "weight": 0.1356
+            }
+          ]
+        }
+      }
+    },
+    "大肚區": {
+      "name": "大肚區",
+      "population": 55151,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5072
+            },
+            {
+              "value": "女",
+              "weight": 0.4928
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.035
+            },
+            {
+              "range": "6-11",
+              "weight": 0.047
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0522
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0192
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1253
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1424
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1719
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1429
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1405
+            },
+            {
+              "range": "70+",
+              "weight": 0.1235
+            }
+          ]
+        }
+      }
+    },
+    "后里區": {
+      "name": "后里區",
+      "population": 52714,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5017
+            },
+            {
+              "value": "女",
+              "weight": 0.4983
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0386
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0528
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0553
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0209
+            },
+            {
+              "range": "20-29",
+              "weight": 0.127
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1347
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1658
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1436
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1323
+            },
+            {
+              "range": "70+",
+              "weight": 0.129
+            }
+          ]
+        }
+      }
+    },
+    "東勢區": {
+      "name": "東勢區",
+      "population": 46411,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5074
+            },
+            {
+              "value": "女",
+              "weight": 0.4926
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0288
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0387
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0411
+            },
+            {
+              "range": "18-19",
+              "weight": 0.017
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1175
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1245
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1481
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1455
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1617
+            },
+            {
+              "range": "70+",
+              "weight": 0.177
+            }
+          ]
+        }
+      }
+    },
+    "外埔區": {
+      "name": "外埔區",
+      "population": 30743,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5099
+            },
+            {
+              "value": "女",
+              "weight": 0.4901
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0356
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0429
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0473
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0187
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1308
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1457
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1705
+            },
+            {
+              "range": "50-59",
+              "weight": 0.145
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1407
+            },
+            {
+              "range": "70+",
+              "weight": 0.1228
+            }
+          ]
+        }
+      }
+    },
+    "新社區": {
+      "name": "新社區",
+      "population": 22541,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5156
+            },
+            {
+              "value": "女",
+              "weight": 0.4844
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0264
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0374
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0421
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0178
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1281
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1201
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1458
+            },
+            {
+              "range": "50-59",
+              "weight": 0.161
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1519
+            },
+            {
+              "range": "70+",
+              "weight": 0.1693
+            }
+          ]
+        }
+      }
+    },
+    "中區": {
+      "name": "中區",
+      "population": 18082,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.4861
+            },
+            {
+              "value": "女",
+              "weight": 0.5139
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0282
+            },
+            {
+              "range": "6-11",
+              "weight": 0.1032
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0726
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0154
+            },
+            {
+              "range": "20-29",
+              "weight": 0.0845
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1049
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1612
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1279
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1422
+            },
+            {
+              "range": "70+",
+              "weight": 0.16
+            }
+          ]
+        }
+      }
+    },
+    "大安區": {
+      "name": "大安區",
+      "population": 17405,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5249
+            },
+            {
+              "value": "女",
+              "weight": 0.4751
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0316
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0338
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0375
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0189
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1311
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1404
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1558
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1527
+            },
+            {
+              "range": "60-69",
+              "weight": 0.15
+            },
+            {
+              "range": "70+",
+              "weight": 0.1482
+            }
+          ]
+        }
+      }
+    },
+    "石岡區": {
+      "name": "石岡區",
+      "population": 13652,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5138
+            },
+            {
+              "value": "女",
+              "weight": 0.4862
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0292
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0328
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0456
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0171
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1251
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1229
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1518
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1429
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1665
+            },
+            {
+              "range": "70+",
+              "weight": 0.1659
+            }
+          ]
+        }
+      }
+    },
+    "和平區": {
+      "name": "和平區",
+      "population": 10466,
+      "dimensions": {
+        "gender": {
+          "type": "categorical",
+          "categories": [
+            {
+              "value": "男",
+              "weight": 0.5295
+            },
+            {
+              "value": "女",
+              "weight": 0.4705
+            }
+          ]
+        },
+        "age": {
+          "type": "range",
+          "bins": [
+            {
+              "range": "0-5",
+              "weight": 0.0406
+            },
+            {
+              "range": "6-11",
+              "weight": 0.0379
+            },
+            {
+              "range": "12-17",
+              "weight": 0.0395
+            },
+            {
+              "range": "18-19",
+              "weight": 0.0184
+            },
+            {
+              "range": "20-29",
+              "weight": 0.1155
+            },
+            {
+              "range": "30-39",
+              "weight": 0.1186
+            },
+            {
+              "range": "40-49",
+              "weight": 0.1369
+            },
+            {
+              "range": "50-59",
+              "weight": 0.1606
+            },
+            {
+              "range": "60-69",
+              "weight": 0.1808
+            },
+            {
+              "range": "70+",
+              "weight": 0.1512
+            }
+          ]
+        }
+      }
+    }
+  }
+}

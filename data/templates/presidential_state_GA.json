@@ -1,0 +1,969 @@
+{
+  "name": "Georgia Sample (US)",
+  "name_zh": "喬治亞州樣本",
+  "region": "Georgia",
+  "region_code": "GA",
+  "fips": "13",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.016869,
+    "state_pvi_label": "R+2",
+    "county_count": 159,
+    "population_total": 11180878
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4867
+        },
+        {
+          "value": "Female",
+          "weight": 0.5133
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2264
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0949
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1365
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1368
+        },
+        {
+          "range": "45-54",
+          "weight": 0.127
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1205
+        },
+        {
+          "range": "65+",
+          "weight": 0.1579
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Fulton County",
+          "weight": 0.0981
+        },
+        {
+          "value": "Gwinnett County",
+          "weight": 0.0896
+        },
+        {
+          "value": "Cobb County",
+          "weight": 0.0709
+        },
+        {
+          "value": "DeKalb County",
+          "weight": 0.07
+        },
+        {
+          "value": "Chatham County",
+          "weight": 0.0275
+        },
+        {
+          "value": "Clayton County",
+          "weight": 0.0273
+        },
+        {
+          "value": "Cherokee County",
+          "weight": 0.0257
+        },
+        {
+          "value": "Forsyth County",
+          "weight": 0.0244
+        },
+        {
+          "value": "Henry County",
+          "weight": 0.0228
+        },
+        {
+          "value": "Hall County",
+          "weight": 0.0194
+        },
+        {
+          "value": "Richmond County",
+          "weight": 0.0188
+        },
+        {
+          "value": "Muscogee County",
+          "weight": 0.0186
+        },
+        {
+          "value": "Paulding County",
+          "weight": 0.0164
+        },
+        {
+          "value": "Houston County",
+          "weight": 0.0155
+        },
+        {
+          "value": "Columbia County",
+          "weight": 0.0148
+        },
+        {
+          "value": "Bibb County",
+          "weight": 0.0143
+        },
+        {
+          "value": "Coweta County",
+          "weight": 0.014
+        },
+        {
+          "value": "Douglas County",
+          "weight": 0.0135
+        },
+        {
+          "value": "Clarke County",
+          "weight": 0.0118
+        },
+        {
+          "value": "Carroll County",
+          "weight": 0.0114
+        },
+        {
+          "value": "Fayette County",
+          "weight": 0.0112
+        },
+        {
+          "value": "Lowndes County",
+          "weight": 0.011
+        },
+        {
+          "value": "Newton County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Bartow County",
+          "weight": 0.0103
+        },
+        {
+          "value": "Whitfield County",
+          "weight": 0.0095
+        },
+        {
+          "value": "Walton County",
+          "weight": 0.0094
+        },
+        {
+          "value": "Floyd County",
+          "weight": 0.0091
+        },
+        {
+          "value": "Rockdale County",
+          "weight": 0.0087
+        },
+        {
+          "value": "Barrow County",
+          "weight": 0.0082
+        },
+        {
+          "value": "Glynn County",
+          "weight": 0.0078
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0077
+        },
+        {
+          "value": "Dougherty County",
+          "weight": 0.0076
+        },
+        {
+          "value": "Bulloch County",
+          "weight": 0.0076
+        },
+        {
+          "value": "Troup County",
+          "weight": 0.0064
+        },
+        {
+          "value": "Effingham County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Spalding County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Walker County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Catoosa County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Liberty County",
+          "weight": 0.0062
+        },
+        {
+          "value": "Gordon County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Camden County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Laurens County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Bryan County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Habersham County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Colquitt County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Thomas County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Polk County",
+          "weight": 0.004
+        },
+        {
+          "value": "Baldwin County",
+          "weight": 0.004
+        },
+        {
+          "value": "Oconee County",
+          "weight": 0.004
+        },
+        {
+          "value": "Coffee County",
+          "weight": 0.004
+        },
+        {
+          "value": "Tift County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Murray County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Harris County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Ware County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Pickens County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Lumpkin County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Lee County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Gilmer County",
+          "weight": 0.003
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Haralson County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Wayne County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Dawson County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Monroe County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Decatur County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Sumter County",
+          "weight": 0.0027
+        },
+        {
+          "value": "White County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Jones County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Peach County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Upson County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Toombs County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Stephens County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Hart County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Butts County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Grady County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Fannin County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Chattooga County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Burke County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Tattnall County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Emanuel County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Putnam County",
+          "weight": 0.0021
+        },
+        {
+          "value": "McDuffie County",
+          "weight": 0.002
+        },
+        {
+          "value": "Morgan County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Mitchell County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Meriwether County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Worth County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Pierce County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Greene County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Pike County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Elbert County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Dodge County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Crisp County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Lamar County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Banks County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Appling County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Long County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Berrien County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Brantley County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Cook County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Rabun County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Ben Hill County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Brooks County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Dade County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Jasper County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Oglethorpe County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Jeff Davis County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Screven County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Towns County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Charlton County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Bleckley County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Crawford County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Macon County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Telfair County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Heard County",
+          "weight": 0.0011
+        },
+        {
+          "value": "McIntosh County",
+          "weight": 0.001
+        },
+        {
+          "value": "Bacon County",
+          "weight": 0.001
+        },
+        {
+          "value": "Candler County",
+          "weight": 0.001
+        },
+        {
+          "value": "Dooly County",
+          "weight": 0.001
+        },
+        {
+          "value": "Evans County",
+          "weight": 0.001
+        },
+        {
+          "value": "Early County",
+          "weight": 0.001
+        },
+        {
+          "value": "Lanier County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Pulaski County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Wilkes County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Irwin County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Johnson County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Seminole County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Turner County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Chattahoochee County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Terrell County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Wilcox County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Wilkinson County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Jenkins County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Hancock County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Atkinson County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Twiggs County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Taylor County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Marion County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Wheeler County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Clinch County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Treutlen County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Randolph County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Miller County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Talbot County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Calhoun County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Warren County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Stewart County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Schley County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Echols County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Glascock County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Baker County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Webster County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Quitman County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Taliaferro County",
+          "weight": 0.0001
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.1022
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2624
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2723
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3631
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.2343
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.2676
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.031
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1141
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.353
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6089
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.03
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0061
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.355
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.663
+        },
+        {
+          "value": "Renter",
+          "weight": 0.337
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Georgia."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Georgia."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Georgia."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Georgia presidential context]\nThis template models a generic US presidential race within Georgia (GA). The state's Cook PVI is R+2 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Georgia state issues → pinned on the in-state governing party",
+      "zh-TW": "【Georgia（GA）總統選舉背景】\n本 template 模擬一場 Georgia 內的通用美國總統選舉。該州的 Cook PVI 為 R+2（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Georgia 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Georgia election polling\nGeorgia (GA) governor senate\nGeorgia economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

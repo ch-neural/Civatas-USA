@@ -1,0 +1,24 @@
+fastapi
+uvicorn[standard]
+pydantic>=2.0
+pandas==2.2.2
+httpx
+numpy
+
+# OASIS dependencies (from oasis/pyproject.toml + transitive)
+camel-ai==0.2.78
+igraph==0.11.6
+cairocffi==1.7.1
+pillow==10.3.0
+neo4j==5.23.0
+slack_sdk==3.31.0
+requests_oauthlib==2.0.0
+prance==23.6.21.0
+openapi-spec-validator==0.7.1
+unstructured==0.13.7
+
+# ML / recsys dependencies
+torch --index-url https://download.pytorch.org/whl/cpu
+sentence-transformers==3.0.0
+scikit-learn
+transformers

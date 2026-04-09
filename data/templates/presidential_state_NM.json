@@ -1,0 +1,465 @@
+{
+  "name": "New Mexico Sample (US)",
+  "name_zh": "新墨西哥州樣本",
+  "region": "New Mexico",
+  "region_code": "NM",
+  "fips": "35",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": 0.0348,
+    "state_pvi_label": "D+3",
+    "county_count": 33,
+    "population_total": 2130256
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.5001
+        },
+        {
+          "value": "Female",
+          "weight": 0.4999
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2083
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0943
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1291
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1349
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1123
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1196
+        },
+        {
+          "range": "65+",
+          "weight": 0.2015
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Bernalillo County",
+          "weight": 0.3179
+        },
+        {
+          "value": "Doña Ana County",
+          "weight": 0.1058
+        },
+        {
+          "value": "Santa Fe County",
+          "weight": 0.0736
+        },
+        {
+          "value": "Sandoval County",
+          "weight": 0.0724
+        },
+        {
+          "value": "San Juan County",
+          "weight": 0.057
+        },
+        {
+          "value": "Valencia County",
+          "weight": 0.037
+        },
+        {
+          "value": "Lea County",
+          "weight": 0.0348
+        },
+        {
+          "value": "McKinley County",
+          "weight": 0.0332
+        },
+        {
+          "value": "Otero County",
+          "weight": 0.0325
+        },
+        {
+          "value": "Chaves County",
+          "weight": 0.0303
+        },
+        {
+          "value": "Eddy County",
+          "weight": 0.0288
+        },
+        {
+          "value": "Curry County",
+          "weight": 0.0225
+        },
+        {
+          "value": "Rio Arriba County",
+          "weight": 0.0189
+        },
+        {
+          "value": "Taos County",
+          "weight": 0.0163
+        },
+        {
+          "value": "Grant County",
+          "weight": 0.0131
+        },
+        {
+          "value": "San Miguel County",
+          "weight": 0.0127
+        },
+        {
+          "value": "Cibola County",
+          "weight": 0.0127
+        },
+        {
+          "value": "Luna County",
+          "weight": 0.0121
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0095
+        },
+        {
+          "value": "Los Alamos County",
+          "weight": 0.0092
+        },
+        {
+          "value": "Roosevelt County",
+          "weight": 0.0089
+        },
+        {
+          "value": "Socorro County",
+          "weight": 0.0076
+        },
+        {
+          "value": "Torrance County",
+          "weight": 0.0073
+        },
+        {
+          "value": "Colfax County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Sierra County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Quay County",
+          "weight": 0.004
+        },
+        {
+          "value": "Guadalupe County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Mora County",
+          "weight": 0.002
+        },
+        {
+          "value": "Hidalgo County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Catron County",
+          "weight": 0.0018
+        },
+        {
+          "value": "De Baca County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Harding County",
+          "weight": 0.0003
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.1213
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2634
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2975
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3178
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.1485
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.4613
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.1213
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.086
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.1829
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.5476
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0304
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0092
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.4128
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.7106
+        },
+        {
+          "value": "Renter",
+          "weight": 0.2894
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for New Mexico."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for New Mexico."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for New Mexico."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[New Mexico presidential context]\nThis template models a generic US presidential race within New Mexico (NM). The state's Cook PVI is D+3 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- New Mexico state issues → pinned on the in-state governing party",
+      "zh-TW": "【New Mexico（NM）總統選舉背景】\n本 template 模擬一場 New Mexico 內的通用美國總統選舉。該州的 Cook PVI 為 D+3（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- New Mexico 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "New Mexico election polling\nNew Mexico (NM) governor senate\nNew Mexico economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

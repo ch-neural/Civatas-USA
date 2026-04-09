@@ -1,0 +1,174 @@
+{
+  "app": {
+    "name": "Civatas",
+    "tagline": "通用型社會模擬 Agent 生成平台"
+  },
+  "nav": {
+    "projects": "專案管理",
+    "upload": "上傳統計資料",
+    "synthesis": "人口合成",
+    "persona": "Persona 生成",
+    "simulation": "模擬執行",
+    "analytics": "結果分析",
+    "settings": "設定",
+    "templates": "範本庫"
+  },
+  "project": {
+    "create": "建立新專案",
+    "name": "專案名稱",
+    "description": "專案描述",
+    "region": "目標地區",
+    "target_count": "目標人數",
+    "created_at": "建立時間",
+    "status": "狀態",
+    "actions": "操作",
+    "delete": "刪除",
+    "duplicate": "複製",
+    "open": "開啟",
+    "country": "國家",
+    "country_us": "美國",
+    "country_tw": "台灣"
+  },
+  "upload": {
+    "title": "上傳統計資料",
+    "description": "上傳您的人口統計資料，系統將據此生成符合真實比例的 agents。",
+    "supported_formats": "支援格式：CSV、JSON、Excel",
+    "dimension": "維度",
+    "required": "必填",
+    "optional": "選填",
+    "preview": "預覽",
+    "validate": "驗證",
+    "upload_file": "上傳檔案",
+    "drop_here": "拖放檔案至此處",
+    "use_template": "使用範本"
+  },
+  "dimensions": {
+    "age": "年齡分布",
+    "gender": "性別分布",
+    "district": "地區分布",
+    "education": "教育程度",
+    "occupation": "職業分布",
+    "income": "收入級距",
+    "household": "家戶結構",
+    "party_lean": "政黨傾向",
+    "issue": "議題關注",
+    "vote_probability": "投票意願",
+    "mbti": "MBTI 類型",
+    "custom": "自訂欄位",
+    "county": "郡分布",
+    "state": "州分布",
+    "media_habit": "媒體習慣",
+    "tenure": "持有 / 租屋",
+    "employment": "就業狀態"
+  },
+  "synthesis": {
+    "title": "人口合成",
+    "generate": "開始生成",
+    "generating": "生成中...",
+    "count": "生成數量",
+    "method": "合成方法",
+    "method_weighted": "加權抽樣",
+    "method_ipf": "IPF 疊代比例擬合",
+    "preview_distribution": "分布預覽",
+    "validation": "驗證結果",
+    "match_rate": "吻合度"
+  },
+  "persona": {
+    "title": "Persona 生成",
+    "strategy": "生成策略",
+    "strategy_template": "規則模板",
+    "strategy_llm": "LLM 生成",
+    "strategy_hybrid": "混合模式",
+    "template_editor": "模板編輯器",
+    "prompt_editor": "Prompt 編輯器",
+    "generate": "開始生成",
+    "preview": "預覽",
+    "regenerate": "重新生成",
+    "edit": "手動編輯"
+  },
+  "simulation": {
+    "title": "模擬執行",
+    "platform": "平台類型",
+    "platform_twitter": "Twitter 風格",
+    "platform_reddit": "Reddit 風格",
+    "llm_model": "LLM 模型",
+    "steps": "模擬步數",
+    "concurrency": "並行數",
+    "interview": "民調問卷",
+    "interview_prompt": "訪談問題",
+    "start": "啟動模擬",
+    "running": "模擬中...",
+    "completed": "模擬完成",
+    "failed": "模擬失敗"
+  },
+  "analytics": {
+    "title": "結果分析",
+    "overall": "總體結果",
+    "by_group": "分群分析",
+    "by_district": "按地區",
+    "by_age": "按年齡",
+    "by_gender": "按性別",
+    "by_party": "按政黨傾向",
+    "cross_analysis": "交叉分析",
+    "export_csv": "匯出 CSV",
+    "export_pdf": "匯出 PDF",
+    "support_rate": "支持率",
+    "undecided": "未決定",
+    "refused": "拒答",
+    "by_county": "按郡分析",
+    "by_state": "按州分析"
+  },
+  "common": {
+    "save": "儲存",
+    "cancel": "取消",
+    "confirm": "確認",
+    "back": "返回",
+    "next": "下一步",
+    "loading": "載入中...",
+    "error": "發生錯誤",
+    "success": "操作成功",
+    "download": "下載",
+    "language": "語言"
+  },
+  "us": {
+    "leaning": {
+      "solid_dem": "強烈民主黨",
+      "lean_dem": "傾向民主黨",
+      "tossup": "搖擺",
+      "lean_rep": "傾向共和黨",
+      "solid_rep": "強烈共和黨"
+    },
+    "party": {
+      "democratic": "民主黨",
+      "republican": "共和黨",
+      "independent": "無黨籍",
+      "libertarian": "自由意志黨",
+      "green": "綠黨"
+    },
+    "pvi": {
+      "label": "Cook PVI 政治指數",
+      "description": "依據近兩屆總統大選兩黨得票率，計算各郡相對於全國平均的偏移程度。正值偏民主黨，負值偏共和黨。"
+    },
+    "issues": {
+      "economy": "經濟",
+      "immigration": "移民",
+      "healthcare": "醫療",
+      "abortion": "墮胎權",
+      "guns": "槍枝管制",
+      "climate": "氣候變遷",
+      "foreign": "外交政策",
+      "crime": "治安",
+      "education": "教育",
+      "jobs": "就業"
+    },
+    "government": {
+      "local_satisfaction": "州與地方政府滿意度",
+      "national_satisfaction": "聯邦政府滿意度",
+      "governor": "州長",
+      "mayor": "市長",
+      "president": "總統",
+      "congress": "國會",
+      "state_legislature": "州議會"
+    }
+  }
+}

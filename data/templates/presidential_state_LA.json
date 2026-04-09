@@ -1,0 +1,589 @@
+{
+  "name": "Louisiana Sample (US)",
+  "name_zh": "路易斯安那州樣本",
+  "region": "Louisiana",
+  "region_code": "LA",
+  "fips": "22",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.113011,
+    "state_pvi_label": "R+11",
+    "county_count": 64,
+    "population_total": 4597740
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4878
+        },
+        {
+          "value": "Female",
+          "weight": 0.5122
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2311
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0911
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1285
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1345
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1165
+        },
+        {
+          "range": "55-64",
+          "weight": 0.12
+        },
+        {
+          "range": "65+",
+          "weight": 0.1783
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "East Baton Rouge Parish",
+          "weight": 0.0981
+        },
+        {
+          "value": "Jefferson Parish",
+          "weight": 0.0934
+        },
+        {
+          "value": "Orleans Parish",
+          "weight": 0.0806
+        },
+        {
+          "value": "St. Tammany Parish",
+          "weight": 0.0591
+        },
+        {
+          "value": "Lafayette Parish",
+          "weight": 0.0538
+        },
+        {
+          "value": "Caddo Parish",
+          "weight": 0.0499
+        },
+        {
+          "value": "Calcasieu Parish",
+          "weight": 0.0449
+        },
+        {
+          "value": "Ouachita Parish",
+          "weight": 0.0344
+        },
+        {
+          "value": "Livingston Parish",
+          "weight": 0.0321
+        },
+        {
+          "value": "Tangipahoa Parish",
+          "weight": 0.0296
+        },
+        {
+          "value": "Ascension Parish",
+          "weight": 0.0283
+        },
+        {
+          "value": "Bossier Parish",
+          "weight": 0.0281
+        },
+        {
+          "value": "Rapides Parish",
+          "weight": 0.0277
+        },
+        {
+          "value": "Terrebonne Parish",
+          "weight": 0.023
+        },
+        {
+          "value": "Lafourche Parish",
+          "weight": 0.0209
+        },
+        {
+          "value": "St. Landry Parish",
+          "weight": 0.0177
+        },
+        {
+          "value": "Iberia Parish",
+          "weight": 0.0149
+        },
+        {
+          "value": "Vermilion Parish",
+          "weight": 0.0124
+        },
+        {
+          "value": "Acadia Parish",
+          "weight": 0.0123
+        },
+        {
+          "value": "St. Charles Parish",
+          "weight": 0.0111
+        },
+        {
+          "value": "St. Martin Parish",
+          "weight": 0.0111
+        },
+        {
+          "value": "Lincoln Parish",
+          "weight": 0.0104
+        },
+        {
+          "value": "St. Mary Parish",
+          "weight": 0.0104
+        },
+        {
+          "value": "Vernon Parish",
+          "weight": 0.0102
+        },
+        {
+          "value": "Washington Parish",
+          "weight": 0.0098
+        },
+        {
+          "value": "St. Bernard Parish",
+          "weight": 0.0096
+        },
+        {
+          "value": "St. John the Baptist Parish",
+          "weight": 0.0088
+        },
+        {
+          "value": "Avoyelles Parish",
+          "weight": 0.0084
+        },
+        {
+          "value": "Natchitoches Parish",
+          "weight": 0.008
+        },
+        {
+          "value": "Beauregard Parish",
+          "weight": 0.008
+        },
+        {
+          "value": "Webster Parish",
+          "weight": 0.0078
+        },
+        {
+          "value": "Evangeline Parish",
+          "weight": 0.007
+        },
+        {
+          "value": "Jefferson Davis Parish",
+          "weight": 0.0069
+        },
+        {
+          "value": "Iberville Parish",
+          "weight": 0.0065
+        },
+        {
+          "value": "West Baton Rouge Parish",
+          "weight": 0.0061
+        },
+        {
+          "value": "De Soto Parish",
+          "weight": 0.0059
+        },
+        {
+          "value": "Morehouse Parish",
+          "weight": 0.0053
+        },
+        {
+          "value": "Plaquemines Parish",
+          "weight": 0.0049
+        },
+        {
+          "value": "Allen Parish",
+          "weight": 0.0049
+        },
+        {
+          "value": "Grant Parish",
+          "weight": 0.0048
+        },
+        {
+          "value": "Sabine Parish",
+          "weight": 0.0048
+        },
+        {
+          "value": "Union Parish",
+          "weight": 0.0045
+        },
+        {
+          "value": "Assumption Parish",
+          "weight": 0.0044
+        },
+        {
+          "value": "Pointe Coupee Parish",
+          "weight": 0.0044
+        },
+        {
+          "value": "Richland Parish",
+          "weight": 0.0043
+        },
+        {
+          "value": "St. James Parish",
+          "weight": 0.0042
+        },
+        {
+          "value": "Franklin Parish",
+          "weight": 0.0042
+        },
+        {
+          "value": "East Feliciana Parish",
+          "weight": 0.0042
+        },
+        {
+          "value": "Concordia Parish",
+          "weight": 0.0039
+        },
+        {
+          "value": "West Feliciana Parish",
+          "weight": 0.0033
+        },
+        {
+          "value": "Jackson Parish",
+          "weight": 0.0032
+        },
+        {
+          "value": "LaSalle Parish",
+          "weight": 0.0032
+        },
+        {
+          "value": "Claiborne Parish",
+          "weight": 0.003
+        },
+        {
+          "value": "Winn Parish",
+          "weight": 0.0029
+        },
+        {
+          "value": "Bienville Parish",
+          "weight": 0.0027
+        },
+        {
+          "value": "St. Helena Parish",
+          "weight": 0.0024
+        },
+        {
+          "value": "Madison Parish",
+          "weight": 0.0021
+        },
+        {
+          "value": "Caldwell Parish",
+          "weight": 0.0021
+        },
+        {
+          "value": "West Carroll Parish",
+          "weight": 0.0021
+        },
+        {
+          "value": "Catahoula Parish",
+          "weight": 0.0019
+        },
+        {
+          "value": "Red River Parish",
+          "weight": 0.0016
+        },
+        {
+          "value": "East Carroll Parish",
+          "weight": 0.0015
+        },
+        {
+          "value": "Cameron Parish",
+          "weight": 0.0011
+        },
+        {
+          "value": "Tensas Parish",
+          "weight": 0.0009
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.1177
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.3286
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2753
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.2784
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0784
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.105
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.0667
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1902
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.5597
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.5643
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0307
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0041
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.4009
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6807
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3193
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Louisiana."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Louisiana."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Louisiana."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Louisiana presidential context]\nThis template models a generic US presidential race within Louisiana (LA). The state's Cook PVI is R+11 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Louisiana state issues → pinned on the in-state governing party",
+      "zh-TW": "【Louisiana（LA）總統選舉背景】\n本 template 模擬一場 Louisiana 內的通用美國總統選舉。該州的 Cook PVI 為 R+11（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Louisiana 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Louisiana election polling\nLouisiana (LA) governor senate\nLouisiana economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

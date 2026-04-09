@@ -1,0 +1,40 @@
+name: civatas
+
+services:
+  # Web: bind 0.0.0.0, build production
+  web:
+    command: sh -c "npm run build && npm run start"
+    environment:
+      - HOSTNAME=0.0.0.0
+
+  # API Gateway: no reload
+  api:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+
+  # Evolution: no reload
+  evolution:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--timeout-keep-alive", "600"]
+
+  # Persona: no reload
+  persona:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+
+  # Ingestion: no reload
+  ingestion:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # Synthesis: no reload
+  synthesis:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # Adapter: no reload
+  adapter:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # Simulation: no reload
+  simulation:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # Analytics: no reload
+  analytics:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,331 @@
+name: civatas
+
+services:
+  # ─── Web UI (Next.js) ───
+  web:
+    platform: linux/amd64
+    build:
+      context: ./services/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - API_URL=http://api:8000
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-en}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./services/web/src:/app/src
+      - ./services/web/public:/app/public
+    depends_on:
+      - api
+
+  # ─── API Gateway (FastAPI) ───
+  api:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-en}
+      - TZ=${TZ:-UTC}
+      - UPLOADS_DIR=/data/uploads
+      - OUTPUTS_DIR=/data/outputs
+      - CIVATAS_DATA_DIR=/data/projects
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_API_KEY2=${LLM_API_KEY2:-}
+      - LLM_MODEL2=${LLM_MODEL2:-}
+      - LLM_BASE_URL2=${LLM_BASE_URL2:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_API_BASE=${OPENAI_API_BASE:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - GEMINI_API_KEY2=${GEMINI_API_KEY2:-}
+      - GEMINI_MODEL2=${GEMINI_MODEL2:-}
+      - GEMINI_API_KEY3=${GEMINI_API_KEY3:-}
+      - GEMINI_MODEL3=${GEMINI_MODEL3:-}
+      - XAI_API_KEY=${XAI_API_KEY:-}
+      - XAI_MODEL=${XAI_MODEL:-grok-4-1-fast}
+      - XAI_API_KEY2=${XAI_API_KEY2:-}
+      - XAI_MODEL2=${XAI_MODEL2:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - DEEPSEEK_MODEL=${DEEPSEEK_MODEL:-deepseek-chat}
+      - DEEPSEEK_BASE_URL=${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      - DEEPSEEK_API_KEY2=${DEEPSEEK_API_KEY2:-}
+      - DEEPSEEK_MODEL2=${DEEPSEEK_MODEL2:-}
+      - DEEPSEEK_BASE_URL2=${DEEPSEEK_BASE_URL2:-}
+      - MOONSHOT_API_KEY=${MOONSHOT_API_KEY:-}
+      - MOONSHOT_MODEL=${MOONSHOT_MODEL:-kimi-k2.5}
+      - MOONSHOT_BASE_URL=${MOONSHOT_BASE_URL:-https://api.moonshot.ai/v1}
+      - MOONSHOT_API_KEY2=${MOONSHOT_API_KEY2:-}
+      - MOONSHOT_MODEL2=${MOONSHOT_MODEL2:-}
+      - MOONSHOT_BASE_URL2=${MOONSHOT_BASE_URL2:-}
+      - LLM_VENDORS=${LLM_VENDORS:-openai}
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY:-}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-}
+      - OLLAMA_API_KEY2=${OLLAMA_API_KEY2:-}
+      - OLLAMA_MODEL2=${OLLAMA_MODEL2:-}
+      - OLLAMA_BASE_URL2=${OLLAMA_BASE_URL2:-}
+      - LLM_VENDOR_RATIO=${LLM_VENDOR_RATIO:-1}
+      - SERPER_API_KEY=${SERPER_API_KEY:-}
+      - ELECTION_DB_HOST=election-db
+      - ELECTION_DB_PORT=5432
+      - ELECTION_DB_NAME=elections
+      - ELECTION_DB_USER=${ELECTION_DB_USER:-civatas}
+      - ELECTION_DB_PASS=${ELECTION_DB_PASS:-civatas2026}
+      - CIVATAS_USA_DATA_DIR=/app/shared/us_data
+    volumes:
+      - ./data/uploads:/data/uploads
+      - ./data/outputs:/data/outputs
+      # Stage 1.8: serve templates from the top-level data/templates so the
+      # build_*.py scripts (run from repo root) and the API see the same files.
+      # The legacy ap/data/templates dir is now unused.
+      - ../data/templates:/data/templates
+      - ./data/projects:/data/projects
+      - ./services/api/app:/app/app
+      - ./shared:/app/shared
+    depends_on:
+      election-db:
+        condition: service_healthy
+      ingestion:
+        condition: service_started
+      synthesis:
+        condition: service_started
+      persona:
+        condition: service_started
+      evolution:
+        condition: service_started
+      adapter:
+        condition: service_started
+      simulation:
+        condition: service_started
+      analytics:
+        condition: service_started
+
+  # ─── Layer 1: Data Ingestion ───
+  ingestion:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/ingestion/Dockerfile
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./data/uploads:/data/uploads
+      - ./services/ingestion/app:/app/app
+      - ./shared:/app/shared
+
+  # ─── Layer 2: Population Synthesis ───
+  synthesis:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/synthesis/Dockerfile
+    ports:
+      - "8002:8000"
+    environment:
+      - ELECTION_DB_HOST=election-db
+      - ELECTION_DB_PORT=5432
+      - ELECTION_DB_NAME=elections
+      - ELECTION_DB_USER=${ELECTION_DB_USER:-civatas}
+      - ELECTION_DB_PASS=${ELECTION_DB_PASS:-civatas2026}
+      - CIVATAS_USA_DATA_DIR=/app/shared/us_data
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ./services/synthesis/app:/app/app
+      - ./shared:/app/shared
+    depends_on:
+      election-db:
+        condition: service_healthy
+
+  # ─── Layer 3: Persona Enrichment ───
+  persona:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/persona/Dockerfile
+    ports:
+      - "8003:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - XAI_API_KEY=${XAI_API_KEY:-}
+      - XAI_MODEL=${XAI_MODEL:-grok-4-1-fast}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - DEEPSEEK_MODEL=${DEEPSEEK_MODEL:-deepseek-chat}
+      - DEEPSEEK_BASE_URL=${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      - MOONSHOT_API_KEY=${MOONSHOT_API_KEY:-}
+      - MOONSHOT_MODEL=${MOONSHOT_MODEL:-kimi-k2.5}
+      - MOONSHOT_BASE_URL=${MOONSHOT_BASE_URL:-https://api.moonshot.ai/v1}
+      - LLM_VENDORS=${LLM_VENDORS:-openai}
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY:-}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-}
+      - OLLAMA_API_KEY2=${OLLAMA_API_KEY2:-}
+      - OLLAMA_MODEL2=${OLLAMA_MODEL2:-}
+      - OLLAMA_BASE_URL2=${OLLAMA_BASE_URL2:-}
+      - LLM_VENDOR_RATIO=${LLM_VENDOR_RATIO:-1}
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-en}
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ./services/persona/app:/app/app
+      - ./shared:/app/shared
+
+  # ─── Layer 4: Social Evolution (Playwright + ChromaDB) ───
+  evolution:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/evolution/Dockerfile
+    ports:
+      - "8008:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_API_KEY2=${LLM_API_KEY2:-}
+      - LLM_MODEL2=${LLM_MODEL2:-}
+      - LLM_BASE_URL2=${LLM_BASE_URL2:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - GEMINI_API_KEY2=${GEMINI_API_KEY2:-}
+      - GEMINI_MODEL2=${GEMINI_MODEL2:-}
+      - GEMINI_API_KEY3=${GEMINI_API_KEY3:-}
+      - GEMINI_MODEL3=${GEMINI_MODEL3:-}
+      - XAI_API_KEY=${XAI_API_KEY:-}
+      - XAI_MODEL=${XAI_MODEL:-grok-4-1-fast}
+      - XAI_API_KEY2=${XAI_API_KEY2:-}
+      - XAI_MODEL2=${XAI_MODEL2:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - DEEPSEEK_MODEL=${DEEPSEEK_MODEL:-deepseek-chat}
+      - DEEPSEEK_BASE_URL=${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      - DEEPSEEK_API_KEY2=${DEEPSEEK_API_KEY2:-}
+      - DEEPSEEK_MODEL2=${DEEPSEEK_MODEL2:-}
+      - DEEPSEEK_BASE_URL2=${DEEPSEEK_BASE_URL2:-}
+      - MOONSHOT_API_KEY=${MOONSHOT_API_KEY:-}
+      - MOONSHOT_MODEL=${MOONSHOT_MODEL:-kimi-k2.5}
+      - MOONSHOT_BASE_URL=${MOONSHOT_BASE_URL:-https://api.moonshot.ai/v1}
+      - MOONSHOT_API_KEY2=${MOONSHOT_API_KEY2:-}
+      - MOONSHOT_MODEL2=${MOONSHOT_MODEL2:-}
+      - MOONSHOT_BASE_URL2=${MOONSHOT_BASE_URL2:-}
+      - LLM_VENDORS=${LLM_VENDORS:-openai}
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY:-}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-}
+      - OLLAMA_API_KEY2=${OLLAMA_API_KEY2:-}
+      - OLLAMA_MODEL2=${OLLAMA_MODEL2:-}
+      - OLLAMA_BASE_URL2=${OLLAMA_BASE_URL2:-}
+      - LLM_VENDOR_RATIO=${LLM_VENDOR_RATIO:-1}
+      - EVOLUTION_DATA_DIR=/data/evolution
+      - ELECTION_DB_HOST=election-db
+      - ELECTION_DB_PORT=5432
+      - ELECTION_DB_NAME=elections
+      - ELECTION_DB_USER=${ELECTION_DB_USER:-civatas}
+      - ELECTION_DB_PASS=${ELECTION_DB_PASS:-civatas2026}
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-en}
+      - CIVATAS_USA_DATA_DIR=/app/shared/us_data
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ./data/evolution:/data/evolution
+      - ./data/chroma_cache:/root/.cache/chroma
+      - ./services/evolution/app:/app/app
+      - ./shared:/app/shared
+    depends_on:
+      election-db:
+        condition: service_healthy
+
+  # ─── Layer 5: Social Graph (optional) ───
+  social:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/social/Dockerfile
+    ports:
+      - "8004:8000"
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ./services/social/app:/app/app
+      - ./shared:/app/shared
+    profiles:
+      - full
+
+  # ─── Layer 5: OASIS Adapter ───
+  adapter:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/adapter/Dockerfile
+    ports:
+      - "8005:8000"
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ./services/adapter/app:/app/app
+      - ./shared:/app/shared
+
+  # ─── Layer 6: Simulation Runner ───
+  simulation:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/simulation/Dockerfile
+    ports:
+      - "8006:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - OPENAI_API_KEY=${LLM_API_KEY:-}
+      - PYTHONPATH=/opt/oasis
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ../source/oasis:/opt/oasis:ro
+      - ./services/simulation/app:/app/app
+      - ./shared:/app/shared
+
+  # ─── Layer 7: Analytics ───
+  analytics:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: services/analytics/Dockerfile
+    ports:
+      - "8007:8000"
+    volumes:
+      - ./data/outputs:/data/outputs
+      - ./services/analytics/app:/app/app
+      - ./shared:/app/shared
+
+  # ─── Election Database (PostgreSQL) ───
+  election-db:
+    image: postgres:16-alpine
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_DB=elections
+      - POSTGRES_USER=${ELECTION_DB_USER:-civatas}
+      - POSTGRES_PASSWORD=${ELECTION_DB_PASS:-civatas2026}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./data/election-db:/var/lib/postgresql/data
+      - ./services/election-db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U civatas -d elections"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+

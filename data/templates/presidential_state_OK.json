@@ -1,0 +1,641 @@
+{
+  "name": "Oklahoma Sample (US)",
+  "name_zh": "奧克拉荷馬州樣本",
+  "region": "Oklahoma",
+  "region_code": "OK",
+  "fips": "40",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.180786,
+    "state_pvi_label": "R+18",
+    "county_count": 77,
+    "population_total": 4095393
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4982
+        },
+        {
+          "value": "Female",
+          "weight": 0.5018
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2352
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0988
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1324
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1354
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1147
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1144
+        },
+        {
+          "range": "65+",
+          "weight": 0.169
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Oklahoma County",
+          "weight": 0.2003
+        },
+        {
+          "value": "Tulsa County",
+          "weight": 0.169
+        },
+        {
+          "value": "Cleveland County",
+          "weight": 0.0745
+        },
+        {
+          "value": "Canadian County",
+          "weight": 0.0419
+        },
+        {
+          "value": "Comanche County",
+          "weight": 0.0302
+        },
+        {
+          "value": "Rogers County",
+          "weight": 0.0245
+        },
+        {
+          "value": "Wagoner County",
+          "weight": 0.0215
+        },
+        {
+          "value": "Payne County",
+          "weight": 0.0206
+        },
+        {
+          "value": "Pottawatomie County",
+          "weight": 0.0182
+        },
+        {
+          "value": "Creek County",
+          "weight": 0.0181
+        },
+        {
+          "value": "Muskogee County",
+          "weight": 0.0165
+        },
+        {
+          "value": "Garfield County",
+          "weight": 0.0154
+        },
+        {
+          "value": "Grady County",
+          "weight": 0.0141
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0132
+        },
+        {
+          "value": "Logan County",
+          "weight": 0.0129
+        },
+        {
+          "value": "Le Flore County",
+          "weight": 0.0122
+        },
+        {
+          "value": "Carter County",
+          "weight": 0.0121
+        },
+        {
+          "value": "Bryan County",
+          "weight": 0.012
+        },
+        {
+          "value": "Cherokee County",
+          "weight": 0.0119
+        },
+        {
+          "value": "Osage County",
+          "weight": 0.0114
+        },
+        {
+          "value": "McClain County",
+          "weight": 0.0112
+        },
+        {
+          "value": "Kay County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Pittsburg County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Stephens County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Delaware County",
+          "weight": 0.0102
+        },
+        {
+          "value": "Sequoyah County",
+          "weight": 0.0099
+        },
+        {
+          "value": "Mayes County",
+          "weight": 0.0098
+        },
+        {
+          "value": "Pontotoc County",
+          "weight": 0.0095
+        },
+        {
+          "value": "Okmulgee County",
+          "weight": 0.0092
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0085
+        },
+        {
+          "value": "McCurtain County",
+          "weight": 0.0077
+        },
+        {
+          "value": "Ottawa County",
+          "weight": 0.0075
+        },
+        {
+          "value": "Custer County",
+          "weight": 0.007
+        },
+        {
+          "value": "Caddo County",
+          "weight": 0.0066
+        },
+        {
+          "value": "Garvin County",
+          "weight": 0.0064
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Seminole County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Beckham County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Texas County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Woodward County",
+          "weight": 0.005
+        },
+        {
+          "value": "Adair County",
+          "weight": 0.0049
+        },
+        {
+          "value": "McIntosh County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Pawnee County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Marshall County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Kingfisher County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Atoka County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Craig County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Choctaw County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Murray County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Hughes County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Haskell County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Okfuskee County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Noble County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Washita County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Pushmataha County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Johnston County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Love County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Latimer County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Nowata County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Woods County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Blaine County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Kiowa County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Major County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Tillman County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Alfalfa County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Greer County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Cotton County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Coal County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Beaver County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Dewey County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Grant County",
+          "weight": 0.001
+        },
+        {
+          "value": "Ellis County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Roger Mills County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Harper County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Harmon County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Cimarron County",
+          "weight": 0.0006
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0978
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.3079
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.3011
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.2932
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.0
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.1839
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.2801
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.536
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.5797
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0285
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0066
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3852
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6567
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3433
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Oklahoma."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Oklahoma."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Oklahoma."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Oklahoma presidential context]\nThis template models a generic US presidential race within Oklahoma (OK). The state's Cook PVI is R+18 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Oklahoma state issues → pinned on the in-state governing party",
+      "zh-TW": "【Oklahoma（OK）總統選舉背景】\n本 template 模擬一場 Oklahoma 內的通用美國總統選舉。該州的 Cook PVI 為 R+18（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Oklahoma 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Oklahoma election polling\nOklahoma (OK) governor senate\nOklahoma economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

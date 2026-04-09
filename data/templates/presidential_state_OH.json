@@ -1,0 +1,685 @@
+{
+  "name": "Ohio Sample (US)",
+  "name_zh": "俄亥俄州樣本",
+  "region": "Ohio",
+  "region_code": "OH",
+  "fips": "39",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.057997,
+    "state_pvi_label": "R+6",
+    "county_count": 88,
+    "population_total": 11883304
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4938
+        },
+        {
+          "value": "Female",
+          "weight": 0.5062
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2161
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0893
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1315
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1286
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1171
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1263
+        },
+        {
+          "range": "65+",
+          "weight": 0.1911
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Franklin County",
+          "weight": 0.1129
+        },
+        {
+          "value": "Cuyahoga County",
+          "weight": 0.1055
+        },
+        {
+          "value": "Hamilton County",
+          "weight": 0.0703
+        },
+        {
+          "value": "Summit County",
+          "weight": 0.0455
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0454
+        },
+        {
+          "value": "Lucas County",
+          "weight": 0.0362
+        },
+        {
+          "value": "Butler County",
+          "weight": 0.0333
+        },
+        {
+          "value": "Stark County",
+          "weight": 0.0316
+        },
+        {
+          "value": "Lorain County",
+          "weight": 0.0269
+        },
+        {
+          "value": "Warren County",
+          "weight": 0.0212
+        },
+        {
+          "value": "Lake County",
+          "weight": 0.0197
+        },
+        {
+          "value": "Delaware County",
+          "weight": 0.0192
+        },
+        {
+          "value": "Mahoning County",
+          "weight": 0.0192
+        },
+        {
+          "value": "Clermont County",
+          "weight": 0.0179
+        },
+        {
+          "value": "Trumbull County",
+          "weight": 0.017
+        },
+        {
+          "value": "Medina County",
+          "weight": 0.0156
+        },
+        {
+          "value": "Licking County",
+          "weight": 0.0154
+        },
+        {
+          "value": "Greene County",
+          "weight": 0.0144
+        },
+        {
+          "value": "Fairfield County",
+          "weight": 0.0138
+        },
+        {
+          "value": "Portage County",
+          "weight": 0.0137
+        },
+        {
+          "value": "Clark County",
+          "weight": 0.0114
+        },
+        {
+          "value": "Wood County",
+          "weight": 0.0112
+        },
+        {
+          "value": "Richland County",
+          "weight": 0.0106
+        },
+        {
+          "value": "Wayne County",
+          "weight": 0.0099
+        },
+        {
+          "value": "Miami County",
+          "weight": 0.0093
+        },
+        {
+          "value": "Allen County",
+          "weight": 0.0086
+        },
+        {
+          "value": "Columbiana County",
+          "weight": 0.0085
+        },
+        {
+          "value": "Ashtabula County",
+          "weight": 0.0082
+        },
+        {
+          "value": "Geauga County",
+          "weight": 0.0081
+        },
+        {
+          "value": "Tuscarawas County",
+          "weight": 0.0078
+        },
+        {
+          "value": "Muskingum County",
+          "weight": 0.0073
+        },
+        {
+          "value": "Ross County",
+          "weight": 0.0065
+        },
+        {
+          "value": "Hancock County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Erie County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Scioto County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Belmont County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Marion County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Knox County",
+          "weight": 0.0053
+        },
+        {
+          "value": "Athens County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Pickaway County",
+          "weight": 0.0051
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.005
+        },
+        {
+          "value": "Sandusky County",
+          "weight": 0.005
+        },
+        {
+          "value": "Huron County",
+          "weight": 0.0049
+        },
+        {
+          "value": "Lawrence County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Seneca County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Ashland County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Darke County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Shelby County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Auglaize County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Logan County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Holmes County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Brown County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Highland County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Mercer County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Fulton County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Clinton County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Crawford County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Preble County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Ottawa County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Champaign County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Defiance County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Guernsey County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Coshocton County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Williams County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Perry County",
+          "weight": 0.003
+        },
+        {
+          "value": "Morrow County",
+          "weight": 0.003
+        },
+        {
+          "value": "Putnam County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Hardin County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Gallia County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Fayette County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Van Wert County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Hocking County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Henry County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Adams County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Pike County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Carroll County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Meigs County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Wyandot County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Paulding County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Harrison County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Noble County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Morgan County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Monroe County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Vinton County",
+          "weight": 0.0011
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0782
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.3128
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2854
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3236
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.1
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.212
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.1618
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.2167
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.3095
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6077
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0253
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0015
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3655
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.68
+        },
+        {
+          "value": "Renter",
+          "weight": 0.32
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Ohio."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Ohio."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Ohio."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Ohio presidential context]\nThis template models a generic US presidential race within Ohio (OH). The state's Cook PVI is R+6 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Ohio state issues → pinned on the in-state governing party",
+      "zh-TW": "【Ohio（OH）總統選舉背景】\n本 template 模擬一場 Ohio 內的通用美國總統選舉。該州的 Cook PVI 為 R+6（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Ohio 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Ohio election polling\nOhio (OH) governor senate\nOhio economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

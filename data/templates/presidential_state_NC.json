@@ -1,0 +1,733 @@
+{
+  "name": "North Carolina Sample (US)",
+  "name_zh": "北卡羅來納州樣本",
+  "region": "North Carolina",
+  "region_code": "NC",
+  "fips": "37",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.020663,
+    "state_pvi_label": "R+2",
+    "county_count": 100,
+    "population_total": 11046024
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4885
+        },
+        {
+          "value": "Female",
+          "weight": 0.5115
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2127
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0951
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1341
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1317
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1227
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1243
+        },
+        {
+          "range": "65+",
+          "weight": 0.1793
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Wake County",
+          "weight": 0.11
+        },
+        {
+          "value": "Mecklenburg County",
+          "weight": 0.1076
+        },
+        {
+          "value": "Guilford County",
+          "weight": 0.0511
+        },
+        {
+          "value": "Forsyth County",
+          "weight": 0.0363
+        },
+        {
+          "value": "Cumberland County",
+          "weight": 0.0316
+        },
+        {
+          "value": "Durham County",
+          "weight": 0.031
+        },
+        {
+          "value": "Buncombe County",
+          "weight": 0.0256
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0234
+        },
+        {
+          "value": "Cabarrus County",
+          "weight": 0.022
+        },
+        {
+          "value": "New Hanover County",
+          "weight": 0.0219
+        },
+        {
+          "value": "Gaston County",
+          "weight": 0.0219
+        },
+        {
+          "value": "Johnston County",
+          "weight": 0.0218
+        },
+        {
+          "value": "Onslow County",
+          "weight": 0.0194
+        },
+        {
+          "value": "Iredell County",
+          "weight": 0.0183
+        },
+        {
+          "value": "Pitt County",
+          "weight": 0.0165
+        },
+        {
+          "value": "Alamance County",
+          "weight": 0.0165
+        },
+        {
+          "value": "Davidson County",
+          "weight": 0.0161
+        },
+        {
+          "value": "Catawba County",
+          "weight": 0.0152
+        },
+        {
+          "value": "Brunswick County",
+          "weight": 0.0142
+        },
+        {
+          "value": "Rowan County",
+          "weight": 0.014
+        },
+        {
+          "value": "Orange County",
+          "weight": 0.0139
+        },
+        {
+          "value": "Randolph County",
+          "weight": 0.0136
+        },
+        {
+          "value": "Harnett County",
+          "weight": 0.013
+        },
+        {
+          "value": "Wayne County",
+          "weight": 0.0111
+        },
+        {
+          "value": "Henderson County",
+          "weight": 0.011
+        },
+        {
+          "value": "Robeson County",
+          "weight": 0.0109
+        },
+        {
+          "value": "Moore County",
+          "weight": 0.0098
+        },
+        {
+          "value": "Craven County",
+          "weight": 0.0096
+        },
+        {
+          "value": "Cleveland County",
+          "weight": 0.0094
+        },
+        {
+          "value": "Nash County",
+          "weight": 0.009
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0086
+        },
+        {
+          "value": "Rockingham County",
+          "weight": 0.0086
+        },
+        {
+          "value": "Burke County",
+          "weight": 0.0082
+        },
+        {
+          "value": "Caldwell County",
+          "weight": 0.0075
+        },
+        {
+          "value": "Chatham County",
+          "weight": 0.0075
+        },
+        {
+          "value": "Wilson County",
+          "weight": 0.0074
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0069
+        },
+        {
+          "value": "Surry County",
+          "weight": 0.0067
+        },
+        {
+          "value": "Carteret County",
+          "weight": 0.0064
+        },
+        {
+          "value": "Wilkes County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Lee County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Pender County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Rutherford County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Stanly County",
+          "weight": 0.006
+        },
+        {
+          "value": "Haywood County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Granville County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Sampson County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Watauga County",
+          "weight": 0.0051
+        },
+        {
+          "value": "Lenoir County",
+          "weight": 0.0051
+        },
+        {
+          "value": "Hoke County",
+          "weight": 0.005
+        },
+        {
+          "value": "Columbus County",
+          "weight": 0.0047
+        },
+        {
+          "value": "Duplin County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Edgecombe County",
+          "weight": 0.0045
+        },
+        {
+          "value": "Halifax County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Stokes County",
+          "weight": 0.0042
+        },
+        {
+          "value": "McDowell County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Beaufort County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Davie County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Richmond County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Vance County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Pasquotank County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Person County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Macon County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Dare County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Yadkin County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Alexander County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Transylvania County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Scotland County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Currituck County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Bladen County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Cherokee County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Ashe County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Caswell County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Anson County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.002
+        },
+        {
+          "value": "Martin County",
+          "weight": 0.002
+        },
+        {
+          "value": "Greene County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Hertford County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Polk County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Yancey County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Warren County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Avery County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Bertie County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Northampton County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Mitchell County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Swain County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Chowan County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Perquimans County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Pamlico County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Alleghany County",
+          "weight": 0.001
+        },
+        {
+          "value": "Camden County",
+          "weight": 0.001
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.001
+        },
+        {
+          "value": "Gates County",
+          "weight": 0.001
+        },
+        {
+          "value": "Jones County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Graham County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Hyde County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Tyrrell County",
+          "weight": 0.0003
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0915
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2473
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2898
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3714
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.1475
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.2805
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.1033
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.2234
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.2453
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.5979
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0248
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0116
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3657
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6683
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3317
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for North Carolina."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for North Carolina."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for North Carolina."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[North Carolina presidential context]\nThis template models a generic US presidential race within North Carolina (NC). The state's Cook PVI is R+2 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- North Carolina state issues → pinned on the in-state governing party",
+      "zh-TW": "【North Carolina（NC）總統選舉背景】\n本 template 模擬一場 North Carolina 內的通用美國總統選舉。該州的 Cook PVI 為 R+2（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- North Carolina 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "North Carolina election polling\nNorth Carolina (NC) governor senate\nNorth Carolina economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

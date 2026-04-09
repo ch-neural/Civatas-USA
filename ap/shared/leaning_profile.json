@@ -1,0 +1,484 @@
+{
+  "description": "2024 Pennsylvania US Presidential Election leaning profile (Cook PVI 5-tier)",
+  "data_sources": [
+    "MEDSL countypres 2024 via us_election.db"
+  ],
+  "created_at": "2026-04-08 04:18:44",
+  "spectrum": [
+    "偏左派",
+    "中立",
+    "偏右派"
+  ],
+  "count": 67,
+  "districts": {
+    "Adams County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Allegheny County": {
+      "Solid Dem": 0.225,
+      "Lean Dem": 0.65,
+      "Tossup": 0.1,
+      "Lean Rep": 0.0,
+      "Solid Rep": 0.025
+    },
+    "Armstrong County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Beaver County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Bedford County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Berks County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Blair County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Bradford County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Bucks County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Butler County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Cambria County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Cameron County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Carbon County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Centre County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Chester County": {
+      "Solid Dem": 0.225,
+      "Lean Dem": 0.65,
+      "Tossup": 0.1,
+      "Lean Rep": 0.0,
+      "Solid Rep": 0.025
+    },
+    "Clarion County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Clearfield County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Clinton County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Columbia County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Crawford County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Cumberland County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Dauphin County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Delaware County": {
+      "Solid Dem": 0.225,
+      "Lean Dem": 0.65,
+      "Tossup": 0.1,
+      "Lean Rep": 0.0,
+      "Solid Rep": 0.025
+    },
+    "Elk County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Erie County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Fayette County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Forest County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Franklin County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Fulton County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Greene County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Huntingdon County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Indiana County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Jefferson County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Juniata County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Lackawanna County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Lancaster County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Lawrence County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Lebanon County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Lehigh County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Luzerne County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Lycoming County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "McKean County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Mercer County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Mifflin County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Monroe County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Montgomery County": {
+      "Solid Dem": 0.225,
+      "Lean Dem": 0.65,
+      "Tossup": 0.1,
+      "Lean Rep": 0.0,
+      "Solid Rep": 0.025
+    },
+    "Montour County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Northampton County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.2,
+      "Tossup": 0.65,
+      "Lean Rep": 0.1,
+      "Solid Rep": 0.025
+    },
+    "Northumberland County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Perry County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Philadelphia County": {
+      "Solid Dem": 0.775,
+      "Lean Dem": 0.1,
+      "Tossup": 0.0,
+      "Lean Rep": 0.0,
+      "Solid Rep": 0.125
+    },
+    "Pike County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Potter County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Schuylkill County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Snyder County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Somerset County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Sullivan County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Susquehanna County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Tioga County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Union County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Venango County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Warren County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Washington County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    },
+    "Wayne County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Westmoreland County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "Wyoming County": {
+      "Solid Dem": 0.075,
+      "Lean Dem": 0.0,
+      "Tossup": 0.0,
+      "Lean Rep": 0.2,
+      "Solid Rep": 0.725
+    },
+    "York County": {
+      "Solid Dem": 0.025,
+      "Lean Dem": 0.0,
+      "Tossup": 0.2,
+      "Lean Rep": 0.65,
+      "Solid Rep": 0.125
+    }
+  }
+}

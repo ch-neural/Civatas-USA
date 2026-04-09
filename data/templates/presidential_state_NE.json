@@ -1,0 +1,705 @@
+{
+  "name": "Nebraska Sample (US)",
+  "name_zh": "內布拉斯加州樣本",
+  "region": "Nebraska",
+  "region_code": "NE",
+  "fips": "31",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.107698,
+    "state_pvi_label": "R+11",
+    "county_count": 93,
+    "population_total": 2005466
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.5034
+        },
+        {
+          "value": "Female",
+          "weight": 0.4966
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2392
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0992
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1303
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1323
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1111
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1143
+        },
+        {
+          "range": "65+",
+          "weight": 0.1736
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Douglas County",
+          "weight": 0.2987
+        },
+        {
+          "value": "Lancaster County",
+          "weight": 0.1651
+        },
+        {
+          "value": "Sarpy County",
+          "weight": 0.0998
+        },
+        {
+          "value": "Hall County",
+          "weight": 0.0316
+        },
+        {
+          "value": "Buffalo County",
+          "weight": 0.0256
+        },
+        {
+          "value": "Dodge County",
+          "weight": 0.0189
+        },
+        {
+          "value": "Scotts Bluff County",
+          "weight": 0.0181
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.018
+        },
+        {
+          "value": "Platte County",
+          "weight": 0.0175
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0171
+        },
+        {
+          "value": "Adams County",
+          "weight": 0.0157
+        },
+        {
+          "value": "Cass County",
+          "weight": 0.0137
+        },
+        {
+          "value": "Dawson County",
+          "weight": 0.0122
+        },
+        {
+          "value": "Saunders County",
+          "weight": 0.0116
+        },
+        {
+          "value": "Gage County",
+          "weight": 0.0109
+        },
+        {
+          "value": "Dakota County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0107
+        },
+        {
+          "value": "Seward County",
+          "weight": 0.0089
+        },
+        {
+          "value": "Otoe County",
+          "weight": 0.0082
+        },
+        {
+          "value": "Saline County",
+          "weight": 0.0074
+        },
+        {
+          "value": "York County",
+          "weight": 0.0072
+        },
+        {
+          "value": "Box Butte County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Colfax County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Red Willow County",
+          "weight": 0.0053
+        },
+        {
+          "value": "Custer County",
+          "weight": 0.0053
+        },
+        {
+          "value": "Holt County",
+          "weight": 0.0051
+        },
+        {
+          "value": "Wayne County",
+          "weight": 0.005
+        },
+        {
+          "value": "Cheyenne County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Hamilton County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Phelps County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Cuming County",
+          "weight": 0.0045
+        },
+        {
+          "value": "Butler County",
+          "weight": 0.0043
+        },
+        {
+          "value": "Knox County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Cedar County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Keith County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Dawes County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Richardson County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Merrick County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Pierce County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Nemaha County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Burt County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Kearney County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Thurston County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Howard County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Antelope County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Stanton County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Dixon County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Fillmore County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Cherry County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Boone County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Johnson County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Polk County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Sheridan County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Thayer County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Furnas County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Morrill County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Nuckolls County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Valley County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Chase County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Webster County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Nance County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Kimball County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Sherman County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Brown County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Harlan County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Perkins County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Frontier County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Hitchcock County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Pawnee County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Greeley County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Gosper County",
+          "weight": 0.001
+        },
+        {
+          "value": "Deuel County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Garden County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Dundy County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Garfield County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Boyd County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Rock County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Sioux County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Wheeler County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Hayes County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Keya Paha County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Logan County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Banner County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Hooker County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Grant County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Loup County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Thomas County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Arthur County",
+          "weight": 0.0002
+        },
+        {
+          "value": "McPherson County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Blaine County",
+          "weight": 0.0002
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0735
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2517
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.3212
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3536
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.0
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.4567
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1128
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.4305
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6594
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0232
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0045
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3129
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6668
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3332
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Nebraska."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Nebraska."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Nebraska."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Nebraska presidential context]\nThis template models a generic US presidential race within Nebraska (NE). The state's Cook PVI is R+11 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Nebraska state issues → pinned on the in-state governing party",
+      "zh-TW": "【Nebraska（NE）總統選舉背景】\n本 template 模擬一場 Nebraska 內的通用美國總統選舉。該州的 Cook PVI 為 R+11（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Nebraska 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Nebraska election polling\nNebraska (NE) governor senate\nNebraska economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

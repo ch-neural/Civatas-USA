@@ -1,0 +1,174 @@
+{
+  "app": {
+    "name": "Civatas",
+    "tagline": "Universal Social Simulation Agent Generation Platform"
+  },
+  "nav": {
+    "projects": "Projects",
+    "upload": "Upload Statistics",
+    "synthesis": "Population Synthesis",
+    "persona": "Persona Generation",
+    "simulation": "Simulation",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "templates": "Templates"
+  },
+  "project": {
+    "create": "Create Project",
+    "name": "Project Name",
+    "description": "Description",
+    "region": "Target Region",
+    "target_count": "Target Population",
+    "created_at": "Created At",
+    "status": "Status",
+    "actions": "Actions",
+    "delete": "Delete",
+    "duplicate": "Duplicate",
+    "open": "Open",
+    "country": "Country",
+    "country_us": "United States",
+    "country_tw": "Taiwan"
+  },
+  "upload": {
+    "title": "Upload Statistics",
+    "description": "Upload your demographic data. The system will generate agents matching real-world proportions.",
+    "supported_formats": "Supported formats: CSV, JSON, Excel",
+    "dimension": "Dimension",
+    "required": "Required",
+    "optional": "Optional",
+    "preview": "Preview",
+    "validate": "Validate",
+    "upload_file": "Upload File",
+    "drop_here": "Drop files here",
+    "use_template": "Use Template"
+  },
+  "dimensions": {
+    "age": "Age Distribution",
+    "gender": "Gender Distribution",
+    "district": "District Distribution",
+    "education": "Education Level",
+    "occupation": "Occupation",
+    "income": "Income Band",
+    "household": "Household Type",
+    "party_lean": "Party Leaning",
+    "issue": "Issue Priority",
+    "vote_probability": "Vote Probability",
+    "mbti": "MBTI Type",
+    "custom": "Custom Field",
+    "county": "County Distribution",
+    "state": "State Distribution",
+    "media_habit": "News Habit",
+    "tenure": "Owner / Renter",
+    "employment": "Employment Status"
+  },
+  "synthesis": {
+    "title": "Population Synthesis",
+    "generate": "Generate",
+    "generating": "Generating...",
+    "count": "Population Size",
+    "method": "Synthesis Method",
+    "method_weighted": "Weighted Sampling",
+    "method_ipf": "IPF (Iterative Proportional Fitting)",
+    "preview_distribution": "Distribution Preview",
+    "validation": "Validation Result",
+    "match_rate": "Match Rate"
+  },
+  "persona": {
+    "title": "Persona Generation",
+    "strategy": "Generation Strategy",
+    "strategy_template": "Rule Template",
+    "strategy_llm": "LLM Generation",
+    "strategy_hybrid": "Hybrid Mode",
+    "template_editor": "Template Editor",
+    "prompt_editor": "Prompt Editor",
+    "generate": "Generate",
+    "preview": "Preview",
+    "regenerate": "Regenerate",
+    "edit": "Manual Edit"
+  },
+  "simulation": {
+    "title": "Simulation",
+    "platform": "Platform Type",
+    "platform_twitter": "Twitter Style",
+    "platform_reddit": "Reddit Style",
+    "llm_model": "LLM Model",
+    "steps": "Simulation Steps",
+    "concurrency": "Concurrency",
+    "interview": "Poll Questionnaire",
+    "interview_prompt": "Interview Prompt",
+    "start": "Start Simulation",
+    "running": "Running...",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "overall": "Overall Results",
+    "by_group": "Group Analysis",
+    "by_district": "By District",
+    "by_age": "By Age",
+    "by_gender": "By Gender",
+    "by_party": "By Party Leaning",
+    "cross_analysis": "Cross Analysis",
+    "export_csv": "Export CSV",
+    "export_pdf": "Export PDF",
+    "support_rate": "Support Rate",
+    "undecided": "Undecided",
+    "refused": "Refused",
+    "by_county": "By County",
+    "by_state": "By State"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "download": "Download",
+    "language": "Language"
+  },
+  "us": {
+    "leaning": {
+      "solid_dem": "Solid Dem",
+      "lean_dem": "Lean Dem",
+      "tossup": "Tossup",
+      "lean_rep": "Lean Rep",
+      "solid_rep": "Solid Rep"
+    },
+    "party": {
+      "democratic": "Democratic",
+      "republican": "Republican",
+      "independent": "Independent",
+      "libertarian": "Libertarian",
+      "green": "Green"
+    },
+    "pvi": {
+      "label": "Cook PVI",
+      "description": "Average county-level deviation from the national two-party share over the last two presidential cycles. Positive = Democratic-leaning, negative = Republican-leaning."
+    },
+    "issues": {
+      "economy": "Economy",
+      "immigration": "Immigration",
+      "healthcare": "Healthcare",
+      "abortion": "Abortion",
+      "guns": "Guns",
+      "climate": "Climate",
+      "foreign": "Foreign Policy",
+      "crime": "Crime / Public Safety",
+      "education": "Education",
+      "jobs": "Jobs"
+    },
+    "government": {
+      "local_satisfaction": "State / Local Satisfaction",
+      "national_satisfaction": "Federal Satisfaction",
+      "governor": "Governor",
+      "mayor": "Mayor",
+      "president": "President",
+      "congress": "Congress",
+      "state_legislature": "State Legislature"
+    }
+  }
+}

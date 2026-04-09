@@ -1,0 +1,597 @@
+{
+  "name": "South Dakota Sample (US)",
+  "name_zh": "南達科他州樣本",
+  "region": "South Dakota",
+  "region_code": "SD",
+  "fips": "46",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.153586,
+    "state_pvi_label": "R+15",
+    "county_count": 66,
+    "population_total": 924669
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.5137
+        },
+        {
+          "value": "Female",
+          "weight": 0.4863
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2353
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0907
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1265
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1297
+        },
+        {
+          "range": "45-54",
+          "weight": 0.108
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1196
+        },
+        {
+          "range": "65+",
+          "weight": 0.1902
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Minnehaha County",
+          "weight": 0.2239
+        },
+        {
+          "value": "Pennington County",
+          "weight": 0.1251
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0778
+        },
+        {
+          "value": "Brown County",
+          "weight": 0.0417
+        },
+        {
+          "value": "Brookings County",
+          "weight": 0.039
+        },
+        {
+          "value": "Meade County",
+          "weight": 0.0337
+        },
+        {
+          "value": "Codington County",
+          "weight": 0.0317
+        },
+        {
+          "value": "Lawrence County",
+          "weight": 0.03
+        },
+        {
+          "value": "Yankton County",
+          "weight": 0.0258
+        },
+        {
+          "value": "Davison County",
+          "weight": 0.022
+        },
+        {
+          "value": "Beadle County",
+          "weight": 0.0213
+        },
+        {
+          "value": "Hughes County",
+          "weight": 0.0195
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0188
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0168
+        },
+        {
+          "value": "Oglala Lakota County",
+          "weight": 0.0149
+        },
+        {
+          "value": "Lake County",
+          "weight": 0.0121
+        },
+        {
+          "value": "Butte County",
+          "weight": 0.0118
+        },
+        {
+          "value": "Roberts County",
+          "weight": 0.0113
+        },
+        {
+          "value": "Charles Mix County",
+          "weight": 0.0102
+        },
+        {
+          "value": "Todd County",
+          "weight": 0.0102
+        },
+        {
+          "value": "Custer County",
+          "weight": 0.0098
+        },
+        {
+          "value": "Turner County",
+          "weight": 0.0098
+        },
+        {
+          "value": "Grant County",
+          "weight": 0.0083
+        },
+        {
+          "value": "Hutchinson County",
+          "weight": 0.0082
+        },
+        {
+          "value": "Fall River County",
+          "weight": 0.008
+        },
+        {
+          "value": "Bon Homme County",
+          "weight": 0.0078
+        },
+        {
+          "value": "Moody County",
+          "weight": 0.007
+        },
+        {
+          "value": "Hamlin County",
+          "weight": 0.007
+        },
+        {
+          "value": "Spink County",
+          "weight": 0.0069
+        },
+        {
+          "value": "McCook County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Tripp County",
+          "weight": 0.0062
+        },
+        {
+          "value": "Day County",
+          "weight": 0.006
+        },
+        {
+          "value": "Brule County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Walworth County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Kingsbury County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Dewey County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Marshall County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Deuel County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Edmunds County",
+          "weight": 0.0045
+        },
+        {
+          "value": "Gregory County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Clark County",
+          "weight": 0.0043
+        },
+        {
+          "value": "Corson County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Lyman County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Hanson County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Bennett County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Hand County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Stanley County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Perkins County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Douglas County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Aurora County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Potter County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Sanborn County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Ziebach County",
+          "weight": 0.0026
+        },
+        {
+          "value": "Miner County",
+          "weight": 0.0025
+        },
+        {
+          "value": "McPherson County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Faulk County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Mellette County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Buffalo County",
+          "weight": 0.002
+        },
+        {
+          "value": "Jerauld County",
+          "weight": 0.002
+        },
+        {
+          "value": "Haakon County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Campbell County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Sully County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Hyde County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Harding County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Jones County",
+          "weight": 0.0011
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.0597
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2786
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.3199
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3418
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.005
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.0055
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.0178
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.5581
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.4136
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6552
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0189
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0049
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.321
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6829
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3171
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for South Dakota."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for South Dakota."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for South Dakota."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[South Dakota presidential context]\nThis template models a generic US presidential race within South Dakota (SD). The state's Cook PVI is R+15 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- South Dakota state issues → pinned on the in-state governing party",
+      "zh-TW": "【South Dakota（SD）總統選舉背景】\n本 template 模擬一場 South Dakota 內的通用美國總統選舉。該州的 Cook PVI 為 R+15（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- South Dakota 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "South Dakota election polling\nSouth Dakota (SD) governor senate\nSouth Dakota economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

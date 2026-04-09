@@ -1,0 +1,15 @@
+{
+  "name": "2024 Test",
+  "plugin_id": "election",
+  "events": [
+    {
+      "day": 1,
+      "news": [{"title": "Test News", "summary": "Test Summary", "source_tag": "Test"}]
+    }
+  ],
+  "ground_truth": {
+    "賴清德(民主進步黨)": 40.05,
+    "侯友宜(中國國民黨)": 33.49,
+    "柯文哲(台灣民眾黨)": 26.46
+  }
+}

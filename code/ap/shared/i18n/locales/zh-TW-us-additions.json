@@ -1,0 +1,60 @@
+{
+  "_note": "Merge these keys into ap/shared/i18n/locales/zh-TW.json when applying the US overlay. They translate the new US-specific labels added to en.json. Do NOT replace the existing zh-TW.json — only merge.",
+  "project": {
+    "country": "國家",
+    "country_us": "美國",
+    "country_tw": "台灣"
+  },
+  "dimensions": {
+    "county": "郡分布",
+    "state": "州分布",
+    "media_habit": "媒體習慣",
+    "tenure": "持有 / 租屋",
+    "employment": "就業狀態"
+  },
+  "analytics": {
+    "by_county": "按郡分析",
+    "by_state": "按州分析"
+  },
+  "us": {
+    "leaning": {
+      "solid_dem": "強烈民主黨",
+      "lean_dem": "傾向民主黨",
+      "tossup": "搖擺",
+      "lean_rep": "傾向共和黨",
+      "solid_rep": "強烈共和黨"
+    },
+    "party": {
+      "democratic": "民主黨",
+      "republican": "共和黨",
+      "independent": "無黨籍",
+      "libertarian": "自由意志黨",
+      "green": "綠黨"
+    },
+    "pvi": {
+      "label": "Cook PVI 政治指數",
+      "description": "依據近兩屆總統大選兩黨得票率，計算各郡相對於全國平均的偏移程度。正值偏民主黨，負值偏共和黨。"
+    },
+    "issues": {
+      "economy": "經濟",
+      "immigration": "移民",
+      "healthcare": "醫療",
+      "abortion": "墮胎權",
+      "guns": "槍枝管制",
+      "climate": "氣候變遷",
+      "foreign": "外交政策",
+      "crime": "治安",
+      "education": "教育",
+      "jobs": "就業"
+    },
+    "government": {
+      "local_satisfaction": "州與地方政府滿意度",
+      "national_satisfaction": "聯邦政府滿意度",
+      "governor": "州長",
+      "mayor": "市長",
+      "president": "總統",
+      "congress": "國會",
+      "state_legislature": "州議會"
+    }
+  }
+}

@@ -1,0 +1,1349 @@
+{
+  "name": "Texas Sample (US)",
+  "name_zh": "德克薩斯州樣本",
+  "region": "Texas",
+  "region_code": "TX",
+  "fips": "48",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.059923,
+    "state_pvi_label": "R+6",
+    "county_count": 254,
+    "population_total": 31290832
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4988
+        },
+        {
+          "value": "Female",
+          "weight": 0.5012
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2447
+        },
+        {
+          "range": "18-24",
+          "weight": 0.0977
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1443
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1435
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1225
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1077
+        },
+        {
+          "range": "65+",
+          "weight": 0.1395
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Harris County",
+          "weight": 0.1608
+        },
+        {
+          "value": "Dallas County",
+          "weight": 0.0868
+        },
+        {
+          "value": "Tarrant County",
+          "weight": 0.0718
+        },
+        {
+          "value": "Bexar County",
+          "weight": 0.0685
+        },
+        {
+          "value": "Travis County",
+          "weight": 0.0441
+        },
+        {
+          "value": "Collin County",
+          "weight": 0.0385
+        },
+        {
+          "value": "Denton County",
+          "weight": 0.0324
+        },
+        {
+          "value": "Fort Bend County",
+          "weight": 0.0296
+        },
+        {
+          "value": "Hidalgo County",
+          "weight": 0.0295
+        },
+        {
+          "value": "El Paso County",
+          "weight": 0.0288
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0227
+        },
+        {
+          "value": "Williamson County",
+          "weight": 0.0223
+        },
+        {
+          "value": "Cameron County",
+          "weight": 0.0141
+        },
+        {
+          "value": "Brazoria County",
+          "weight": 0.013
+        },
+        {
+          "value": "Bell County",
+          "weight": 0.0128
+        },
+        {
+          "value": "Galveston County",
+          "weight": 0.0119
+        },
+        {
+          "value": "Nueces County",
+          "weight": 0.0117
+        },
+        {
+          "value": "Lubbock County",
+          "weight": 0.0106
+        },
+        {
+          "value": "Webb County",
+          "weight": 0.0089
+        },
+        {
+          "value": "Hays County",
+          "weight": 0.0089
+        },
+        {
+          "value": "McLennan County",
+          "weight": 0.0088
+        },
+        {
+          "value": "Jefferson County",
+          "weight": 0.0084
+        },
+        {
+          "value": "Brazos County",
+          "weight": 0.008
+        },
+        {
+          "value": "Smith County",
+          "weight": 0.008
+        },
+        {
+          "value": "Ellis County",
+          "weight": 0.0071
+        },
+        {
+          "value": "Johnson County",
+          "weight": 0.0065
+        },
+        {
+          "value": "Comal County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Guadalupe County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Midland County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Kaufman County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Parker County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Ector County",
+          "weight": 0.0055
+        },
+        {
+          "value": "Randall County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Taylor County",
+          "weight": 0.0048
+        },
+        {
+          "value": "Grayson County",
+          "weight": 0.0047
+        },
+        {
+          "value": "Wichita County",
+          "weight": 0.0043
+        },
+        {
+          "value": "Gregg County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Rockwall County",
+          "weight": 0.0041
+        },
+        {
+          "value": "Tom Green County",
+          "weight": 0.004
+        },
+        {
+          "value": "Potter County",
+          "weight": 0.0038
+        },
+        {
+          "value": "Hunt County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Bastrop County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Liberty County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Bowie County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Victoria County",
+          "weight": 0.003
+        },
+        {
+          "value": "Angelina County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Orange County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Henderson County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Coryell County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Walker County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Wise County",
+          "weight": 0.0025
+        },
+        {
+          "value": "San Patricio County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Harrison County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Starr County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Hood County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Nacogdoches County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Van Zandt County",
+          "weight": 0.0021
+        },
+        {
+          "value": "Waller County",
+          "weight": 0.002
+        },
+        {
+          "value": "Anderson County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Maverick County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Hardin County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Navarro County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Medina County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Kerr County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Rusk County",
+          "weight": 0.0018
+        },
+        {
+          "value": "Polk County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Wilson County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Burnet County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Cherokee County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Chambers County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Atascosa County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Lamar County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Caldwell County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Kendall County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Val Verde County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Wood County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Erath County",
+          "weight": 0.0015
+        },
+        {
+          "value": "Cooke County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Upshur County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Wharton County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Jim Wells County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Brown County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Hopkins County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Hill County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Fannin County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Matagorda County",
+          "weight": 0.0012
+        },
+        {
+          "value": "Jasper County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Howard County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Hale County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Titus County",
+          "weight": 0.001
+        },
+        {
+          "value": "Grimes County",
+          "weight": 0.001
+        },
+        {
+          "value": "Austin County",
+          "weight": 0.001
+        },
+        {
+          "value": "Bee County",
+          "weight": 0.001
+        },
+        {
+          "value": "Kleberg County",
+          "weight": 0.001
+        },
+        {
+          "value": "Palo Pinto County",
+          "weight": 0.001
+        },
+        {
+          "value": "Cass County",
+          "weight": 0.0009
+        },
+        {
+          "value": "San Jacinto County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Gillespie County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Milam County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Fayette County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Uvalde County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Aransas County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Shelby County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Panola County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Lampasas County",
+          "weight": 0.0008
+        },
+        {
+          "value": "Llano County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Limestone County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Gaines County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Houston County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Bandera County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Moore County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Hockley County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Montague County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Gray County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Colorado County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Lavaca County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Jones County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Tyler County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Hutchinson County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Willacy County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Freestone County",
+          "weight": 0.0007
+        },
+        {
+          "value": "DeWitt County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Calhoun County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Gonzales County",
+          "weight": 0.0007
+        },
+        {
+          "value": "Burleson County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Bosque County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Andrews County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Frio County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Deaf Smith County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Young County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Eastland County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Lee County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Falls County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Robertson County",
+          "weight": 0.0006
+        },
+        {
+          "value": "Scurry County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Leon County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Karnes County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Pecos County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Nolan County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Callahan County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Trinity County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Comanche County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Zapata County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.0005
+        },
+        {
+          "value": "Lamb County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Camp County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Rains County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Reeves County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Wilbarger County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Blanco County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Dawson County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Newton County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Morris County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Terry County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Live Oak County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Red River County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Ward County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0004
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Sabine County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Runnels County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Ochiltree County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Duval County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Marion County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Parmer County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Somervell County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Brewster County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Zavala County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Stephens County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Mitchell County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Jack County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Archer County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Hamilton County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Dimmit County",
+          "weight": 0.0003
+        },
+        {
+          "value": "San Augustine County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Coleman County",
+          "weight": 0.0003
+        },
+        {
+          "value": "Yoakum County",
+          "weight": 0.0003
+        },
+        {
+          "value": "McCulloch County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Winkler County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Castro County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Dallam County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Goliad County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Brooks County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Swisher County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Bailey County",
+          "weight": 0.0002
+        },
+        {
+          "value": "La Salle County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Childress County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Refugio County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Presidio County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Carson County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Lynn County",
+          "weight": 0.0002
+        },
+        {
+          "value": "San Saba County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Delta County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Haskell County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Martin County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Floyd County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Hartley County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Hansford County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Garza County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Crosby County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Wheeler County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Jim Hogg County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Crane County",
+          "weight": 0.0002
+        },
+        {
+          "value": "Mills County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Kimble County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Mason County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Fisher County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Hardeman County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Baylor County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Hudspeth County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Coke County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Concho County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Knox County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Sutton County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Donley County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Hemphill County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Reagan County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Upton County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Shackelford County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Kinney County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Lipscomb County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Crockett County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Hall County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Real County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Collingsworth County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Cochran County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Schleicher County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Sherman County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Oldham County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Culberson County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Menard County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Jeff Davis County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Armstrong County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Dickens County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Throckmorton County",
+          "weight": 0.0001
+        },
+        {
+          "value": "Sterling County",
+          "weight": 0.0
+        },
+        {
+          "value": "Irion County",
+          "weight": 0.0
+        },
+        {
+          "value": "Cottle County",
+          "weight": 0.0
+        },
+        {
+          "value": "Briscoe County",
+          "weight": 0.0
+        },
+        {
+          "value": "Edwards County",
+          "weight": 0.0
+        },
+        {
+          "value": "Stonewall County",
+          "weight": 0.0
+        },
+        {
+          "value": "Motley County",
+          "weight": 0.0
+        },
+        {
+          "value": "Glasscock County",
+          "weight": 0.0
+        },
+        {
+          "value": "Foard County",
+          "weight": 0.0
+        },
+        {
+          "value": "Terrell County",
+          "weight": 0.0
+        },
+        {
+          "value": "Roberts County",
+          "weight": 0.0
+        },
+        {
+          "value": "Kent County",
+          "weight": 0.0
+        },
+        {
+          "value": "Borden County",
+          "weight": 0.0
+        },
+        {
+          "value": "McMullen County",
+          "weight": 0.0
+        },
+        {
+          "value": "King County",
+          "weight": 0.0
+        },
+        {
+          "value": "Kenedy County",
+          "weight": 0.0
+        },
+        {
+          "value": "Loving County",
+          "weight": 0.0
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.1331
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.2436
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.2717
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.3516
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0509
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.164
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.3811
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1156
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.2884
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.6211
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0316
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0048
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3425
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6231
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3769
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Texas."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Texas."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Texas."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Texas presidential context]\nThis template models a generic US presidential race within Texas (TX). The state's Cook PVI is R+6 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Texas state issues → pinned on the in-state governing party",
+      "zh-TW": "【Texas（TX）總統選舉背景】\n本 template 模擬一場 Texas 內的通用美國總統選舉。該州的 Cook PVI 為 R+6（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Texas 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Texas election polling\nTexas (TX) governor senate\nTexas economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}

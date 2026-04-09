@@ -1,0 +1,813 @@
+{
+  "name": "Kentucky Sample (US)",
+  "name_zh": "肯塔基州樣本",
+  "region": "Kentucky",
+  "region_code": "KY",
+  "fips": "21",
+  "country": "US",
+  "locale": "en-US",
+  "target_count": 100,
+  "metadata": {
+    "source": {
+      "demographics": "ACS 2024 5-year (via censusreporter.org)",
+      "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+    },
+    "state_pvi": -0.152928,
+    "state_pvi_label": "R+15",
+    "county_count": 120,
+    "population_total": 4588372
+  },
+  "dimensions": {
+    "gender": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Male",
+          "weight": 0.4957
+        },
+        {
+          "value": "Female",
+          "weight": 0.5043
+        }
+      ]
+    },
+    "age": {
+      "type": "range",
+      "bins": [
+        {
+          "range": "Under 18",
+          "weight": 0.2223
+        },
+        {
+          "range": "18-24",
+          "weight": 0.092
+        },
+        {
+          "range": "25-34",
+          "weight": 0.1306
+        },
+        {
+          "range": "35-44",
+          "weight": 0.1291
+        },
+        {
+          "range": "45-54",
+          "weight": 0.1207
+        },
+        {
+          "range": "55-64",
+          "weight": 0.1253
+        },
+        {
+          "range": "65+",
+          "weight": 0.18
+        }
+      ]
+    },
+    "county": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Jefferson County",
+          "weight": 0.1728
+        },
+        {
+          "value": "Fayette County",
+          "weight": 0.0714
+        },
+        {
+          "value": "Kenton County",
+          "weight": 0.0378
+        },
+        {
+          "value": "Warren County",
+          "weight": 0.0311
+        },
+        {
+          "value": "Boone County",
+          "weight": 0.0308
+        },
+        {
+          "value": "Hardin County",
+          "weight": 0.0247
+        },
+        {
+          "value": "Daviess County",
+          "weight": 0.0229
+        },
+        {
+          "value": "Madison County",
+          "weight": 0.0211
+        },
+        {
+          "value": "Campbell County",
+          "weight": 0.0206
+        },
+        {
+          "value": "Bullitt County",
+          "weight": 0.0185
+        },
+        {
+          "value": "Christian County",
+          "weight": 0.0159
+        },
+        {
+          "value": "Oldham County",
+          "weight": 0.0153
+        },
+        {
+          "value": "McCracken County",
+          "weight": 0.0149
+        },
+        {
+          "value": "Pulaski County",
+          "weight": 0.0145
+        },
+        {
+          "value": "Laurel County",
+          "weight": 0.0139
+        },
+        {
+          "value": "Scott County",
+          "weight": 0.0131
+        },
+        {
+          "value": "Pike County",
+          "weight": 0.0125
+        },
+        {
+          "value": "Jessamine County",
+          "weight": 0.012
+        },
+        {
+          "value": "Franklin County",
+          "weight": 0.0114
+        },
+        {
+          "value": "Shelby County",
+          "weight": 0.0108
+        },
+        {
+          "value": "Boyd County",
+          "weight": 0.0106
+        },
+        {
+          "value": "Nelson County",
+          "weight": 0.0105
+        },
+        {
+          "value": "Hopkins County",
+          "weight": 0.0099
+        },
+        {
+          "value": "Barren County",
+          "weight": 0.0099
+        },
+        {
+          "value": "Henderson County",
+          "weight": 0.0098
+        },
+        {
+          "value": "Calloway County",
+          "weight": 0.0084
+        },
+        {
+          "value": "Clark County",
+          "weight": 0.0082
+        },
+        {
+          "value": "Whitley County",
+          "weight": 0.0081
+        },
+        {
+          "value": "Graves County",
+          "weight": 0.0081
+        },
+        {
+          "value": "Greenup County",
+          "weight": 0.0078
+        },
+        {
+          "value": "Floyd County",
+          "weight": 0.0078
+        },
+        {
+          "value": "Marshall County",
+          "weight": 0.007
+        },
+        {
+          "value": "Boyle County",
+          "weight": 0.0068
+        },
+        {
+          "value": "Muhlenberg County",
+          "weight": 0.0067
+        },
+        {
+          "value": "Meade County",
+          "weight": 0.0067
+        },
+        {
+          "value": "Knox County",
+          "weight": 0.0066
+        },
+        {
+          "value": "Montgomery County",
+          "weight": 0.0063
+        },
+        {
+          "value": "Logan County",
+          "weight": 0.0062
+        },
+        {
+          "value": "Perry County",
+          "weight": 0.0061
+        },
+        {
+          "value": "Woodford County",
+          "weight": 0.006
+        },
+        {
+          "value": "Grayson County",
+          "weight": 0.0059
+        },
+        {
+          "value": "Taylor County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Carter County",
+          "weight": 0.0058
+        },
+        {
+          "value": "Harlan County",
+          "weight": 0.0057
+        },
+        {
+          "value": "Grant County",
+          "weight": 0.0056
+        },
+        {
+          "value": "Rowan County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Lincoln County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Anderson County",
+          "weight": 0.0054
+        },
+        {
+          "value": "Ohio County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Bell County",
+          "weight": 0.0052
+        },
+        {
+          "value": "Mercer County",
+          "weight": 0.0051
+        },
+        {
+          "value": "Johnson County",
+          "weight": 0.0049
+        },
+        {
+          "value": "Allen County",
+          "weight": 0.0047
+        },
+        {
+          "value": "Breckinridge County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Letcher County",
+          "weight": 0.0046
+        },
+        {
+          "value": "Bourbon County",
+          "weight": 0.0045
+        },
+        {
+          "value": "Spencer County",
+          "weight": 0.0045
+        },
+        {
+          "value": "Simpson County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Clay County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Marion County",
+          "weight": 0.0044
+        },
+        {
+          "value": "Hart County",
+          "weight": 0.0043
+        },
+        {
+          "value": "Wayne County",
+          "weight": 0.0043
+        },
+        {
+          "value": "Harrison County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Adair County",
+          "weight": 0.0042
+        },
+        {
+          "value": "Russell County",
+          "weight": 0.004
+        },
+        {
+          "value": "Garrard County",
+          "weight": 0.0039
+        },
+        {
+          "value": "Mason County",
+          "weight": 0.0037
+        },
+        {
+          "value": "McCreary County",
+          "weight": 0.0037
+        },
+        {
+          "value": "Rockcastle County",
+          "weight": 0.0036
+        },
+        {
+          "value": "Lawrence County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Casey County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Henry County",
+          "weight": 0.0035
+        },
+        {
+          "value": "Fleming County",
+          "weight": 0.0034
+        },
+        {
+          "value": "Larue County",
+          "weight": 0.0033
+        },
+        {
+          "value": "Pendleton County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Trigg County",
+          "weight": 0.0032
+        },
+        {
+          "value": "Morgan County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Estill County",
+          "weight": 0.0031
+        },
+        {
+          "value": "Knott County",
+          "weight": 0.003
+        },
+        {
+          "value": "Breathitt County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Union County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Jackson County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Powell County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Lewis County",
+          "weight": 0.0029
+        },
+        {
+          "value": "Bath County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Webster County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Caldwell County",
+          "weight": 0.0028
+        },
+        {
+          "value": "Todd County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Butler County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Edmonson County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Washington County",
+          "weight": 0.0027
+        },
+        {
+          "value": "Green County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Magoffin County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Owen County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Monroe County",
+          "weight": 0.0025
+        },
+        {
+          "value": "Martin County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Carroll County",
+          "weight": 0.0024
+        },
+        {
+          "value": "Metcalfe County",
+          "weight": 0.0023
+        },
+        {
+          "value": "Leslie County",
+          "weight": 0.0022
+        },
+        {
+          "value": "Clinton County",
+          "weight": 0.002
+        },
+        {
+          "value": "McLean County",
+          "weight": 0.002
+        },
+        {
+          "value": "Hancock County",
+          "weight": 0.002
+        },
+        {
+          "value": "Crittenden County",
+          "weight": 0.002
+        },
+        {
+          "value": "Livingston County",
+          "weight": 0.002
+        },
+        {
+          "value": "Lyon County",
+          "weight": 0.002
+        },
+        {
+          "value": "Gallatin County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Trimble County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Bracken County",
+          "weight": 0.0019
+        },
+        {
+          "value": "Nicholas County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Ballard County",
+          "weight": 0.0017
+        },
+        {
+          "value": "Lee County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Elliott County",
+          "weight": 0.0016
+        },
+        {
+          "value": "Wolfe County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Fulton County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Menifee County",
+          "weight": 0.0014
+        },
+        {
+          "value": "Cumberland County",
+          "weight": 0.0013
+        },
+        {
+          "value": "Carlisle County",
+          "weight": 0.0011
+        },
+        {
+          "value": "Hickman County",
+          "weight": 0.001
+        },
+        {
+          "value": "Owsley County",
+          "weight": 0.0009
+        },
+        {
+          "value": "Robertson County",
+          "weight": 0.0005
+        }
+      ]
+    },
+    "education": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Less than High School",
+          "weight": 0.1102
+        },
+        {
+          "value": "High School Graduate",
+          "weight": 0.3214
+        },
+        {
+          "value": "Some College / Associate",
+          "weight": 0.289
+        },
+        {
+          "value": "Bachelor's or Higher",
+          "weight": 0.2794
+        }
+      ]
+    },
+    "party_lean": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Solid Dem",
+          "weight": 0.0
+        },
+        {
+          "value": "Lean Dem",
+          "weight": 0.2392
+        },
+        {
+          "value": "Tossup",
+          "weight": 0.0124
+        },
+        {
+          "value": "Lean Rep",
+          "weight": 0.1737
+        },
+        {
+          "value": "Solid Rep",
+          "weight": 0.5747
+        }
+      ]
+    },
+    "employment_status": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Employed",
+          "weight": 0.5694
+        },
+        {
+          "value": "Unemployed",
+          "weight": 0.0292
+        },
+        {
+          "value": "Armed Forces",
+          "weight": 0.0038
+        },
+        {
+          "value": "Not in Labor Force",
+          "weight": 0.3976
+        }
+      ]
+    },
+    "household_tenure": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Owner",
+          "weight": 0.6812
+        },
+        {
+          "value": "Renter",
+          "weight": 0.3188
+        }
+      ]
+    },
+    "media_habit": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "TV News (Local + Cable)",
+          "weight": 0.3
+        },
+        {
+          "value": "Social Media (Facebook / X / TikTok)",
+          "weight": 0.25
+        },
+        {
+          "value": "News Websites / Apps",
+          "weight": 0.2
+        },
+        {
+          "value": "YouTube",
+          "weight": 0.15
+        },
+        {
+          "value": "Podcasts / Radio",
+          "weight": 0.05
+        },
+        {
+          "value": "Print Newspaper",
+          "weight": 0.05
+        }
+      ]
+    }
+  },
+  "election": {
+    "type": "presidential",
+    "scope": "state",
+    "cycle": null,
+    "is_generic": true,
+    "candidates": [
+      {
+        "id": "D",
+        "name": "Generic Democrat",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#3b82f6",
+        "description": "Generic Democratic nominee for Kentucky."
+      },
+      {
+        "id": "R",
+        "name": "Generic Republican",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#ef4444",
+        "description": "Generic Republican nominee for Kentucky."
+      },
+      {
+        "id": "I",
+        "name": "Generic Independent",
+        "party": "I",
+        "party_label": "Independent",
+        "is_incumbent": false,
+        "color": "#94a3b8",
+        "description": "Generic third-party / independent candidate for Kentucky."
+      }
+    ],
+    "party_palette": {
+      "D": [
+        "#1e40af",
+        "#3b82f6",
+        "#60a5fa",
+        "#93c5fd",
+        "#bfdbfe"
+      ],
+      "R": [
+        "#7f1d1d",
+        "#ef4444",
+        "#f87171",
+        "#fca5a5",
+        "#fecaca"
+      ],
+      "I": [
+        "#475569",
+        "#94a3b8",
+        "#cbd5e1",
+        "#e2e8f0",
+        "#f1f5f9"
+      ]
+    },
+    "party_detection": {
+      "D": [
+        "democrat",
+        "democratic",
+        "(d)",
+        " dem",
+        "dem ",
+        "biden",
+        "harris",
+        "obama",
+        "clinton",
+        "kerry",
+        "gore"
+      ],
+      "R": [
+        "republican",
+        "(r)",
+        " rep",
+        "rep ",
+        "gop",
+        "trump",
+        "vance",
+        "pence",
+        "romney",
+        "mccain",
+        "bush"
+      ],
+      "I": [
+        "independent",
+        "(i)",
+        "libertarian",
+        "green party",
+        "no party",
+        "non-affiliated",
+        "kennedy"
+      ]
+    },
+    "default_macro_context": {
+      "en": "[Kentucky presidential context]\nThis template models a generic US presidential race within Kentucky (KY). The state's Cook PVI is R+15 based on 2020+2024 two-party share averages. Adjust the macro context to match the cycle and incumbent party you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, foreign policy, immigration) → typically pinned on whichever party holds the White House\n- Kentucky state issues → pinned on the in-state governing party",
+      "zh-TW": "【Kentucky（KY）總統選舉背景】\n本 template 模擬一場 Kentucky 內的通用美國總統選舉。該州的 Cook PVI 為 R+15（基於 2020 + 2024 兩黨得票率平均）。請依您想模擬的週期與執政黨調整 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、外交、移民）→ 通常歸咎執政黨\n- Kentucky 州內議題 → 歸咎州內執政黨"
+    },
+    "default_search_keywords": {
+      "local": "Kentucky election polling\nKentucky (KY) governor senate\nKentucky economy housing",
+      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs"
+    },
+    "default_calibration_params": {
+      "news_impact": 2.2,
+      "delta_cap_mult": 1.5,
+      "decay_rate_mult": 0.5,
+      "forget_rate": 0.15,
+      "recognition_penalty": 0.1,
+      "base_undecided": 0.1,
+      "max_undecided": 0.45,
+      "party_align_bonus": 18,
+      "incumbency_bonus": 10,
+      "party_divergence_mult": 0.5,
+      "profile_match_mult": 3.0,
+      "stature_cap": 12,
+      "grassroots_cap": 8,
+      "anxiety_sensitivity_mult": 0.15,
+      "charm_mult": 8.0,
+      "cross_appeal_mult": 0.6
+    },
+    "default_kol": {
+      "enabled": false,
+      "ratio": 0.05,
+      "reach": 0.4
+    },
+    "default_poll_groups": [
+      {
+        "id": "likely_voters",
+        "name": "Likely Voters",
+        "weight": 100
+      }
+    ],
+    "party_base_scores": {
+      "D": 50,
+      "R": 50,
+      "I": 25
+    },
+    "default_evolution_params": {
+      "sim_days": 60,
+      "search_interval": 3,
+      "use_dynamic_search": true,
+      "neutral_ratio": 0.1,
+      "delta_cap_mult": 1.5,
+      "individuality_mult": 1.0,
+      "concurrency": 5
+    },
+    "default_alignment": {
+      "mode": "none"
+    }
+  }
+}
