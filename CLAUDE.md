@@ -118,6 +118,99 @@ must be handled** — different states report differently and the script reconci
 both. National two-party Dem share matches official numbers exactly (2020: 52.27%,
 2024: 49.25%) — treat any deviation as a bug.
 
+## Open-Source UI Redesign (2026-04-09)
+
+The frontend was restructured for open-source release. Key changes:
+
+### Authentication removed
+- **No login required.** JWT auth middleware, `auth.py`, `routes/auth.py`, and
+  `routes/playback.py` have been deleted from the API service.
+- Frontend `auth-store.ts`, `AuthGuard.tsx`, and `app/login/` are removed.
+- `lib/api.ts` no longer sends `Authorization` headers or handles 401 redirects.
+
+### 3-Step Workflow (Persona → Evolution → Prediction)
+The UI is simplified to three numbered workflow steps. The old multi-tab, split-panel,
+inspector, command palette, and menu bar system has been replaced by:
+
+- **`WorkflowSidebar`** (`components/shell/WorkflowSidebar.tsx`) — Left sidebar with
+  3 numbered steps, expandable sub-items, project selector dropdown, and step status
+  badges (locked/available/completed).
+- **`panel-registry.ts`** — Reduced from 18+ panel types to 10. Exports
+  `WORKFLOW_STEPS` array (replaces old `WORKFLOW_ORDER` / `WORKFLOW_SUB_ITEMS`).
+- **`shell-store.ts`** — Simplified: removed `openPanels`, `activePanelId`, `layout`,
+  `inspectorOpen`, `commandPaletteOpen` and all related actions. Kept workspace,
+  jobs, and LLM status.
+
+### Sidebar sub-items map to these panels:
+
+| Step | Sub-item | Panel | Route |
+|------|----------|-------|-------|
+| 1. Persona | Setup | `PopulationSetupPanel` | `/workspaces/[id]/population-setup` |
+| 1. Persona | Synthesis | `SynthesisResultPanel` | `/workspaces/[id]/synthesis` |
+| 1. Persona | Explore | `PersonaPanel` | `/workspaces/[id]/persona` |
+| 2. Evolution | News Sources | `EvolutionPanel` | `/workspaces/[id]/evolution` |
+| 2. Evolution | Run Evolution | `EvolutionPanel` (runner tab) | `/workspaces/[id]/evolution-runner` |
+| 2. Evolution | Dashboard | `EvolutionDashboardPanel` | `/workspaces/[id]/evolution-dashboard` |
+| 2. Evolution | Agent Explorer | `AgentExplorerPanel` | `/workspaces/[id]/agent-explorer` |
+| 3. Prediction | Setup | `PredictionPanel` | `/workspaces/[id]/prediction` |
+| 3. Prediction | Run | `PredictionEvolutionDashboardPanel` | `/workspaces/[id]/prediction-evolution-dashboard` |
+| 3. Prediction | Analysis | `PredictionAnalysisPanel` | `/workspaces/[id]/prediction-analysis` |
+
+### Onboarding Wizard
+`components/onboarding/OnboardingWizard.tsx` — Full-screen 4-step wizard shown when
+`settings.onboarding_completed` is false (detected via `GET /api/settings` in
+`DesktopShell`).
+
+**Step 1 — API Keys:**
+- Agent LLM vendors (default: OpenAI `gpt-4o-mini`). Add more via "+ Add another vendor".
+- System LLM (default: OpenAI `o4-mini`) — used for non-agent tasks (news analysis,
+  data parsing, election data OCR). Separate vendor/model/key. Blank key = reuse
+  first agent vendor.
+- Serper API Key (required).
+- All three sections have **Test** buttons that call real APIs:
+  - `POST /api/settings/test-vendor` — sends minimal chat completion to LLM
+  - `POST /api/settings/test-serper` — sends search query to Serper
+
+**Step 2 — Create Project:** Name + template selection (grouped National / State).
+
+**Step 3 — Generate Personas:** Synthesize + generate with progress bar.
+
+**Step 4 — Ready:** Summary + explanation of next steps (Evolution → Prediction).
+
+### Prerequisite Gates
+`components/shared/StepGate.tsx` — Shown when a panel's prerequisite step is incomplete:
+- Evolution panels check `persona-result` — if empty, show "Persona Required" gate.
+- Prediction panels check evolution job history — if no completed jobs, show
+  "Evolution Required" gate.
+- Gate UI: lock icon + bilingual message + redirect button.
+
+Status is tracked by `hooks/use-workflow-status.ts` (`useWorkflowStatus` hook),
+which polls `persona-result` and `evolution/history` every 10s.
+
+### Guide Banners
+`components/shared/GuideBanner.tsx` — Dismissible contextual help banners at the top
+of key panels (`PopulationSetupPanel`, `PersonaPanel`, `EvolutionPanel`,
+`PredictionPanel`). Dismissed state stored in `localStorage` under
+`civatas_dismissed_guides`. Call `dismissAllGuides()` to dismiss all at once.
+
+### Removed panels and components (24 files)
+**Panels:** Calibration, Sandbox, Primary, Simulation, Analytics, HistoricalEvolution,
+NewsCenter, SatisfactionSurvey, StatModules, Leaning, DataSources.
+
+**Shell:** PanelTabBar, InspectorPanel, CommandPalette, MenuBar, Toolbar,
+LayoutRenderer, ResizeHandle, MainWorkspace, NavTree, SplitPaneHeader.
+
+**Other:** PlaybackViewer, RecordingManager, RecordingButton, AgentInspector, GuidePanel.
+
+### Settings Panel
+Simplified to 2 tabs:
+- **API Keys** — LLM vendor CRUD + Serper key + "Re-run Onboarding Wizard" button
+- **Appearance** — Theme + language selector
+
+### Design documents
+- Spec: `docs/superpowers/specs/2026-04-09-open-source-ui-redesign.md`
+- Plan: `docs/superpowers/plans/2026-04-09-open-source-ui-redesign.md`
+
 ## Known data quirks (do not "fix" without understanding)
 
 - **Alaska FIPS 02261** (Valdez-Cordova, dissolved 2019 into 02063 + 02066) exists in
@@ -149,9 +242,9 @@ fall back to the generic US defaults defined in `template-defaults.ts`.
 - `scripts/build_national_template.py` → `presidential_national_generic.json` + `presidential_2024.json`
 - `scripts/build_state_template.py --all` → 51 single-state templates `presidential_state_<XX>.json`
 
-**API:** `GET /api/templates` returns metadata for all templates (id, name, region,
-country, locale, election type / scope / cycle, candidate count). Frontend groups
-by election scope (national / state / other) in the picker.
+**API:** `GET /api/templates` returns `{ templates: [...] }` with metadata for all
+templates (id, name, region, country, locale, election type / scope / cycle, candidate
+count). Frontend groups by election scope (national / state / other) in the picker.
 
 **Active template per workspace:** stored in `localStorage[\`activeTemplate_${wsId}\`]`.
 The `useActiveTemplate(wsId)` hook (in `ap/services/web/src/hooks/use-active-template.ts`)
@@ -163,10 +256,7 @@ returns the full template body reactively. `PopulationSetupPanel` calls
 `getDefaultCalibParams()`, `getDefaultCandidates()`, `getDefaultCandidateBaseScores()`,
 `makePartyColorResolver()`, `makePartyIdResolver()`, etc. Each helper accepts the
 (possibly-null) active template and returns either the template-provided value or
-a generic US fallback. `CalibrationPanel`, `PredictionPanel`, and `SandboxPanel`
-consume these helpers — when a template is active, they auto-seed macro context /
-search keywords / party colors / candidates with template values; otherwise they
-fall back to generic English defaults.
+a generic US fallback.
 
 **When adding a new election type:**
 1. Write the data fetcher (`scripts/fetch_<type>.py` for any new MEDSL/TIGER datasets)
