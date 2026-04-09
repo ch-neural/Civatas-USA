@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 // Vendor type presets
 const VENDOR_PRESETS: Record<string, { label: string; defaultModel: string; keyUrl: string }> = {
-  openai:   { label: "OpenAI",   defaultModel: "gpt-4o",           keyUrl: "https://platform.openai.com/api-keys" },
+  openai:   { label: "OpenAI",   defaultModel: "gpt-4o-mini",      keyUrl: "https://platform.openai.com/api-keys" },
   gemini:   { label: "Gemini",   defaultModel: "gemini-2.5-flash", keyUrl: "https://aistudio.google.com/apikey" },
   xai:      { label: "xAI",      defaultModel: "grok-3-mini",      keyUrl: "https://console.x.ai/" },
   deepseek: { label: "DeepSeek", defaultModel: "deepseek-chat",    keyUrl: "https://platform.deepseek.com/api_keys" },
@@ -45,7 +45,7 @@ export function OnboardingWizard() {
 
   // Step 1: API Keys
   const [vendors, setVendors] = useState<VendorConfig[]>([
-    { id: "openai-1", vendor_type: "openai", display_name: "OpenAI", api_key: "", model: "gpt-4o", base_url: "" },
+    { id: "openai-1", vendor_type: "openai", display_name: "OpenAI", api_key: "", model: "gpt-4o-mini", base_url: "" },
   ]);
   const [serperKey, setSerperKey] = useState("");
   const [keyError, setKeyError] = useState("");
