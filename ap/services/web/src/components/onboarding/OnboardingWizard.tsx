@@ -183,7 +183,8 @@ export function OnboardingWizard() {
   const loadTemplates = async () => {
     setLoadingTemplates(true);
     try {
-      const data = await apiFetch("/api/templates");
+      const raw = await apiFetch("/api/templates");
+      const data: TemplateInfo[] = Array.isArray(raw) ? raw : raw.templates ?? [];
       setTemplates(data);
       if (data.length > 0) setSelectedTemplate(data[0].id);
     } catch { /* ignore */ }
