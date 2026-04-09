@@ -155,6 +155,32 @@ async def api_test_vendor(req: TestVendorRequest):
         return {"status": "fail", "detail": str(e)[:200]}
 
 
+class TestSerperRequest(BaseModel):
+    api_key: str
+
+
+@router.post("/test-serper")
+async def api_test_serper(req: TestSerperRequest):
+    """Test a Serper API key by making a minimal search request."""
+    import httpx
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(
+                "https://google.serper.dev/search",
+                headers={
+                    "X-API-KEY": req.api_key,
+                    "Content-Type": "application/json",
+                },
+                json={"q": "test", "num": 1},
+            )
+        if resp.status_code == 200:
+            return {"status": "ok"}
+        return {"status": "fail", "detail": resp.text[:200]}
+    except Exception as e:
+        return {"status": "fail", "detail": str(e)[:200]}
+
+
 @router.get("/vendor-types")
 async def api_vendor_types():
     """List available vendor type presets for the UI dropdown."""

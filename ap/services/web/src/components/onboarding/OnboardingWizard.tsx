@@ -130,6 +130,47 @@ export function OnboardingWizard() {
     }
   };
 
+  // Test system LLM
+  const testSystemLlm = async () => {
+    if (!systemApiKey.trim()) {
+      setTestResults((prev) => ({ ...prev, "system-llm": "fail" }));
+      return;
+    }
+    setTestResults((prev) => ({ ...prev, "system-llm": "testing" }));
+    try {
+      const res = await apiFetch("/api/settings/test-vendor", {
+        method: "POST",
+        body: JSON.stringify({
+          vendor_type: systemVendorType,
+          api_key: systemApiKey,
+          model: systemModel,
+          base_url: "",
+        }),
+      });
+      setTestResults((prev) => ({ ...prev, "system-llm": res.status === "ok" ? "ok" : "fail" }));
+    } catch {
+      setTestResults((prev) => ({ ...prev, "system-llm": "fail" }));
+    }
+  };
+
+  // Test Serper key
+  const testSerper = async () => {
+    if (!serperKey.trim()) {
+      setTestResults((prev) => ({ ...prev, serper: "fail" }));
+      return;
+    }
+    setTestResults((prev) => ({ ...prev, serper: "testing" }));
+    try {
+      const res = await apiFetch("/api/settings/test-serper", {
+        method: "POST",
+        body: JSON.stringify({ api_key: serperKey }),
+      });
+      setTestResults((prev) => ({ ...prev, serper: res.status === "ok" ? "ok" : "fail" }));
+    } catch {
+      setTestResults((prev) => ({ ...prev, serper: "fail" }));
+    }
+  };
+
   // Save API keys
   const saveKeys = async (advance = true) => {
     const validVendors = vendors.filter((v) => v.api_key.trim());
@@ -434,13 +475,27 @@ export function OnboardingWizard() {
                   onChange={(e) => setSystemModel(e.target.value)}
                 />
               </div>
-              <input
-                className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                type="password"
-                placeholder={en ? "API Key (blank = reuse agent vendor)" : "API Key（留空 = 使用 Agent 供應商）"}
-                value={systemApiKey}
-                onChange={(e) => setSystemApiKey(e.target.value)}
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                  type="password"
+                  placeholder={en ? "API Key (blank = reuse agent vendor)" : "API Key（留空 = 使用 Agent 供應商）"}
+                  value={systemApiKey}
+                  onChange={(e) => setSystemApiKey(e.target.value)}
+                />
+                <button
+                  className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                  onClick={testSystemLlm}
+                >
+                  {testResults["system-llm"] === "testing"
+                    ? "..."
+                    : testResults["system-llm"] === "ok"
+                    ? "✓ OK"
+                    : testResults["system-llm"] === "fail"
+                    ? "✕ Fail"
+                    : en ? "Test" : "測試"}
+                </button>
+              </div>
             </div>
 
             {/* Serper key */}
@@ -448,13 +503,27 @@ export function OnboardingWizard() {
               <div className="text-neutral-400 text-xs mb-2">
                 Serper API Key <span className="text-[#e94560]">*</span>
               </div>
-              <input
-                className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                type="password"
-                placeholder="Serper API Key"
-                value={serperKey}
-                onChange={(e) => setSerperKey(e.target.value)}
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                  type="password"
+                  placeholder="Serper API Key"
+                  value={serperKey}
+                  onChange={(e) => setSerperKey(e.target.value)}
+                />
+                <button
+                  className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                  onClick={testSerper}
+                >
+                  {testResults.serper === "testing"
+                    ? "..."
+                    : testResults.serper === "ok"
+                    ? "✓ OK"
+                    : testResults.serper === "fail"
+                    ? "✕ Fail"
+                    : en ? "Test" : "測試"}
+                </button>
+              </div>
               <a
                 href="https://serper.dev/api-key"
                 target="_blank"
