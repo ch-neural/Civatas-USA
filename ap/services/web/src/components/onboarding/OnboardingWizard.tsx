@@ -48,6 +48,10 @@ export function OnboardingWizard() {
     { id: "openai-1", vendor_type: "openai", display_name: "OpenAI", api_key: "", model: "gpt-4o-mini", base_url: "" },
   ]);
   const [serperKey, setSerperKey] = useState("");
+  // System LLM — used for non-agent tasks (news analysis, data parsing, etc.)
+  const [systemVendorType, setSystemVendorType] = useState("openai");
+  const [systemModel, setSystemModel] = useState("o4-mini");
+  const [systemApiKey, setSystemApiKey] = useState("");
   const [keyError, setKeyError] = useState("");
   const [testResults, setTestResults] = useState<Record<string, "ok" | "fail" | "testing">>({});
 
@@ -129,20 +133,38 @@ export function OnboardingWizard() {
     }
     setKeyError("");
     try {
+      // Build vendor list: agent vendors + system vendor
+      const allVendors = validVendors.map((v) => ({
+        id: v.id,
+        display_name: v.display_name,
+        vendor_type: v.vendor_type,
+        api_key: v.api_key,
+        model: v.model,
+        base_url: v.base_url,
+      }));
+
+      // Add system LLM as a separate vendor entry
+      const sysKey = systemApiKey.trim();
+      const systemVendorId = "system-llm";
+      if (sysKey) {
+        allVendors.push({
+          id: systemVendorId,
+          display_name: `System (${VENDOR_PRESETS[systemVendorType]?.label ?? systemVendorType})`,
+          vendor_type: systemVendorType,
+          api_key: sysKey,
+          model: systemModel,
+          base_url: "",
+        });
+      }
+
       await apiFetch("/api/settings", {
         method: "PUT",
         body: JSON.stringify({
           llm_mode: "multi",
-          llm_vendors: validVendors.map((v) => ({
-            id: v.id,
-            display_name: v.display_name,
-            vendor_type: v.vendor_type,
-            api_key: v.api_key,
-            model: v.model,
-            base_url: v.base_url,
-          })),
+          llm_vendors: allVendors,
           active_vendors: validVendors.map((v) => v.id),
           vendor_ratio: validVendors.map(() => "1").join(":"),
+          system_vendor_id: sysKey ? systemVendorId : validVendors[0]?.id ?? "",
           serper_api_key: serperKey,
         }),
       });
@@ -366,6 +388,49 @@ export function OnboardingWizard() {
             >
               + {en ? "Add another vendor" : "新增供應商"}
             </button>
+
+            {/* System LLM */}
+            <div className="bg-[#16213e] rounded-lg p-4 mb-4 border border-[#0f3460]">
+              <div className="text-neutral-400 text-xs mb-1">
+                {en ? "System LLM" : "系統 LLM"}{" "}
+                <span className="text-neutral-600">
+                  {en ? "(for news analysis, data parsing, etc.)" : "（用於新聞分析、資料解析等非 Agent 任務）"}
+                </span>
+              </div>
+              <div className="text-neutral-500 text-[10px] mb-3">
+                {en
+                  ? "A capable thinking model is recommended. Leave API Key blank to reuse the first agent vendor above."
+                  : "建議使用較強的推理模型。API Key 留空則使用上方第一個 Agent 供應商。"}
+              </div>
+              <div className="flex items-center gap-3 mb-2">
+                <select
+                  className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
+                  value={systemVendorType}
+                  onChange={(e) => {
+                    setSystemVendorType(e.target.value);
+                    const preset = VENDOR_PRESETS[e.target.value];
+                    if (preset) setSystemModel(preset.defaultModel);
+                  }}
+                >
+                  {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
+                    <option key={key} value={key}>{preset.label}</option>
+                  ))}
+                </select>
+                <input
+                  className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                  placeholder="Model"
+                  value={systemModel}
+                  onChange={(e) => setSystemModel(e.target.value)}
+                />
+              </div>
+              <input
+                className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                type="password"
+                placeholder={en ? "API Key (blank = reuse agent vendor)" : "API Key（留空 = 使用 Agent 供應商）"}
+                value={systemApiKey}
+                onChange={(e) => setSystemApiKey(e.target.value)}
+              />
+            </div>
 
             {/* Serper key */}
             <div className="bg-[#16213e] rounded-lg p-4 mb-4 border border-[#0f3460]">
