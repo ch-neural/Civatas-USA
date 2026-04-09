@@ -106,15 +106,25 @@ export function OnboardingWizard() {
     setVendors((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // Test connection
+  // Test connection — actually calls the LLM API to verify the key
   const testVendor = async (idx: number) => {
     const v = vendors[idx];
+    if (!v.api_key.trim()) {
+      setTestResults((prev) => ({ ...prev, [v.id]: "fail" }));
+      return;
+    }
     setTestResults((prev) => ({ ...prev, [v.id]: "testing" }));
     try {
-      // Save settings first, then check health
-      await saveKeys(false);
-      await apiFetch("/health");
-      setTestResults((prev) => ({ ...prev, [v.id]: "ok" }));
+      const res = await apiFetch("/api/settings/test-vendor", {
+        method: "POST",
+        body: JSON.stringify({
+          vendor_type: v.vendor_type,
+          api_key: v.api_key,
+          model: v.model,
+          base_url: v.base_url,
+        }),
+      });
+      setTestResults((prev) => ({ ...prev, [v.id]: res.status === "ok" ? "ok" : "fail" }));
     } catch {
       setTestResults((prev) => ({ ...prev, [v.id]: "fail" }));
     }

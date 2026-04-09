@@ -106,6 +106,55 @@ async def api_update_settings(req: SettingsUpdate):
     return {"status": "ok"}
 
 
+class TestVendorRequest(BaseModel):
+    vendor_type: str
+    api_key: str
+    model: str
+    base_url: str = ""
+
+
+# Default base URLs per vendor type
+_VENDOR_BASE_URLS: dict[str, str] = {
+    "openai": "https://api.openai.com/v1",
+    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "xai": "https://api.x.ai/v1",
+    "deepseek": "https://api.deepseek.com/v1",
+    "moonshot": "https://api.moonshot.ai/v1",
+    "ollama": "http://host.docker.internal:11434/v1",
+}
+
+
+@router.post("/test-vendor")
+async def api_test_vendor(req: TestVendorRequest):
+    """Test an LLM vendor key by making a minimal chat completion call."""
+    import httpx
+
+    base_url = req.base_url.strip().rstrip("/") if req.base_url.strip() else _VENDOR_BASE_URLS.get(req.vendor_type, "https://api.openai.com/v1")
+    url = f"{base_url}/chat/completions"
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            resp = await client.post(
+                url,
+                headers={
+                    "Authorization": f"Bearer {req.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": req.model,
+                    "messages": [{"role": "user", "content": "hi"}],
+                    "max_tokens": 1,
+                },
+            )
+        if resp.status_code in (200, 201):
+            return {"status": "ok"}
+        body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+        detail = body.get("error", {}).get("message", "") if isinstance(body.get("error"), dict) else str(body.get("error", resp.text[:200]))
+        return {"status": "fail", "detail": detail}
+    except Exception as e:
+        return {"status": "fail", "detail": str(e)[:200]}
+
+
 @router.get("/vendor-types")
 async def api_vendor_types():
     """List available vendor type presets for the UI dropdown."""
