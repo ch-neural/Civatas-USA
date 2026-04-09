@@ -13,7 +13,7 @@ const VENDOR_PRESETS: Record<string, { label: string; defaultModel: string; keyU
   gemini:   { label: "Gemini",   defaultModel: "gemini-2.5-flash", keyUrl: "https://aistudio.google.com/apikey" },
   xai:      { label: "xAI",      defaultModel: "grok-3-mini",      keyUrl: "https://console.x.ai/" },
   deepseek: { label: "DeepSeek", defaultModel: "deepseek-chat",    keyUrl: "https://platform.deepseek.com/api_keys" },
-  moonshot: { label: "Moonshot", defaultModel: "moonshot-v1-auto",  keyUrl: "https://platform.moonshot.cn/console/api-keys" },
+  moonshot: { label: "Moonshot", defaultModel: "kimi-k2.5",         keyUrl: "https://platform.moonshot.cn/console/api-keys" },
   ollama:   { label: "Ollama",   defaultModel: "llama3",           keyUrl: "" },
 };
 
