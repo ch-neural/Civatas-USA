@@ -40,7 +40,7 @@ docker compose up --build
 docker compose --profile full up --build
 ```
 
-- Web UI: http://localhost:3000
+- Web UI: http://localhost:3100 (override with `WEB_PORT` in `.env`)
 - API docs: http://localhost:8000/docs
 
 ## i18n

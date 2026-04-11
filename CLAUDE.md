@@ -55,7 +55,7 @@ docker compose --profile full up --build    # adds simulation + analytics
 bash scripts/test_pipeline.sh               # end-to-end pipeline smoke test
 ```
 
-- Web UI: http://localhost:3000  · API docs: http://localhost:8000/docs
+- Web UI: http://localhost:3100 (override via `WEB_PORT` in `ap/.env`)  · API docs: http://localhost:8000/docs
 - Each service is its own container in `ap/services/<name>/` with its own Dockerfile.
 
 ### Convenience
