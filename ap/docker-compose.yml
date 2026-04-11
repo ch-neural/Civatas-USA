@@ -1,4 +1,4 @@
-name: civatas
+name: ${COMPOSE_PROJECT_NAME:-civatas-usa}
 
 services:
   # ─── Web UI (Next.js) ───
