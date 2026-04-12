@@ -7,24 +7,12 @@ import { useLocaleStore } from "@/store/locale-store";
 import { useShellStore } from "@/store/shell-store";
 import { useQueryClient } from "@tanstack/react-query";
 
-// Vendor type presets
-const VENDOR_PRESETS: Record<string, { label: string; defaultModel: string; keyUrl: string }> = {
-  openai:   { label: "OpenAI",   defaultModel: "gpt-4o-mini",      keyUrl: "https://platform.openai.com/api-keys" },
-  gemini:   { label: "Gemini",   defaultModel: "gemini-2.5-flash", keyUrl: "https://aistudio.google.com/apikey" },
-  xai:      { label: "xAI",      defaultModel: "grok-3-mini",      keyUrl: "https://console.x.ai/" },
-  deepseek: { label: "DeepSeek", defaultModel: "deepseek-chat",    keyUrl: "https://platform.deepseek.com/api_keys" },
-  moonshot: { label: "Moonshot", defaultModel: "kimi-k2.5",         keyUrl: "https://platform.moonshot.cn/console/api-keys" },
-  ollama:   { label: "Ollama",   defaultModel: "llama3",           keyUrl: "" },
-};
-
-interface VendorConfig {
-  id: string;
-  vendor_type: string;
-  display_name: string;
-  api_key: string;
-  model: string;
-  base_url: string;
-}
+import {
+  VENDOR_PRESETS,
+  type Provider,
+  type RoleAssignment,
+  buildSettingsPayload,
+} from "@/lib/vendor-presets";
 
 interface TemplateInfo {
   id: string;
@@ -43,17 +31,18 @@ export function OnboardingWizard() {
   const en = useLocaleStore((s) => s.locale) === "en";
   const [step, setStep] = useState(1);
 
-  // Step 1: API Keys
-  const [vendors, setVendors] = useState<VendorConfig[]>([
-    { id: "openai-1", vendor_type: "openai", display_name: "OpenAI", api_key: "", model: "gpt-4o-mini", base_url: "" },
+  // Step 1: Providers
+  const [providers, setProviders] = useState<Provider[]>([
+    { id: "openai-1", vendor_type: "openai", display_name: "OpenAI", api_key: "", base_url: "" },
   ]);
+  // Step 1: Role assignments
+  const [systemLlm, setSystemLlm] = useState<RoleAssignment>({ provider_id: "openai-1", model: "o4-mini" });
+  const [agentLlms, setAgentLlms] = useState<RoleAssignment[]>([{ provider_id: "openai-1", model: "gpt-4o-mini" }]);
   const [serperKey, setSerperKey] = useState("");
-  // System LLM — used for non-agent tasks (news analysis, data parsing, etc.)
-  const [systemVendorType, setSystemVendorType] = useState("openai");
-  const [systemModel, setSystemModel] = useState("o4-mini");
-  const [systemApiKey, setSystemApiKey] = useState("");
   const [keyError, setKeyError] = useState("");
   const [testResults, setTestResults] = useState<Record<string, "ok" | "fail" | "testing">>({});
+  // Accordion state
+  const [expandedSection, setExpandedSection] = useState<1 | 2 | 3>(1);
 
   // Step 2: Project
   const [templates, setTemplates] = useState<TemplateInfo[]>([]);
@@ -68,88 +57,119 @@ export function OnboardingWizard() {
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [personaDone, setPersonaDone] = useState(false);
 
-  // Add vendor
-  const addVendor = () => {
-    const usedTypes = vendors.map((v) => v.vendor_type);
+  // Accordion section completion
+  const section1Complete = providers.some((p) => p.api_key.trim() !== "");
+  const section2Complete =
+    section1Complete &&
+    !!systemLlm.provider_id &&
+    !!systemLlm.model &&
+    agentLlms.length >= 1 &&
+    agentLlms.every((a) => !!a.provider_id && !!a.model);
+  const section3Complete = serperKey.trim() !== "";
+  const allComplete = section1Complete && section2Complete && section3Complete;
+
+  const providersWithKey = providers.filter((p) => p.api_key.trim() !== "");
+
+  // Add provider
+  const addProvider = () => {
+    const usedTypes = providers.map((p) => p.vendor_type);
     const availableType = Object.keys(VENDOR_PRESETS).find((t) => !usedTypes.includes(t)) || "openai";
     const preset = VENDOR_PRESETS[availableType];
-    setVendors([
-      ...vendors,
+    const newId = `${availableType}-${Date.now()}`;
+    setProviders((prev) => [
+      ...prev,
       {
-        id: `${availableType}-${Date.now()}`,
+        id: newId,
         vendor_type: availableType,
         display_name: preset.label,
         api_key: "",
-        model: preset.defaultModel,
         base_url: "",
       },
     ]);
+    // Auto-add to agentLlms
+    setAgentLlms((prev) => [...prev, { provider_id: newId, model: preset.defaultModel }]);
   };
 
-  const updateVendor = (idx: number, updates: Partial<VendorConfig>) => {
-    setVendors((prev) => prev.map((v, i) => {
-      if (i !== idx) return v;
-      const updated = { ...v, ...updates };
-      // Auto-fill defaults when vendor_type changes
-      if (updates.vendor_type && updates.vendor_type !== v.vendor_type) {
-        const preset = VENDOR_PRESETS[updates.vendor_type];
-        updated.display_name = preset.label;
-        updated.model = preset.defaultModel;
-        updated.id = `${updates.vendor_type}-${Date.now()}`;
-      }
+  const updateProvider = (idx: number, updates: Partial<Provider>) => {
+    setProviders((prev) => {
+      const updated = prev.map((p, i) => {
+        if (i !== idx) return p;
+        const next = { ...p, ...updates };
+        if (updates.vendor_type && updates.vendor_type !== p.vendor_type) {
+          const preset = VENDOR_PRESETS[updates.vendor_type];
+          const newId = `${updates.vendor_type}-${Date.now()}`;
+          next.display_name = preset.label;
+          next.id = newId;
+          // Cascade id change to role assignments
+          const oldId = p.id;
+          setSystemLlm((s) =>
+            s.provider_id === oldId
+              ? { provider_id: newId, model: preset.systemModel }
+              : s,
+          );
+          setAgentLlms((al) =>
+            al.map((a) =>
+              a.provider_id === oldId
+                ? { provider_id: newId, model: preset.defaultModel }
+                : a,
+            ),
+          );
+        }
+        // Auto-advance to section 2 when first key is entered
+        if (updates.api_key && updates.api_key.trim() && !prev.some((pp) => pp.api_key.trim())) {
+          setTimeout(() => setExpandedSection(2), 300);
+        }
+        return next;
+      });
       return updated;
-    }));
+    });
   };
 
-  const removeVendor = (idx: number) => {
-    if (vendors.length <= 1) return;
-    setVendors((prev) => prev.filter((_, i) => i !== idx));
+  const removeProvider = (idx: number) => {
+    if (providers.length <= 1) return;
+    const removedId = providers[idx].id;
+    setProviders((prev) => prev.filter((_, i) => i !== idx));
+    setAgentLlms((prev) => {
+      const filtered = prev.filter((a) => a.provider_id !== removedId);
+      return filtered.length > 0 ? filtered : prev;
+    });
+    setSystemLlm((prev) => {
+      if (prev.provider_id === removedId) {
+        // Fall back to first remaining provider
+        const remaining = providers.filter((_, i) => i !== idx);
+        if (remaining.length > 0) {
+          const preset = VENDOR_PRESETS[remaining[0].vendor_type];
+          return { provider_id: remaining[0].id, model: preset?.systemModel ?? "" };
+        }
+      }
+      return prev;
+    });
   };
 
-  // Test connection — actually calls the LLM API to verify the key
-  const testVendor = async (idx: number) => {
-    const v = vendors[idx];
-    if (!v.api_key.trim()) {
-      setTestResults((prev) => ({ ...prev, [v.id]: "fail" }));
+  // Test provider API key
+  const testProvider = async (providerId: string) => {
+    const p = providers.find((pr) => pr.id === providerId);
+    if (!p || !p.api_key.trim()) {
+      setTestResults((prev) => ({ ...prev, [providerId]: "fail" }));
       return;
     }
-    setTestResults((prev) => ({ ...prev, [v.id]: "testing" }));
+    setTestResults((prev) => ({ ...prev, [providerId]: "testing" }));
     try {
+      // Use the agent model for testing this provider
+      const agentAssignment = agentLlms.find((a) => a.provider_id === providerId);
+      const model = agentAssignment?.model || VENDOR_PRESETS[p.vendor_type]?.defaultModel || "";
       const res = await apiFetch("/api/settings/test-vendor", {
         method: "POST",
         body: JSON.stringify({
-          vendor_type: v.vendor_type,
-          api_key: v.api_key,
-          model: v.model,
-          base_url: v.base_url,
+          vendor_type: p.vendor_type,
+          api_key: p.api_key,
+          model,
+          base_url: p.base_url,
         }),
       });
-      setTestResults((prev) => ({ ...prev, [v.id]: res.status === "ok" ? "ok" : "fail" }));
+      setTestResults((prev) => ({ ...prev, [providerId]: res.status === "ok" ? "ok" : "fail" }));
     } catch {
-      setTestResults((prev) => ({ ...prev, [v.id]: "fail" }));
-    }
-  };
-
-  // Test system LLM
-  const testSystemLlm = async () => {
-    if (!systemApiKey.trim()) {
-      setTestResults((prev) => ({ ...prev, "system-llm": "fail" }));
-      return;
-    }
-    setTestResults((prev) => ({ ...prev, "system-llm": "testing" }));
-    try {
-      const res = await apiFetch("/api/settings/test-vendor", {
-        method: "POST",
-        body: JSON.stringify({
-          vendor_type: systemVendorType,
-          api_key: systemApiKey,
-          model: systemModel,
-          base_url: "",
-        }),
-      });
-      setTestResults((prev) => ({ ...prev, "system-llm": res.status === "ok" ? "ok" : "fail" }));
-    } catch {
-      setTestResults((prev) => ({ ...prev, "system-llm": "fail" }));
+      setTestResults((prev) => ({ ...prev, [providerId]: "fail" }));
     }
   };
 
@@ -173,9 +193,12 @@ export function OnboardingWizard() {
 
   // Save API keys
   const saveKeys = async (advance = true) => {
-    const validVendors = vendors.filter((v) => v.api_key.trim());
-    if (validVendors.length === 0) {
+    if (!section1Complete) {
       setKeyError(en ? "At least one LLM API key is required" : "至少需要一組 LLM API Key");
+      return false;
+    }
+    if (!section2Complete) {
+      setKeyError(en ? "Please assign system and agent LLM roles" : "請指定系統與 Agent LLM 角色");
       return false;
     }
     if (!serperKey.trim()) {
@@ -184,40 +207,10 @@ export function OnboardingWizard() {
     }
     setKeyError("");
     try {
-      // Build vendor list: agent vendors + system vendor
-      const allVendors = validVendors.map((v) => ({
-        id: v.id,
-        display_name: v.display_name,
-        vendor_type: v.vendor_type,
-        api_key: v.api_key,
-        model: v.model,
-        base_url: v.base_url,
-      }));
-
-      // Add system LLM as a separate vendor entry
-      const sysKey = systemApiKey.trim();
-      const systemVendorId = "system-llm";
-      if (sysKey) {
-        allVendors.push({
-          id: systemVendorId,
-          display_name: `System (${VENDOR_PRESETS[systemVendorType]?.label ?? systemVendorType})`,
-          vendor_type: systemVendorType,
-          api_key: sysKey,
-          model: systemModel,
-          base_url: "",
-        });
-      }
-
+      const payload = buildSettingsPayload(providers, systemLlm, agentLlms, serperKey);
       await apiFetch("/api/settings", {
         method: "PUT",
-        body: JSON.stringify({
-          llm_mode: "multi",
-          llm_vendors: allVendors,
-          active_vendors: validVendors.map((v) => v.id),
-          vendor_ratio: validVendors.map(() => "1").join(":"),
-          system_vendor_id: sysKey ? systemVendorId : validVendors[0]?.id ?? "",
-          serper_api_key: serperKey,
-        }),
+        body: JSON.stringify(payload),
       });
       if (advance) {
         loadTemplates();
@@ -357,7 +350,7 @@ export function OnboardingWizard() {
           ))}
         </div>
 
-        {/* Step 1: API Keys */}
+        {/* Step 1: API Keys — Accordion */}
         {step === 1 && (
           <div>
             <h2 className="text-xl font-semibold text-white mb-1">
@@ -365,181 +358,351 @@ export function OnboardingWizard() {
             </h2>
             <p className="text-neutral-500 text-sm mb-6">
               {en
-                ? "Add at least one LLM provider and your Serper key for news search."
-                : "新增至少一個 LLM 供應商，以及用於新聞搜尋的 Serper Key。"}
+                ? "Add at least one LLM provider, assign roles, and enter your Serper key."
+                : "新增至少一個 LLM 供應商、指定角色，並輸入 Serper Key。"}
             </p>
 
-            {/* Vendor cards */}
-            {vendors.map((v, idx) => (
-              <div
-                key={v.id}
-                className="bg-[#16213e] rounded-lg p-4 mb-3 border border-[#0f3460]"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <select
-                    className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
-                    value={v.vendor_type}
-                    onChange={(e) => updateVendor(idx, { vendor_type: e.target.value })}
-                  >
-                    {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
-                      <option key={key} value={key}>{preset.label}</option>
-                    ))}
-                  </select>
-                  <input
-                    className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
-                    placeholder="Model"
-                    value={v.model}
-                    onChange={(e) => updateVendor(idx, { model: e.target.value })}
-                  />
-                  {vendors.length > 1 && (
-                    <button
-                      className="text-neutral-600 hover:text-red-400 text-sm"
-                      onClick={() => removeVendor(idx)}
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                    type="password"
-                    placeholder="API Key"
-                    value={v.api_key}
-                    onChange={(e) => updateVendor(idx, { api_key: e.target.value })}
-                  />
+            {/* --- Section Header helper --- */}
+            {(() => {
+              const SectionHeader = ({
+                num,
+                title,
+                subtitle,
+                complete,
+                locked,
+                summary,
+                onClick,
+              }: {
+                num: 1 | 2 | 3;
+                title: string;
+                subtitle: string;
+                complete: boolean;
+                locked: boolean;
+                summary?: string;
+                onClick: () => void;
+              }) => {
+                const isExpanded = expandedSection === num;
+                return (
                   <button
-                    className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
-                    onClick={() => testVendor(idx)}
+                    type="button"
+                    className={`w-full flex items-center gap-3 p-3 rounded-t-lg transition-colors ${
+                      locked ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-[#16213e]/60"
+                    } ${isExpanded ? "" : "rounded-b-lg"}`}
+                    onClick={() => { if (!locked) onClick(); }}
+                    disabled={locked}
                   >
-                    {testResults[v.id] === "testing"
-                      ? "..."
-                      : testResults[v.id] === "ok"
-                      ? "✓ OK"
-                      : testResults[v.id] === "fail"
-                      ? "✕ Fail"
-                      : en ? "Test" : "測試"}
+                    {/* Numbered circle */}
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                        complete
+                          ? "bg-green-500 text-white"
+                          : isExpanded
+                          ? "bg-[#e94560] text-white"
+                          : "bg-neutral-700 text-neutral-400"
+                      }`}
+                    >
+                      {complete ? "✓" : num}
+                    </div>
+                    {/* Title + subtitle */}
+                    <div className="flex-1 text-left">
+                      <div className="text-sm font-medium text-neutral-200">{title}</div>
+                      <div className="text-[11px] text-neutral-500">{subtitle}</div>
+                    </div>
+                    {/* Right indicator */}
+                    <div className="text-xs text-neutral-500 shrink-0">
+                      {locked ? (
+                        <span className="text-neutral-600">{en ? "Complete above first" : "請先完成上方步驟"}</span>
+                      ) : complete && !isExpanded && summary ? (
+                        <span className="text-green-400">{summary}</span>
+                      ) : (
+                        <span>{isExpanded ? "▼" : "▶"}</span>
+                      )}
+                    </div>
                   </button>
+                );
+              };
+
+              return (
+                <div className="space-y-3">
+                  {/* ═══ Section 1: LLM Providers ═══ */}
+                  <div className={`rounded-lg border ${expandedSection === 1 ? "border-[#3b4c6b]" : section1Complete ? "border-[#3b4c6b]" : "border-[#2a3554]"} bg-[#0f1729]`}>
+                    <SectionHeader
+                      num={1}
+                      title={en ? "LLM Providers" : "LLM 供應商"}
+                      subtitle={en ? "Add API keys for your LLM services" : "新增 LLM 服務的 API Key"}
+                      complete={section1Complete}
+                      locked={false}
+                      summary={
+                        section1Complete
+                          ? `${providersWithKey.length} ${en ? "provider(s)" : "個供應商"}`
+                          : undefined
+                      }
+                      onClick={() => setExpandedSection(1)}
+                    />
+                    {expandedSection === 1 && (
+                      <div className="px-3 pb-4 space-y-3">
+                        {providers.map((p, idx) => (
+                          <div
+                            key={p.id}
+                            className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]"
+                          >
+                            <div className="flex items-center gap-3 mb-3">
+                              <select
+                                className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
+                                value={p.vendor_type}
+                                onChange={(e) => updateProvider(idx, { vendor_type: e.target.value })}
+                              >
+                                {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
+                                  <option key={key} value={key}>{preset.label}</option>
+                                ))}
+                              </select>
+                              <div className="flex-1" />
+                              {providers.length > 1 && (
+                                <button
+                                  className="text-neutral-600 hover:text-red-400 text-sm"
+                                  onClick={() => removeProvider(idx)}
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <input
+                                className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                                type="password"
+                                placeholder="API Key"
+                                value={p.api_key}
+                                onChange={(e) => updateProvider(idx, { api_key: e.target.value })}
+                              />
+                              <button
+                                className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                                onClick={() => testProvider(p.id)}
+                              >
+                                {testResults[p.id] === "testing"
+                                  ? "..."
+                                  : testResults[p.id] === "ok"
+                                  ? "✓ OK"
+                                  : testResults[p.id] === "fail"
+                                  ? "✕ Fail"
+                                  : en ? "Test" : "測試"}
+                              </button>
+                            </div>
+                            <input
+                              className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none mb-1"
+                              placeholder={en ? "Base URL (optional)" : "Base URL（選填）"}
+                              value={p.base_url}
+                              onChange={(e) => updateProvider(idx, { base_url: e.target.value })}
+                            />
+                            {VENDOR_PRESETS[p.vendor_type]?.keyUrl && (
+                              <a
+                                href={VENDOR_PRESETS[p.vendor_type].keyUrl}
+                                target="_blank"
+                                rel="noopener"
+                                className="text-[10px] text-blue-400 hover:underline mt-1 inline-block"
+                              >
+                                {en
+                                  ? `Get ${VENDOR_PRESETS[p.vendor_type].label} API Key →`
+                                  : `申請 ${VENDOR_PRESETS[p.vendor_type].label} API Key →`}
+                              </a>
+                            )}
+                          </div>
+                        ))}
+                        <button
+                          className="text-sm text-green-400 hover:text-green-300"
+                          onClick={addProvider}
+                        >
+                          + {en ? "Add another provider" : "新增供應商"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ═══ Section 2: Assign LLM Roles ═══ */}
+                  <div className={`rounded-lg border ${!section1Complete ? "border-[#2a3554]" : "border-[#3b4c6b]"} bg-[#0f1729]`}>
+                    <SectionHeader
+                      num={2}
+                      title={en ? "Assign LLM Roles" : "指定 LLM 角色"}
+                      subtitle={en ? "Choose which providers handle system vs agent tasks" : "選擇系統與 Agent 任務的供應商"}
+                      complete={section2Complete}
+                      locked={!section1Complete}
+                      summary={
+                        section2Complete
+                          ? `${en ? "System" : "系統"}: ${systemLlm.model}, ${agentLlms.length} ${en ? "agent(s)" : "個 Agent"}`
+                          : undefined
+                      }
+                      onClick={() => setExpandedSection(2)}
+                    />
+                    {expandedSection === 2 && section1Complete && (
+                      <div className="px-3 pb-4 space-y-4">
+                        {/* System LLM */}
+                        <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                          <div className="text-neutral-400 text-xs mb-1">
+                            {en ? "System LLM" : "系統 LLM"}{" "}
+                            <span className="text-neutral-600">
+                              {en ? "(news analysis, data parsing, etc.)" : "（新聞分析、資料解析等）"}
+                            </span>
+                          </div>
+                          <div className="text-neutral-500 text-[10px] mb-3">
+                            {en
+                              ? "A capable thinking model is recommended."
+                              : "建議使用較強的推理模型。"}
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <select
+                              className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
+                              value={systemLlm.provider_id}
+                              onChange={(e) => {
+                                const pid = e.target.value;
+                                const prov = providers.find((pp) => pp.id === pid);
+                                const preset = prov ? VENDOR_PRESETS[prov.vendor_type] : null;
+                                setSystemLlm({ provider_id: pid, model: preset?.systemModel ?? systemLlm.model });
+                              }}
+                            >
+                              {providersWithKey.map((p) => (
+                                <option key={p.id} value={p.id}>{p.display_name}</option>
+                              ))}
+                            </select>
+                            <input
+                              className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                              placeholder="Model"
+                              value={systemLlm.model}
+                              onChange={(e) => setSystemLlm((prev) => ({ ...prev, model: e.target.value }))}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-[#2a3554]" />
+
+                        {/* Agent LLMs */}
+                        <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                          <div className="text-neutral-400 text-xs mb-1">
+                            {en ? "Agent LLM(s)" : "Agent LLM"}{" "}
+                            <span className="text-neutral-600">
+                              {en ? "(persona generation, opinion evolution)" : "（人格生成、觀點演化）"}
+                            </span>
+                          </div>
+                          <div className="text-neutral-500 text-[10px] mb-3">
+                            {en
+                              ? "Select which providers to use for agent tasks. At least one is required."
+                              : "選擇用於 Agent 任務的供應商，至少需要一個。"}
+                          </div>
+                          <div className="space-y-2">
+                            {providersWithKey.map((p) => {
+                              const isChecked = agentLlms.some((a) => a.provider_id === p.id);
+                              const assignment = agentLlms.find((a) => a.provider_id === p.id);
+                              const isLastChecked = isChecked && agentLlms.length === 1;
+                              return (
+                                <div key={p.id} className="flex items-center gap-3">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    disabled={isLastChecked}
+                                    className="accent-[#e94560]"
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        const preset = VENDOR_PRESETS[p.vendor_type];
+                                        setAgentLlms((prev) => [
+                                          ...prev,
+                                          { provider_id: p.id, model: preset?.defaultModel ?? "" },
+                                        ]);
+                                      } else {
+                                        setAgentLlms((prev) => prev.filter((a) => a.provider_id !== p.id));
+                                      }
+                                    }}
+                                  />
+                                  <span className="text-neutral-300 text-sm w-20 shrink-0">
+                                    {p.display_name}
+                                  </span>
+                                  {isChecked && (
+                                    <input
+                                      className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                                      placeholder="Model"
+                                      value={assignment?.model ?? ""}
+                                      onChange={(e) => {
+                                        const model = e.target.value;
+                                        setAgentLlms((prev) =>
+                                          prev.map((a) =>
+                                            a.provider_id === p.id ? { ...a, model } : a,
+                                          ),
+                                        );
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ═══ Section 3: Search API ═══ */}
+                  <div className={`rounded-lg border ${!section2Complete ? "border-[#2a3554]" : "border-[#3b4c6b]"} bg-[#0f1729]`}>
+                    <SectionHeader
+                      num={3}
+                      title={en ? "Search API" : "搜尋 API"}
+                      subtitle={en ? "Serper key for Google News search" : "用於 Google 新聞搜尋的 Serper Key"}
+                      complete={section3Complete}
+                      locked={!section2Complete}
+                      summary={section3Complete ? (en ? "Key set" : "已設定") : undefined}
+                      onClick={() => setExpandedSection(3)}
+                    />
+                    {expandedSection === 3 && section2Complete && (
+                      <div className="px-3 pb-4">
+                        <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                          <div className="text-neutral-400 text-xs mb-2">
+                            Serper API Key <span className="text-[#e94560]">*</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <input
+                              className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                              type="password"
+                              placeholder="Serper API Key"
+                              value={serperKey}
+                              onChange={(e) => setSerperKey(e.target.value)}
+                            />
+                            <button
+                              className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                              onClick={testSerper}
+                            >
+                              {testResults.serper === "testing"
+                                ? "..."
+                                : testResults.serper === "ok"
+                                ? "✓ OK"
+                                : testResults.serper === "fail"
+                                ? "✕ Fail"
+                                : en ? "Test" : "測試"}
+                            </button>
+                          </div>
+                          <a
+                            href="https://serper.dev/api-key"
+                            target="_blank"
+                            rel="noopener"
+                            className="text-[10px] text-blue-400 hover:underline mt-2 inline-block"
+                          >
+                            {en ? "Get Serper API Key (Google Search) →" : "申請 Serper API Key（Google 搜尋）→"}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                {VENDOR_PRESETS[v.vendor_type]?.keyUrl && (
-                  <a
-                    href={VENDOR_PRESETS[v.vendor_type].keyUrl}
-                    target="_blank"
-                    rel="noopener"
-                    className="text-[10px] text-blue-400 hover:underline mt-2 inline-block"
-                  >
-                    {en ? `Get ${VENDOR_PRESETS[v.vendor_type].label} API Key →` : `申請 ${VENDOR_PRESETS[v.vendor_type].label} API Key →`}
-                  </a>
-                )}
-              </div>
-            ))}
-
-            <button
-              className="text-sm text-green-400 hover:text-green-300 mb-6"
-              onClick={addVendor}
-            >
-              + {en ? "Add another vendor" : "新增供應商"}
-            </button>
-
-            {/* System LLM */}
-            <div className="bg-[#16213e] rounded-lg p-4 mb-4 border border-[#0f3460]">
-              <div className="text-neutral-400 text-xs mb-1">
-                {en ? "System LLM" : "系統 LLM"}{" "}
-                <span className="text-neutral-600">
-                  {en ? "(for news analysis, data parsing, etc.)" : "（用於新聞分析、資料解析等非 Agent 任務）"}
-                </span>
-              </div>
-              <div className="text-neutral-500 text-[10px] mb-3">
-                {en
-                  ? "A capable thinking model is recommended. Leave API Key blank to reuse the first agent vendor above."
-                  : "建議使用較強的推理模型。API Key 留空則使用上方第一個 Agent 供應商。"}
-              </div>
-              <div className="flex items-center gap-3 mb-2">
-                <select
-                  className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
-                  value={systemVendorType}
-                  onChange={(e) => {
-                    setSystemVendorType(e.target.value);
-                    const preset = VENDOR_PRESETS[e.target.value];
-                    if (preset) setSystemModel(preset.defaultModel);
-                  }}
-                >
-                  {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
-                    <option key={key} value={key}>{preset.label}</option>
-                  ))}
-                </select>
-                <input
-                  className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
-                  placeholder="Model"
-                  value={systemModel}
-                  onChange={(e) => setSystemModel(e.target.value)}
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                  type="password"
-                  placeholder={en ? "API Key (blank = reuse agent vendor)" : "API Key（留空 = 使用 Agent 供應商）"}
-                  value={systemApiKey}
-                  onChange={(e) => setSystemApiKey(e.target.value)}
-                />
-                <button
-                  className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
-                  onClick={testSystemLlm}
-                >
-                  {testResults["system-llm"] === "testing"
-                    ? "..."
-                    : testResults["system-llm"] === "ok"
-                    ? "✓ OK"
-                    : testResults["system-llm"] === "fail"
-                    ? "✕ Fail"
-                    : en ? "Test" : "測試"}
-                </button>
-              </div>
-            </div>
-
-            {/* Serper key */}
-            <div className="bg-[#16213e] rounded-lg p-4 mb-4 border border-[#0f3460]">
-              <div className="text-neutral-400 text-xs mb-2">
-                Serper API Key <span className="text-[#e94560]">*</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                  type="password"
-                  placeholder="Serper API Key"
-                  value={serperKey}
-                  onChange={(e) => setSerperKey(e.target.value)}
-                />
-                <button
-                  className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
-                  onClick={testSerper}
-                >
-                  {testResults.serper === "testing"
-                    ? "..."
-                    : testResults.serper === "ok"
-                    ? "✓ OK"
-                    : testResults.serper === "fail"
-                    ? "✕ Fail"
-                    : en ? "Test" : "測試"}
-                </button>
-              </div>
-              <a
-                href="https://serper.dev/api-key"
-                target="_blank"
-                rel="noopener"
-                className="text-[10px] text-blue-400 hover:underline mt-2 inline-block"
-              >
-                {en ? "Get Serper API Key (Google Search) →" : "申請 Serper API Key（Google 搜尋）→"}
-              </a>
-            </div>
+              );
+            })()}
 
             {keyError && (
-              <div className="text-red-400 text-sm mb-4">{keyError}</div>
+              <div className="text-red-400 text-sm mt-4 mb-2">{keyError}</div>
             )}
 
             <button
-              className="w-full bg-[#e94560] hover:bg-[#d63851] text-white py-2.5 rounded-lg font-medium transition-colors"
+              className={`w-full mt-6 py-2.5 rounded-lg font-medium transition-colors ${
+                allComplete
+                  ? "bg-[#e94560] hover:bg-[#d63851] text-white"
+                  : "bg-neutral-700 text-neutral-500 cursor-not-allowed"
+              }`}
+              disabled={!allComplete}
               onClick={() => saveKeys()}
             >
               {en ? "Next: Create Project →" : "下一步：建立專案 →"}
