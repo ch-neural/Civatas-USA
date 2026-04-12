@@ -14,6 +14,65 @@ import {
   buildSettingsPayload,
 } from "@/lib/vendor-presets";
 
+/* ─── Section header for accordion ─── */
+function SectionHeader({
+  num,
+  title,
+  subtitle,
+  complete,
+  locked,
+  summary,
+  expanded,
+  en,
+  onClick,
+}: {
+  num: 1 | 2 | 3;
+  title: string;
+  subtitle: string;
+  complete: boolean;
+  locked: boolean;
+  summary?: string;
+  expanded: boolean;
+  en: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={`w-full flex items-center gap-3 p-3 rounded-t-lg transition-colors ${
+        locked ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-[#16213e]/60"
+      } ${expanded ? "" : "rounded-b-lg"}`}
+      onClick={() => { if (!locked) onClick(); }}
+      disabled={locked}
+    >
+      <div
+        className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+          complete
+            ? "bg-green-500 text-white"
+            : expanded
+            ? "bg-[#e94560] text-white"
+            : "bg-neutral-700 text-neutral-400"
+        }`}
+      >
+        {complete ? "✓" : num}
+      </div>
+      <div className="flex-1 text-left">
+        <div className="text-sm font-medium text-neutral-200">{title}</div>
+        <div className="text-[11px] text-neutral-500">{subtitle}</div>
+      </div>
+      <div className="text-xs text-neutral-500 shrink-0">
+        {locked ? (
+          <span className="text-neutral-600">{en ? "Complete above first" : "請先完成上方步驟"}</span>
+        ) : complete && !expanded && summary ? (
+          <span className="text-green-400">{summary}</span>
+        ) : (
+          <span>{expanded ? "▼" : "▶"}</span>
+        )}
+      </div>
+    </button>
+  );
+}
+
 interface TemplateInfo {
   id: string;
   name: string;
@@ -128,19 +187,24 @@ export function OnboardingWizard() {
   const removeProvider = (idx: number) => {
     if (providers.length <= 1) return;
     const removedId = providers[idx].id;
-    setProviders((prev) => prev.filter((_, i) => i !== idx));
+    // Compute remaining before any state updates to avoid stale closures
+    const remaining = providers.filter((_, i) => i !== idx);
+    const fallbackProv = remaining[0];
+    const fallbackPreset = VENDOR_PRESETS[fallbackProv?.vendor_type ?? ""];
+
+    setProviders(remaining);
     setAgentLlms((prev) => {
       const filtered = prev.filter((a) => a.provider_id !== removedId);
-      return filtered.length > 0 ? filtered : prev;
+      // If all agents were removed, fall back to first remaining provider
+      return filtered.length > 0
+        ? filtered
+        : fallbackProv
+        ? [{ provider_id: fallbackProv.id, model: fallbackPreset?.defaultModel ?? "" }]
+        : prev;
     });
     setSystemLlm((prev) => {
-      if (prev.provider_id === removedId) {
-        // Fall back to first remaining provider
-        const remaining = providers.filter((_, i) => i !== idx);
-        if (remaining.length > 0) {
-          const preset = VENDOR_PRESETS[remaining[0].vendor_type];
-          return { provider_id: remaining[0].id, model: preset?.systemModel ?? "" };
-        }
+      if (prev.provider_id === removedId && fallbackProv) {
+        return { provider_id: fallbackProv.id, model: fallbackPreset?.systemModel ?? "" };
       }
       return prev;
     });
@@ -362,68 +426,7 @@ export function OnboardingWizard() {
                 : "新增至少一個 LLM 供應商、指定角色，並輸入 Serper Key。"}
             </p>
 
-            {/* --- Section Header helper --- */}
-            {(() => {
-              const SectionHeader = ({
-                num,
-                title,
-                subtitle,
-                complete,
-                locked,
-                summary,
-                onClick,
-              }: {
-                num: 1 | 2 | 3;
-                title: string;
-                subtitle: string;
-                complete: boolean;
-                locked: boolean;
-                summary?: string;
-                onClick: () => void;
-              }) => {
-                const isExpanded = expandedSection === num;
-                return (
-                  <button
-                    type="button"
-                    className={`w-full flex items-center gap-3 p-3 rounded-t-lg transition-colors ${
-                      locked ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-[#16213e]/60"
-                    } ${isExpanded ? "" : "rounded-b-lg"}`}
-                    onClick={() => { if (!locked) onClick(); }}
-                    disabled={locked}
-                  >
-                    {/* Numbered circle */}
-                    <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                        complete
-                          ? "bg-green-500 text-white"
-                          : isExpanded
-                          ? "bg-[#e94560] text-white"
-                          : "bg-neutral-700 text-neutral-400"
-                      }`}
-                    >
-                      {complete ? "✓" : num}
-                    </div>
-                    {/* Title + subtitle */}
-                    <div className="flex-1 text-left">
-                      <div className="text-sm font-medium text-neutral-200">{title}</div>
-                      <div className="text-[11px] text-neutral-500">{subtitle}</div>
-                    </div>
-                    {/* Right indicator */}
-                    <div className="text-xs text-neutral-500 shrink-0">
-                      {locked ? (
-                        <span className="text-neutral-600">{en ? "Complete above first" : "請先完成上方步驟"}</span>
-                      ) : complete && !isExpanded && summary ? (
-                        <span className="text-green-400">{summary}</span>
-                      ) : (
-                        <span>{isExpanded ? "▼" : "▶"}</span>
-                      )}
-                    </div>
-                  </button>
-                );
-              };
-
-              return (
-                <div className="space-y-3">
+            <div className="space-y-3">
                   {/* ═══ Section 1: LLM Providers ═══ */}
                   <div className={`rounded-lg border ${expandedSection === 1 ? "border-[#3b4c6b]" : section1Complete ? "border-[#3b4c6b]" : "border-[#2a3554]"} bg-[#0f1729]`}>
                     <SectionHeader
@@ -437,6 +440,8 @@ export function OnboardingWizard() {
                           ? `${providersWithKey.length} ${en ? "provider(s)" : "個供應商"}`
                           : undefined
                       }
+                      expanded={expandedSection === 1}
+                      en={en}
                       onClick={() => setExpandedSection(1)}
                     />
                     {expandedSection === 1 && (
@@ -530,6 +535,8 @@ export function OnboardingWizard() {
                           ? `${en ? "System" : "系統"}: ${systemLlm.model}, ${agentLlms.length} ${en ? "agent(s)" : "個 Agent"}`
                           : undefined
                       }
+                      expanded={expandedSection === 2}
+                      en={en}
                       onClick={() => setExpandedSection(2)}
                     />
                     {expandedSection === 2 && section1Complete && (
@@ -647,6 +654,8 @@ export function OnboardingWizard() {
                       complete={section3Complete}
                       locked={!section2Complete}
                       summary={section3Complete ? (en ? "Key set" : "已設定") : undefined}
+                      expanded={expandedSection === 3}
+                      en={en}
                       onClick={() => setExpandedSection(3)}
                     />
                     {expandedSection === 3 && section2Complete && (
@@ -689,8 +698,7 @@ export function OnboardingWizard() {
                     )}
                   </div>
                 </div>
-              );
-            })()}
+            </div>
 
             {keyError && (
               <div className="text-red-400 text-sm mt-4 mb-2">{keyError}</div>
