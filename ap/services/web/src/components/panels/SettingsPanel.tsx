@@ -28,6 +28,9 @@ interface Settings {
   vendor_ratio: string;
   primary_vendor_id: string;
   fallback_vendor_id: string;
+  system_vendor_id: string;
+  serper_api_key: string;
+  onboarding_completed: boolean;
 }
 
 /* ─── Constants ─── */
@@ -78,13 +81,13 @@ export default function SettingsPanel() {
   // Sync settings → edit state when settings load
   useEffect(() => {
     if (!settings) return;
-    const { providers, systemLlm, agentLlms } = parseSettingsToProvidersAndRoles(settings as any);
+    const { providers, systemLlm, agentLlms } = parseSettingsToProvidersAndRoles(settings);
     setEditProviders(providers);
     setEditSystemLlm(systemLlm);
     setEditAgentLlms(agentLlms.length > 0 ? agentLlms : providers.length > 0
       ? [{ provider_id: providers[0].id, model: VENDOR_PRESETS[providers[0].vendor_type]?.defaultModel ?? "gpt-4o-mini" }]
       : []);
-    setEditSerperKey((settings as any).serper_api_key || "");
+    setEditSerperKey(settings.serper_api_key || "");
     setEditLlmMode(settings.llm_mode || "multi");
     setEditVendorRatio(settings.vendor_ratio || "1");
     setEditPrimaryId(settings.primary_vendor_id || "");
@@ -150,9 +153,29 @@ export default function SettingsPanel() {
     if (editFallbackId === id) setEditFallbackId("");
   };
 
+  const testSerperKey = async () => {
+    if (!editSerperKey.trim() || editSerperKey.startsWith("***")) {
+      setProviderTestResults(prev => ({ ...prev, serper: "fail" }));
+      return;
+    }
+    setProviderTestResults(prev => ({ ...prev, serper: "testing" }));
+    try {
+      const res = await apiFetch("/api/settings/test-serper", {
+        method: "POST",
+        body: JSON.stringify({ api_key: editSerperKey }),
+      });
+      setProviderTestResults(prev => ({ ...prev, serper: res.status === "ok" ? "ok" : "fail" }));
+    } catch {
+      setProviderTestResults(prev => ({ ...prev, serper: "fail" }));
+    }
+  };
+
   const testSettingsProvider = async (providerId: string) => {
     const provider = editProviders.find(p => p.id === providerId);
-    if (!provider) return;
+    if (!provider || !provider.api_key.trim() || provider.api_key.startsWith("***")) {
+      setProviderTestResults(prev => ({ ...prev, [providerId]: "fail" }));
+      return;
+    }
     setProviderTestResults(prev => ({ ...prev, [providerId]: "testing" }));
     try {
       // Find the model assigned to this provider (prefer agent, then system, then preset default)
@@ -598,9 +621,17 @@ export default function SettingsPanel() {
                     value={editSerperKey}
                     onChange={(e) => setEditSerperKey(e.target.value)}
                   />
-                  <span style={{ fontSize: 10, color: "var(--text-faint)", whiteSpace: "nowrap" }}>
-                    {editSerperKey ? "✓ 已設定" : "✗ 未設定"}
-                  </span>
+                  <button
+                    onClick={testSerperKey}
+                    style={{
+                      background: "rgba(255,255,255,0.06)", border: "1px solid var(--border-subtle)",
+                      borderRadius: 6, padding: "4px 12px", fontSize: 11, cursor: "pointer",
+                      color: providerTestResults.serper === "ok" ? "var(--green)" : providerTestResults.serper === "fail" ? "var(--pink)" : "var(--text-muted)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {providerTestResults.serper === "testing" ? "..." : providerTestResults.serper === "ok" ? "✓ OK" : providerTestResults.serper === "fail" ? "✕ Fail" : "Test"}
+                  </button>
                 </div>
               </div>
 
