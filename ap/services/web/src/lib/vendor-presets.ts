@@ -73,13 +73,17 @@ export function buildSettingsPayload(
 ): SettingsPayload {
   const providerById = new Map(providers.map((p) => [p.id, p]));
 
-  // Build agent vendor entries
+  // Build agent vendor entries (use index suffix to avoid duplicate IDs
+  // when multiple agentLlms reference the same provider with different models)
+  const providerUsageCount = new Map<string, number>();
   const agentVendors: VendorEntry[] = agentLlms
     .map((a) => {
       const p = providerById.get(a.provider_id);
       if (!p) return null;
+      const count = (providerUsageCount.get(p.id) ?? 0) + 1;
+      providerUsageCount.set(p.id, count);
       return {
-        id: p.id,
+        id: count > 1 ? `${p.id}-${count}` : p.id,
         display_name: p.display_name,
         vendor_type: p.vendor_type,
         api_key: p.api_key,
@@ -135,7 +139,7 @@ export function buildSettingsPayload(
 
 /* ─── Parse settings (backend -> UI model) ─── */
 
-interface ParsedSettings {
+export interface ParsedSettings {
   providers: Provider[];
   systemLlm: RoleAssignment;
   agentLlms: RoleAssignment[];
@@ -176,10 +180,16 @@ export function parseSettingsToProvidersAndRoles(settings: {
     if (seen.has(key)) {
       vendorToProvider.set(v.id, seen.get(key)!.id);
     } else {
+      // For system-llm entries, strip the "System (...)" wrapper to get a
+      // clean display_name so the UI doesn't show polluted labels on round-trip.
+      const cleanName =
+        v.id === "system-llm"
+          ? (VENDOR_PRESETS[v.vendor_type]?.label ?? v.vendor_type)
+          : v.display_name;
       const provider: Provider = {
-        id: v.id,
+        id: v.id === "system-llm" ? `${v.vendor_type}-sys-${Date.now()}` : v.id,
         vendor_type: v.vendor_type,
-        display_name: v.display_name,
+        display_name: cleanName,
         api_key: v.api_key,
         base_url: v.base_url,
       };
@@ -192,7 +202,7 @@ export function parseSettingsToProvidersAndRoles(settings: {
 
   // Build agent LLM assignments from active_vendors
   const agentLlms: RoleAssignment[] = [];
-  for (const id of Array.from(activeIds)) {
+  for (const id of activeIds) {
     const vendor = vendors.find((v) => v.id === id);
     if (vendor) {
       agentLlms.push({
