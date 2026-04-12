@@ -698,7 +698,6 @@ export function OnboardingWizard() {
                     )}
                   </div>
                 </div>
-            </div>
 
             {keyError && (
               <div className="text-red-400 text-sm mt-4 mb-2">{keyError}</div>
