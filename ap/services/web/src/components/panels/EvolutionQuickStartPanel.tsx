@@ -439,14 +439,24 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     handleStart(currentRound + 1, newsCount);
   };
 
-  // Stop — abort immediately
-  const handleStop = () => {
+  // Stop — abort immediately and reset UI state
+  const handleStop = async () => {
     abortRef.current = true;
     pauseRef.current = false;
     setPaused(false);
     setRunning(false);
     setPhase("idle");
+    setCurrentRound(0);
+    setTotalRounds(0);
+    setNewsCount(0);
+    setCurrentSimDate("");
+    setPhaseLabel("");
     clearProgress();
+    // Stop the backend job if one is active
+    if (activeJobIdRef.current) {
+      try { await apiFetch(`/api/pipeline/evolution/evolve/stop/${activeJobIdRef.current}`, { method: "POST" }); } catch {}
+      activeJobIdRef.current = null;
+    }
   };
 
   // Derived
