@@ -1411,21 +1411,25 @@ async def evolve_one_day(
         national_delta = national_delta * reaction_scale * relevance_scale
         anx_delta = anx_delta * reaction_scale * relevance_scale
 
-        # Asymmetry correction: LLMs tend to produce lower satisfaction values,
-        # causing persistent downward drift. Slightly dampen negative deltas
-        # and slightly boost positive deltas to counterbalance this bias.
+        # Asymmetry correction: LLMs have strong negativity bias — they
+        # consistently rate satisfaction lower and anxiety higher when reacting
+        # to real news. Without correction, satisfaction drifts from 50 to ~35
+        # over 30 days with no recovery. The 0.70/1.30 split was calibrated
+        # from observed 30-day runs where 0.85/1.15 was insufficient.
+        _neg_dampen = sp.get("negativity_dampen", 0.70)
+        _pos_boost = sp.get("positivity_boost", 1.30)
         if local_delta < 0:
-            local_delta *= 0.85  # dampen negative
+            local_delta *= _neg_dampen
         elif local_delta > 0:
-            local_delta *= 1.15  # boost positive
+            local_delta *= _pos_boost
         if national_delta < 0:
-            national_delta *= 0.85
+            national_delta *= _neg_dampen
         elif national_delta > 0:
-            national_delta *= 1.15
+            national_delta *= _pos_boost
         if anx_delta > 0:
-            anx_delta *= 0.85  # dampen anxiety increases
+            anx_delta *= _neg_dampen   # dampen anxiety increases
         elif anx_delta < 0:
-            anx_delta *= 1.15  # boost anxiety decreases
+            anx_delta *= _pos_boost    # boost anxiety decreases
 
         # ── Apply life event effects directly (bypasses LLM modulation) ──
         if life_event:
