@@ -381,6 +381,13 @@ export async function getEvolutionHistory() {
   return apiFetch("/api/pipeline/evolution/evolve/history");
 }
 
+export async function analyzeEvolution(payload: Record<string, unknown>) {
+  return apiFetch("/api/pipeline/evolution/analyze", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function getEvolutionJobs() {
   return apiFetch("/api/pipeline/evolution/evolve/jobs");
 }

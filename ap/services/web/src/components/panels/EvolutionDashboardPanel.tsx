@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { getEvolutionDashboard } from "@/lib/api";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { getEvolutionDashboard, analyzeEvolution } from "@/lib/api";
 import USMap from "@/components/USMap";
 import { useTr } from "@/lib/i18n";
 import { useLocaleStore } from "@/store/locale-store";
@@ -24,6 +24,20 @@ const LEAN_COLORS: Record<string, string> = {
   "Lean Rep": "#ef4444", "Solid Rep": "#991b1b",
 };
 const REL_COLORS: Record<string, string> = { high: "#ef4444", medium: "#f59e0b", low: "#6b7280", none: "#374151" };
+
+function ChartInsight({ text }: { text?: string | null }) {
+  if (!text) return null;
+  return (
+    <div style={{
+      marginTop: 6, padding: "6px 10px", borderRadius: 6,
+      background: "rgba(139,92,246,0.04)", borderLeft: "2px solid rgba(139,92,246,0.3)",
+      fontSize: 11, color: "rgba(255,255,255,0.55)", lineHeight: 1.6,
+    }}>
+      <span style={{ color: "#a78bfa", fontSize: 10, marginRight: 4 }}>💡</span>
+      {text}
+    </div>
+  );
+}
 const tooltipStyle = { background: "#1e1e2e", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 11 };
 
 export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
@@ -37,6 +51,36 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
   const t = useTr();
   const en = useLocaleStore((s) => s.locale) === "en";
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // AI Analysis state
+  const [analysis, setAnalysis] = useState<Record<string, string | null> | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const analysisForDaysRef = useRef<number>(0); // cache key: number of days analyzed
+
+  const requestAnalysis = useCallback(async (dashData: any) => {
+    if (!dashData?.daily_trends?.length) return;
+    const dayCount = dashData.daily_trends.length;
+    // Skip if already analyzed for this day count or still loading
+    if (dayCount === analysisForDaysRef.current || analysisLoading) return;
+
+    setAnalysisLoading(true);
+    try {
+      const result = await analyzeEvolution({
+        daily_trends: dashData.daily_trends,
+        leaning_trends: dashData.leaning_trends || [],
+        candidate_trends: dashData.candidate_trends || [],
+        candidate_names: dashData.tracked_candidate_names || [],
+        agent_count: dashData.agent_count || 0,
+        locale: en ? "en" : "zh-TW",
+      });
+      setAnalysis(result);
+      analysisForDaysRef.current = dayCount;
+    } catch (e) {
+      console.warn("Analysis failed:", e);
+    } finally {
+      setAnalysisLoading(false);
+    }
+  }, [en, analysisLoading]);
 
   const fetchData = async () => {
     try {
@@ -64,6 +108,17 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
     fetchData();
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, []);
+
+  // Auto-trigger analysis when day count changes (new day completed)
+  useEffect(() => {
+    if (!data?.daily_trends?.length) return;
+    const dayCount = data.daily_trends.length;
+    const isComplete = data.daily_trends[dayCount - 1]?.entries_count >= (data.agent_count || 1);
+    // Only analyze when the latest day is fully complete or evolution is done
+    if ((isComplete || data.status !== "running") && dayCount > analysisForDaysRef.current) {
+      requestAnalysis(data);
+    }
+  }, [data, requestAnalysis]);
 
   if (workflowStatus.evolution === "locked") {
     return (
@@ -185,6 +240,40 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
           ))}
         </div>
 
+        {/* ── Overall AI Analysis ── */}
+        {(analysis?.overall || analysisLoading) && (
+          <div style={{
+            padding: "14px 16px", borderRadius: 10,
+            background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(59,130,246,0.04))",
+            border: "1px solid rgba(139,92,246,0.15)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+              <span style={{ fontSize: 14 }}>🧠</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#a78bfa" }}>
+                {en ? "AI Analysis" : "AI 分析"}
+              </span>
+              {analysisLoading && (
+                <span style={{ width: 12, height: 12, border: "2px solid rgba(167,139,250,0.3)", borderTopColor: "#a78bfa", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
+              )}
+              {analysis && !analysisLoading && (
+                <button onClick={() => { analysisForDaysRef.current = 0; requestAnalysis(data); }}
+                  style={{ marginLeft: "auto", background: "none", border: "1px solid rgba(139,92,246,0.2)", color: "rgba(167,139,250,0.6)", fontSize: 10, padding: "2px 8px", borderRadius: 4, cursor: "pointer" }}>
+                  {en ? "Refresh" : "重新分析"}
+                </button>
+              )}
+            </div>
+            {analysis?.overall ? (
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: 0 }}>
+                {analysis.overall}
+              </p>
+            ) : analysisLoading ? (
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: 0 }}>
+                {en ? "Analyzing evolution trends..." : "分析演化趨勢中..."}
+              </p>
+            ) : null}
+          </div>
+        )}
+
         {/* ── Main Grid: Map + Charts ── */}
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
 
@@ -302,6 +391,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                   <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                 </LineChart>
               </ResponsiveContainer>
+              <ChartInsight text={analysis?.satisfaction_anxiety} />
             </div>
 
             {/* Political Leaning Trend */}
@@ -321,6 +411,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                   <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                 </AreaChart>
               </ResponsiveContainer>
+              <ChartInsight text={analysis?.political_leaning} />
             </div>
 
             {/* Candidate Tracking Charts */}
@@ -347,6 +438,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                         <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                       </LineChart>
                     </ResponsiveContainer>
+                    <ChartInsight text={analysis?.candidate_awareness} />
                   </div>
 
                   {/* Candidate Sentiment Trend */}
@@ -368,6 +460,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                         <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                       </LineChart>
                     </ResponsiveContainer>
+                    <ChartInsight text={analysis?.candidate_sentiment} />
                   </div>
                 </>
               );

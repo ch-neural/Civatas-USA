@@ -417,6 +417,103 @@ async def evo_export_playback():
     }
 
 
+@router.post("/evolution/analyze")
+async def evo_analyze(payload: dict = Body(...)):
+    """Use System LLM to generate deep analysis of evolution dashboard data."""
+    from shared.global_settings import get_system_llm_credentials
+    creds = get_system_llm_credentials()
+    api_key = creds["api_key"] or os.getenv("OPENAI_API_KEY", "")
+    model = creds["model"]
+    base_url = creds["base_url"] or "https://api.openai.com/v1"
+
+    if not api_key:
+        return JSONResponse(status_code=500, content={"error": "LLM API key not configured"})
+
+    daily_trends = payload.get("daily_trends", [])
+    leaning_trends = payload.get("leaning_trends", [])
+    candidate_trends = payload.get("candidate_trends", [])
+    candidate_names = payload.get("candidate_names", [])
+    agent_count = payload.get("agent_count", 0)
+    locale = payload.get("locale", "en")
+
+    lang_instruction = (
+        "Respond entirely in Traditional Chinese (繁體中文)."
+        if locale == "zh-TW" else
+        "Respond entirely in English."
+    )
+
+    system_prompt = f"""You are an expert political analyst reviewing agent-based election simulation data.
+You are given daily evolution trends from a social simulation where AI agents read news and update their satisfaction, anxiety, and political leaning.
+
+{lang_instruction}
+
+Analyze the data and return a JSON object with these keys:
+- "overall": A 2-4 sentence executive summary of the simulation so far — key trends, turning points, notable patterns. Be specific with numbers.
+- "satisfaction_anxiety": 1-2 sentences analyzing the Satisfaction & Anxiety trend chart. Note divergences between local vs national satisfaction, anxiety spikes or declines, and what they might indicate.
+- "political_leaning": 1-2 sentences analyzing the Political Leaning distribution trend. Note any shifts between left/center/right and what's driving them.
+- "candidate_awareness": 1-2 sentences analyzing candidate awareness trends (if data exists, otherwise null). Which candidates are gaining/losing visibility?
+- "candidate_sentiment": 1-2 sentences analyzing candidate sentiment trends (if data exists, otherwise null). Which candidates have improving/declining sentiment?
+
+Be concise, data-driven, and insightful. Reference specific day numbers and values. Do NOT repeat raw data — interpret it.
+Return ONLY valid JSON, no markdown fencing."""
+
+    # Build compact data summary for the prompt
+    data_text = f"Agent count: {agent_count}\n\n"
+    data_text += "Daily Trends (day, local_sat, national_sat, anxiety):\n"
+    for d in daily_trends:
+        data_text += f"  Day {d.get('day')}: local_sat={d.get('local_satisfaction')}, national_sat={d.get('national_satisfaction')}, anxiety={d.get('anxiety')}\n"
+
+    if leaning_trends:
+        data_text += "\nPolitical Leaning Trends (day, left%, center%, right%):\n"
+        for d in leaning_trends:
+            data_text += f"  Day {d.get('day')}: left={d.get('left')}%, center={d.get('center')}%, right={d.get('right')}%\n"
+
+    if candidate_trends and candidate_names:
+        data_text += f"\nTracked Candidates: {', '.join(candidate_names)}\n"
+        data_text += "Candidate Trends (day, awareness, sentiment per candidate):\n"
+        for d in candidate_trends:
+            parts = [f"Day {d.get('day')}:"]
+            for cn in candidate_names:
+                aw = d.get(f"{cn}_awareness", "")
+                st = d.get(f"{cn}_sentiment", "")
+                if aw != "": parts.append(f"{cn} aw={aw:.0%}" if isinstance(aw, (int, float)) else f"{cn} aw={aw}")
+                if st != "": parts.append(f"sent={st:.2f}" if isinstance(st, (int, float)) else f"sent={st}")
+            data_text += f"  {' '.join(parts)}\n"
+
+    import httpx as _httpx
+    async with _httpx.AsyncClient(timeout=60.0) as client:
+        resp = await client.post(
+            f"{base_url}/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": data_text},
+                ],
+                "temperature": 0.3,
+                "max_tokens": 800,
+            },
+        )
+    if resp.status_code != 200:
+        return JSONResponse(status_code=502, content={"error": f"LLM API error: {resp.status_code}"})
+
+    import json
+    raw = resp.json()["choices"][0]["message"]["content"].strip()
+    # Strip markdown fencing if present
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1] if "\n" in raw else raw[3:]
+        if raw.endswith("```"):
+            raw = raw[:-3].strip()
+
+    try:
+        analysis = json.loads(raw)
+    except json.JSONDecodeError:
+        analysis = {"overall": raw, "satisfaction_anxiety": None, "political_leaning": None, "candidate_awareness": None, "candidate_sentiment": None}
+
+    return analysis
+
+
 @router.post("/evolution/evolve/reset")
 async def evo_reset():
     async with httpx.AsyncClient(timeout=600.0) as client:
