@@ -121,17 +121,15 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
   useEffect(() => {
     if (!data?.daily_trends?.length) return;
     const dayCount = data.daily_trends.length;
-    const latestDay = data.daily_trends[dayCount - 1];
-    const isLatestComplete = latestDay?.entries_count >= (data.agent_count || 1);
     const isDone = data.status !== "running";
 
     // Determine next analysis milestone
     const nextMilestone = Math.ceil((lastAnalyzedDayRef.current + 1) / ANALYSIS_INTERVAL) * ANALYSIS_INTERVAL;
     const shouldAnalyze =
-      // Hit a 10-day milestone and that day is complete
-      (dayCount >= nextMilestone && isLatestComplete && nextMilestone > lastAnalyzedDayRef.current) ||
-      // Evolution finished — analyze remaining days since last milestone
-      (isDone && dayCount > lastAnalyzedDayRef.current && isLatestComplete);
+      // Hit a 10-day milestone
+      (dayCount >= nextMilestone && nextMilestone > lastAnalyzedDayRef.current) ||
+      // Evolution finished (or viewing completed run) — analyze remaining unanalyzed days
+      (isDone && dayCount > lastAnalyzedDayRef.current);
 
     if (shouldAnalyze) {
       const fromDay = lastAnalyzedDayRef.current + 1;
