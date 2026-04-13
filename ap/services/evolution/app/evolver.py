@@ -2063,30 +2063,31 @@ async def evolve_one_day(
 
 # ── Live message helper ──────────────────────────────────────────────
 
-MAX_LIVE_MESSAGES = 30
-MAX_KOL_MESSAGES = 10  # KOL messages are kept separately
+MAX_LIVE_MESSAGES = 50
+MAX_PRIORITY_MESSAGES = 20  # KOL + leaning shift messages kept with priority
 
 def _push_live(job: dict, msg: str):
     """Push a live activity message to the job (ring buffer).
-    KOL messages (📱/📢/📣) are tagged and retained with higher priority."""
+    Priority messages (KOL posts, leaning shifts) are retained longer."""
     if "live_messages" not in job:
         job["live_messages"] = []
     is_kol = any(icon in msg for icon in ["📱", "📢", "📣"])
-    entry = {"ts": time.time(), "text": msg, "kol": is_kol}
+    is_shift = "shifted from" in msg.lower() or "Leaning shift" in msg
+    is_priority = is_kol or is_shift
+    entry = {"ts": time.time(), "text": msg, "kol": is_priority}
     job["live_messages"].append(entry)
-    # When over limit: remove oldest non-KOL messages first, then oldest KOL
+    # When over limit: remove oldest regular messages first, keep priority
     if len(job["live_messages"]) > MAX_LIVE_MESSAGES:
-        # Separate KOL vs regular
-        kol_msgs = [m for m in job["live_messages"] if m.get("kol")]
+        priority_msgs = [m for m in job["live_messages"] if m.get("kol")]
         reg_msgs = [m for m in job["live_messages"] if not m.get("kol")]
         # Trim regular first
-        if len(reg_msgs) > MAX_LIVE_MESSAGES - MAX_KOL_MESSAGES:
-            reg_msgs = reg_msgs[-(MAX_LIVE_MESSAGES - MAX_KOL_MESSAGES):]
-        # Trim KOL if still too many
-        if len(kol_msgs) > MAX_KOL_MESSAGES:
-            kol_msgs = kol_msgs[-MAX_KOL_MESSAGES:]
+        if len(reg_msgs) > MAX_LIVE_MESSAGES - MAX_PRIORITY_MESSAGES:
+            reg_msgs = reg_msgs[-(MAX_LIVE_MESSAGES - MAX_PRIORITY_MESSAGES):]
+        # Trim priority if still too many
+        if len(priority_msgs) > MAX_PRIORITY_MESSAGES:
+            priority_msgs = priority_msgs[-MAX_PRIORITY_MESSAGES:]
         # Re-merge in chronological order
-        merged = sorted(reg_msgs + kol_msgs, key=lambda m: m["ts"])
+        merged = sorted(reg_msgs + priority_msgs, key=lambda m: m["ts"])
         job["live_messages"] = merged[-MAX_LIVE_MESSAGES:]
 
 
