@@ -460,7 +460,11 @@
       "shift_anx_threshold_high": 80,
       "shift_consecutive_days_req": 5,
       "individuality_multiplier": 1.0,
-      "neutral_ratio": 0.0
+      "neutral_ratio": 0.0,
+      "news_mix_candidate": 20,
+      "news_mix_national": 25,
+      "news_mix_local": 45,
+      "news_mix_international": 10
     },
     "default_kol": {
       "enabled": false,

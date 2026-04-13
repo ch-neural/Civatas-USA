@@ -633,7 +633,11 @@
       "shift_anx_threshold_high": 75,
       "shift_consecutive_days_req": 4,
       "individuality_multiplier": 1.1,
-      "neutral_ratio": 0.05
+      "neutral_ratio": 0.05,
+      "news_mix_candidate": 30,
+      "news_mix_national": 30,
+      "news_mix_local": 25,
+      "news_mix_international": 15
     },
     "default_kol": {
       "enabled": false,

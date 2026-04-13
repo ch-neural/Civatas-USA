@@ -72,6 +72,11 @@ const DEFAULT_ADV_PARAMS = {
   // Life events & individuality
   individuality_multiplier: 1.0,
   neutral_ratio: 0.0,
+  // News category mix (must sum to 100)
+  news_mix_candidate: 25,
+  news_mix_national: 35,
+  news_mix_local: 30,
+  news_mix_international: 10,
 };
 
 type AdvParams = typeof DEFAULT_ADV_PARAMS;
@@ -304,30 +309,52 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     ],
   };
 
-  // Build search queries — one per leaning bucket
+  // Build search queries distributed by news category mix
   const buildQueries = useCallback(() => {
     const candidateNames = candidates.map((c: any) => c.name).join(" ");
-    const nationalKws = (searchKeywords.national || "US election economy voters").split("\n").filter(Boolean);
-    const localKws = (searchKeywords.local || "swing state polling local election").split("\n").filter(Boolean);
-    const natPick = nationalKws[Math.floor(Math.random() * nationalKws.length)] || "";
-    const locPick = localKws[Math.floor(Math.random() * localKws.length)] || "";
-    const baseQuery = `${candidateNames} ${natPick}`.trim();
-    const localQuery = `${candidateNames} ${locPick}`.trim();
+    const nationalKws = (searchKeywords.national || "US election economy voters congress federal policy").split("\n").filter(Boolean);
+    const localKws = (searchKeywords.local || "swing state governor local election county school").split("\n").filter(Boolean);
+    const natPick = () => nationalKws[Math.floor(Math.random() * nationalKws.length)] || "";
+    const locPick = () => localKws[Math.floor(Math.random() * localKws.length)] || "";
 
-    // Build one query per bucket with site: restriction
+    // Category-specific query templates
+    const categoryQueries = {
+      candidate: () => candidateNames ? `${candidateNames} campaign poll` : `US election candidates poll`,
+      national: () => `${natPick()} US federal policy`,
+      local: () => `${locPick()} state local government community`,
+      international: () => `world news foreign policy trade global`,
+    };
+
+    // Determine how many queries per category (total ~8 queries per round)
+    const total = advParams.news_mix_candidate + advParams.news_mix_national + advParams.news_mix_local + advParams.news_mix_international || 100;
+    const totalQueries = 8;
+    const counts = {
+      candidate: Math.round((advParams.news_mix_candidate / total) * totalQueries) || 0,
+      national: Math.round((advParams.news_mix_national / total) * totalQueries) || 0,
+      local: Math.round((advParams.news_mix_local / total) * totalQueries) || 0,
+      international: Math.round((advParams.news_mix_international / total) * totalQueries) || 0,
+    };
+    // Ensure at least totalQueries
+    while (counts.candidate + counts.national + counts.local + counts.international < totalQueries) {
+      counts.national++;
+    }
+
+    // Build queries with source bucket distribution
+    const allSources = Object.entries(sourceBuckets).flatMap(([leaning, sources]) =>
+      sources.map((s) => ({ ...s, leaning }))
+    );
+    const pickSource = () => allSources[Math.floor(Math.random() * allSources.length)];
+
     const queries: { query: string; sourceName: string; leaning: string }[] = [];
-    for (const [leaning, sources] of Object.entries(sourceBuckets)) {
-      // Pick 1-2 random sources from the bucket
-      const shuffled = [...sources].sort(() => Math.random() - 0.5);
-      const picks = shuffled.slice(0, leaning === "Tossup" ? 2 : 1);
-      for (const src of picks) {
-        // Alternate between national and local keywords
-        const q = Math.random() > 0.3 ? baseQuery : localQuery;
-        queries.push({ query: `site:${src.site} ${q}`, sourceName: src.name, leaning });
+    for (const [category, count] of Object.entries(counts)) {
+      for (let i = 0; i < count; i++) {
+        const src = pickSource();
+        const q = categoryQueries[category as keyof typeof categoryQueries]();
+        queries.push({ query: `site:${src.site} ${q}`, sourceName: src.name, leaning: src.leaning });
       }
     }
     return queries;
-  }, [candidates, searchKeywords]);
+  }, [candidates, searchKeywords, advParams.news_mix_candidate, advParams.news_mix_national, advParams.news_mix_local, advParams.news_mix_international]);
 
   // Run a single round: crawl news + evolve
   const runOneRound = useCallback(async (roundNum: number, rounds: number, windowDays: number, daysPerRound: number, cumNewsCount: number): Promise<{ newsCount: number; jobId: string | null }> => {
@@ -1067,6 +1094,51 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
                     hint={en ? "Fraction of partisans reassigned to neutral at start" : "開始時將部分黨派 Agent 重新分配為中立"}
                     value={advParams.neutral_ratio} min={0} max={0.4} step={0.01} decimals={2} pct
                     onChange={(v) => setAdvParams({ ...advParams, neutral_ratio: v })}
+                    disabled={running} />
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "0 0 20px" }} />
+
+              {/* ── Section 6: News Category Mix ── */}
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                  <span style={{ fontSize: 14 }}>📰</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                    {en ? "News Category Mix" : "新聞類別比例"}
+                  </span>
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginLeft: "auto" }}>
+                    {en ? `Total: ${advParams.news_mix_candidate + advParams.news_mix_national + advParams.news_mix_local + advParams.news_mix_international}%` : `合計: ${advParams.news_mix_candidate + advParams.news_mix_national + advParams.news_mix_local + advParams.news_mix_international}%`}
+                    {(advParams.news_mix_candidate + advParams.news_mix_national + advParams.news_mix_local + advParams.news_mix_international) !== 100 && (
+                      <span style={{ color: "#ef4444", marginLeft: 4 }}>({en ? "should be 100%" : "應為 100%"})</span>
+                    )}
+                  </span>
+                </div>
+                <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: "0 0 12px", lineHeight: 1.5 }}>
+                  {en
+                    ? "Control the proportion of each news category in the crawled news mix."
+                    : "控制抓取新聞中各類別的比例。"}
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <AdvSlider label={en ? "Candidate news" : "候選人新聞"}
+                    hint={en ? "News about specific candidates and campaigns" : "特定候選人和選戰新聞"}
+                    value={advParams.news_mix_candidate} min={0} max={60} step={5}
+                    onChange={(v) => setAdvParams({ ...advParams, news_mix_candidate: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "National / Election" : "全國/選舉"}
+                    hint={en ? "Federal policy, Congress, Supreme Court, economy" : "聯邦政策、國會、最高法院、經濟"}
+                    value={advParams.news_mix_national} min={0} max={60} step={5}
+                    onChange={(v) => setAdvParams({ ...advParams, news_mix_national: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Local news" : "地方新聞"}
+                    hint={en ? "State/county governance, local elections, community" : "州/郡治理、地方選舉、社區"}
+                    value={advParams.news_mix_local} min={0} max={60} step={5}
+                    onChange={(v) => setAdvParams({ ...advParams, news_mix_local: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "International" : "國際"}
+                    hint={en ? "Foreign affairs, trade, global events" : "外交、貿易、全球事件"}
+                    value={advParams.news_mix_international} min={0} max={60} step={5}
+                    onChange={(v) => setAdvParams({ ...advParams, news_mix_international: v })}
                     disabled={running} />
                 </div>
               </div>

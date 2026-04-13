@@ -387,6 +387,11 @@ US_CALIB_GENERIC = {
     # Individuality & neutral
     "individuality_multiplier": 1.0,
     "neutral_ratio": 0.0,
+    # News category mix — no specific candidates, balanced national/local
+    "news_mix_candidate": 15,
+    "news_mix_national": 35,
+    "news_mix_local": 35,
+    "news_mix_international": 15,
 }
 
 US_CALIB_2024 = {
@@ -414,6 +419,11 @@ US_CALIB_2024 = {
     # Individuality
     "individuality_multiplier": 1.0,
     "neutral_ratio": 0.0,
+    # News mix — candidate-heavy for specific election cycle
+    "news_mix_candidate": 35,
+    "news_mix_national": 30,
+    "news_mix_local": 25,
+    "news_mix_international": 10,
 }
 
 US_CALIB_2028 = {
@@ -441,6 +451,11 @@ US_CALIB_2028 = {
     # Individuality
     "individuality_multiplier": 1.1,  # more individual variation
     "neutral_ratio": 0.05,            # small bump to neutral pool
+    # News mix — many candidates, lots of exploration
+    "news_mix_candidate": 30,
+    "news_mix_national": 30,
+    "news_mix_local": 25,
+    "news_mix_international": 15,
 }
 
 US_CALIB_STATE = {
@@ -468,6 +483,11 @@ US_CALIB_STATE = {
     # Individuality
     "individuality_multiplier": 1.0,
     "neutral_ratio": 0.0,
+    # News mix — state-level: heavy on local news
+    "news_mix_candidate": 20,
+    "news_mix_national": 25,
+    "news_mix_local": 45,
+    "news_mix_international": 10,
 }
 
 # Backward-compat alias used by build_state_template.py
