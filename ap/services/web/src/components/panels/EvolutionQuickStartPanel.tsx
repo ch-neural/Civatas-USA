@@ -386,9 +386,23 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     const windowDays = daysBetween(startDate, endDate);
     const daysPerRound = Math.max(1, Math.floor(windowDays / rounds));
 
-    // Fresh start: reset agent states, history, diaries, and news pool
+    // Fresh start: stop ALL running backend jobs, then reset all state
     // Resume: skip reset — continue from where we left off
     if (resumeFromRound === 0) {
+      // Stop all running/pending jobs to avoid race conditions
+      try {
+        const jobsRes = await apiFetch("/api/pipeline/evolution/evolve/jobs");
+        const runningJobs = (jobsRes?.jobs || []).filter((j: any) => j.status === "running" || j.status === "pending");
+        for (const rj of runningJobs) {
+          try { await apiFetch(`/api/pipeline/evolution/evolve/stop/${rj.job_id}`, { method: "POST" }); } catch {}
+        }
+        if (runningJobs.length > 0) {
+          // Wait for jobs to fully stop and flush any pending state writes
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+      } catch {}
+      activeJobIdRef.current = null;
+      // Now reset — all jobs stopped, safe to clear states
       try { await apiFetch("/api/pipeline/evolution/evolve/reset", { method: "POST" }); } catch {}
       try { await apiFetch("/api/pipeline/evolution/news-pool/clear", { method: "POST" }); } catch {}
     }
