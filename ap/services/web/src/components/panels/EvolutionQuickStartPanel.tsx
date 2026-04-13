@@ -318,11 +318,14 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     const locPick = () => localKws[Math.floor(Math.random() * localKws.length)] || "";
 
     // Category-specific query templates
+    // Category-specific query templates — must be precise to avoid cross-category leakage
+    const localStates = ["Pennsylvania", "Michigan", "Wisconsin", "Georgia", "Arizona", "Nevada", "Virginia", "New Jersey", "Ohio", "North Carolina"];
+    const randomState = () => localStates[Math.floor(Math.random() * localStates.length)];
     const categoryQueries = {
-      candidate: () => candidateNames ? `${candidateNames} campaign poll` : `US election candidates poll`,
-      national: () => `${natPick()} US federal policy`,
-      local: () => `${locPick()} state local government community`,
-      international: () => `world news foreign policy trade global`,
+      candidate: () => candidateNames ? `${candidateNames} campaign rally poll 2024` : `US presidential candidate poll approval`,
+      national: () => `${natPick()} congress federal government Washington DC policy legislation`,
+      local: () => `${randomState()} governor state legislature local news ${new Date().getFullYear()}`,
+      international: () => `international global summit NATO G7 trade agreement foreign affairs`,
     };
 
     // Determine how many queries per category (total ~8 queries per round)
