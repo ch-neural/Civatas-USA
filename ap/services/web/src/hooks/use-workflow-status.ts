@@ -22,18 +22,19 @@ export function useWorkflowStatus(wsId: string | null) {
     refetchInterval: 10_000,
   });
 
-  const evolutionQuery = useQuery({
-    queryKey: ["evolution-history", wsId],
-    queryFn: () => apiFetch(`/api/pipeline/evolution/evolve/history`),
-    enabled: !!wsId,
-    retry: false,
-    refetchInterval: 10_000,
-  });
-
-  // Jobs endpoint has status field (running/pending/completed) — history does not
+  // Jobs endpoint has status field (running/pending/completed)
   const evolutionJobsQuery = useQuery({
     queryKey: ["evolution-jobs", wsId],
     queryFn: () => apiFetch(`/api/pipeline/evolution/evolve/jobs`),
+    enabled: !!wsId,
+    retry: false,
+    refetchInterval: 5_000,
+  });
+
+  // Quick Start progress — tracks multi-round evolution state
+  const evolutionProgressQuery = useQuery({
+    queryKey: ["evolution-progress", wsId],
+    queryFn: () => apiFetch(`/api/workspaces/${wsId}/ui-settings/evolution-progress`),
     enabled: !!wsId,
     retry: false,
     refetchInterval: 5_000,
@@ -43,20 +44,24 @@ export function useWorkflowStatus(wsId: string | null) {
     personaQuery.data?.agents?.length ?? personaQuery.data?.length ?? 0;
   const hasPersonas = personaCount > 0;
 
-  // Jobs: check running and completion status
+  // Jobs: check running status
   const jobsList: any[] = evolutionJobsQuery.data?.jobs ?? [];
   const isEvolutionRunning = jobsList.some(
     (j: any) => j.status === "running" || j.status === "pending"
   );
 
-  // Evolution is "completed" only when there are completed jobs AND nothing
-  // is still running. Quick Start runs multi-round evolution where each round
-  // is a separate job — intermediate rounds complete but the overall flow is
-  // not done until the last round finishes and no new round starts.
+  // Evolution is "completed" only when Quick Start finished all rounds.
+  // Quick Start saves evolution-progress with status "done" on completion
+  // and "idle" after reset. Intermediate states (paused/evolving) or
+  // having completed individual jobs does NOT mean evolution is done —
+  // Quick Start may have been stopped at round 2/10.
+  const progressStatus = evolutionProgressQuery.data?.status;
   const hasCompletedJobs = jobsList.some(
     (j: any) => j.status === "completed" || j.status === "done"
   );
-  const hasEvolution = hasCompletedJobs && !isEvolutionRunning;
+  const hasEvolution =
+    progressStatus === "done" ||                          // Quick Start reported full completion
+    (hasCompletedJobs && !isEvolutionRunning && progressStatus === "idle");  // Reset then completed cleanly
 
   const status: WorkflowStatus = {
     persona: hasPersonas ? "completed" : "available",

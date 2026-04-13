@@ -434,7 +434,8 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     if (!abortRef.current) {
       setPhase("done");
       setPhaseLabel(en ? "Evolution complete!" : "演化完成！");
-      clearProgress();
+      // Mark evolution as fully done (not idle) so sidebar shows ✓
+      saveUiSettings(wsId, "evolution-progress", { status: "done" }).catch(() => {});
     }
     setRunning(false);
   }, [running, personas, simDays, crawlInterval, concurrency, startDate, endDate, runOneRound, en, clearProgress]);
