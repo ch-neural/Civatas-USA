@@ -440,7 +440,7 @@ export function OnboardingWizard() {
       <div className="w-full max-w-2xl px-6 py-12">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#e94560] tracking-wider">CIVATAS</h1>
+          <h1 className="text-3xl font-bold text-[#e94560] tracking-wider">CIVATAS USA</h1>
           <p className="text-neutral-500 text-sm mt-1">
             {en ? "Social Simulation Agent Platform" : "社會模擬代理人平台"}
           </p>

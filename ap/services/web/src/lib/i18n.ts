@@ -1511,7 +1511,7 @@ export const STRINGS = {
   "tab.split_bottom":              { en: "Split bottom",            "zh-TW": "分割下方" },
 
   // ── MenuBar (top app menu) ──
-  "menu.app_name":                 { en: "Civatas",                 "zh-TW": "Civatas" },
+  "menu.app_name":                 { en: "Civatas USA",             "zh-TW": "Civatas USA" },
   "menu.file":                     { en: "File",                    "zh-TW": "檔案" },
   "menu.view":                     { en: "View",                    "zh-TW": "檢視" },
   "menu.tools":                    { en: "Tools",                   "zh-TW": "工具" },

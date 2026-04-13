@@ -81,7 +81,7 @@ export function WorkflowSidebar() {
     <div className="h-full flex flex-col bg-[#16213e] text-sm select-none">
       {/* Logo */}
       <div className="px-4 py-3 border-b border-[#0f3460]">
-        <div className="text-[#e94560] font-bold text-lg tracking-wide">CIVATAS</div>
+        <div className="text-[#e94560] font-bold text-lg tracking-wide">CIVATAS USA</div>
         <div className="text-neutral-500 text-[10px] mt-0.5">Open Source Edition</div>
       </div>
 

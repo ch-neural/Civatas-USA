@@ -4,7 +4,7 @@ import QueryProvider from "@/lib/QueryProvider";
 import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "Civatas — 社會模擬平台",
+  title: "Civatas USA — Social Simulation Platform",
   description: "Universal Social Simulation Agent Generation Platform",
 };
 
