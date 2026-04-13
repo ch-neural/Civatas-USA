@@ -664,12 +664,19 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
               }}>
                 {en ? "▶ Resume" : "▶ 繼續"}
               </button>
+              <button onClick={async () => { await handleStop(); handleStart(); }} style={{
+                padding: "10px 20px", borderRadius: 8, fontSize: 14,
+                background: "rgba(59,130,246,0.1)", color: "#60a5fa",
+                border: "1px solid rgba(59,130,246,0.2)", cursor: "pointer",
+              }}>
+                {en ? "🔄 Restart" : "🔄 重新開始"}
+              </button>
               <button onClick={handleStop} style={{
                 padding: "10px 20px", borderRadius: 8, fontSize: 14,
                 background: "rgba(255,107,107,0.1)", color: "#ff6b6b",
                 border: "1px solid rgba(255,107,107,0.2)", cursor: "pointer",
               }}>
-                {en ? "⏹ Stop & Reset" : "⏹ 停止"}
+                {en ? "⏹ Stop" : "⏹ 停止"}
               </button>
             </div>
           </div>
