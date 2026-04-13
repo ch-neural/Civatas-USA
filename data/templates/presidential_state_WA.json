@@ -545,7 +545,7 @@
       "forget_rate": 0.14,
       "delta_cap_mult": 1.6,
       "decay_rate_mult": 0.5,
-      "satisfaction_decay": 0.02,
+      "satisfaction_decay": 0.04,
       "anxiety_decay": 0.05,
       "base_undecided": 0.1,
       "max_undecided": 0.4,

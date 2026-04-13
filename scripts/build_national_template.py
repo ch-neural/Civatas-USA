@@ -372,7 +372,7 @@ US_CALIB_GENERIC = {
     # Emotional response
     "delta_cap_mult": 1.5,
     "decay_rate_mult": 0.5,
-    "satisfaction_decay": 0.02,
+    "satisfaction_decay": 0.04,
     "anxiety_decay": 0.05,
     # Undecided & party effects
     "base_undecided": 0.12,
@@ -404,7 +404,7 @@ US_CALIB_2024 = {
     # Emotional response — bigger swings, slower decay
     "delta_cap_mult": 1.8,
     "decay_rate_mult": 0.4,
-    "satisfaction_decay": 0.015,
+    "satisfaction_decay": 0.03,
     "anxiety_decay": 0.04,
     # Undecided — fewer undecided, strong party alignment
     "base_undecided": 0.08,
@@ -436,7 +436,7 @@ US_CALIB_2028 = {
     # Emotional response — moderate
     "delta_cap_mult": 1.4,
     "decay_rate_mult": 0.5,
-    "satisfaction_decay": 0.025,
+    "satisfaction_decay": 0.045,
     "anxiety_decay": 0.05,
     # Undecided — many undecided, weaker party pull
     "base_undecided": 0.20,           # open race = lots of undecided
@@ -468,7 +468,7 @@ US_CALIB_STATE = {
     # Emotional response
     "delta_cap_mult": 1.6,
     "decay_rate_mult": 0.5,
-    "satisfaction_decay": 0.02,
+    "satisfaction_decay": 0.04,
     "anxiety_decay": 0.05,
     # Undecided & party effects
     "base_undecided": 0.10,

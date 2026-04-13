@@ -317,15 +317,20 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     const natPick = () => nationalKws[Math.floor(Math.random() * nationalKws.length)] || "";
     const locPick = () => localKws[Math.floor(Math.random() * localKws.length)] || "";
 
-    // Category-specific query templates
-    // Category-specific query templates — must be precise to avoid cross-category leakage
+    // Category-specific query templates — avoid candidate names in non-candidate queries
     const localStates = ["Pennsylvania", "Michigan", "Wisconsin", "Georgia", "Arizona", "Nevada", "Virginia", "New Jersey", "Ohio", "North Carolina"];
     const randomState = () => localStates[Math.floor(Math.random() * localStates.length)];
+    const nationalTopics = ["inflation cost of living", "jobs unemployment report", "healthcare Medicare", "immigration border policy", "gun control legislation", "infrastructure spending", "student loan debt", "Social Security benefits", "climate energy policy", "Supreme Court ruling"];
+    const randomNatTopic = () => nationalTopics[Math.floor(Math.random() * nationalTopics.length)];
+    const localTopics = ["governor budget", "state legislature bill", "school board education", "local crime public safety", "housing development zoning", "transportation infrastructure", "property tax revenue", "community public health"];
+    const randomLocTopic = () => localTopics[Math.floor(Math.random() * localTopics.length)];
+    const intlTopics = ["NATO alliance Europe", "China trade tariff", "Middle East diplomacy", "Ukraine Russia conflict", "G7 summit agreement", "global economy recession", "climate summit COP", "UN General Assembly"];
+    const randomIntlTopic = () => intlTopics[Math.floor(Math.random() * intlTopics.length)];
     const categoryQueries = {
-      candidate: () => candidateNames ? `${candidateNames} campaign rally poll 2024` : `US presidential candidate poll approval`,
-      national: () => `${natPick()} congress federal government Washington DC policy legislation`,
-      local: () => `${randomState()} governor state legislature local news ${new Date().getFullYear()}`,
-      international: () => `international global summit NATO G7 trade agreement foreign affairs`,
+      candidate: () => candidateNames ? `${candidateNames} campaign rally poll` : `US presidential candidate poll approval`,
+      national: () => randomNatTopic(),
+      local: () => `${randomState()} ${randomLocTopic()}`,
+      international: () => randomIntlTopic(),
     };
 
     // Determine how many queries per category (total ~8 queries per round)
@@ -342,16 +347,28 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
       counts.national++;
     }
 
-    // Build queries with source bucket distribution
+    // Source selection: candidate queries use partisan sources, others use neutral/mainstream
     const allSources = Object.entries(sourceBuckets).flatMap(([leaning, sources]) =>
       sources.map((s) => ({ ...s, leaning }))
     );
-    const pickSource = () => allSources[Math.floor(Math.random() * allSources.length)];
+    const neutralSources = [
+      { name: "Reuters", site: "reuters.com", leaning: "Tossup" },
+      { name: "Associated Press", site: "apnews.com", leaning: "Tossup" },
+      { name: "The Hill", site: "thehill.com", leaning: "Tossup" },
+      { name: "USA Today", site: "usatoday.com", leaning: "Tossup" },
+      { name: "PBS", site: "pbs.org", leaning: "Tossup" },
+    ];
+    const pickSource = (category: string) => {
+      // Candidate queries use all partisan sources for diverse coverage
+      // Other categories use neutral sources to avoid candidate-heavy results
+      const pool = category === "candidate" ? allSources : neutralSources;
+      return pool[Math.floor(Math.random() * pool.length)];
+    };
 
     const queries: { query: string; sourceName: string; leaning: string }[] = [];
     for (const [category, count] of Object.entries(counts)) {
       for (let i = 0; i < count; i++) {
-        const src = pickSource();
+        const src = pickSource(category);
         const q = categoryQueries[category as keyof typeof categoryQueries]();
         queries.push({ query: `site:${src.site} ${q}`, sourceName: src.name, leaning: src.leaning });
       }

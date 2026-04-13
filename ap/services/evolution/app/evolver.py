@@ -1462,16 +1462,35 @@ async def evolve_one_day(
             new_anxiety = new_anxiety * (1 - _idv_inertia) + anxiety * _idv_inertia
 
         # Apply decay toward baseline — configurable via scoring_params
-        # Decay pulls values toward 50 (neutral). This prevents runaway extremes
-        # but can also fight against calibrated starting points if too strong.
+        # Decay pulls values toward 50 (neutral). This prevents runaway extremes.
+        # Asymmetric decay: stronger pull when far from 50, gentler near 50.
         _sp_decay = job.get("scoring_params", {}) if job else {}
         _anxiety_decay = _sp_decay.get("anxiety_decay", 0.05)
-        _satisfaction_decay = _sp_decay.get("satisfaction_decay", 0.02)
+        _satisfaction_decay = _sp_decay.get("satisfaction_decay", 0.04)
         if _anxiety_decay > 0:
             new_anxiety = new_anxiety * (1 - _anxiety_decay) + 50 * _anxiety_decay
         if _satisfaction_decay > 0:
             new_local_sat = new_local_sat * (1 - _satisfaction_decay) + 50 * _satisfaction_decay
             new_national_sat = new_national_sat * (1 - _satisfaction_decay) + 50 * _satisfaction_decay
+
+        # Anxiety ceiling resistance: as anxiety approaches extremes (>65),
+        # apply increasing downward pressure. This prevents small groups
+        # (e.g. 6 Lean Rep agents) from runaway anxiety spirals.
+        if new_anxiety > 65:
+            _resistance = (new_anxiety - 65) * 0.1
+            new_anxiety -= _resistance
+
+        # Mean-reversion boost: when satisfaction drifts far below 50,
+        # apply extra upward pull to counteract LLM negativity bias.
+        # This models "baseline contentment" — people don't stay miserable
+        # indefinitely without a specific ongoing crisis.
+        _mean_reversion_threshold = 45
+        if new_local_sat < _mean_reversion_threshold:
+            _boost = (_mean_reversion_threshold - new_local_sat) * 0.08
+            new_local_sat += _boost
+        if new_national_sat < _mean_reversion_threshold:
+            _boost = (_mean_reversion_threshold - new_national_sat) * 0.08
+            new_national_sat += _boost
 
         # Clamp
         new_local_sat = max(0, min(100, int(new_local_sat)))
