@@ -160,6 +160,12 @@ export function WorkflowSidebar() {
                 <span className={`font-medium ${isLocked ? "text-neutral-600" : "text-neutral-200"}`}>
                   {stepLabel}
                 </span>
+                {step.key === "evolution" && workflowStatus.evolutionRunning && (
+                  <span
+                    className="ml-1 inline-block w-3.5 h-3.5 rounded-full border-2 border-[#e94560]/30 border-t-[#e94560]"
+                    style={{ animation: "spin 1s linear infinite" }}
+                  />
+                )}
                 {getStatusBadge(status, step)}
               </button>
 

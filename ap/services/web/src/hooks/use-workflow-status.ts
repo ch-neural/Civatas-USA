@@ -10,6 +10,7 @@ export interface WorkflowStatus {
   prediction: StepStatus;
   personaCount: number;
   evolutionCompleted: boolean;
+  evolutionRunning: boolean;
 }
 
 export function useWorkflowStatus(wsId: string | null) {
@@ -38,6 +39,9 @@ export function useWorkflowStatus(wsId: string | null) {
   const hasEvolution = evolutionJobs.some(
     (j: any) => j.status === "completed" || j.status === "done"
   );
+  const isEvolutionRunning = evolutionJobs.some(
+    (j: any) => j.status === "running" || j.status === "pending"
+  );
 
   const status: WorkflowStatus = {
     persona: hasPersonas ? "completed" : "available",
@@ -45,6 +49,7 @@ export function useWorkflowStatus(wsId: string | null) {
     prediction: hasEvolution ? "available" : "locked",
     personaCount,
     evolutionCompleted: hasEvolution,
+    evolutionRunning: isEvolutionRunning,
   };
 
   return status;
