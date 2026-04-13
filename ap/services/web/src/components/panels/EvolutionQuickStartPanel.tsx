@@ -216,7 +216,7 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
           try {
             const jobStatus = await getEvolutionStatus(activeJobId);
             if (jobStatus.status === "running" || jobStatus.status === "pending") {
-              // Job still running — resume monitoring
+              // Job still running — poll it until done, then resume from next round
               setRunning(true);
               setCurrentRound(cr || 0);
               setTotalRounds(tr || 0);
@@ -225,7 +225,28 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
               setPhase("evolving");
               setPhaseLabel(en ? `Evolving agents (round ${cr}/${tr})...` : `演化中（第 ${cr}/${tr} 輪）...`);
               activeJobIdRef.current = activeJobId;
-              // Polling will be handled by the main loop resuming
+              // Poll this job in background, then resume from next round
+              (async () => {
+                let jobDone = false;
+                while (!jobDone && !abortRef.current) {
+                  await new Promise((r) => setTimeout(r, 2000));
+                  if (pauseRef.current) {
+                    setPaused(true); setPhase("paused"); setRunning(false);
+                    setPhaseLabel(en ? `Paused after round ${cr}/${tr}` : `第 ${cr}/${tr} 輪後暫停`);
+                    return;
+                  }
+                  try {
+                    const st = await getEvolutionStatus(activeJobId);
+                    if (st.status === "done" || st.status === "completed") jobDone = true;
+                    else if (st.status === "failed" || st.status === "error") { setPhase("error"); setError(st.error || "failed"); setRunning(false); return; }
+                  } catch { /* keep polling */ }
+                }
+                if (abortRef.current) { setRunning(false); return; }
+                // Current round done — continue from next round
+                setRunning(false);
+                handleStart((cr || 0) + 1, nc || 0);
+              })();
+              return;
             } else if (jobStatus.status === "done" || jobStatus.status === "completed") {
               // Job finished while page was closed — advance to next round
               setCurrentRound(cr || 0);
