@@ -435,6 +435,7 @@ async def evo_analyze(payload: dict = Body(...)):
     candidate_names = payload.get("candidate_names", [])
     agent_count = payload.get("agent_count", 0)
     locale = payload.get("locale", "en")
+    period_label = payload.get("period_label", "")
 
     lang_instruction = (
         "Respond entirely in Traditional Chinese (繁體中文)."
@@ -442,23 +443,31 @@ async def evo_analyze(payload: dict = Body(...)):
         "Respond entirely in English."
     )
 
+    period_context = (
+        f"\nYou are analyzing the period: {period_label}. Focus your analysis on changes and patterns within this specific window."
+        if period_label else ""
+    )
+
     system_prompt = f"""You are an expert political analyst reviewing agent-based election simulation data.
-You are given daily evolution trends from a social simulation where AI agents read news and update their satisfaction, anxiety, and political leaning.
+You are given daily evolution trends from a social simulation where AI agents read news and update their satisfaction, anxiety, and political leaning.{period_context}
 
 {lang_instruction}
 
 Analyze the data and return a JSON object with these keys:
-- "overall": A 2-4 sentence executive summary of the simulation so far — key trends, turning points, notable patterns. Be specific with numbers.
-- "satisfaction_anxiety": 1-2 sentences analyzing the Satisfaction & Anxiety trend chart. Note divergences between local vs national satisfaction, anxiety spikes or declines, and what they might indicate.
-- "political_leaning": 1-2 sentences analyzing the Political Leaning distribution trend. Note any shifts between left/center/right and what's driving them.
-- "candidate_awareness": 1-2 sentences analyzing candidate awareness trends (if data exists, otherwise null). Which candidates are gaining/losing visibility?
-- "candidate_sentiment": 1-2 sentences analyzing candidate sentiment trends (if data exists, otherwise null). Which candidates have improving/declining sentiment?
+- "overall": A 3-5 sentence deep analysis of this period — identify the most significant changes, compare the start vs end of the period, highlight any emerging patterns or turning points, and explain what might be driving them. Be specific with day numbers and values.
+- "satisfaction_anxiety": 2-3 sentences analyzing the Satisfaction & Anxiety trends in this period. Note divergences between local vs national satisfaction, anxiety spikes or declines, which political groups are most affected, and what real-world dynamics this might reflect.
+- "political_leaning": 2-3 sentences analyzing the Political Leaning distribution changes. Note any shifts between left/center/right, which groups gained or lost members, and what threshold conditions might be triggering shifts.
+- "candidate_awareness": 2-3 sentences analyzing candidate awareness trends (if data exists, otherwise null). Which candidates are gaining/losing visibility and why?
+- "candidate_sentiment": 2-3 sentences analyzing candidate sentiment trends (if data exists, otherwise null). Which candidates have improving/declining sentiment and what news might be driving it?
 
-Be concise, data-driven, and insightful. Reference specific day numbers and values. Do NOT repeat raw data — interpret it.
+Be concise but insightful. Compare beginning vs end of the period. Identify the most noteworthy change. Do NOT repeat raw data — interpret it.
 Return ONLY valid JSON, no markdown fencing."""
 
     # Build compact data summary for the prompt
-    data_text = f"Agent count: {agent_count}\n\n"
+    data_text = f"Agent count: {agent_count}\n"
+    if period_label:
+        data_text += f"Analysis period: {period_label}\n"
+    data_text += "\n"
     data_text += "Daily Trends (day, local_sat, national_sat, anxiety):\n"
     for d in daily_trends:
         data_text += f"  Day {d.get('day')}: local_sat={d.get('local_satisfaction')}, national_sat={d.get('national_satisfaction')}, anxiety={d.get('anxiety')}\n"

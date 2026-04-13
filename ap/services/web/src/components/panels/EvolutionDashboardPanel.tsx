@@ -52,29 +52,37 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
   const en = useLocaleStore((s) => s.locale) === "en";
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // AI Analysis state
-  const [analysis, setAnalysis] = useState<Record<string, string | null> | null>(null);
+  // AI Analysis state — accumulated per 10-day period
+  const ANALYSIS_INTERVAL = 10;
+  const [analysisSegments, setAnalysisSegments] = useState<{ dayRange: string; data: Record<string, string | null> }[]>([]);
   const [analysisLoading, setAnalysisLoading] = useState(false);
-  const analysisForDaysRef = useRef<number>(0); // cache key: number of days analyzed
+  const lastAnalyzedDayRef = useRef<number>(0); // highest day we've analyzed up to
 
-  const requestAnalysis = useCallback(async (dashData: any) => {
-    if (!dashData?.daily_trends?.length) return;
-    const dayCount = dashData.daily_trends.length;
-    // Skip if already analyzed for this day count or still loading
-    if (dayCount === analysisForDaysRef.current || analysisLoading) return;
+  const requestAnalysis = useCallback(async (dashData: any, fromDay: number, toDay: number) => {
+    if (analysisLoading) return;
+    const allTrends = dashData.daily_trends || [];
+    const allLean = dashData.leaning_trends || [];
+    const allCand = dashData.candidate_trends || [];
+    // Slice the window for this 10-day segment
+    const windowTrends = allTrends.filter((d: any) => d.day >= fromDay && d.day <= toDay);
+    const windowLean = allLean.filter((d: any) => d.day >= fromDay && d.day <= toDay);
+    const windowCand = allCand.filter((d: any) => d.day >= fromDay && d.day <= toDay);
+    if (!windowTrends.length) return;
 
     setAnalysisLoading(true);
     try {
       const result = await analyzeEvolution({
-        daily_trends: dashData.daily_trends,
-        leaning_trends: dashData.leaning_trends || [],
-        candidate_trends: dashData.candidate_trends || [],
+        daily_trends: windowTrends,
+        leaning_trends: windowLean,
+        candidate_trends: windowCand,
         candidate_names: dashData.tracked_candidate_names || [],
         agent_count: dashData.agent_count || 0,
         locale: en ? "en" : "zh-TW",
+        period_label: `Day ${fromDay}–${toDay}`,
       });
-      setAnalysis(result);
-      analysisForDaysRef.current = dayCount;
+      const label = fromDay === toDay ? `Day ${fromDay}` : `Day ${fromDay}–${toDay}`;
+      setAnalysisSegments((prev) => [...prev, { dayRange: label, data: result }]);
+      lastAnalyzedDayRef.current = toDay;
     } catch (e) {
       console.warn("Analysis failed:", e);
     } finally {
@@ -109,14 +117,26 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, []);
 
-  // Auto-trigger analysis when day count changes (new day completed)
+  // Auto-trigger analysis every ANALYSIS_INTERVAL days or when evolution completes
   useEffect(() => {
     if (!data?.daily_trends?.length) return;
     const dayCount = data.daily_trends.length;
-    const isComplete = data.daily_trends[dayCount - 1]?.entries_count >= (data.agent_count || 1);
-    // Only analyze when the latest day is fully complete or evolution is done
-    if ((isComplete || data.status !== "running") && dayCount > analysisForDaysRef.current) {
-      requestAnalysis(data);
+    const latestDay = data.daily_trends[dayCount - 1];
+    const isLatestComplete = latestDay?.entries_count >= (data.agent_count || 1);
+    const isDone = data.status !== "running";
+
+    // Determine next analysis milestone
+    const nextMilestone = Math.ceil((lastAnalyzedDayRef.current + 1) / ANALYSIS_INTERVAL) * ANALYSIS_INTERVAL;
+    const shouldAnalyze =
+      // Hit a 10-day milestone and that day is complete
+      (dayCount >= nextMilestone && isLatestComplete && nextMilestone > lastAnalyzedDayRef.current) ||
+      // Evolution finished — analyze remaining days since last milestone
+      (isDone && dayCount > lastAnalyzedDayRef.current && isLatestComplete);
+
+    if (shouldAnalyze) {
+      const fromDay = lastAnalyzedDayRef.current + 1;
+      const toDay = dayCount;
+      requestAnalysis(data, fromDay, toDay);
     }
   }, [data, requestAnalysis]);
 
@@ -240,37 +260,59 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
           ))}
         </div>
 
-        {/* ── Overall AI Analysis ── */}
-        {(analysis?.overall || analysisLoading) && (
+        {/* ── AI Analysis Segments (every 10 days) ── */}
+        {(analysisSegments.length > 0 || analysisLoading) && (
           <div style={{
             padding: "14px 16px", borderRadius: 10,
             background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(59,130,246,0.04))",
             border: "1px solid rgba(139,92,246,0.15)",
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
               <span style={{ fontSize: 14 }}>🧠</span>
               <span style={{ fontSize: 12, fontWeight: 700, color: "#a78bfa" }}>
                 {en ? "AI Analysis" : "AI 分析"}
+                {analysisSegments.length > 0 && (
+                  <span style={{ fontWeight: 400, color: "rgba(167,139,250,0.5)", marginLeft: 6 }}>
+                    ({analysisSegments.length} {en ? "segments" : "段"})
+                  </span>
+                )}
               </span>
               {analysisLoading && (
                 <span style={{ width: 12, height: 12, border: "2px solid rgba(167,139,250,0.3)", borderTopColor: "#a78bfa", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
               )}
-              {analysis && !analysisLoading && (
-                <button onClick={() => { analysisForDaysRef.current = 0; requestAnalysis(data); }}
+              {analysisSegments.length > 0 && !analysisLoading && (
+                <button onClick={() => { setAnalysisSegments([]); lastAnalyzedDayRef.current = 0; }}
                   style={{ marginLeft: "auto", background: "none", border: "1px solid rgba(139,92,246,0.2)", color: "rgba(167,139,250,0.6)", fontSize: 10, padding: "2px 8px", borderRadius: 4, cursor: "pointer" }}>
-                  {en ? "Refresh" : "重新分析"}
+                  {en ? "Clear" : "清除"}
                 </button>
               )}
             </div>
-            {analysis?.overall ? (
-              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: 0 }}>
-                {analysis.overall}
-              </p>
-            ) : analysisLoading ? (
+            {analysisSegments.map((seg, i) => (
+              <div key={i} style={{
+                marginBottom: i < analysisSegments.length - 1 ? 12 : 0,
+                paddingBottom: i < analysisSegments.length - 1 ? 12 : 0,
+                borderBottom: i < analysisSegments.length - 1 ? "1px solid rgba(139,92,246,0.1)" : "none",
+              }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#a78bfa", marginBottom: 4 }}>
+                  📅 {seg.dayRange}
+                </div>
+                {seg.data.overall && (
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: "0 0 4px" }}>
+                    {seg.data.overall}
+                  </p>
+                )}
+              </div>
+            ))}
+            {analysisLoading && analysisSegments.length === 0 && (
               <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: 0 }}>
                 {en ? "Analyzing evolution trends..." : "分析演化趨勢中..."}
               </p>
-            ) : null}
+            )}
+            {analysisLoading && analysisSegments.length > 0 && (
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: "8px 0 0" }}>
+                {en ? "Analyzing next period..." : "分析下一段趨勢中..."}
+              </p>
+            )}
           </div>
         )}
 
@@ -391,7 +433,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                   <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                 </LineChart>
               </ResponsiveContainer>
-              <ChartInsight text={analysis?.satisfaction_anxiety} />
+              <ChartInsight text={analysisSegments.length > 0 ? analysisSegments[analysisSegments.length - 1].data.satisfaction_anxiety : null} />
             </div>
 
             {/* Political Leaning Trend */}
@@ -411,7 +453,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                   <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                 </AreaChart>
               </ResponsiveContainer>
-              <ChartInsight text={analysis?.political_leaning} />
+              <ChartInsight text={analysisSegments.length > 0 ? analysisSegments[analysisSegments.length - 1].data.political_leaning : null} />
             </div>
 
             {/* Candidate Tracking Charts */}
@@ -438,7 +480,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                         <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                       </LineChart>
                     </ResponsiveContainer>
-                    <ChartInsight text={analysis?.candidate_awareness} />
+                    <ChartInsight text={analysisSegments.length > 0 ? analysisSegments[analysisSegments.length - 1].data.candidate_awareness : null} />
                   </div>
 
                   {/* Candidate Sentiment Trend */}
@@ -460,7 +502,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                         <Legend wrapperStyle={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }} />
                       </LineChart>
                     </ResponsiveContainer>
-                    <ChartInsight text={analysis?.candidate_sentiment} />
+                    <ChartInsight text={analysisSegments.length > 0 ? analysisSegments[analysisSegments.length - 1].data.candidate_sentiment : null} />
                   </div>
                 </>
               );
