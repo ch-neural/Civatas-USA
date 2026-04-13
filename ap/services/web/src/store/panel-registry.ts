@@ -107,7 +107,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     label: "演化", labelEn: "Evolution",
     icon: "📰",
     mainPanel: "evolution",
-    subItems: ["evolution-quickstart", "evolution", "evolution-dashboard", "agent-explorer"],
+    subItems: ["evolution-quickstart", "evolution-dashboard", "agent-explorer", "evolution"],
     requiresStep: 1,
   },
   {
