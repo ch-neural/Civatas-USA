@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { listWorkspaces, createWorkspace, deleteWorkspace, type WorkspaceMeta } from "@/lib/api";
+import { listWorkspaces, deleteWorkspace, type WorkspaceMeta } from "@/lib/api";
 import { useShellStore } from "@/store/shell-store";
 import { useTr } from "@/lib/i18n";
 
@@ -29,40 +29,13 @@ export default function WorkspaceListPanel() {
     setLoading(true);
     listWorkspaces()
       .then((res) => setWorkspaces(res.workspaces || []))
-      .catch((err) => {
-        // If auth error, redirect to login
-        // Match TW backend "認證" error string OR English "auth"/"401" — used
-        // to detect expired tokens and redirect to /login. Not displayed.
-        if (err?.message?.includes("認證") || err?.message?.includes("401") || err?.message?.toLowerCase?.().includes("auth")) {
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("civatas-auth");
-            window.location.href = "/login";
-          }
-        }
+      .catch(() => {
         setWorkspaces([]);
       })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    // Check auth token exists on mount
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("civatas-auth");
-      if (!stored) {
-        window.location.href = "/login";
-        return;
-      }
-      try {
-        const parsed = JSON.parse(stored);
-        if (!parsed?.state?.token) {
-          window.location.href = "/login";
-          return;
-        }
-      } catch {
-        window.location.href = "/login";
-        return;
-      }
-    }
     loadWorkspaces();
   }, []);
 
@@ -75,8 +48,8 @@ export default function WorkspaceListPanel() {
 
   const formatDate = (ts: number) => {
     const d = new Date(ts * 1000);
-    return d.toLocaleDateString("zh-TW", { month: "short", day: "numeric" })
-      + " " + d.toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+      + " " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
   };
 
   const getPurposeTag = (purpose?: string) => {

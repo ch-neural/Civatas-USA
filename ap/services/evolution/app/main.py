@@ -75,6 +75,7 @@ class StartEvolutionRequest(BaseModel):
     concurrency: int = 0  # 0 = auto (enabled_vendors × 2)
     enabled_vendors: list[str] | None = None
     candidate_names: list[str] | None = None
+    scoring_params: dict | None = None  # tunable evolution parameters
 
 
 class MemorySearchRequest(BaseModel):
@@ -974,7 +975,7 @@ def preview_feed(req: PreviewFeedRequest):
 async def start_evolve(req: StartEvolutionRequest):
     from .evolver import start_evolution
     concurrency = req.concurrency if req.concurrency > 0 else (len(req.enabled_vendors) if req.enabled_vendors else 5)
-    result = await start_evolution(req.agents, req.days, concurrency=concurrency, candidate_names=req.candidate_names)
+    result = await start_evolution(req.agents, req.days, concurrency=concurrency, candidate_names=req.candidate_names, scoring_params=req.scoring_params)
     return result
 
 

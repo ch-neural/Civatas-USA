@@ -47,6 +47,35 @@ function fmtDate(d: string, en: boolean): string {
     : dt.toLocaleDateString("zh-TW", { month: "long", day: "numeric", year: "numeric" });
 }
 
+/* ── default advanced parameters ── */
+
+const DEFAULT_ADV_PARAMS = {
+  // Political leaning shifts
+  enable_dynamic_leaning: true,
+  shift_sat_threshold_low: 20,
+  shift_anx_threshold_high: 80,
+  shift_consecutive_days_req: 5,
+  // News impact & echo chamber
+  news_impact: 2.0,
+  serendipity_rate: 0.05,
+  articles_per_agent: 3,
+  forget_rate: 0.15,
+  // Emotional response
+  delta_cap_mult: 1.5,
+  satisfaction_decay: 0.02,
+  anxiety_decay: 0.05,
+  // Undecided & party effects
+  base_undecided: 0.10,
+  max_undecided: 0.45,
+  party_align_bonus: 15,
+  incumbency_bonus: 12,
+  // Life events & individuality
+  individuality_multiplier: 1.0,
+  neutral_ratio: 0.0,
+};
+
+type AdvParams = typeof DEFAULT_ADV_PARAMS;
+
 /* ── component ── */
 
 export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
@@ -75,7 +104,22 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
   const [startDate, setStartDate] = useState(defaultStart);
   const [endDate, setEndDate] = useState(defaultEnd);
 
-  // Update when template loads
+  // Advanced parameters
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [advParams, setAdvParams] = useState<AdvParams>({ ...DEFAULT_ADV_PARAMS });
+  // Track the template-provided calibration defaults so we can show "modified" dot
+  const [templateCalib, setTemplateCalib] = useState<AdvParams>({ ...DEFAULT_ADV_PARAMS });
+
+  // Merge template calibration_params into AdvParams shape
+  const calibToAdv = useCallback((cp: Record<string, unknown>): AdvParams => {
+    const merged = { ...DEFAULT_ADV_PARAMS };
+    for (const k of Object.keys(DEFAULT_ADV_PARAMS) as (keyof AdvParams)[]) {
+      if (cp[k] != null) (merged as any)[k] = cp[k];
+    }
+    return merged;
+  }, []);
+
+  // Update when template loads — sets evolution params, dates, AND calibration defaults
   useEffect(() => {
     if (!template) return;
     const ep = (template as any)?.election?.default_evolution_params;
@@ -87,21 +131,30 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     const ed = c ? electionDate(c) : "";
     setStartDate(ew?.start_date || (ed ? addDays(ed, -365) : addDays(new Date().toISOString().slice(0, 10), -180)));
     setEndDate(ew?.end_date || (ed ? addDays(ed, -1) : addDays(new Date().toISOString().slice(0, 10), -1)));
-  }, [template]);
 
-  // Restore saved settings (overrides template defaults if user has changed them)
+    // Load template calibration params as advanced parameter defaults
+    const cp = (template as any)?.election?.default_calibration_params;
+    if (cp) {
+      const tplAdv = calibToAdv(cp);
+      setTemplateCalib(tplAdv);
+      setAdvParams(tplAdv);
+    }
+  }, [template, calibToAdv]);
+
+  // Restore saved settings (user overrides on top of template defaults)
   useEffect(() => {
     getUiSettings(wsId, "evolution-quickstart").then((s: any) => {
       if (s?.simDays) setSimDays(s.simDays);
       if (s?.crawlInterval) setCrawlInterval(s.crawlInterval);
       if (s?.concurrency) setConcurrency(s.concurrency);
+      if (s?.advParams) setAdvParams((prev) => ({ ...prev, ...s.advParams }));
     }).catch(() => {});
   }, [wsId]);
 
   // Persist settings when changed
   useEffect(() => {
-    saveUiSettings(wsId, "evolution-quickstart", { simDays, crawlInterval, concurrency }).catch(() => {});
-  }, [wsId, simDays, crawlInterval, concurrency]);
+    saveUiSettings(wsId, "evolution-quickstart", { simDays, crawlInterval, concurrency, advParams }).catch(() => {});
+  }, [wsId, simDays, crawlInterval, concurrency, advParams]);
 
   // Personas
   const [personaCount, setPersonaCount] = useState(0);
@@ -178,11 +231,13 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
               setCurrentRound(cr || 0);
               setTotalRounds(tr || 0);
               setNewsCount(nc || 0);
-              // Will be picked up by the resume mechanism
               setPaused(false);
               setPhase("idle");
               setPhaseLabel(en ? `Round ${cr}/${tr} completed while away — click Start to continue` : `第 ${cr}/${tr} 輪已在背景完成 — 點擊開始繼續`);
               saveProgress({ ...saved, status: "paused", activeJobId: null });
+            } else {
+              // Job stopped / failed / error — clear stale progress
+              clearProgress();
             }
           } catch {
             // Job not found — reset
@@ -288,7 +343,7 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     setPhase("evolving");
     setPhaseLabel(en ? `Evolving agents (round ${roundNum}/${rounds})...` : `演化中（第 ${roundNum}/${rounds} 輪）...`);
     const candidateNames = candidates.map((c: any) => c.name).filter(Boolean);
-    const res = await startEvolution(personas, crawlInterval, concurrency, candidateNames);
+    const res = await startEvolution(personas, crawlInterval, concurrency, candidateNames, advParams as Record<string, unknown>);
     const jobId = res?.job_id || null;
     activeJobIdRef.current = jobId;
 
@@ -699,7 +754,7 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
                   }
                 }}
                 style={{
-                  padding: "10px 24px", borderRadius: 8, border: "none",
+                  padding: "10px 24px", borderRadius: 8,
                   background: "rgba(168,85,247,0.15)", color: "#a855f7",
                   fontSize: 14, fontWeight: 600, cursor: "pointer",
                   border: "1px solid rgba(168,85,247,0.3)",
@@ -740,21 +795,286 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
           </div>
         )}
 
-        {/* ── Advanced link ── */}
-        <div style={{ marginTop: 20, textAlign: "center" }}>
+        {/* ── Advanced Parameters ── */}
+        <div style={{ marginTop: 20 }}>
           <button
-            onClick={() => router.push(`/workspaces/${wsId}/evolution`)}
+            onClick={() => setShowAdvanced(!showAdvanced)}
             style={{
-              background: "none", border: "none", color: "rgba(255,255,255,0.3)",
-              fontSize: 12, cursor: "pointer", textDecoration: "underline",
+              width: "100%", background: "none", border: "none", color: "rgba(255,255,255,0.4)",
+              fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center",
+              justifyContent: "center", gap: 6, padding: "8px 0",
             }}
           >
-            {en ? "Advanced: News Sources, Echo Chamber, Memory Explorer →" : "進階：新聞來源、同溫層配方、記憶探索 →"}
+            <span style={{ transform: showAdvanced ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s", display: "inline-block" }}>▶</span>
+            {en ? "Advanced Parameters" : "進階參數"}
           </button>
+
+          {showAdvanced && (
+            <div style={{
+              background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 12, padding: 20, marginTop: 8,
+            }}>
+              {/* ── Section 1: Political Leaning Shifts ── */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                  <span style={{ fontSize: 14 }}>🔄</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                    {en ? "Political Leaning Shifts" : "政治傾向轉變"}
+                  </span>
+                </div>
+                <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: "0 0 12px", lineHeight: 1.5 }}>
+                  {en
+                    ? "Control when agents shift their political leaning based on satisfaction and anxiety thresholds."
+                    : "控制 Agent 在滿意度和焦慮度達到閾值時如何改變政治傾向。"}
+                </p>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+                    <input type="checkbox" checked={advParams.enable_dynamic_leaning}
+                      onChange={(e) => setAdvParams({ ...advParams, enable_dynamic_leaning: e.target.checked })}
+                      disabled={running}
+                    />
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>
+                      {en ? "Enable dynamic leaning shifts" : "啟用動態傾向轉變"}
+                    </span>
+                  </label>
+                </div>
+
+                {advParams.enable_dynamic_leaning && (
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                    <AdvSlider label={en ? "Low satisfaction threshold" : "低滿意度閾值"}
+                      hint={en ? "Below this → partisan shifts to neutral" : "低於此值 → 偏向轉中立"}
+                      value={advParams.shift_sat_threshold_low} min={5} max={45} step={1}
+                      onChange={(v) => setAdvParams({ ...advParams, shift_sat_threshold_low: v })}
+                      disabled={running} />
+                    <AdvSlider label={en ? "High anxiety threshold" : "高焦慮度閾值"}
+                      hint={en ? "Above this + low satisfaction → shift to neutral" : "高於此值 + 低滿意度 → 轉中立"}
+                      value={advParams.shift_anx_threshold_high} min={55} max={95} step={1}
+                      onChange={(v) => setAdvParams({ ...advParams, shift_anx_threshold_high: v })}
+                      disabled={running} />
+                    <AdvSlider label={en ? "Consecutive days required" : "連續天數需求"}
+                      hint={en ? "Days at threshold before shift triggers" : "達到閾值需連續幾天才會觸發"}
+                      value={advParams.shift_consecutive_days_req} min={1} max={14} step={1}
+                      onChange={(v) => setAdvParams({ ...advParams, shift_consecutive_days_req: v })}
+                      disabled={running} />
+                  </div>
+                )}
+
+                {advParams.enable_dynamic_leaning && (
+                  <div style={{
+                    marginTop: 12, padding: "10px 14px", borderRadius: 8,
+                    background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.12)",
+                    fontSize: 11, color: "rgba(255,255,255,0.45)", lineHeight: 1.6,
+                  }}>
+                    <div style={{ fontWeight: 600, color: "rgba(255,255,255,0.6)", marginBottom: 4 }}>
+                      {en ? "Shift rules:" : "轉變規則："}
+                    </div>
+                    {en ? (
+                      <>
+                        <div>• Conservative/Republican-leaning → Neutral: local satisfaction ≤ {advParams.shift_sat_threshold_low} for {advParams.shift_consecutive_days_req} days</div>
+                        <div>• Liberal/Democrat-leaning → Neutral: national satisfaction ≤ {advParams.shift_sat_threshold_low} for {advParams.shift_consecutive_days_req} days</div>
+                        <div>• Either partisan → Neutral: anxiety ≥ {advParams.shift_anx_threshold_high} + satisfaction &lt; 50</div>
+                        <div>• Neutral → Right-leaning: local satisfaction ≥ {100 - advParams.shift_sat_threshold_low} + national &lt; 50</div>
+                        <div>• Neutral → Left-leaning: national satisfaction ≥ {100 - advParams.shift_sat_threshold_low} + local &lt; 50</div>
+                      </>
+                    ) : (
+                      <>
+                        <div>• 保守/偏右 → 中立：在地滿意度 ≤ {advParams.shift_sat_threshold_low}，連續 {advParams.shift_consecutive_days_req} 天</div>
+                        <div>• 自由/偏左 → 中立：全國滿意度 ≤ {advParams.shift_sat_threshold_low}，連續 {advParams.shift_consecutive_days_req} 天</div>
+                        <div>• 任一偏向 → 中立：焦慮度 ≥ {advParams.shift_anx_threshold_high} + 滿意度 &lt; 50</div>
+                        <div>• 中立 → 偏右：在地滿意度 ≥ {100 - advParams.shift_sat_threshold_low} + 全國 &lt; 50</div>
+                        <div>• 中立 → 偏左：全國滿意度 ≥ {100 - advParams.shift_sat_threshold_low} + 在地 &lt; 50</div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "0 0 20px" }} />
+
+              {/* ── Section 2: News Impact & Echo Chamber ── */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                  <span style={{ fontSize: 14 }}>📰</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                    {en ? "News Impact & Echo Chamber" : "新聞影響 & 同溫層"}
+                  </span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <AdvSlider label={en ? "News impact multiplier" : "新聞影響倍率"}
+                    hint={en ? "How strongly news affects satisfaction/anxiety" : "新聞對滿意度/焦慮度的影響強度"}
+                    value={advParams.news_impact} min={0.5} max={5.0} step={0.1} decimals={1}
+                    onChange={(v) => setAdvParams({ ...advParams, news_impact: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Serendipity rate" : "跨同溫層機率"}
+                    hint={en ? "Chance of seeing opposing viewpoint articles" : "Agent 看到對立觀點文章的機率"}
+                    value={advParams.serendipity_rate} min={0} max={0.5} step={0.01} decimals={2} pct
+                    onChange={(v) => setAdvParams({ ...advParams, serendipity_rate: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Articles per agent per day" : "每位 Agent 每日文章數"}
+                    hint={en ? "Max news articles shown to each agent daily" : "每天給每位 Agent 看的最大新聞數"}
+                    value={advParams.articles_per_agent} min={1} max={10} step={1}
+                    onChange={(v) => setAdvParams({ ...advParams, articles_per_agent: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Memory forget rate" : "記憶遺忘率"}
+                    hint={en ? "How fast agents forget old news" : "Agent 遺忘舊新聞的速度"}
+                    value={advParams.forget_rate} min={0.01} max={0.5} step={0.01} decimals={2}
+                    onChange={(v) => setAdvParams({ ...advParams, forget_rate: v })}
+                    disabled={running} />
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "0 0 20px" }} />
+
+              {/* ── Section 3: Emotional Response ── */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                  <span style={{ fontSize: 14 }}>💭</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                    {en ? "Emotional Response" : "情緒反應"}
+                  </span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                  <AdvSlider label={en ? "Max daily change" : "每日最大變化"}
+                    hint={en ? "Multiplier on max daily satisfaction/anxiety change" : "每日滿意度/焦慮度最大變化倍率"}
+                    value={advParams.delta_cap_mult} min={0.5} max={3.0} step={0.1} decimals={1}
+                    onChange={(v) => setAdvParams({ ...advParams, delta_cap_mult: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Satisfaction decay" : "滿意度衰減率"}
+                    hint={en ? "Daily pull toward neutral (50)" : "每天向中性值 (50) 回歸的速度"}
+                    value={advParams.satisfaction_decay} min={0} max={0.1} step={0.005} decimals={3}
+                    onChange={(v) => setAdvParams({ ...advParams, satisfaction_decay: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Anxiety decay" : "焦慮度衰減率"}
+                    hint={en ? "Daily pull toward neutral (50)" : "每天向中性值 (50) 回歸的速度"}
+                    value={advParams.anxiety_decay} min={0} max={0.15} step={0.005} decimals={3}
+                    onChange={(v) => setAdvParams({ ...advParams, anxiety_decay: v })}
+                    disabled={running} />
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "0 0 20px" }} />
+
+              {/* ── Section 4: Undecided & Party Effects ── */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                  <span style={{ fontSize: 14 }}>🗳️</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                    {en ? "Undecided Voters & Party Effects" : "未決定選民 & 政黨效應"}
+                  </span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <AdvSlider label={en ? "Base undecided ratio" : "基礎未決定比例"}
+                    hint={en ? "Starting proportion of undecided agents" : "未決定 Agent 的起始比例"}
+                    value={advParams.base_undecided} min={0} max={0.3} step={0.01} decimals={2} pct
+                    onChange={(v) => setAdvParams({ ...advParams, base_undecided: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Max undecided ratio" : "最大未決定比例"}
+                    hint={en ? "Ceiling for undecided voters" : "未決定選民的上限"}
+                    value={advParams.max_undecided} min={0.1} max={0.7} step={0.01} decimals={2} pct
+                    onChange={(v) => setAdvParams({ ...advParams, max_undecided: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Party alignment bonus" : "政黨一致加分"}
+                    hint={en ? "Score bonus for same-party candidate" : "候選人與 Agent 同黨時的加分"}
+                    value={advParams.party_align_bonus} min={0} max={30} step={1}
+                    onChange={(v) => setAdvParams({ ...advParams, party_align_bonus: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Incumbency bonus" : "現任者加分"}
+                    hint={en ? "Score bonus for incumbent candidates" : "現任候選人的加分"}
+                    value={advParams.incumbency_bonus} min={0} max={25} step={1}
+                    onChange={(v) => setAdvParams({ ...advParams, incumbency_bonus: v })}
+                    disabled={running} />
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "0 0 20px" }} />
+
+              {/* ── Section 5: Life Events ── */}
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                  <span style={{ fontSize: 14 }}>🎲</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                    {en ? "Life Events" : "生活事件"}
+                  </span>
+                </div>
+                <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: "0 0 12px", lineHeight: 1.5 }}>
+                  {en
+                    ? "Random life events (layoffs, promotions, medical bills, etc.) that directly impact agent satisfaction and anxiety."
+                    : "隨機生活事件（裁員、升職、醫療帳單等）直接影響 Agent 的滿意度和焦慮度。"}
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <AdvSlider label={en ? "Individuality multiplier" : "個體差異倍率"}
+                    hint={en ? "Global scale for per-agent personality effects" : "Agent 個人特質效果的全域倍率"}
+                    value={advParams.individuality_multiplier} min={0} max={3.0} step={0.1} decimals={1}
+                    onChange={(v) => setAdvParams({ ...advParams, individuality_multiplier: v })}
+                    disabled={running} />
+                  <AdvSlider label={en ? "Neutral reassign ratio" : "中立重新分配比例"}
+                    hint={en ? "Fraction of partisans reassigned to neutral at start" : "開始時將部分黨派 Agent 重新分配為中立"}
+                    value={advParams.neutral_ratio} min={0} max={0.4} step={0.01} decimals={2} pct
+                    onChange={(v) => setAdvParams({ ...advParams, neutral_ratio: v })}
+                    disabled={running} />
+                </div>
+              </div>
+
+              {/* ── Reset to defaults ── */}
+              <div style={{ marginTop: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <button
+                    onClick={() => setAdvParams({ ...templateCalib })}
+                    disabled={running}
+                    style={{
+                      background: "none", border: "1px solid rgba(255,255,255,0.08)",
+                      color: "rgba(255,255,255,0.4)", fontSize: 11, padding: "4px 12px",
+                      borderRadius: 6, cursor: "pointer",
+                    }}
+                  >
+                    {en ? "Reset to template defaults" : "恢復模板預設值"}
+                  </button>
+                  {JSON.stringify(advParams) !== JSON.stringify(templateCalib) && (
+                    <span style={{ fontSize: 10, color: "#fbbf24" }}>
+                      {en ? "● Modified" : "● 已修改"}
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={() => router.push(`/workspaces/${wsId}/evolution`)}
+                  style={{
+                    background: "none", border: "none", color: "rgba(255,255,255,0.3)",
+                    fontSize: 11, cursor: "pointer", textDecoration: "underline",
+                  }}
+                >
+                  {en ? "News Sources & Memory Explorer →" : "新聞來源 & 記憶探索 →"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
+
+/* ── Slider sub-component ── */
+
+function AdvSlider({ label, hint, value, min, max, step, onChange, disabled, decimals = 0, pct = false }: {
+  label: string; hint: string; value: number; min: number; max: number; step: number;
+  onChange: (v: number) => void; disabled?: boolean; decimals?: number; pct?: boolean;
+}) {
+  const display = pct ? `${(value * 100).toFixed(0)}%` : value.toFixed(decimals);
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>{label}</span>
+        <span style={{ fontSize: 12, color: "#fff", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{display}</span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        disabled={disabled}
+        style={{ width: "100%", accentColor: "#e94560" }}
+      />
+      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", marginTop: 2 }}>{hint}</div>
     </div>
   );
 }

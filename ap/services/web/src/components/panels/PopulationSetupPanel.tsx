@@ -59,6 +59,11 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   // ── Survey Method ──
   const [surveyMethod, setSurveyMethod] = useState<"phone" | "mobile" | "online" | "street">("mobile");
 
+  // ── Generation ──
+  const [targetCount, setTargetCount] = useState(100);
+  const [ageMin, setAgeMin] = useState(18);
+  const [ageMax, setAgeMax] = useState(95);
+
   // Restore all settings from workspace
   useEffect(() => {
     getUiSettings(wsId, "population-setup").then((s: any) => {
@@ -73,11 +78,6 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   useEffect(() => {
     saveUiSettings(wsId, "population-setup", { surveyMethod, targetCount, ageMin, ageMax }).catch(() => {});
   }, [wsId, surveyMethod, targetCount, ageMin, ageMax]);
-
-  // ── Generation ──
-  const [targetCount, setTargetCount] = useState(100);
-  const [ageMin, setAgeMin] = useState(18);
-  const [ageMax, setAgeMax] = useState(95);
   const [personaStrategy, setPersonaStrategy] = useState("llm");
   const [generating, setGenerating] = useState(false);
   const [genPhase, setGenPhase] = useState("");

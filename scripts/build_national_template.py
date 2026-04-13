@@ -337,20 +337,22 @@ US_PARTY_DETECTION = {
     ],
 }
 
-# Default calibration params tuned for US presidential elections.
-# Slightly higher news_impact than TW default (US news cycle is more
-# nationalized + cable-news driven). Higher base_undecided reflects the
-# typical 8-12% undecided / "lean" share in US polling 4-6 weeks out.
-US_PRES_CALIB_DEFAULTS = {
-    "news_impact": 2.2,
-    "delta_cap_mult": 1.5,
-    "decay_rate_mult": 0.5,
-    "forget_rate": 0.15,
+# ── Per-context calibration params ──
+#
+# Each election context has tuned defaults reflecting its political dynamics.
+# The Quick Start "Advanced Parameters" panel reads these as initial values.
+#
+# Key differences:
+#   2024 — highly polarized, strong party loyalty, tight echo chambers,
+#          harder for agents to shift leaning, fewer undecided
+#   2028 — open race (no incumbent), more undecided, weaker party alignment,
+#          higher serendipity (voters exploring options)
+#   Generic — neutral baseline, moderate across all params
+#   State — local news hits harder, slightly tighter echo chambers
+
+_CALIB_COMMON = {
+    # Scoring engine internals (not exposed in Quick Start UI)
     "recognition_penalty": 0.10,
-    "base_undecided": 0.10,
-    "max_undecided": 0.45,
-    "party_align_bonus": 18,
-    "incumbency_bonus": 10,
     "party_divergence_mult": 0.5,
     "profile_match_mult": 3.0,
     "stature_cap": 12,
@@ -359,6 +361,117 @@ US_PRES_CALIB_DEFAULTS = {
     "charm_mult": 8.0,
     "cross_appeal_mult": 0.6,
 }
+
+US_CALIB_GENERIC = {
+    **_CALIB_COMMON,
+    # News impact & echo chamber
+    "news_impact": 2.0,
+    "serendipity_rate": 0.05,
+    "articles_per_agent": 3,
+    "forget_rate": 0.15,
+    # Emotional response
+    "delta_cap_mult": 1.5,
+    "decay_rate_mult": 0.5,
+    "satisfaction_decay": 0.02,
+    "anxiety_decay": 0.05,
+    # Undecided & party effects
+    "base_undecided": 0.12,
+    "max_undecided": 0.45,
+    "party_align_bonus": 15,
+    "incumbency_bonus": 10,
+    # Political leaning shifts
+    "enable_dynamic_leaning": True,
+    "shift_sat_threshold_low": 20,
+    "shift_anx_threshold_high": 80,
+    "shift_consecutive_days_req": 5,
+    # Individuality & neutral
+    "individuality_multiplier": 1.0,
+    "neutral_ratio": 0.0,
+}
+
+US_CALIB_2024 = {
+    **_CALIB_COMMON,
+    # 2024: highly polarized — news hits hard, echo chambers tight
+    "news_impact": 2.5,
+    "serendipity_rate": 0.03,        # strong echo chambers
+    "articles_per_agent": 4,          # high-engagement election
+    "forget_rate": 0.12,              # slower forgetting (memorable cycle)
+    # Emotional response — bigger swings, slower decay
+    "delta_cap_mult": 1.8,
+    "decay_rate_mult": 0.4,
+    "satisfaction_decay": 0.015,
+    "anxiety_decay": 0.04,
+    # Undecided — fewer undecided, strong party alignment
+    "base_undecided": 0.08,
+    "max_undecided": 0.35,
+    "party_align_bonus": 20,          # high party loyalty
+    "incumbency_bonus": 8,            # Biden withdrew → weak incumbency signal
+    # Political leaning shifts — harder to shift in polarized environment
+    "enable_dynamic_leaning": True,
+    "shift_sat_threshold_low": 15,    # need very low satisfaction to shift
+    "shift_anx_threshold_high": 85,   # need very high anxiety
+    "shift_consecutive_days_req": 7,  # takes longer to shift
+    # Individuality
+    "individuality_multiplier": 1.0,
+    "neutral_ratio": 0.0,
+}
+
+US_CALIB_2028 = {
+    **_CALIB_COMMON,
+    # 2028: open race — more exploration, weaker party allegiance
+    "news_impact": 1.8,               # less nationalized attention early
+    "serendipity_rate": 0.08,         # voters exploring candidates
+    "articles_per_agent": 3,
+    "forget_rate": 0.18,              # faster forgetting (less memorable)
+    # Emotional response — moderate
+    "delta_cap_mult": 1.4,
+    "decay_rate_mult": 0.5,
+    "satisfaction_decay": 0.025,
+    "anxiety_decay": 0.05,
+    # Undecided — many undecided, weaker party pull
+    "base_undecided": 0.20,           # open race = lots of undecided
+    "max_undecided": 0.55,
+    "party_align_bonus": 12,          # weaker party loyalty (primary dynamics)
+    "incumbency_bonus": 0,            # no incumbent running
+    # Political leaning shifts — easier to shift
+    "enable_dynamic_leaning": True,
+    "shift_sat_threshold_low": 25,    # easier to trigger
+    "shift_anx_threshold_high": 75,
+    "shift_consecutive_days_req": 4,
+    # Individuality
+    "individuality_multiplier": 1.1,  # more individual variation
+    "neutral_ratio": 0.05,            # small bump to neutral pool
+}
+
+US_CALIB_STATE = {
+    **_CALIB_COMMON,
+    # State-level: local news has outsized impact, tighter communities
+    "news_impact": 2.2,               # local news hits harder
+    "serendipity_rate": 0.04,         # tighter local echo chambers
+    "articles_per_agent": 3,
+    "forget_rate": 0.14,
+    # Emotional response
+    "delta_cap_mult": 1.6,
+    "decay_rate_mult": 0.5,
+    "satisfaction_decay": 0.02,
+    "anxiety_decay": 0.05,
+    # Undecided & party effects
+    "base_undecided": 0.10,
+    "max_undecided": 0.40,
+    "party_align_bonus": 18,
+    "incumbency_bonus": 8,
+    # Political leaning shifts
+    "enable_dynamic_leaning": True,
+    "shift_sat_threshold_low": 20,
+    "shift_anx_threshold_high": 80,
+    "shift_consecutive_days_req": 5,
+    # Individuality
+    "individuality_multiplier": 1.0,
+    "neutral_ratio": 0.0,
+}
+
+# Backward-compat alias used by build_state_template.py
+US_PRES_CALIB_DEFAULTS = US_CALIB_GENERIC
 
 US_DEFAULT_KOL = {"enabled": False, "ratio": 0.05, "reach": 0.40}
 
@@ -472,7 +585,7 @@ def build_election_generic() -> dict:
                 "healthcare costs affordability"
             ),
         },
-        "default_calibration_params": US_PRES_CALIB_DEFAULTS,
+        "default_calibration_params": US_CALIB_GENERIC,
         "default_kol": US_DEFAULT_KOL,
         "default_poll_groups": US_DEFAULT_POLL_GROUPS,
         "party_base_scores": US_PARTY_BASE_SCORES,
@@ -572,7 +685,7 @@ def build_election_2024() -> dict:
                 "January 6 Trump trials"
             ),
         },
-        "default_calibration_params": US_PRES_CALIB_DEFAULTS,
+        "default_calibration_params": US_CALIB_2024,
         "default_kol": US_DEFAULT_KOL,
         "default_poll_groups": US_DEFAULT_POLL_GROUPS,
         "party_base_scores": US_PARTY_BASE_SCORES,
@@ -724,7 +837,7 @@ def build_election_2028() -> dict:
                 "Social Security Medicare reform"
             ),
         },
-        "default_calibration_params": US_PRES_CALIB_DEFAULTS,
+        "default_calibration_params": US_CALIB_2028,
         "default_kol": US_DEFAULT_KOL,
         "default_poll_groups": US_DEFAULT_POLL_GROUPS,
         "party_base_scores": {"D": 50, "R": 50, "I": 20},

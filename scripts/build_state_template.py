@@ -33,7 +33,7 @@ from build_national_template import (  # noqa: E402
     sum_field,
     US_PARTY_PALETTE,
     US_PARTY_DETECTION,
-    US_PRES_CALIB_DEFAULTS,
+    US_CALIB_STATE,
     US_DEFAULT_KOL,
     US_DEFAULT_POLL_GROUPS,
     US_PARTY_BASE_SCORES,
@@ -356,7 +356,7 @@ def build_state_election(state_name: str, state_po: str, pvi_label: str) -> dict
                 "abortion rights post-Dobbs"
             ),
         },
-        "default_calibration_params": US_PRES_CALIB_DEFAULTS,
+        "default_calibration_params": US_CALIB_STATE,
         "default_kol": US_DEFAULT_KOL,
         "default_poll_groups": US_DEFAULT_POLL_GROUPS,
         "party_base_scores": US_PARTY_BASE_SCORES,

@@ -871,7 +871,7 @@ async def evolve_one_day(
                     _n = _pc.get("name", "")
                     if _n and _n not in _job_cand_names:
                         _job_cand_names.append(_n)
-    # Strip party suffix for matching: "徐欣瑩（國民黨）" → also match "徐欣瑩"
+    # Strip party suffix for matching: "Donald Trump (R)" → also match "Donald Trump"
     import re as _re_cand
     _cand_short_names: dict[str, str] = {}  # short_name → full_name
     for _cn in _job_cand_names:
@@ -932,15 +932,15 @@ async def evolve_one_day(
             
             def is_in_chamber(kol_ln, my_ln):
                 if kol_ln == my_ln: return True
-                if my_ln in ("中立", "Tossup") or kol_ln in ("中立", "Tossup"): return True
+                if my_ln == "Tossup" or kol_ln == "Tossup": return True
                 if any(x in kol_ln for x in ("Dem","left")) and any(x in my_ln for x in ("Dem","left")): return True
                 if any(x in kol_ln for x in ("Rep","right")) and any(x in my_ln for x in ("Rep","right")): return True
                 return False
 
             import random
             for tp in trending:
-                if isinstance(tp, dict) and is_in_chamber(tp.get("leaning", "中立"), my_leaning):
-                    # 加入隨機推播機率，模擬社群演算法的觸及率 (從 diet rules 讀取)
+                if isinstance(tp, dict) and is_in_chamber(tp.get("leaning", "Tossup"), my_leaning):
+                    # Random broadcast probability simulating social media algorithm reach
                     _kol_prob = _feed_rules.get("kol_probability", 0.4) if _feed_rules else 0.4
                     if random.random() < _kol_prob:
                         kol_preview = tp['text'][:25] + "..." if len(tp.get('text', '')) > 25 else tp.get('text', '')
@@ -1075,18 +1075,18 @@ async def evolve_one_day(
 
         # Build awareness text for LLM prompt
         _awareness_labels = {
-            (0.0, 0.15): "完全沒聽過",
-            (0.15, 0.30): "只聽過名字",
-            (0.30, 0.50): "略有印象",
-            (0.50, 0.70): "有一定認識",
-            (0.70, 0.85): "相當熟悉",
-            (0.85, 1.01): "非常了解",
+            (0.0, 0.15): "never heard of",
+            (0.15, 0.30): "name only",
+            (0.30, 0.50): "vaguely familiar",
+            (0.50, 0.70): "somewhat familiar",
+            (0.70, 0.85): "quite familiar",
+            (0.85, 1.01): "very well known",
         }
         def _aw_label(v: float) -> str:
             for (lo, hi), label in _awareness_labels.items():
                 if lo <= v < hi:
                     return label
-            return "略有印象"
+            return "vaguely familiar"
 
         candidate_awareness_text = ""
         if cand_awareness:
@@ -1178,12 +1178,12 @@ async def evolve_one_day(
         attitudes = state.get("political_attitudes")
         if not attitudes:
             # Initialize from coarse leaning
-            if current_leaning == "偏左派":
-                attitudes = {"economic_stance": 35, "social_values": 30, "cross_strait": 25, "issue_priority": "主權"}
-            elif current_leaning == "偏右派":
-                attitudes = {"economic_stance": 65, "social_values": 70, "cross_strait": 75, "issue_priority": "經濟"}
+            if current_leaning in ("Solid Dem", "Lean Dem"):
+                attitudes = {"economic_stance": 35, "social_values": 30, "national_identity": 35, "issue_priority": "social justice"}
+            elif current_leaning in ("Solid Rep", "Lean Rep"):
+                attitudes = {"economic_stance": 65, "social_values": 70, "national_identity": 65, "issue_priority": "economy"}
             else:
-                attitudes = {"economic_stance": 50, "social_values": 50, "cross_strait": 50, "issue_priority": "民生"}
+                attitudes = {"economic_stance": 50, "social_values": 50, "national_identity": 50, "issue_priority": "quality of life"}
 
         # Convert attitude scores to descriptive labels for the LLM prompt.
         def _att_label(val: int) -> str:
@@ -1487,32 +1487,37 @@ async def evolve_one_day(
         consecutive_extreme_days = state.get("consecutive_extreme_days", 0)
         leaning_shifted = False
 
+        # Map Cook PVI buckets to left/right/neutral groupings
+        _is_right = current_leaning in ("Lean Rep", "Solid Rep")
+        _is_left = current_leaning in ("Lean Dem", "Solid Dem")
+        _is_neutral = current_leaning == "Tossup"
+
         if shift_enabled:
             target_leaning = current_leaning
             shift_msg = ""
 
-            # Evaluate threshold conditions directionally
-            if current_leaning == "偏右派" and new_local_sat <= shift_sat_low:
-                target_leaning = "中立"
-                shift_msg = "對在地施政嚴重不滿，政治傾向轉為中立"
-            elif current_leaning == "偏右派" and new_anxiety >= shift_anx_high and new_local_sat < 50:
-                # High anxiety + below-average local satisfaction: disenchanted with ruling party
-                target_leaning = "中立"
-                shift_msg = "高焦慮且對在地施政不滿，政治傾向軟化為中立"
-            elif current_leaning == "偏左派" and new_national_sat <= shift_sat_low:
-                target_leaning = "中立"
-                shift_msg = "對中央施政嚴重不滿，政治傾向轉為中立"
-            elif current_leaning == "偏左派" and new_anxiety >= shift_anx_high and new_national_sat < 50:
-                # High anxiety + below-average national satisfaction: disenchanted with ruling party
-                target_leaning = "中立"
-                shift_msg = "高焦慮且對中央施政不滿，政治傾向軟化為中立"
-            elif current_leaning == "中立":
+            # Right-leaning → Tossup: disenchanted with local/state governance
+            if _is_right and new_local_sat <= shift_sat_low:
+                target_leaning = "Tossup"
+                shift_msg = f"Deeply dissatisfied with local governance, shifted from {current_leaning} to Tossup"
+            elif _is_right and new_anxiety >= shift_anx_high and new_local_sat < 50:
+                target_leaning = "Tossup"
+                shift_msg = f"High anxiety + local dissatisfaction, softened from {current_leaning} to Tossup"
+            # Left-leaning → Tossup: disenchanted with federal governance
+            elif _is_left and new_national_sat <= shift_sat_low:
+                target_leaning = "Tossup"
+                shift_msg = f"Deeply dissatisfied with federal governance, shifted from {current_leaning} to Tossup"
+            elif _is_left and new_anxiety >= shift_anx_high and new_national_sat < 50:
+                target_leaning = "Tossup"
+                shift_msg = f"High anxiety + federal dissatisfaction, softened from {current_leaning} to Tossup"
+            # Tossup → Lean Rep or Lean Dem
+            elif _is_neutral:
                 if new_local_sat >= shift_sat_high and new_national_sat < 50:
-                    target_leaning = "偏右派"
-                    shift_msg = "高度認同在地施政，政治傾向轉為偏右派"
+                    target_leaning = "Lean Rep"
+                    shift_msg = "Strong approval of local governance, shifted from Tossup to Lean Rep"
                 elif new_national_sat >= shift_sat_high and new_local_sat < 50:
-                    target_leaning = "偏左派"
-                    shift_msg = "高度認同中央施政，政治傾向轉為偏左派"
+                    target_leaning = "Lean Dem"
+                    shift_msg = "Strong approval of federal governance, shifted from Tossup to Lean Dem"
 
             if target_leaning != current_leaning:
                 # Threshold condition met; increment consecutive days
@@ -1536,7 +1541,7 @@ async def evolve_one_day(
                     prof["persona_delta"] = f"{old_delta} [{shift_msg}]".strip()
                 
                 # Create detailed UI shift log
-                causal_news = feed[-1].get("title", "未知新聞") if feed else "累積情緒"
+                causal_news = feed[-1].get("title", "unknown news") if feed else "cumulative sentiment"
                 shift_log = {
                     "day": day,
                     "from": old_leaning,
@@ -1550,12 +1555,12 @@ async def evolve_one_day(
                 agent_profiles[key] = prof
                 
                 if job is not None: _push_live(job, f"🔄 Agent #{aid} {shift_msg}")
-                diary_text = f"[傾向轉變: {shift_msg}]\n{diary_text}"
+                diary_text = f"[Leaning shift: {shift_msg}]\n{diary_text}"
 
         # NOTE: Attitude-derived leaning shift is DISABLED.
         # In modern Taiwan, cross_strait attitudes cluster at 30-60 even for partisan voters
         # (per NCCU 2025 stance data), causing att_score to collapse to ~50 for everyone.
-        # This made nearly all 偏右派 agents drift to 中立 within 2 days.
+        # This made nearly all partisan agents drift to neutral within 2 days.
         # Leaning shifts now rely solely on satisfaction/anxiety threshold-based logic above,
         # which correctly captures disenchantment with governance rather than attitude misalignment.
 
@@ -1670,7 +1675,7 @@ async def evolve_one_day(
                 
                 # Pre-populate all known leanings so the UI doesn't drop rows
                 leaning_map = job.get("agent_leaning_map", {})
-                all_leanings = set(leaning_map.values()) if leaning_map else {"中立", "偏左派", "偏右派"}
+                all_leanings = set(leaning_map.values()) if leaning_map else {"Solid Dem", "Lean Dem", "Tossup", "Lean Rep", "Solid Rep"}
                 for l in all_leanings:
                     total_for_leaning = sum(1 for v in leaning_map.values() if v == l) if leaning_map else 0
                     current_summary["by_leaning"][l] = {
@@ -1717,19 +1722,20 @@ async def evolve_one_day(
                         }
 
             # Helper for candidate score lookup
-            _major_keywords = ["國民黨", "民進黨", "民主進步黨", "中國國民黨"]
-            _minor_keywords = ["民眾黨", "台灣民眾黨", "臺灣民眾黨", "時代力量", "台灣基進"]
-            _indep_keywords = ["無黨", "無所屬", "無黨籍", "未經政黨推薦"]
+            _major_keywords = ["Democrat", "Republican", "DEM", "GOP", "D", "R"]
+            _minor_keywords = ["Libertarian", "Green", "Constitution"]
+            _indep_keywords = ["Independent", "No Party", "Unaffiliated", "I"]
 
             def _resolve_base(party_name: str) -> float:
                 if party_name in party_base: return float(party_base[party_name])
-                if any(k in party_name for k in _major_keywords): return 50.0
-                if any(k in party_name for k in _minor_keywords): return 30.0
-                if any(k in party_name for k in _indep_keywords): return 5.0
+                pn = party_name.upper()
+                if any(k.upper() in pn for k in _major_keywords): return 50.0
+                if any(k.upper() in pn for k in _minor_keywords): return 30.0
+                if any(k.upper() in pn for k in _indep_keywords): return 5.0
                 return 30.0
 
             g_cand_sums = {c: 0.0 for c in cand_names}
-            g_cand_sums["不表態"] = 0.0
+            g_cand_sums["Undecided"] = 0.0
             g_total_w = 0.0
             g_lean_cand_sums = {}
             g_dim_cand_district = {}
@@ -1763,7 +1769,7 @@ async def evolve_one_day(
                     ag_sat = ag_state.get("satisfaction", 50)
                     ag_anx = ag_state.get("anxiety", 50)
                 
-                ag_leaning = ag.get("political_leaning", "中立")
+                ag_leaning = ag.get("political_leaning", "Tossup")
 
                 # Accumulate Global Satisfaction / Anxiety
                 g_sat_sum += ag_sat
@@ -1793,84 +1799,74 @@ async def evolve_one_day(
                         _pm = _re.search(r'[（(](.+?)[）)]', cname)
                         cand_party = _pm.group(1) if _pm else ""
 
-                        # ── Party detection: use cand_party (from name) first, desc as fallback ──
-                        party_src = cand_party or desc
-                        is_kmt = any(k in party_src for k in ["國民黨", "中國國民黨"])
-                        is_dpp = any(k in party_src for k in ["民進黨", "民主進步黨"])
-                        is_tpp = any(k in party_src for k in ["民眾黨", "台灣民眾黨", "臺灣民眾黨"])
-                        is_npp = any(k in party_src for k in ["時代力量", "台灣基進"])
-                        is_independent = any(k in party_src for k in ["無黨", "無所屬", "無黨籍", "未經政黨推薦"])
-                        is_major = is_kmt or is_dpp
+                        # ── US Party detection ──
+                        party_src = (cand_party or desc).upper()
+                        is_dem = any(k in party_src for k in ["DEMOCRAT", "DEM", "D"])
+                        is_rep = any(k in party_src for k in ["REPUBLICAN", "REP", "R"])
+                        is_ind = any(k in party_src for k in ["INDEPENDENT", "IND", "I", "LIBERTARIAN", "GREEN"])
+                        is_major = is_dem or is_rep
 
-                        score = _resolve_base(cand_party) if cand_party else (_resolve_base(desc) if not is_independent else 5.0)
+                        # Use template party_detection patterns if available
+                        if job:
+                            _pd = job.get("_party_detection", {})
+                            if _pd:
+                                _cand_full = f"{cname} {cand_party} {desc}".lower()
+                                is_dem = any(p.lower() in _cand_full for p in _pd.get("D", []))
+                                is_rep = any(p.lower() in _cand_full for p in _pd.get("R", []))
+                                is_ind = any(p.lower() in _cand_full for p in _pd.get("I", []))
+                                is_major = is_dem or is_rep
 
-                        if is_kmt and ("統" in ag_leaning or "藍" in ag_leaning): score += party_align_bonus
-                        if is_dpp and ("本土" in ag_leaning or "綠" in ag_leaning): score += party_align_bonus
-                        if is_tpp and ("中間" in ag_leaning or "中立" in ag_leaning): score += party_align_bonus * 0.6
-                        if is_major and "中立" in ag_leaning: score += 3
+                        score = _resolve_base(cand_party) if cand_party else (_resolve_base(desc) if not is_ind else 5.0)
 
-                        # ── Trait detection (expanded for primary elections) ──
-                        is_reform = any(k in desc for k in ["改革", "清新", "學者", "博士", "青年", "革新", "新世代"])
-                        is_trad = any(k in desc for k in ["基層", "里長", "農漁會", "組織力", "深耕", "偏左派", "地方樁腳", "婦女會"])
+                        # ── Party-leaning alignment ──
+                        ag_is_dem = ag_leaning in ("Solid Dem", "Lean Dem")
+                        ag_is_rep = ag_leaning in ("Solid Rep", "Lean Rep")
+                        ag_is_tossup = ag_leaning == "Tossup"
 
-                        # ── Executive / Admin detection (expanded) ──
-                        is_exec = bool(_re.search(r'(現任|曾任)?[^，。,.\\n]{0,6}(市長|縣長|總統)', desc))
-                        is_local_admin = any(k in desc for k in ["副市長", "副縣長", "局長", "處長", "秘書長", "市政", "行政經驗", "執政團隊"])
-                        is_national_figure = any(k in desc for k in ["黨主席", "黨魁", "立法院", "副院長", "院長", "全國", "中央", "全國知名", "黨中央"])
-                        is_legislator = any(k in desc for k in ["立委", "立法委員", "民意代表", "議員", "國會"])
+                        if is_dem and ag_is_dem: score += party_align_bonus
+                        if is_rep and ag_is_rep: score += party_align_bonus
+                        if is_ind and ag_is_tossup: score += party_align_bonus * 0.6
+                        if is_major and ag_is_tossup: score += 3
+
+                        # ── Role detection ──
+                        desc_lower = desc.lower()
+                        is_incumbent = any(k in desc_lower for k in ["incumbent", "sitting president", "current president", "vice president"])
+                        is_governor = any(k in desc_lower for k in ["governor", "gov."])
+                        is_senator = any(k in desc_lower for k in ["senator", "sen."])
+                        is_house = any(k in desc_lower for k in ["representative", "rep.", "congress"])
 
                         # ── Dual Satisfaction Scoring ──
                         local_delta = (ag_local_sat - 50) * news_impact
                         national_delta = (ag_nat_sat - 50) * news_impact
                         anx_delta = (ag_anx - 50) * news_impact
 
-                        if is_exec:
-                            # Incumbent: strong base advantage, moderate local sensitivity
-                            score += incumbency_bonus + local_delta * 0.8
-                            if anx_delta > 0:
-                                score += anx_delta * 0.5
-                        elif is_local_admin:
-                            # Local admin (e.g. 副市長): inherits some incumbent advantage
+                        if is_incumbent:
+                            score += incumbency_bonus + national_delta * 0.8 + local_delta * 0.3
+                            if anx_delta > 0: score += anx_delta * 0.5
+                        elif is_governor:
+                            score += local_delta * 0.8 + national_delta * 0.3
+                            score += 4  # executive experience bonus
+                            if anx_delta > 0: score += anx_delta * 0.3
+                        elif is_senator:
+                            score += national_delta * 0.7 + local_delta * 0.4
+                            score += 3  # national visibility
+                        elif is_dem:
+                            score += national_delta * 1.0 + local_delta * 0.4
+                            score += anx_delta * 0.4
+                        elif is_rep:
+                            score -= national_delta * 0.8
                             score += local_delta * 0.6
-                            score += 3  # administrative competence bonus
-                            if anx_delta > 0:
-                                score += anx_delta * 0.3
-                        elif is_national_figure:
-                            # National figure (e.g. 黨主席/立法院副院長): national dynamics matter more
-                            score += national_delta * 0.8
-                            score += local_delta * 0.3
-                            score += 4  # visibility/brand bonus
-                            if anx_delta > 0:
-                                score += anx_delta * 0.4
-                        elif is_dpp:
-                            score += national_delta * 1.2
-                            score += local_delta * 0.3
-                            score += anx_delta * 0.5
-                        elif is_kmt and not is_exec:
-                            score -= local_delta * 0.8
-                            score -= national_delta * 1.0
                             score -= anx_delta * 0.3
-                        elif is_reform:
-                            score += anx_delta * 0.8 - local_delta * 0.5 - national_delta * 0.5
-                        elif is_major:
-                            score += local_delta * 0.5
                         else:
                             score += (local_delta + national_delta) * 0.15
 
-                        if is_trad: score -= anx_delta * 0.5
-                        if is_legislator and not is_national_figure:
-                            score += national_delta * 0.4
+                        # ── Leaning-role affinity ──
+                        if is_governor and ag_is_rep: score += 3  # GOP values state-level exec
+                        if is_senator and ag_is_dem: score += 2  # Dems value federal legislation
+                        if is_ind and ag_is_tossup: score += 4  # independents attract swing voters
 
-                        # ── Trait-leaning affinity bonuses ──
-                        if is_reform and ("中間" in ag_leaning or "中立" in ag_leaning): score += 4
-                        if is_trad and "統" in ag_leaning: score += 4
-                        if is_exec and is_kmt and ("統" in ag_leaning or "藍" in ag_leaning): score += 5
-                        if is_exec and is_dpp and ("本土" in ag_leaning or "綠" in ag_leaning): score += 5
-                        if is_local_admin and ("統" in ag_leaning or "藍" in ag_leaning): score += 3
-                        if is_local_admin and is_trad: score += 2
-                        if is_national_figure and ("中間" in ag_leaning or "中立" in ag_leaning): score += 4
-                        if is_national_figure and is_reform: score += 2
-                        dim_str = f"{ag.get('district', '')}_{ag.get('gender', '')}_{ag.get('llm_vendor', '')}_{cname}"
+                        # Per-agent deterministic noise (stable across days for same agent-candidate pair)
+                        dim_str = f"{ag.get('county', ag.get('district', ''))}_{ag.get('gender', '')}_{ag.get('llm_vendor', '')}_{cname}"
                         score += (hash(dim_str) % 40) / 10.0 - 2.0
 
                         # Recognition penalty: independents without party or exec backing
@@ -1915,7 +1911,7 @@ async def evolve_one_day(
                     
                     for cn in cand_names:
                         g_cand_sums[cn] += (cand_scores_local[cn] / total_score) * (1 - undecided_prob)
-                    g_cand_sums["不表態"] += undecided_prob
+                    g_cand_sums["Undecided"] += undecided_prob
                     g_total_w += 1.0
 
                     if ag_leaning not in g_lean_cand_sums:
@@ -1930,9 +1926,9 @@ async def evolve_one_day(
                     ag_actual_vendor = (
                         day_entry_vendor_map.get(ag_id_str)
                         or state_updates.get(ag_id_str, {}).get("actual_vendor")
-                        or ag.get("llm_vendor", "未知")
+                        or ag.get("llm_vendor", "unknown")
                     )
-                    for dim_name, dim_val in [("district", ag.get("district", "未知")), ("gender", ag.get("gender", "未知")), ("llm_vendor", ag_actual_vendor)]:
+                    for dim_name, dim_val in [("district", ag.get("district", ag.get("county", "unknown"))), ("gender", ag.get("gender", "unknown")), ("llm_vendor", ag_actual_vendor)]:
                         acc_dict = g_dim_cand_district if dim_name == "district" else (g_dim_cand_gender if dim_name == "gender" else g_dim_cand_vendor)
                         if dim_val not in acc_dict:
                             acc_dict[dim_val] = {c: 0.0 for c in cand_names}
@@ -2018,9 +2014,9 @@ async def evolve_one_day(
             weights = []
             for a in agents:
                 ln = a.get("political_leaning", "")
-                if ln in ["偏左派", "偏右派"]:
+                if ln in ("Solid Dem", "Solid Rep"):
                     weights.append(3.0)
-                elif ln in ["偏左派", "偏右派"]:
+                elif ln in ("Lean Dem", "Lean Rep"):
                     weights.append(1.5)
                 else:
                     weights.append(1.0)
@@ -2043,14 +2039,14 @@ async def evolve_one_day(
         # Collect today's KOL diaries
         kol_ids = set(job.get("kol_agents", []))
         kol_diaries = []
-        agent_leaning_map = {a.get("person_id"): a.get("political_leaning", "中立") for a in agents}
+        agent_leaning_map = {a.get("person_id"): a.get("political_leaning", "Tossup") for a in agents}
         
         for e in day_entries:
             aid = e.get("agent_id")
             if aid in kol_ids and e.get("diary_text"):
                 kol_diaries.append({
                     "text": e.get("diary_text"),
-                    "leaning": agent_leaning_map.get(aid, "中立")
+                    "leaning": agent_leaning_map.get(aid, "Tossup")
                 })
 
         if kol_diaries:
@@ -2102,6 +2098,7 @@ async def start_evolution(
     news_pool: list[dict] | None = None,
     concurrency: int = 5,
     candidate_names: list[str] | None = None,
+    scoring_params: dict | None = None,
 ) -> dict:
     """Start a multi-day evolution run as a background job."""
     from .news_pool import get_pool
@@ -2122,6 +2119,7 @@ async def start_evolution(
         "daily_summary": [],
         "live_messages": [],
         "candidate_names": candidate_names or [],
+        "scoring_params": scoring_params or {},
     }
     _jobs[job_id] = job
     _save_jobs()
@@ -2167,7 +2165,7 @@ async def _run_evolution_bg(
             agent_leaning_map = {}
             for a in agents:
                 aid = str(a.get("person_id", 0))
-                agent_leaning_map[aid] = a.get("political_leaning", "中立")
+                agent_leaning_map[aid] = a.get("political_leaning", "Tossup")
             job["agent_leaning_map"] = agent_leaning_map
 
             entries = await evolve_one_day(
