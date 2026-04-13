@@ -953,12 +953,28 @@ async def evolve_one_day(
                         if job is not None:
                             _push_live(job, f"📱 Agent #{aid} {agent_name} saw a shared post: \"{kol_preview}\"")
 
-        # ── Feature 2: Personal Life Event ──
-        # The legacy life-event catalog is hard-coded with TW-only Chinese
-        # descriptions/occupations and would leak CJK into agent diaries.
-        # Disabled until a US life-event catalog is built.
+        # ── Feature 2: Personal Life Event (US catalog) ──
         life_event = None
         life_event_text = ""
+        try:
+            from .us_life_events import US_EVENT_CATALOG
+            from .life_events import roll_life_event
+            # Monkey-patch the catalog for US events
+            import importlib
+            le_mod = importlib.import_module(".life_events", package="app")
+            _orig_catalog = getattr(le_mod, "EVENT_CATALOG", [])
+            le_mod.EVENT_CATALOG = US_EVENT_CATALOG
+            life_event = roll_life_event(agent, state, current_day)
+            le_mod.EVENT_CATALOG = _orig_catalog  # restore
+            if life_event:
+                life_event_text = (
+                    f"[Personal life event today]\n"
+                    f"{life_event.get('prompt_hint', life_event.get('description', ''))}\n"
+                    f"This event should strongly color your diary and mood today.\n"
+                )
+                _push_live(job, f"🎲 Agent #{aid} life event: {life_event['name']}")
+        except Exception as e:
+            logger.debug(f"Life event roll failed for agent {aid}: {e}")
 
         # ── Feature 1: Social Interaction — match nearby social posts ──
         import random as _rng
@@ -1075,7 +1091,7 @@ async def evolve_one_day(
         candidate_awareness_text = ""
         if cand_awareness:
             lines = [f"- {cn}：{_aw_label(v)}（{int(v*100)}%）" for cn, v in sorted(cand_awareness.items(), key=lambda x: -x[1])]
-            candidate_awareness_text = "【你對以下候選人的認識程度】\n" + "\n".join(lines) + "\n認識程度會影響你對他們的關注和評價。對不熟悉的人，你的印象更模糊、更容易受單一新聞影響。\n"
+            candidate_awareness_text = "[Your awareness of the following candidates]\n" + "\n".join(lines) + "\nYour familiarity level affects how you evaluate them. For less-known candidates, your impression is vaguer and more susceptible to a single news story.\n"
 
         # Inject tracked person OBJECTIVE FACTS
         # Use pre-computed objective facts from job (generated once at evolution start)
@@ -1096,7 +1112,7 @@ async def evolve_one_day(
                 elif _cn:
                     _cand_facts_lines.append(f"- {_cn}（{_cp}）" if _cp else f"- {_cn}")
             if _cand_facts_lines:
-                candidate_awareness_text = "【調查追蹤對象】\n" + "\n".join(_cand_facts_lines) + "\n如果今天的新聞提到這些人，你會特別留意。\n"
+                candidate_awareness_text = "[Candidates you are tracking]\n" + "\n".join(_cand_facts_lines) + "\nIf today's news mentions any of these people, pay special attention.\n"
         elif cand_awareness and job:
             # Add objective facts to existing awareness text
             _obj_facts = job.get("_candidate_objective_facts", {})
@@ -1137,7 +1153,7 @@ async def evolve_one_day(
 
         # Push live message: processing this agent
         if job is not None:
-            news_preview = feed[0]["title"][:30] + "..." if feed else "無新聞"
+            news_preview = feed[0]["title"][:30] + "..." if feed else "(no news)"
             extra = ""
             if life_event:
                 extra += f" ⚡{life_event['name']}"
@@ -1239,7 +1255,9 @@ async def evolve_one_day(
             _ag_age = agent.get("age", agent.get("context", {}).get("age", ""))
             _ag_gender = agent.get("gender", agent.get("context", {}).get("gender", ""))
             _ag_occupation = agent.get("occupation", agent.get("context", {}).get("occupation", ""))
-            _ag_income = agent.get("income_band", agent.get("context", {}).get("income_band", "")) or "not provided"
+            _ag_race = agent.get("race", agent.get("context", {}).get("race", "")) or "not provided"
+            _ag_hispanic = agent.get("hispanic_or_latino", agent.get("context", {}).get("hispanic_or_latino", "")) or "not provided"
+            _ag_income = agent.get("household_income", agent.get("income_band", agent.get("context", {}).get("income_band", ""))) or "not provided"
             _ag_marital = agent.get("marital_status", agent.get("context", {}).get("marital_status", "")) or "not provided"
             _ag_household = agent.get("household_type", agent.get("context", {}).get("household_type", "")) or "not provided"
             _ag_media = agent.get("media_habit", agent.get("context", {}).get("media_habit", "")) or "not provided"
@@ -1279,7 +1297,9 @@ async def evolve_one_day(
             prompt = EVOLUTION_PROMPT_TEMPLATE.format(
                 persona_desc=persona_desc,
                 political_leaning=political_leaning,
-                income_band=_ag_income,
+                race=_ag_race,
+                hispanic_or_latino=_ag_hispanic,
+                household_income=_ag_income,
                 marital_status=_ag_marital,
                 household_type=_ag_household,
                 media_habit=_ag_media,
@@ -1308,6 +1328,7 @@ async def evolve_one_day(
                 sociability=personality.get("sociability", "moderately social"),
                 openness=personality.get("openness", "moderately open"),
                 age_hint=str(_ag_age)[:5] if _ag_age else "?",
+                race_hint=str(_ag_race)[:25] if _ag_race and _ag_race != "not provided" else "",
                 gender_hint=str(_ag_gender)[:2] if _ag_gender else "?",
                 occupation_hint=str(_ag_occupation)[:10] if _ag_occupation else "?",
             )
@@ -2080,6 +2101,7 @@ async def start_evolution(
     days: int = 30,
     news_pool: list[dict] | None = None,
     concurrency: int = 5,
+    candidate_names: list[str] | None = None,
 ) -> dict:
     """Start a multi-day evolution run as a background job."""
     from .news_pool import get_pool
@@ -2099,6 +2121,7 @@ async def start_evolution(
         "error": None,
         "daily_summary": [],
         "live_messages": [],
+        "candidate_names": candidate_names or [],
     }
     _jobs[job_id] = job
     _save_jobs()

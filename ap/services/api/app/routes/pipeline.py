@@ -307,6 +307,13 @@ async def evo_inject(payload: dict):
     return resp.json()
 
 
+@router.post("/evolution/news-pool/clear")
+async def evo_clear_pool():
+    async with httpx.AsyncClient(timeout=600.0) as client:
+        resp = await client.post(f"{EVOLUTION_URL}/news-pool/clear")
+    return resp.json()
+
+
 @router.get("/evolution/dashboard")
 async def evo_dashboard(job_id: str = ""):
     async with httpx.AsyncClient(timeout=600.0) as client:
@@ -389,6 +396,25 @@ async def evo_stop(job_id: str):
     async with httpx.AsyncClient(timeout=600.0) as client:
         resp = await client.post(f"{EVOLUTION_URL}/evolve/stop/{job_id}")
     return resp.json()
+
+
+@router.get("/evolution/export-playback")
+async def evo_export_playback():
+    """Collect all evolution data for standalone HTML export."""
+    async with httpx.AsyncClient(timeout=600.0) as client:
+        dashboard_resp = await client.get(f"{EVOLUTION_URL}/evolution/dashboard")
+        history_resp = await client.get(f"{EVOLUTION_URL}/evolve/history")
+        jobs_resp = await client.get(f"{EVOLUTION_URL}/evolve/jobs")
+
+    dashboard = dashboard_resp.json() if dashboard_resp.status_code == 200 else {}
+    history = history_resp.json() if history_resp.status_code == 200 else []
+    jobs = jobs_resp.json() if jobs_resp.status_code == 200 else {}
+
+    return {
+        "dashboard": dashboard,
+        "history": history if isinstance(history, list) else history.get("history", []),
+        "jobs": jobs.get("jobs", []) if isinstance(jobs, dict) else jobs,
+    }
 
 
 @router.post("/evolution/evolve/reset")

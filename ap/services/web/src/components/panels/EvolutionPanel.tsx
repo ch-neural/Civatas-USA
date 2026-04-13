@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   getWorkspace,
   getEvolutionSources,
@@ -30,14 +31,15 @@ import { StepGate } from "@/components/shared/StepGate";
 import { GuideBanner } from "@/components/shared/GuideBanner";
 import { useWorkflowStatus } from "@/hooks/use-workflow-status";
 import { useShellStore } from "@/store/shell-store";
+import { useLocaleStore } from "@/store/locale-store";
 
 // ── Sub-tab definitions ────────────────────────────────────────────
 
 const SUB_TABS = [
-  { key: "pool", icon: "🌍", label: "中央新聞池" },
-  { key: "diet", icon: "🕸️", label: "同溫層配方" },
-  { key: "runner", icon: "⏳", label: "演化引擎" },
-  { key: "memory", icon: "🧠", label: "記憶探索" },
+  { key: "pool", icon: "🌍", label: "中央新聞池", labelEn: "Central News Pool" },
+  { key: "diet", icon: "🕸️", label: "同溫層配方", labelEn: "Echo Chamber" },
+  // runner tab removed — use Quick Start page instead
+  { key: "memory", icon: "🧠", label: "記憶探索", labelEn: "Memory Explorer" },
 ] as const;
 
 type SubTabKey = typeof SUB_TABS[number]["key"];
@@ -50,11 +52,13 @@ export default function EvolutionPanel({
   defaultTab?: SubTabKey;
 }) {
   const t = useTr();
+  const router = useRouter();
+  const en = useLocaleStore((s) => s.locale) === "en";
   const _wsId = useShellStore((s) => s.activeWorkspaceId);
   const workflowStatus = useWorkflowStatus(_wsId);
 
   const [workspace, setWorkspace] = useState<WorkspaceDetail | null>(null);
-  const [activeTab, setActiveTab] = useState<SubTabKey>(defaultTab ?? "pool");
+  const [activeTab, setActiveTab] = useState<SubTabKey>(defaultTab === "runner" ? "pool" : (defaultTab ?? "pool"));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -74,7 +78,7 @@ export default function EvolutionPanel({
 
   // ── Runner state ──
   const [personas, setPersonas] = useState<any[]>([]);
-  const [evolDays, setEvolDays] = useState(7);
+  const [evolDays, setEvolDays] = useState(30);
   const [evolConcurrency, setEvolConcurrency] = useState(5);
   const [evolving, setEvolving] = useState(false);
   const [evolJob, setEvolJob] = useState<any>(null);
@@ -92,16 +96,7 @@ export default function EvolutionPanel({
     getWorkspace(wsId).then(setWorkspace).catch(console.error);
   }, [wsId]);
 
-  // On mount: auto-switch to runner tab if evolution is still running
-  useEffect(() => {
-    getEvolutionLatest().then(r => {
-      if (r.job && (r.job.status === "running" || r.job.status === "pending")) {
-        setActiveTab("runner");
-        setEvolJob(r.job);
-        setEvolving(true);
-      }
-    }).catch(console.error);
-  }, []);
+  // Runner tab removed — no auto-redirect needed, users access News Sources freely
 
   // Fetch data when sub-tab changes
   useEffect(() => {
@@ -207,8 +202,8 @@ export default function EvolutionPanel({
 
   // ── Evolution handlers ──
   const handleStartEvolution = async () => {
-    if (!personas.length) { setError("請先在 Persona 生成 頁面產生 Persona"); return; }
-    if (poolCount === 0) { setError("⚠️ 新聞池目前是空的！請先到『🌍 中央新聞池』爬取新聞或手動注入突發事件，否則 Agent 不會有任何資訊可以反應。"); return; }
+    if (!personas.length) { setError(en ? "Please generate Personas first in the Persona step." : "請先在 Persona 生成 頁面產生 Persona"); return; }
+    if (poolCount === 0) { setError(en ? "⚠️ The news pool is empty! Go to '🌍 Central News Pool' to crawl news or manually inject events — agents need content to react to." : "⚠️ 新聞池目前是空的！請先到『🌍 中央新聞池』爬取新聞或手動注入突發事件，否則 Agent 不會有任何資訊可以反應。"); return; }
     setEvolving(true);
     setError("");
     try {
@@ -267,24 +262,58 @@ export default function EvolutionPanel({
     return (
       <StepGate
         requiredStep={1}
-        requiredStepName="人設生成"
+        requiredStepName={en ? "Persona Generation" : "人設生成"}
         requiredStepNameEn="Persona"
-        description="請先在第 1 步生成 Persona，才能進行演化。"
+        description={en ? "Generate Personas in Step 1 before running evolution." : "請先在第 1 步生成 Persona，才能進行演化。"}
         descriptionEn="Generate personas in Step 1 before running evolution."
         targetRoute={_wsId ? `/workspaces/${_wsId}/population-setup` : "/workspaces"}
       />
     );
   }
 
-  if (!workspace) return <div style={{ flex: 1, padding: 48 }}>載入中...</div>;
+  if (!workspace) return <div style={{ flex: 1, padding: 48 }}>{en ? "Loading..." : "載入中..."}</div>;
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "auto" }}>
+      {/* Workflow navigation banner */}
+      {workflowStatus.persona === "completed" && workflowStatus.evolution !== "completed" && (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 12,
+          padding: "12px clamp(16px, 2vw, 32px)",
+          background: "linear-gradient(90deg, rgba(34,197,94,0.08), rgba(59,130,246,0.08))",
+          borderBottom: "1px solid rgba(34,197,94,0.15)",
+        }}>
+          <span style={{ fontSize: 20 }}>✅</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#86efac" }}>
+              {en
+                ? `${workflowStatus.personaCount} Personas ready — next: Evolution`
+                : `${workflowStatus.personaCount} 位 Persona 已就緒 — 下一步：演化`}
+            </div>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>
+              {en
+                ? "Use Quick Start for automated evolution, or configure advanced settings here."
+                : "使用「快速演化」自動執行，或在此設定進階選項。"}
+            </div>
+          </div>
+          <button
+            onClick={() => router.push(`/workspaces/${wsId}/evolution-quickstart`)}
+            style={{
+              padding: "6px 16px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+              background: "rgba(59,130,246,0.2)", color: "#60a5fa",
+              border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer",
+              whiteSpace: "nowrap" as const,
+            }}
+          >
+            {en ? "Go to Quick Start →" : "前往快速演化 →"}
+          </button>
+        </div>
+      )}
       <GuideBanner
         guideKey="guide_evolution"
-        title="設定新聞來源"
+        title={en ? "Configure News Sources" : "設定新聞來源"}
         titleEn="Configure News Sources"
-        message="新增 RSS 來源或手動注入新聞。代理人會在演化過程中閱讀這些新聞並形成觀點。"
+        message={en ? "Add RSS feeds or manually inject news. Agents consume these during evolution to form opinions." : "新增 RSS 來源或手動注入新聞。代理人會在演化過程中閱讀這些新聞並形成觀點。"}
         messageEn="Add RSS feeds or manually inject news articles. Agents will consume these during evolution to form opinions."
       />
 
@@ -305,7 +334,7 @@ export default function EvolutionPanel({
                 border: "none", cursor: "pointer", transition: "all 0.2s",
               }}
             >
-              {tab.icon} {tab.label}
+              {tab.icon} {en ? tab.labelEn : tab.label}
             </button>
           ))}
         </div>
@@ -325,20 +354,25 @@ export default function EvolutionPanel({
                 🌍 {t("evolution.tab.pool")}
               </h2>
 
-              {/* Crawl button */}
-              <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
-                <button onClick={handleCrawl} disabled={crawling} style={{ ...btnStyle, opacity: crawling ? 0.5 : 1 }}>
-                  {crawling ? "🔄 爬取中..." : "🕷️ 立即爬取所有來源"}
-                </button>
-                <span style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-muted)", alignSelf: "center" }}>
-                  新聞池目前共 {pool.length} 篇文章
+              {/* News pool status + manual crawl */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "center" }}>
+                <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                  {en ? `${pool.length} articles in news pool` : `新聞池目前共 ${pool.length} 篇文章`}
                 </span>
+                <span style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
+                <button onClick={handleCrawl} disabled={crawling} style={{
+                  background: "none", border: "none", color: "rgba(255,255,255,0.35)",
+                  fontSize: 12, cursor: crawling ? "not-allowed" : "pointer", textDecoration: "underline",
+                  opacity: crawling ? 0.5 : 1,
+                }}>
+                  {crawling ? (en ? "Crawling..." : "爬取中...") : (en ? "Manual crawl" : "手動爬取")}
+                </button>
               </div>
 
               {/* Source list */}
               <div style={cardStyle}>
                 <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                  已設定的來源 ({sources.length})
+                  {en ? `Configured Sources (${sources.length})` : `已設定的來源 (${sources.length})`}
                 </h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {sources.map((s: any) => (
@@ -349,7 +383,7 @@ export default function EvolutionPanel({
                         <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "var(--text-muted)", marginLeft: 8 }}>{s.url}</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <label style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)" }}>每次抓取:</label>
+                        <label style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)" }}>{en ? "Per crawl:" : "每次抓取:"}</label>
                         <input
                           type="number"
                           min={1}
@@ -365,9 +399,9 @@ export default function EvolutionPanel({
                           }}
                           style={{ ...inputStyle, width: 50, textAlign: "center" as const, padding: "4px 6px", fontSize: 12 }}
                         />
-                        <span style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)" }}>篇</span>
+                        <span style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)" }}>{en ? "articles" : "篇"}</span>
                         {!s.is_default && (
-                          <button onClick={() => handleDeleteSource(s.source_id)} style={{ background: "none", border: "none", color: "#ff6b6b", cursor: "pointer", fontSize: 11 }}>✕ 移除</button>
+                          <button onClick={() => handleDeleteSource(s.source_id)} style={{ background: "none", border: "none", color: "#ff6b6b", cursor: "pointer", fontSize: 11 }}>{en ? "✕ Remove" : "✕ 移除"}</button>
                         )}
                       </div>
                     </div>
@@ -376,26 +410,26 @@ export default function EvolutionPanel({
 
                 {/* Add source */}
                 <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "center" }}>
-                  <input placeholder="名稱 (選填)" value={newSourceName} onChange={e => setNewSourceName(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+                  <input placeholder={en ? "Name (optional)" : "名稱 (選填)"} value={newSourceName} onChange={e => setNewSourceName(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
                   <input placeholder="URL *" value={newSourceUrl} onChange={e => setNewSourceUrl(e.target.value)} style={{ ...inputStyle, flex: 2 }} />
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                    <label style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)", whiteSpace: "nowrap" }}>每次:</label>
+                    <label style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)", whiteSpace: "nowrap" }}>{en ? "Per:" : "每次:"}</label>
                     <input type="number" min={1} max={50} value={newSourceMaxItems} onChange={e => setNewSourceMaxItems(Number(e.target.value))} style={{ ...inputStyle, width: 50, textAlign: "center" as const, padding: "4px 6px", fontSize: 12 }} />
-                    <span style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)" }}>篇</span>
+                    <span style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)" }}>{en ? "articles" : "篇"}</span>
                   </div>
-                  <button onClick={handleAddSource} style={{ ...btnStyle, whiteSpace: "nowrap" }}>+ 新增來源</button>
+                  <button onClick={handleAddSource} style={{ ...btnStyle, whiteSpace: "nowrap" }}>{en ? "+ Add Source" : "+ 新增來源"}</button>
                 </div>
               </div>
 
               {/* Manual inject */}
               <div style={cardStyle}>
                 <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                  🎮 上帝模式 — 手動注入突發事件
+                  {en ? "🎮 God Mode — Manually Inject Breaking Events" : "🎮 上帝模式 — 手動注入突發事件"}
                 </h3>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <input placeholder="事件標題 *" value={injectTitle} onChange={e => setInjectTitle(e.target.value)} style={{ ...inputStyle, flex: 2 }} />
-                  <input placeholder="摘要 (選填)" value={injectSummary} onChange={e => setInjectSummary(e.target.value)} style={{ ...inputStyle, flex: 3 }} />
-                  <button onClick={handleInject} style={{ ...btnStyle, whiteSpace: "nowrap" }}>⚡ 注入</button>
+                  <input placeholder={en ? "Event title *" : "事件標題 *"} value={injectTitle} onChange={e => setInjectTitle(e.target.value)} style={{ ...inputStyle, flex: 2 }} />
+                  <input placeholder={en ? "Summary (optional)" : "摘要 (選填)"} value={injectSummary} onChange={e => setInjectSummary(e.target.value)} style={{ ...inputStyle, flex: 3 }} />
+                  <button onClick={handleInject} style={{ ...btnStyle, whiteSpace: "nowrap" }}>{en ? "⚡ Inject" : "⚡ 注入"}</button>
                 </div>
               </div>
 
@@ -403,7 +437,7 @@ export default function EvolutionPanel({
               {pool.length > 0 && (
                 <div style={cardStyle}>
                   <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                    📰 今日新聞池 ({pool.length} 篇)
+                    {en ? `📰 News Pool (${pool.length} articles)` : `📰 今日新聞池 (${pool.length} 篇)`}
                   </h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 400, overflow: "auto" }}>
                     {pool.map((a: any, i: number) => (
@@ -427,20 +461,21 @@ export default function EvolutionPanel({
               </h2>
               {dietRules && (() => {
                 const sourceLeanings: Record<string, string> = dietRules.source_leanings || {
-                  "自由時報": "偏左派", "三立新聞": "偏左派", "民視新聞": "偏左派",
-                  "PTT八卦版": "偏左派", "PTT政黑版": "偏左派", "新頭殼": "偏左派",
-                  "Yahoo新聞": "中立", "Dcard時事": "中立", "ETtoday": "中立", "PTT科技版": "中立",
-                  "TVBS新聞": "偏右派", "聯合新聞網": "偏右派",
-                  "中時電子報": "偏右派",
+                  "Reuters": "Tossup", "Associated Press": "Tossup", "The Hill": "Tossup",
+                  "The New York Times": "Lean Dem", "CNN": "Lean Dem", "NPR": "Lean Dem", "The Washington Post": "Lean Dem",
+                  "Fox News": "Lean Rep", "The Wall Street Journal": "Lean Rep", "New York Post": "Lean Rep",
+                  "MSNBC": "Solid Dem", "Breitbart": "Solid Rep",
                 };
                 const leaningColor: Record<string, string> = {
-                  "偏左派": "#22c55e", "中立": "#9ca3af", "偏右派": "#3b82f6",
+                  "Solid Dem": "#2563eb", "Lean Dem": "#60a5fa", "Tossup": "#a855f7",
+                  "Lean Rep": "#f87171", "Solid Rep": "#dc2626",
                 };
                 const leaningEmoji: Record<string, string> = {
-                  "偏左派": "🟢", "中立": "⚪", "偏右派": "🔵",
+                  "Solid Dem": "🔵", "Lean Dem": "🟦", "Tossup": "🟣",
+                  "Lean Rep": "🟥", "Solid Rep": "🔴",
                 };
                 const leaningBadge = (src: string) => {
-                  const l = sourceLeanings[src] || "中立";
+                  const l = sourceLeanings[src] || "Tossup";
                   return (
                     <span style={{
                       display: "inline-flex", alignItems: "center", gap: 3,
@@ -456,7 +491,7 @@ export default function EvolutionPanel({
                 };
 
                 // Group sources by leaning for the spectrum table
-                const spectrum = ["偏左派", "中立", "偏右派"];
+                const spectrum = ["Solid Dem", "Lean Dem", "Tossup", "Lean Rep", "Solid Rep"];
                 const grouped: Record<string, string[]> = {};
                 spectrum.forEach(l => grouped[l] = []);
                 Object.entries(sourceLeanings).forEach(([src, l]) => {
@@ -468,7 +503,7 @@ export default function EvolutionPanel({
                     {/* ── Media → Source mapping with leaning badges ── */}
                     <div style={cardStyle}>
                       <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                        📺 媒體習慣 → 新聞來源對應
+                        {en ? "📺 Media Habit → News Source Mapping" : "📺 媒體習慣 → 新聞來源對應"}
                       </h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                         {Object.entries(dietRules.diet_map || {}).map(([habit, tags]: [string, any]) => (
@@ -488,10 +523,10 @@ export default function EvolutionPanel({
                     {/* ── Source Political Spectrum Table ── */}
                     <div style={cardStyle}>
                       <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                        🏛️ 新聞來源政治光譜
+                        {en ? "🏛️ News Source Political Spectrum" : "🏛️ 新聞來源政治光譜"}
                       </h3>
                       <p style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-muted)", marginBottom: 14, lineHeight: 1.5 }}>
-                        Agent 的政治傾向（偏綠/偏藍）會影響他們更常看到哪些來源的新聞。相近立場的來源會獲得更高的推播優先權。
+                        {en ? "An agent's political leaning (Dem/Rep) influences which news sources they see more often. Sources with a similar lean get higher feed priority." : "Agent 的政治傾向會影響他們更常看到哪些來源的新聞。相近立場的來源會獲得更高的推播優先權。"}
                       </p>
                       {/* Spectrum bar */}
                       <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", marginBottom: 16, height: 6 }}>
@@ -523,10 +558,10 @@ export default function EvolutionPanel({
                     <div style={cardStyle}>
                       <div style={{ display: "flex", gap: 24, marginBottom: 16 }}>
                         <div style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-secondary)" }}>
-                          破圈機率 (Serendipity): <strong>{(dietRules.serendipity_rate * 100).toFixed(0)}%</strong>
+                          {en ? "Serendipity rate" : "破圈機率"}: <strong>{(dietRules.serendipity_rate * 100).toFixed(0)}%</strong>
                         </div>
                         <div style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-secondary)" }}>
-                          每人每日推播: <strong>{dietRules.articles_per_agent} 篇</strong>
+                          {en ? "Articles per agent/day" : "每人每日推播"}: <strong>{dietRules.articles_per_agent}</strong>
                         </div>
                       </div>
 
@@ -534,14 +569,14 @@ export default function EvolutionPanel({
                       <div style={{ padding: "16px 20px", backgroundColor: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                           <span style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)" }}>
-                            📺 媒體立場影響力
+                            {en ? "📺 Media Bias Influence" : "📺 媒體立場影響力"}
                           </span>
                           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
                             <span style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "#60a5fa" }}>
-                              管道匹配 {((1.0 - (dietRules.leaning_weight || 0)) * 100).toFixed(0)}%
+                              {en ? "Channel match" : "管道匹配"} {((1.0 - (dietRules.leaning_weight || 0)) * 100).toFixed(0)}%
                             </span>
                             <span style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "#fb923c" }}>
-                              政治傾向 {((dietRules.leaning_weight || 0) * 100).toFixed(0)}%
+                              {en ? "Political lean" : "政治傾向"} {((dietRules.leaning_weight || 0) * 100).toFixed(0)}%
                             </span>
                           </div>
                         </div>
@@ -557,11 +592,13 @@ export default function EvolutionPanel({
                           style={{ width: "100%", accentColor: "#fb923c", cursor: "pointer" }}
                         />
                         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-                          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "#94a3b8" }}>關（不考慮媒體立場）</span>
-                          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "#94a3b8" }}>強（藍綠立場影響大）</span>
+                          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "#94a3b8" }}>{en ? "Off (ignore media bias)" : "關（不考慮媒體立場）"}</span>
+                          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "#94a3b8" }}>{en ? "Strong (bias matters)" : "強（立場影響大）"}</span>
                         </div>
                         <p style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-muted)", marginTop: 8, lineHeight: 1.5 }}>
-                          偏藍/偏綠的 Agent 會優先看到立場相近的新聞。例如：政治傾向為「偏綠」的 Agent 會更常看到自由時報、三立的內容。
+                          {en
+                            ? "Agents with a Dem/Rep lean will see more news from sources with a similar bias. E.g. a 'Lean Dem' agent sees more CNN, NPR content."
+                            : "偏左/偏右的 Agent 會優先看到立場相近的新聞。例如：傾向民主黨的 Agent 會更常看到 CNN、NPR 的內容。"}
                         </p>
                       </div>
                     </div>
@@ -583,15 +620,15 @@ export default function EvolutionPanel({
                 <div style={{ padding: "12px 16px", backgroundColor: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.2)", borderRadius: 8, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 18 }}>⚠️</span>
                   <span style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "#fbbf24" }}>
-                    新聞池目前是空的！請先到「🌍 中央新聞池」爬取新聞或手動注入突發事件，Agent 才有內容可以反應。
+                    {en ? "News pool is empty! Go to '🌍 Central News Pool' to crawl news or inject events — agents need content to react to." : "新聞池目前是空的！請先到「🌍 中央新聞池」爬取新聞或手動注入突發事件，Agent 才有內容可以反應。"}
                   </span>
-                  <button onClick={() => setActiveTab("pool")} style={{ ...btnStyle, backgroundColor: "rgba(251,191,36,0.3)", fontSize: 12, padding: "4px 12px" }}>前往新聞池 →</button>
+                  <button onClick={() => setActiveTab("pool")} style={{ ...btnStyle, backgroundColor: "rgba(251,191,36,0.3)", fontSize: 12, padding: "4px 12px" }}>{en ? "Go to News Pool →" : "前往新聞池 →"}</button>
                 </div>
               )}
               {poolCount > 0 && (
                 <div style={{ padding: "10px 16px", backgroundColor: "rgba(74,222,128,0.06)", border: "1px solid rgba(74,222,128,0.15)", borderRadius: 8, marginBottom: 16 }}>
                   <span style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "#4ade80" }}>
-                    ✅ 新聞池已準備就緒，共 {poolCount} 篇文章可供推播
+                    {en ? `✅ News pool ready — ${poolCount} articles available` : `✅ 新聞池已準備就緒，共 ${poolCount} 篇文章可供推播`}
                   </span>
                 </div>
               )}
@@ -599,27 +636,27 @@ export default function EvolutionPanel({
               <div style={cardStyle}>
                 <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
                   <label style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-secondary)" }}>
-                    模擬天數:
+                    {en ? "Simulation days:" : "模擬天數:"}
                   </label>
                   <input type="number" min={1} max={90} value={evolDays} onChange={e => setEvolDays(Number(e.target.value))} style={{ ...inputStyle, width: 80 }} />
                   <label style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-secondary)" }}>
-                    並行數:
+                    {en ? "Concurrency:" : "並行數:"}
                   </label>
                   <select value={evolConcurrency} onChange={e => setEvolConcurrency(Number(e.target.value))} style={{ ...inputStyle, width: 70, padding: "6px 8px" }}>
                     {[1, 3, 5, 8, 10].map(n => <option key={n} value={n}>{n}</option>)}
                   </select>
                   <label style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-muted)" }}>
-                    可用 Persona: {personas.length} 位
+                    {en ? `Personas: ${personas.length}` : `可用 Persona: ${personas.length} 位`}
                   </label>
                   <label style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-muted)" }}>
-                    新聞池: {poolCount} 篇
+                    {en ? `News pool: ${poolCount}` : `新聞池: ${poolCount} 篇`}
                   </label>
                   <button
                     onClick={handleStartEvolution}
                     disabled={evolving || !personas.length || poolCount === 0}
                     style={{ ...btnStyle, opacity: (evolving || poolCount === 0) ? 0.5 : 1 }}
                   >
-                    {evolving ? "⏳ 演化中..." : "🚀 開始演化"}
+                    {evolving ? (en ? "⏳ Evolving..." : "⏳ 演化中...") : (en ? "🚀 Start Evolution" : "🚀 開始演化")}
                   </button>
                   {evolving && evolJob?.job_id && (
                     <button
@@ -631,12 +668,12 @@ export default function EvolutionPanel({
                       }}
                       style={{ ...btnStyle, backgroundColor: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)" }}
                     >
-                      ⏹️ 停止
+                      {en ? "⏹️ Stop" : "⏹️ 停止"}
                     </button>
                   )}
                   <button
                     onClick={async () => {
-                      if (!confirm("確定要重設？所有演化歷程（含圖表）將被清除。")) return;
+                      if (!confirm(en ? "Reset all evolution history (including charts)?" : "確定要重設？所有演化歷程（含圖表）將被清除。")) return;
                       try {
                         await resetEvolution();
                         setEvolJob(null);
@@ -647,7 +684,7 @@ export default function EvolutionPanel({
                     disabled={evolving}
                     style={{ ...btnStyle, backgroundColor: "rgba(255,107,107,0.1)", color: "#ff6b6b", border: "1px solid rgba(255,107,107,0.2)", opacity: evolving ? 0.4 : 1 }}
                   >
-                    🗑️ 重設
+                    {en ? "🗑️ Reset" : "🗑️ 重設"}
                   </button>
                 </div>
               </div>
@@ -656,12 +693,12 @@ export default function EvolutionPanel({
               {evolJob && (
                 <div style={cardStyle}>
                   <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                    演化進度
+                    {en ? "Evolution Progress" : "演化進度"}
                   </h3>
                   <div style={{ display: "flex", gap: 24, fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--text-muted)", marginBottom: 12 }}>
-                    <span>狀態: <strong style={{ color: evolJob.status === "completed" ? "#4ade80" : evolJob.status === "failed" ? "#ff6b6b" : "var(--accent-light)" }}>{evolJob.status}</strong></span>
-                    <span>進度: 第 {evolJob.current_day || 0} / {evolJob.total_days} 天</span>
-                    <span>Agent 數: {evolJob.agent_count}</span>
+                    <span>{en ? "Status" : "狀態"}: <strong style={{ color: evolJob.status === "completed" ? "#4ade80" : evolJob.status === "failed" ? "#ff6b6b" : "var(--accent-light)" }}>{evolJob.status}</strong></span>
+                    <span>{en ? `Progress: Day ${evolJob.current_day || 0} / ${evolJob.total_days}` : `進度: 第 ${evolJob.current_day || 0} / ${evolJob.total_days} 天`}</span>
+                    <span>{en ? "Agents" : "Agent 數"}: {evolJob.agent_count}</span>
                   </div>
 
                   {/* Progress bar */}
@@ -687,7 +724,7 @@ export default function EvolutionPanel({
                       border: "1px solid rgba(255,255,255,0.05)",
                     }}>
                       <div style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)", marginBottom: 6, letterSpacing: 1 }}>
-                        ⚡ 即時動態
+                        {en ? "⚡ Live Activity" : "⚡ 即時動態"}
                       </div>
                       {evolJob.live_messages.map((msg: any, i: number) => (
                         <div
@@ -722,7 +759,7 @@ export default function EvolutionPanel({
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 16 }}>
                         {/* Satisfaction gauge */}
                         <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 12, textAlign: "center" }}>
-                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>😊 滿意度</div>
+                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>{en ? "😊 Satisfaction" : "😊 滿意度"}</div>
                           <svg viewBox="0 0 100 60" style={{ width: 80, height: 48 }}>
                             <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" strokeLinecap="round" />
                             <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="#4ade80" strokeWidth="6" strokeLinecap="round"
@@ -736,7 +773,7 @@ export default function EvolutionPanel({
                         </div>
                         {/* Anxiety gauge */}
                         <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 12, textAlign: "center" }}>
-                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>😰 焦慮度</div>
+                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>{en ? "😰 Anxiety" : "😰 焦慮度"}</div>
                           <svg viewBox="0 0 100 60" style={{ width: 80, height: 48 }}>
                             <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" strokeLinecap="round" />
                             <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="#f87171" strokeWidth="6" strokeLinecap="round"
@@ -750,21 +787,21 @@ export default function EvolutionPanel({
                         </div>
                         {/* Agent active count */}
                         <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 12, textAlign: "center" }}>
-                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>🤖 反應 Agent</div>
+                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>{en ? "🤖 Responding" : "🤖 反應 Agent"}</div>
                           <div style={{ fontFamily: "var(--font-sans)", fontSize: 28, fontWeight: 700, color: "#60a5fa", lineHeight: 1, marginTop: 8 }}>{latest.entries_count}</div>
-                          <div style={{ fontSize: 11, color: "var(--text-faint)", fontFamily: "var(--font-sans)", marginTop: 4 }}>/ {evolJob.agent_count} 位</div>
+                          <div style={{ fontSize: 11, color: "var(--text-faint)", fontFamily: "var(--font-sans)", marginTop: 4 }}>/ {evolJob.agent_count}</div>
                         </div>
                         {/* Day counter */}
                         <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 12, textAlign: "center" }}>
-                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>📅 演化天數</div>
+                          <div style={{ fontFamily: "var(--font-cjk)", fontSize: 10, color: "var(--text-faint)", marginBottom: 4 }}>{en ? "📅 Days Evolved" : "📅 演化天數"}</div>
                           <div style={{ fontFamily: "var(--font-sans)", fontSize: 28, fontWeight: 700, color: "var(--accent-light)", lineHeight: 1, marginTop: 8 }}>{evolJob.current_day}</div>
-                          <div style={{ fontSize: 11, color: "var(--text-faint)", fontFamily: "var(--font-sans)", marginTop: 4 }}>/ {evolJob.total_days} 天</div>
+                          <div style={{ fontSize: 11, color: "var(--text-faint)", fontFamily: "var(--font-sans)", marginTop: 4 }}>/ {evolJob.total_days} {en ? "days" : "天"}</div>
                         </div>
                       </div>
 
                       {/* ── Main trend chart with gradient fills ── */}
                       <h4 style={{ fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                        📊 即時趨勢圖
+                        {en ? "📊 Live Trend" : "📊 即時趨勢圖"}
                       </h4>
                       <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 16, marginBottom: 16 }}>
                         <svg viewBox={`0 0 ${chartW} 140`} style={{ width: "100%", height: 180 }}>
@@ -829,9 +866,9 @@ export default function EvolutionPanel({
 
                           {/* Legend */}
                           <circle cx={20} cy={4} r={3} fill="#4ade80" />
-                          <text x={26} y={7} fill="#4ade80" style={{ fontSize: 8 }}>滿意度</text>
+                          <text x={26} y={7} fill="#4ade80" style={{ fontSize: 8 }}>{en ? "Satisfaction" : "滿意度"}</text>
                           <circle cx={70} cy={4} r={3} fill="#f87171" />
-                          <text x={76} y={7} fill="#f87171" style={{ fontSize: 8 }}>焦慮度</text>
+                          <text x={76} y={7} fill="#f87171" style={{ fontSize: 8 }}>{en ? "Anxiety" : "焦慮度"}</text>
                         </svg>
                       </div>
 
@@ -839,7 +876,7 @@ export default function EvolutionPanel({
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
                         <div>
                           <h4 style={{ fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                            📊 每日反應 Agent 數
+                            {en ? "📊 Daily Agent Responses" : "📊 每日反應 Agent 數"}
                           </h4>
                           <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 12 }}>
                             <svg viewBox={`0 0 ${Math.max(ds.length * 40, 120)} 80`} style={{ width: "100%", height: 100 }}>
@@ -862,7 +899,7 @@ export default function EvolutionPanel({
                         {/* ── Delta change chart ── */}
                         <div>
                           <h4 style={{ fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                            📉 每日變化量 (Δ)
+                            {en ? "📉 Daily Change (Δ)" : "📉 每日變化量 (Δ)"}
                           </h4>
                           <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 12 }}>
                             <svg viewBox={`0 0 ${Math.max(ds.length * 40, 120)} 80`} style={{ width: "100%", height: 100 }}>
@@ -898,7 +935,7 @@ export default function EvolutionPanel({
                   {evolHistory.length > 0 && (
                     <div style={{ marginTop: 20 }}>
                       <h4 style={{ fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                        📈 累計趨勢圖（含所有演化批次）
+                        {en ? "📈 Cumulative Trend (all batches)" : "📈 累計趨勢圖（含所有演化批次）"}
                       </h4>
                       <div style={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 16 }}>
                         <svg viewBox={`0 0 ${Math.max(evolHistory.length * 28 + 40, 200)} 130`} style={{ width: "100%", height: 180 }}>
@@ -915,7 +952,7 @@ export default function EvolutionPanel({
                                 stroke="#fb923c" strokeWidth="1" strokeDasharray="4,3" opacity={0.7}
                               />
                               <text x={20 + i * 26 + 3} y={125} fill="#fb923c" style={{ fontSize: 7 }}>
-                                📰{d.pool_article_count || ""}篇
+                                📰{d.pool_article_count || ""}{en ? " articles" : "篇"}
                               </text>
                             </g>
                           ))}
@@ -944,11 +981,11 @@ export default function EvolutionPanel({
 
                           {/* Legend */}
                           <circle cx={20} cy={4} r={3} fill="#4ade80" />
-                          <text x={26} y={7} fill="#4ade80" style={{ fontSize: 8 }}>滿意度</text>
+                          <text x={26} y={7} fill="#4ade80" style={{ fontSize: 8 }}>{en ? "Satisfaction" : "滿意度"}</text>
                           <circle cx={70} cy={4} r={3} fill="#f87171" />
-                          <text x={76} y={7} fill="#f87171" style={{ fontSize: 8 }}>焦慮度</text>
+                          <text x={76} y={7} fill="#f87171" style={{ fontSize: 8 }}>{en ? "Anxiety" : "焦慮度"}</text>
                           <line x1={110} y1={4} x2={125} y2={4} stroke="#fb923c" strokeWidth={1} strokeDasharray="4,3" />
-                          <text x={128} y={7} fill="#fb923c" style={{ fontSize: 8 }}>新聞注入</text>
+                          <text x={128} y={7} fill="#fb923c" style={{ fontSize: 8 }}>{en ? "News Inject" : "新聞注入"}</text>
                         </svg>
                       </div>
                     </div>
@@ -963,16 +1000,16 @@ export default function EvolutionPanel({
                       <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "var(--font-sans)", fontSize: 12 }}>
                         <thead>
                           <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                            <th style={{ padding: "6px 8px", textAlign: "left", color: "var(--text-muted)", fontWeight: 500 }}>天</th>
-                            <th style={{ padding: "6px 8px", textAlign: "right", color: "#4ade80", fontWeight: 500 }}>平均滿意度</th>
-                            <th style={{ padding: "6px 8px", textAlign: "right", color: "#f87171", fontWeight: 500 }}>平均焦慮度</th>
+                            <th style={{ padding: "6px 8px", textAlign: "left", color: "var(--text-muted)", fontWeight: 500 }}>{en ? "Day" : "天"}</th>
+                            <th style={{ padding: "6px 8px", textAlign: "right", color: "#4ade80", fontWeight: 500 }}>{en ? "Avg Satisfaction" : "平均滿意度"}</th>
+                            <th style={{ padding: "6px 8px", textAlign: "right", color: "#f87171", fontWeight: 500 }}>{en ? "Avg Anxiety" : "平均焦慮度"}</th>
                             <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-muted)", fontWeight: 500 }}>有反應的人數</th>
                           </tr>
                         </thead>
                         <tbody>
                           {evolJob.daily_summary.map((d: any) => (
                             <tr key={d.day} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                              <td style={{ padding: "5px 8px", color: "var(--accent-light)" }}>第 {d.day} 天</td>
+                              <td style={{ padding: "5px 8px", color: "var(--accent-light)" }}>{en ? `Day ${d.day}` : `第 ${d.day} 天`}</td>
                               <td style={{ padding: "5px 8px", textAlign: "right", color: "#4ade80" }}>{d.avg_satisfaction}</td>
                               <td style={{ padding: "5px 8px", textAlign: "right", color: "#f87171" }}>{d.avg_anxiety}</td>
                               <td style={{ padding: "5px 8px", textAlign: "right", color: d.entries_count === 0 ? "#ff6b6b" : "var(--text-muted)" }}>
@@ -999,13 +1036,13 @@ export default function EvolutionPanel({
           {activeTab === "memory" && (
             <div>
               <h2 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: "var(--text-primary)", marginBottom: 20 }}>
-                🧠 記憶探索 — Agent 日記與 RAG 搜尋
+                {en ? "🧠 Memory Explorer — Agent Diaries & RAG Search" : "🧠 記憶探索 — Agent 日記與 RAG 搜尋"}
               </h2>
 
               {/* Agent selector */}
               <div style={cardStyle}>
                 <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                  選擇 Agent（共 {personas.length} 位）
+                  {en ? `Select Agent (${personas.length} total)` : `選擇 Agent（共 ${personas.length} 位）`}
                 </h3>
                 {personas.length > 15 ? (
                   /* Dropdown for many agents */
@@ -1019,7 +1056,7 @@ export default function EvolutionPanel({
                       border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer",
                     }}
                   >
-                    <option value="">— 請選擇 Agent —</option>
+                    <option value="">{en ? "— Select an Agent —" : "— 請選擇 Agent —"}</option>
                     {personas.map((p: any) => (
                       <option key={p.person_id} value={p.person_id}>
                         #{p.person_id} {p.description?.slice(0, 30) || ""} {p.political_leaning ? `[${p.political_leaning}]` : ""} {p.media_habit ? `📱${p.media_habit}` : ""} {p.llm_vendor ? `🤖${p.llm_vendor.toUpperCase()}` : ""}
@@ -1069,11 +1106,11 @@ export default function EvolutionPanel({
               {agentStats && (
                 <div style={cardStyle}>
                   <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                    當前狀態 — Agent #{selectedAgentId}
+                    {en ? `Current State — Agent #${selectedAgentId}` : `當前狀態 — Agent #${selectedAgentId}`}
                   </h3>
                   <div style={{ display: "flex", gap: 24, fontFamily: "var(--font-sans)", fontSize: 13, flexWrap: "wrap" }}>
-                    <span style={{ color: "#4ade80" }}>滿意度: <strong>{agentStats.satisfaction}</strong></span>
-                    <span style={{ color: "#f87171" }}>焦慮度: <strong>{agentStats.anxiety}</strong></span>
+                    <span style={{ color: "#4ade80" }}>{en ? "Satisfaction: " : "滿意度: "}<strong>{agentStats.satisfaction}</strong></span>
+                    <span style={{ color: "#f87171" }}>{en ? "Anxiety: " : "焦慮度: "}<strong>{agentStats.anxiety}</strong></span>
                     <span style={{ color: "var(--text-muted)" }}>已演化: {agentStats.days_evolved} 天</span>
                   </div>
                   {(() => {
@@ -1087,7 +1124,7 @@ export default function EvolutionPanel({
                         )}
                         {ap.political_leaning && (
                           <div style={{ marginTop: 4, fontSize: 12, fontFamily: "var(--font-cjk)", color: ap.political_leaning?.includes("本土") ? "#4ade80" : ap.political_leaning?.includes("統") ? "#f87171" : "#94a3b8" }}>
-                            🏛️ 政治傾向: {ap.political_leaning}
+                            🏛️ {en ? "Leaning" : "政治傾向"}: {ap.political_leaning}
                           </div>
                         )}
                         {ap.llm_vendor && (
@@ -1159,16 +1196,16 @@ export default function EvolutionPanel({
               {/* RAG Memory search */}
               <div style={cardStyle}>
                 <h3 style={{ fontFamily: "var(--font-cjk)", fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12 }}>
-                  🔍 RAG 記憶搜尋
+                  {en ? "🔍 RAG Memory Search" : "🔍 RAG 記憶搜尋"}
                 </h3>
                 <div style={{ display: "flex", gap: 8 }}>
                   <input
-                    placeholder="搜尋關鍵字 (例如: 電價 物價 房租)"
+                    placeholder={en ? "Search keywords (e.g. inflation economy housing)" : "搜尋關鍵字 (例如: 電價 物價 房租)"}
                     value={memSearchQuery}
                     onChange={e => setMemSearchQuery(e.target.value)}
                     style={{ ...inputStyle, flex: 1 }}
                   />
-                  <button onClick={handleMemSearch} disabled={!selectedAgentId} style={btnStyle}>搜尋記憶</button>
+                  <button onClick={handleMemSearch} disabled={!selectedAgentId} style={btnStyle}>{en ? "Search Memory" : "搜尋記憶"}</button>
                 </div>
                 {memResults.length > 0 && (
                   <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>

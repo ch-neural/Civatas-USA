@@ -73,6 +73,8 @@ class StartEvolutionRequest(BaseModel):
     agents: list[dict]
     days: int = 30
     concurrency: int = 0  # 0 = auto (enabled_vendors × 2)
+    enabled_vendors: list[str] | None = None
+    candidate_names: list[str] | None = None
 
 
 class MemorySearchRequest(BaseModel):
@@ -177,6 +179,13 @@ def inject_news(req: InjectArticleRequest):
     from .news_pool import inject_article
     article = inject_article(req.title, req.summary, req.source_tag)
     return {"injected": True, "article": article}
+
+
+@app.post("/news-pool/clear")
+def clear_news_pool():
+    from .news_pool import clear_pool
+    clear_pool()
+    return {"cleared": True}
 
 
 @app.get("/evolution/dashboard")
@@ -964,9 +973,8 @@ def preview_feed(req: PreviewFeedRequest):
 @app.post("/evolve")
 async def start_evolve(req: StartEvolutionRequest):
     from .evolver import start_evolution
-    from shared.llm_vendors import get_default_concurrency
-    concurrency = len(req.enabled_vendors) if req.enabled_vendors else len(get_available_vendors())
-    result = await start_evolution(req.agents, req.days, concurrency=concurrency)
+    concurrency = req.concurrency if req.concurrency > 0 else (len(req.enabled_vendors) if req.enabled_vendors else 5)
+    result = await start_evolution(req.agents, req.days, concurrency=concurrency, candidate_names=req.candidate_names)
     return result
 
 

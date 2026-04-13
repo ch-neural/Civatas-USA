@@ -438,6 +438,98 @@
         }
       ]
     },
+    "race": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "White",
+          "weight": 0.7956
+        },
+        {
+          "value": "Black or African American",
+          "weight": 0.0611
+        },
+        {
+          "value": "Asian",
+          "weight": 0.0312
+        },
+        {
+          "value": "American Indian / Alaska Native",
+          "weight": 0.0085
+        },
+        {
+          "value": "Native Hawaiian / Pacific Islander",
+          "weight": 0.0005
+        },
+        {
+          "value": "Other",
+          "weight": 0.0253
+        },
+        {
+          "value": "Two or More Races",
+          "weight": 0.0778
+        }
+      ]
+    },
+    "hispanic_or_latino": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Hispanic or Latino",
+          "weight": 0.0839
+        },
+        {
+          "value": "Not Hispanic or Latino",
+          "weight": 0.9161
+        }
+      ]
+    },
+    "household_income": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Under $25k",
+          "weight": 0.1332
+        },
+        {
+          "value": "$25k–$50k",
+          "weight": 0.1775
+        },
+        {
+          "value": "$50k–$75k",
+          "weight": 0.1726
+        },
+        {
+          "value": "$75k–$100k",
+          "weight": 0.1383
+        },
+        {
+          "value": "$100k–$150k",
+          "weight": 0.1944
+        },
+        {
+          "value": "$150k–$200k",
+          "weight": 0.0896
+        },
+        {
+          "value": "$200k+",
+          "weight": 0.0944
+        }
+      ]
+    },
+    "household_type": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Family Household",
+          "weight": 0.5998
+        },
+        {
+          "value": "Non-Family Household",
+          "weight": 0.4002
+        }
+      ]
+    },
     "media_habit": {
       "type": "categorical",
       "categories": [

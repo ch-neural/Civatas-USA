@@ -25,6 +25,11 @@ export const WORKSPACE_PANEL_TYPES: Record<string, PanelTypeInfo> = {
     route: (id) => `/workspaces/${id}/persona`,
     label: "人設管理", labelEn: "Persona Explorer", icon: "🎭",
   },
+  "evolution-quickstart": {
+    type: "evolution-quickstart",
+    route: (id) => `/workspaces/${id}/evolution-quickstart`,
+    label: "快速演化", labelEn: "Quick Start", icon: "⚡",
+  },
   evolution: {
     type: "evolution",
     route: (id) => `/workspaces/${id}/evolution`,
@@ -102,7 +107,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     label: "演化", labelEn: "Evolution",
     icon: "📰",
     mainPanel: "evolution",
-    subItems: ["evolution", "evolution-runner", "evolution-dashboard", "agent-explorer"],
+    subItems: ["evolution-quickstart", "evolution", "evolution-dashboard", "agent-explorer"],
     requiresStep: 1,
   },
   {

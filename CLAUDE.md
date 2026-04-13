@@ -293,6 +293,104 @@ to localized labels at render time via `useLocalizePersonaValue()`.
 - Touching templates? They must remain schema-compatible with the existing
   `data/templates/presidential_state_PA.json` reference template.
 
+## Onboarding & API Keys Redesign (2026-04-12)
+
+### Onboarding Wizard Improvements
+- **Step 1**: Replaced 3-section accordion with flat card-based layout:
+  - LLM Providers section (vendor + API key + Base URL + Test per card)
+  - Role Cards: left column = System LLM (cyan dot), right column = Agent LLM(s) (red dot) + dashed "Add Agent LLM" button
+  - Search API (Serper) section
+  - Loading spinner on initial settings fetch; saving spinner on transition
+- **Step 2**: Template selector now loads from API with `election.scope` flattened; grouped by National / State. "Data Sources" info button shows dynamic per-template statistics (population, counties, PVI, source descriptions).
+- **Step 3**: Persona generation with animated color-coded blocks (political leaning colors), hover detail panel (fixed bottom overlay with Demographics / Political / Personality / Individuality), statistics modal with bar charts, loading spinner.
+- **Step 4**: Redirects to Evolution Quick Start (not Population Setup).
+- Settings load on mount via `parseSettingsToProvidersAndRoles`.
+- `finishOnboarding` partial update bug fixed — `PUT /api/settings` now preserves existing vendors when only `onboarding_completed` is sent.
+
+### Settings Panel
+- API Keys tab redesigned to match Onboarding card-based layout (same Provider cards + System/Agent LLM role cards).
+- All text bilingual (en/zh-TW).
+
+### Template System
+- **3 national templates**: Generic, 2024 (Trump vs Harris, PVI from 2016+2020), 2028 (Who's Next? — Vance/Newsom/DeSantis/Whitmer/Haley/Shapiro)
+- **2024 uses pre-election PVI** (2016+2020 only, no future data leakage)
+- **2028** uses 2020+2024 PVI with 6 potential candidates
+- `fetch_elections.py` now extracts 2016+2020+2024 from MEDSL
+- `compute_pvi.py` supports configurable year pairs via `compute(years, suffix)`
+- `build_national_template.py` generates all 3 templates + uses latest available cycle for turnout weighting
+
+### New Demographics Dimensions
+- **Race** (B02001): White, Black, Asian, American Indian, Pacific Islander, Other, Two or More
+- **Hispanic/Latino** (B03003): Hispanic or Latino / Not Hispanic or Latino
+- **Household Income** (B19001): 7 brackets from Under $25k to $200k+
+- **Household Type** (B11001): Family / Non-Family
+- Added to `shared/schemas/person.py`, `synthesis/builder.py`, `persona/generator.py`
+- Templates now carry 12 dimensions total
+- All persona display surfaces updated (Onboarding Step 3, PopulationSetupPanel stats, tooltips)
+
+### Evolution Quick Start (`/workspaces/[id]/evolution-quickstart`)
+- New panel registered in `panel-registry.ts`, route page created
+- One-click automated evolution: crawl news → evolve agents → repeat for N rounds
+- **Serper news by political leaning**: searches 5 Cook PVI buckets separately (site: restriction), injects with known source name for diet rules matching
+- **Template-driven defaults**: dates, candidates, keywords from template's `election` block
+- **Pause/Resume/Stop**: state persisted to server via `saveUiSettings`; survives page close
+- **News pool auto-clear** before each fresh start
+- **Candidate names** passed to evolution backend for tracking
+- **Download Playback** button: generates self-contained HTML with Chart.js, animated charts, play/pause controls
+
+### US News Sources
+- `crawler.py` `DEFAULT_SOURCES` replaced: 10 Taiwan sources → 12 US sources (Reuters, AP, The Hill, NYT, CNN, NPR, WashPost, Fox News, WSJ, NY Post, MSNBC, Breitbart)
+- `CrawlSource.leaning` default: "中立" → "Tossup"
+- Cached `data/evolution/sources.json` deleted to force re-init
+
+### US Life Events (`us_life_events.py`)
+- 27 US-context life events across 8 categories: economic, family, health, community, education, political, immigration (Hispanic-specific), race (non-White specific), natural disaster
+- Each event has eligibility filters (age, gender, race, tenure, hispanic_or_latino)
+- Enabled in `evolver.py` (was disabled — TW catalog would leak CJK into English diaries)
+- `life_events.py` eligibility checker extended with `race_not`, `hispanic_or_latino`, `tenure` filters
+
+### Evolution Prompt Enhancements (`prompts.py`)
+- **Race/ethnicity identity** added to agent prompt: `Race / ethnicity: {race}, {hispanic_or_latino}`
+- **Demographic reaction rules** expanded: race-specific (Black → policing/civil rights, Hispanic → immigration, Asian → hate crimes), income-bracket-specific ($50k/$100k/$150k thresholds), family structure
+- **Diary differentiation**: tone by race (Black dialect, Hispanic familia references, Asian reserve, White rural folksy, White suburban measured), by education level (simple → analytical), by income (survival → policy), by media habit (YouTube/Reddit/NPR/Facebook/Print)
+- **Candidate tracking text** changed from Chinese to English
+
+### Evolution Dashboard & Panels
+- `EvolutionPanel`: Evolution Engine tab removed from sub-tabs (functionality moved to Quick Start); all Chinese strings replaced with bilingual `en ? "..." : "..."` pattern
+- `EvolutionDashboardPanel`: all hardcoded Chinese replaced with bilingual
+- `GroupedStatsPanel`: 9 Chinese titles replaced (By Political Leaning, By LLM Vendor, By State, By Gender, etc.)
+- `PopulationSetupPanel`: existing personas show inline stats (Political, Race, Gender, Income, Education, Top States); button changes to "Re-generate" with orange color; age range defaults 18–95; persona strategy selector hidden (always LLM)
+- Template change confirmation popup when personas exist
+
+### Settings Persistence
+- `PopulationSetupPanel`: targetCount, ageMin, ageMax persisted via `saveUiSettings`
+- `EvolutionQuickStartPanel`: simDays, crawlInterval, concurrency persisted via `saveUiSettings`
+- `PredictionPanel`: already had full persistence (~45 fields)
+- All settings stored per workspace via `PUT /api/workspaces/{wsId}/ui-settings/{panel}`
+
+### Evolution Playback Export
+- `GET /api/pipeline/evolution/export-playback` — collects dashboard + history + jobs data
+- `lib/export-playback.ts` — generates self-contained HTML with:
+  - Chart.js from CDN
+  - Embedded evolution data as JSON
+  - Play/Pause controls with speed slider
+  - 4 animated charts: Satisfaction/Anxiety, Political Leaning, Candidate Awareness, Full History
+  - Bilingual (follows current locale)
+  - Downloadable as `.html` file
+
+### WorkflowSidebar
+- Project selector navigates to Quick Start (if has_personas) or Population Setup
+- Evolution sub-items: Quick Start, News Sources, Evolution Dashboard, Agent Explorer (Run Evolution removed)
+
+### Bug Fixes
+- `WorkflowSidebar`: `workspaces` API returns `{workspaces: [...]}` not array — added unwrap
+- `use-workflow-status.ts`: `evolutionJobs` guard with `Array.isArray`
+- `StartEvolutionRequest`: added missing `enabled_vendors` and `candidate_names` fields
+- `start_evolve`: removed undefined `get_available_vendors()`, uses `req.concurrency` with fallback
+- `api_update_settings`: preserves existing `llm_vendors` when partial update (e.g. only `onboarding_completed`)
+- `news_pool.py`: added `clear_pool()` function + API endpoint
+- `evolver.py`: `(無新聞)` → `(no news)`, candidate awareness text Chinese → English
+
 ## 語言規則
 - 思考過程（thinking）可以使用英文
 - 所有最終回覆必須使用繁體中文

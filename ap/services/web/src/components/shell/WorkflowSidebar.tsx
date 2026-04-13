@@ -21,10 +21,11 @@ export function WorkflowSidebar() {
 
   const workflowStatus = useWorkflowStatus(wsId);
 
-  const { data: workspaces } = useQuery({
+  const { data: workspacesRaw } = useQuery({
     queryKey: ["workspaces"],
     queryFn: () => apiFetch("/api/workspaces"),
   });
+  const workspaces: any[] = Array.isArray(workspacesRaw) ? workspacesRaw : workspacesRaw?.workspaces ?? [];
 
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set([1]));
 
@@ -105,7 +106,9 @@ export function WorkflowSidebar() {
                   activeWorkspaceName: ws?.name ?? id,
                 });
               }
-              router.push(`/workspaces/${id}/population-setup`);
+              // Navigate based on workspace state
+              const hasPersonas = ws?.has_personas;
+              router.push(`/workspaces/${id}/${hasPersonas ? "evolution-quickstart" : "population-setup"}`);
             } else {
               router.push("/workspaces");
             }

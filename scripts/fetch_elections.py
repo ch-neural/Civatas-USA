@@ -82,8 +82,8 @@ def main() -> int:
     print("[1/2] Downloading MEDSL combined file …")
     src = download()
 
-    print("[2/2] Extracting 2020 + 2024 …")
-    for year in (2020, 2024):
+    print("[2/2] Extracting 2016 + 2020 + 2024 …")
+    for year in (2016, 2020, 2024):
         out = ELEC / f"president_{year}_county.csv"
         n = extract_year(src, year, out)
         print(f"  {out.relative_to(ROOT)}  ({n} rows)")

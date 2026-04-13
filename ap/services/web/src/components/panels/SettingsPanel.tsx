@@ -113,12 +113,12 @@ export default function SettingsPanel() {
         method: "PUT",
         body: JSON.stringify(merged),
       });
-      setSaveMsg("✓ 已儲存");
+      setSaveMsg(locale === "en" ? "✓ Saved" : "✓ 已儲存");
       setTimeout(() => setSaveMsg(""), 3000);
       // Reload to get fresh data (masked keys etc.)
       await loadSettings();
     } catch (e: any) {
-      setSaveMsg(`✗ ${e.message || "儲存失敗"}`);
+      setSaveMsg(`✗ ${e.message || (locale === "en" ? "Save failed" : "儲存失敗")}`);
     } finally {
       setSaving(false);
     }
@@ -234,7 +234,7 @@ export default function SettingsPanel() {
             borderTopColor: "var(--accent-light)", borderRadius: "50%",
             animation: "spin 0.8s linear infinite"
           }} />
-          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-tertiary)" }}>載入設定中...</span>
+          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 13, color: "var(--text-tertiary)" }}>{locale === "en" ? "Loading settings..." : "載入設定中..."}</span>
         </div>
       </div>
     );
@@ -260,7 +260,7 @@ export default function SettingsPanel() {
               onClick={handleSave}
               disabled={saving}
             >
-              {saving ? "儲存中..." : "💾 儲存設定"}
+              {saving ? (locale === "en" ? "Saving..." : "儲存中...") : (locale === "en" ? "💾 Save Settings" : "💾 儲存設定")}
             </button>
           </div>
         </div>
@@ -290,368 +290,194 @@ export default function SettingsPanel() {
 
         {/* Tab Content */}
         <div style={{ padding: "16px clamp(16px, 2vw, 32px)", maxWidth: 960, margin: "0 auto", width: "100%" }}>
-          {activeTab === "llm" && (
+          {activeTab === "llm" && (() => {
+            const en = locale === "en";
+            const providersWithKey = editProviders.filter(p => p.api_key.trim() !== "");
+
+            const updateSettingsProvider = (idx: number, updates: Partial<Provider>) => {
+              setEditProviders(prev => {
+                const updated = prev.map((p, i) => {
+                  if (i !== idx) return p;
+                  const next = { ...p, ...updates };
+                  if (updates.vendor_type && updates.vendor_type !== p.vendor_type) {
+                    const preset = VENDOR_PRESETS[updates.vendor_type];
+                    const newId = `${updates.vendor_type}-${Date.now()}`;
+                    next.display_name = preset?.label ?? updates.vendor_type;
+                    next.id = newId;
+                    const oldId = p.id;
+                    setEditSystemLlm(s => s.provider_id === oldId ? { provider_id: newId, model: preset?.systemModel ?? s.model } : s);
+                    setEditAgentLlms(al => al.map(a => a.provider_id === oldId ? { provider_id: newId, model: preset?.defaultModel ?? a.model } : a));
+                  }
+                  return next;
+                });
+                return updated;
+              });
+            };
+
+            const addNewProvider = () => {
+              const usedTypes = editProviders.map(p => p.vendor_type);
+              const availableType = Object.keys(VENDOR_PRESETS).find(t => !usedTypes.includes(t)) || "openai";
+              const preset = VENDOR_PRESETS[availableType];
+              const newId = `${availableType}-${Date.now()}`;
+              setEditProviders(prev => [...prev, { id: newId, vendor_type: availableType, display_name: preset?.label ?? availableType, api_key: "", base_url: "" }]);
+              setEditAgentLlms(prev => [...prev, { provider_id: newId, model: preset?.defaultModel ?? "" }]);
+            };
+
+            return (
             <>
-              {/* ── (a) LLM Providers ── */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                <div className="label" style={{ fontSize: 13 }}>
-                  {locale === "en" ? "LLM Providers" : "LLM 供應商"} ({editProviders.length})
+              {/* ═══ LLM Providers ═══ */}
+              <div className="mb-5">
+                <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                  {en ? "LLM Providers" : "LLM 供應商"}
                 </div>
-                <button
-                  onClick={addSettingsProvider}
-                  style={{
-                    background: "rgba(108,92,231,0.15)", border: "1px solid rgba(108,92,231,0.3)",
-                    color: "var(--accent-light)", borderRadius: 8, padding: "6px 14px",
-                    fontSize: 12, fontWeight: 600, fontFamily: "var(--font-cjk)", cursor: "pointer",
-                    transition: "opacity 0.2s",
-                  }}
-                >
-                  ＋ {locale === "en" ? "Add Provider" : "新增供應商"}
-                </button>
-              </div>
-
-              {editProviders.length === 0 ? (
-                <div className="card" style={{ textAlign: "center", padding: 40, marginBottom: 24 }}>
-                  <p style={{ fontFamily: "var(--font-cjk)", fontSize: 14, color: "var(--text-muted)", marginBottom: 8 }}>
-                    {locale === "en" ? "No providers configured" : "尚未設定任何供應商"}
-                  </p>
-                  <p style={{ fontFamily: "var(--font-cjk)", fontSize: 12, color: "var(--text-faint)" }}>
-                    {locale === "en" ? "Click \"+ Add Provider\" to get started" : "點擊上方「新增供應商」開始設定"}
-                  </p>
-                </div>
-              ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
-                  {editProviders.map(p => {
-                    const preset = VENDOR_PRESETS[p.vendor_type];
-                    const testResult = providerTestResults[p.id];
-                    return (
-                      <div
-                        key={p.id}
-                        className="card"
-                        style={{ display: "flex", alignItems: "center", gap: 14 }}
-                      >
-                        {/* Provider info */}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                            <span style={{
-                              fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600,
-                              color: "var(--text-primary)",
-                            }}>{p.display_name}</span>
-                            <span style={{
-                              padding: "1px 6px", borderRadius: 4, fontSize: 10,
-                              background: "rgba(255,255,255,0.06)", color: "var(--text-muted)",
-                              fontFamily: "var(--font-sans)",
-                            }}>{preset?.label || p.vendor_type}</span>
-                          </div>
-                          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-sans)" }}>
-                            <span>🔑 {p.api_key ? (p.api_key.startsWith("***") ? p.api_key : `***${p.api_key.slice(-4)}`) : "(未設定)"}</span>
-                            {p.base_url && <span>🌐 {p.base_url.replace(/^https?:\/\//, "").slice(0, 30)}</span>}
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
-                          {/* Test button */}
-                          <button
-                            onClick={() => testSettingsProvider(p.id)}
-                            disabled={testResult === "testing"}
-                            style={{
-                              background: testResult === "ok" ? "rgba(0,200,83,0.1)" : testResult === "fail" ? "rgba(233,69,96,0.1)" : "rgba(255,255,255,0.06)",
-                              border: `1px solid ${testResult === "ok" ? "rgba(0,200,83,0.3)" : testResult === "fail" ? "rgba(233,69,96,0.3)" : "var(--border-subtle)"}`,
-                              borderRadius: 6, padding: "4px 10px", fontSize: 11, cursor: "pointer",
-                              color: testResult === "ok" ? "var(--green)" : testResult === "fail" ? "var(--pink)" : "var(--text-muted)",
-                              fontFamily: "var(--font-cjk)", fontWeight: 600, transition: "all 0.2s",
-                              opacity: testResult === "testing" ? 0.6 : 1,
-                            }}
-                          >
-                            {testResult === "testing" ? "..." : testResult === "ok" ? "✓ OK" : testResult === "fail" ? "✗ Fail" : "Test"}
-                          </button>
-                          {/* Edit */}
-                          <button
-                            onClick={() => {
-                              const agentAssignment = editAgentLlms.find(a => a.provider_id === p.id);
-                              setEditingVendor({
-                                id: p.id,
-                                display_name: p.display_name,
-                                vendor_type: p.vendor_type,
-                                api_key: p.api_key,
-                                model: agentAssignment?.model || VENDOR_PRESETS[p.vendor_type]?.defaultModel || "",
-                                base_url: p.base_url,
-                                temperature: null,
-                              });
-                            }}
-                            style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: 4 }}
-                            title={locale === "en" ? "Edit" : "編輯"}
-                          >
-                            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5">
-                              <path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z" />
-                            </svg>
-                          </button>
-                          {/* Delete */}
-                          <button
-                            onClick={() => removeSettingsProvider(p.id)}
-                            style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-faint)", padding: 4, transition: "color 0.2s" }}
-                            onMouseEnter={e => (e.currentTarget.style.color = "var(--pink)")}
-                            onMouseLeave={e => (e.currentTarget.style.color = "var(--text-faint)")}
-                            title={locale === "en" ? "Delete" : "刪除"}
-                          >
-                            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5">
-                              <path d="M3 5h10M6 5V3h4v2M5 5v8h6V5" />
-                            </svg>
-                          </button>
-                        </div>
+                <div className="space-y-3">
+                  {editProviders.map((p, idx) => (
+                    <div key={p.id} className="bg-[#0f1729] rounded-lg p-4 border border-[#2a3554]">
+                      <div className="flex items-center gap-3 mb-3">
+                        <select className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
+                          value={p.vendor_type} onChange={e => updateSettingsProvider(idx, { vendor_type: e.target.value })}>
+                          {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
+                            <option key={key} value={key}>{preset.label}</option>
+                          ))}
+                        </select>
+                        <div className="flex-1" />
+                        {editProviders.length > 1 && (
+                          <button className="text-neutral-600 hover:text-red-400 text-sm" onClick={() => removeSettingsProvider(p.id)}>✕</button>
+                        )}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* ── (b) System LLM ── */}
-              <div style={{ marginBottom: 24, padding: 16, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                <div className="label" style={{ fontSize: 13, marginBottom: 4 }}>
-                  🧠 {locale === "en" ? "System LLM" : "系統 LLM"}
-                </div>
-                <p style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)", marginBottom: 8, lineHeight: 1.5 }}>
-                  {locale === "en"
-                    ? "Used for smart keywords, summary analysis, and other system-level tasks. Defaults to first provider if not set."
-                    : "用於智慧關鍵字、摘要分析等系統級任務。若未指定，預設使用第一組供應商。"}
-                </p>
-                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                  <select
-                    value={editSystemLlm.provider_id}
-                    onChange={(e) => {
-                      const pid = e.target.value;
-                      const prov = editProviders.find(p => p.id === pid);
-                      const preset = prov ? VENDOR_PRESETS[prov.vendor_type] : null;
-                      setEditSystemLlm({ provider_id: pid, model: preset?.systemModel || editSystemLlm.model || "" });
-                    }}
-                    style={{
-                      flex: 1, maxWidth: 300, padding: "8px 12px", borderRadius: 6,
-                      border: "1px solid var(--border-input)", background: "var(--bg-input)",
-                      color: "var(--text-primary)", fontSize: 12, fontFamily: "var(--font-cjk)",
-                    }}
-                  >
-                    <option value="">{locale === "en" ? "(Auto: use first provider)" : "（自動：使用第一組供應商）"}</option>
-                    {editProviders.map(p => (
-                      <option key={p.id} value={p.id}>{p.display_name}</option>
-                    ))}
-                  </select>
-                  <input
-                    className="input-field"
-                    value={editSystemLlm.model}
-                    onChange={(e) => setEditSystemLlm({ ...editSystemLlm, model: e.target.value })}
-                    placeholder={locale === "en" ? "Model name" : "模型名稱"}
-                    style={{ flex: 1, maxWidth: 250, fontSize: 12 }}
-                  />
-                </div>
-              </div>
-
-              {/* ── (c) Agent LLM ── */}
-              <div style={{ marginBottom: 24, padding: 16, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                <div className="label" style={{ fontSize: 13, marginBottom: 4 }}>
-                  🤖 {locale === "en" ? "Agent LLM" : "Agent LLM"}
-                </div>
-                <p style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)", marginBottom: 12, lineHeight: 1.5 }}>
-                  {locale === "en"
-                    ? "Select which providers to use for agent persona generation. Check providers and assign models."
-                    : "選擇哪些供應商用於 Agent 人格生成。勾選供應商並指定模型。"}
-                </p>
-
-                {/* Checkbox list of providers with model input */}
-                {editProviders.length === 0 ? (
-                  <p style={{ fontFamily: "var(--font-cjk)", fontSize: 12, color: "var(--text-faint)", fontStyle: "italic" }}>
-                    {locale === "en" ? "Add a provider first." : "請先新增供應商。"}
-                  </p>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-                    {editProviders.map(p => {
-                      const assignment = editAgentLlms.find(a => a.provider_id === p.id);
-                      const isChecked = !!assignment;
-                      const preset = VENDOR_PRESETS[p.vendor_type];
-                      return (
-                        <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => {
-                              if (isChecked) {
-                                setEditAgentLlms(prev => prev.filter(a => a.provider_id !== p.id));
-                              } else {
-                                setEditAgentLlms(prev => [...prev, { provider_id: p.id, model: preset?.defaultModel || "gpt-4o-mini" }]);
-                              }
-                            }}
-                            style={{ accentColor: "var(--accent)", width: 16, height: 16, cursor: "pointer" }}
-                          />
-                          <span style={{ fontFamily: "var(--font-cjk)", fontSize: 12, color: "var(--text-primary)", minWidth: 100 }}>
-                            {p.display_name}
-                          </span>
-                          <input
-                            className="input-field"
-                            value={assignment?.model || ""}
-                            onChange={(e) => {
-                              if (!isChecked) return;
-                              setEditAgentLlms(prev => prev.map(a => a.provider_id === p.id ? { ...a, model: e.target.value } : a));
-                            }}
-                            placeholder={preset?.defaultModel || "model"}
-                            disabled={!isChecked}
-                            style={{ flex: 1, maxWidth: 250, fontSize: 12, opacity: isChecked ? 1 : 0.4 }}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {/* Mode selector (only shown when >1 agent LLM) */}
-                {editAgentLlms.length > 1 && (
-                  <>
-                    <div className="label" style={{ marginBottom: 8, fontSize: 12 }}>
-                      {locale === "en" ? "LLM Mode" : "LLM 使用模式"}
+                      <div className="flex items-center gap-2 mb-2">
+                        <input className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                          type="password" placeholder="API Key" value={p.api_key}
+                          onChange={e => updateSettingsProvider(idx, { api_key: e.target.value })} />
+                        <button className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                          onClick={() => testSettingsProvider(p.id)}>
+                          {providerTestResults[p.id] === "testing" ? "..." : providerTestResults[p.id] === "ok" ? "✓ OK" : providerTestResults[p.id] === "fail" ? "✕ Fail" : "Test"}
+                        </button>
+                      </div>
+                      <input className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none mb-1"
+                        placeholder={en ? "Base URL (optional)" : "Base URL（選填）"} value={p.base_url}
+                        onChange={e => updateSettingsProvider(idx, { base_url: e.target.value })} />
+                      {VENDOR_PRESETS[p.vendor_type]?.keyUrl && (
+                        <a href={VENDOR_PRESETS[p.vendor_type].keyUrl} target="_blank" rel="noopener"
+                          className="text-[10px] text-blue-400 hover:underline mt-1 inline-block">
+                          {en ? `Get ${VENDOR_PRESETS[p.vendor_type].label} API Key →` : `申請 ${VENDOR_PRESETS[p.vendor_type].label} API Key →`}
+                        </a>
+                      )}
                     </div>
-                    <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-                      {[
-                        { key: "multi", label: locale === "en" ? "Multi LLM" : "多組 LLM 共用", desc: locale === "en" ? "Distribute tasks across multiple LLMs by ratio" : "多個 LLM 同時運作，依比例分配任務", icon: "🔀" },
-                        { key: "primary_fallback", label: locale === "en" ? "Primary + Fallback" : "主要＋備援", desc: locale === "en" ? "Use primary LLM, switch to fallback on failure" : "指定主要 LLM，失敗時自動切換備援", icon: "🛡️" },
-                      ].map(opt => (
-                        <div
-                          key={opt.key}
-                          onClick={() => setEditLlmMode(opt.key)}
-                          style={{
-                            flex: 1, padding: "12px 16px", borderRadius: 10, cursor: "pointer",
-                            background: editLlmMode === opt.key ? "var(--accent-bg)" : "var(--bg-card)",
-                            border: `1px solid ${editLlmMode === opt.key ? "var(--accent-border)" : "var(--border-subtle)"}`,
-                            transition: "all 0.2s",
-                          }}
-                        >
-                          <div style={{ fontSize: 18, marginBottom: 6 }}>{opt.icon}</div>
-                          <div style={{
-                            fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600,
-                            color: editLlmMode === opt.key ? "var(--accent-light)" : "var(--text-primary)",
-                            marginBottom: 2,
-                          }}>{opt.label}</div>
-                          <div style={{
-                            fontFamily: "var(--font-cjk)", fontSize: 10,
-                            color: "var(--text-muted)", lineHeight: 1.4,
-                          }}>{opt.desc}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Ratio input (multi mode) */}
-                    {editLlmMode === "multi" && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div className="label" style={{ marginBottom: 6, fontSize: 11 }}>
-                          {locale === "en" ? "Distribution ratio (colon-separated, e.g. 1:1:1)" : "分配比例（以冒號分隔，如 1:1:1）"}
-                        </div>
-                        <input
-                          className="input-field"
-                          value={editVendorRatio}
-                          onChange={e => setEditVendorRatio(e.target.value)}
-                          placeholder="1:1:1"
-                          style={{ maxWidth: 200, fontSize: 12 }}
-                        />
-                      </div>
-                    )}
-
-                    {/* Primary/Fallback dropdowns */}
-                    {editLlmMode === "primary_fallback" && (
-                      <div style={{ display: "flex", gap: 16, marginBottom: 12 }}>
-                        <div style={{ flex: 1 }}>
-                          <div className="label" style={{ marginBottom: 6, fontSize: 11 }}>
-                            {locale === "en" ? "Primary" : "主要 LLM"}
-                          </div>
-                          <select
-                            className="input-field"
-                            value={editPrimaryId}
-                            onChange={e => setEditPrimaryId(e.target.value)}
-                            style={{ color: "var(--text-secondary)", fontSize: 12 }}
-                          >
-                            <option value="">{locale === "en" ? "— Select —" : "— 選擇 —"}</option>
-                            {editAgentLlms.map(a => {
-                              const prov = editProviders.find(p => p.id === a.provider_id);
-                              return prov ? <option key={a.provider_id} value={a.provider_id}>{prov.display_name} ({a.model})</option> : null;
-                            })}
-                          </select>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <div className="label" style={{ marginBottom: 6, fontSize: 11 }}>
-                            {locale === "en" ? "Fallback" : "備援 LLM"}
-                          </div>
-                          <select
-                            className="input-field"
-                            value={editFallbackId}
-                            onChange={e => setEditFallbackId(e.target.value)}
-                            style={{ color: "var(--text-secondary)", fontSize: 12 }}
-                          >
-                            <option value="">{locale === "en" ? "— Select —" : "— 選擇 —"}</option>
-                            {editAgentLlms.filter(a => a.provider_id !== editPrimaryId).map(a => {
-                              const prov = editProviders.find(p => p.id === a.provider_id);
-                              return prov ? <option key={a.provider_id} value={a.provider_id}>{prov.display_name} ({a.model})</option> : null;
-                            })}
-                          </select>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-
-              {/* ── (d) Search API ── */}
-              <div style={{ marginBottom: 24, padding: 16, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--font-cjk)" }}>
-                    🔍 Serper (Google Search)
-                  </span>
-                  <a href="https://serper.dev" target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: 10, color: "var(--accent-light)", textDecoration: "none" }}>
-                    serper.dev →
-                  </a>
-                </div>
-                <p style={{ fontFamily: "var(--font-cjk)", fontSize: 11, color: "var(--text-faint)", marginBottom: 8, lineHeight: 1.5 }}>
-                  {locale === "en"
-                    ? "Used for news search (Google News API). Free plan: 2,500 searches/month."
-                    : "用於搜尋新聞（Google News API）。免費方案每月 2,500 次搜尋。"}
-                </p>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <input
-                    type="password"
-                    className="input-field"
-                    style={{ flex: 1, fontSize: 12 }}
-                    placeholder={locale === "en" ? "Enter Serper API Key" : "輸入 Serper API Key"}
-                    value={editSerperKey}
-                    onChange={(e) => setEditSerperKey(e.target.value)}
-                  />
-                  <button
-                    onClick={testSerperKey}
-                    style={{
-                      background: "rgba(255,255,255,0.06)", border: "1px solid var(--border-subtle)",
-                      borderRadius: 6, padding: "4px 12px", fontSize: 11, cursor: "pointer",
-                      color: providerTestResults.serper === "ok" ? "var(--green)" : providerTestResults.serper === "fail" ? "var(--pink)" : "var(--text-muted)",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {providerTestResults.serper === "testing" ? "..." : providerTestResults.serper === "ok" ? "✓ OK" : providerTestResults.serper === "fail" ? "✕ Fail" : "Test"}
+                  ))}
+                  <button className="text-sm text-green-400 hover:text-green-300" onClick={addNewProvider}>
+                    + {en ? "Add another provider" : "新增供應商"}
                   </button>
                 </div>
               </div>
 
-              {/* ── (e) Onboarding reset ── */}
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", marginTop: 8, paddingTop: 16 }}>
-                <button
-                  className="text-sm text-neutral-500 hover:text-[#e94560] transition-colors"
+              {/* ═══ Role Cards ═══ */}
+              {providersWithKey.length > 0 && (
+                <div className="mb-5">
+                  <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                    {en ? "Assign LLM Roles" : "指定 LLM 角色"}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+                    {/* System LLM Card */}
+                    <div className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-4 flex flex-col">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-2 h-2 rounded-full bg-cyan-400 shrink-0" />
+                        <span className="text-sm font-medium text-neutral-200">{en ? "System LLM" : "系統 LLM"}</span>
+                      </div>
+                      <div className="text-neutral-500 text-[10px] mb-3">{en ? "News analysis, data parsing, election OCR" : "新聞分析、資料解析、選舉 OCR"}</div>
+                      <select className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
+                        value={editSystemLlm.provider_id}
+                        onChange={e => {
+                          const pid = e.target.value;
+                          const prov = editProviders.find(pp => pp.id === pid);
+                          const preset = prov ? VENDOR_PRESETS[prov.vendor_type] : null;
+                          setEditSystemLlm({ provider_id: pid, model: preset?.systemModel ?? editSystemLlm.model });
+                        }}>
+                        {providersWithKey.map(p => <option key={p.id} value={p.id}>{p.display_name}</option>)}
+                      </select>
+                      <input className="bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                        placeholder="Model" value={editSystemLlm.model}
+                        onChange={e => setEditSystemLlm(prev => ({ ...prev, model: e.target.value }))} />
+                    </div>
+
+                    {/* Agent LLM Cards */}
+                    <div className="flex flex-col gap-3">
+                      {editAgentLlms.map((agent, aIdx) => (
+                        <div key={`${agent.provider_id}-${aIdx}`} className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-4 flex flex-col">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-2 h-2 rounded-full bg-[#e94560] shrink-0" />
+                            <span className="text-sm font-medium text-neutral-200">Agent LLM {editAgentLlms.length > 1 ? `#${aIdx + 1}` : ""}</span>
+                            <div className="flex-1" />
+                            {editAgentLlms.length > 1 && (
+                              <button className="text-neutral-600 hover:text-red-400 text-xs"
+                                onClick={() => setEditAgentLlms(prev => prev.filter((_, i) => i !== aIdx))}>✕</button>
+                            )}
+                          </div>
+                          <div className="text-neutral-500 text-[10px] mb-3">{en ? "Persona generation, opinion evolution" : "人格生成、觀點演化"}</div>
+                          <select className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
+                            value={agent.provider_id}
+                            onChange={e => {
+                              const pid = e.target.value;
+                              const pp = editProviders.find(p => p.id === pid);
+                              const preset = pp ? VENDOR_PRESETS[pp.vendor_type] : null;
+                              setEditAgentLlms(prev => prev.map((a, i) => i === aIdx ? { provider_id: pid, model: preset?.defaultModel ?? a.model } : a));
+                            }}>
+                            {providersWithKey.map(p => <option key={p.id} value={p.id}>{p.display_name}</option>)}
+                          </select>
+                          <input className="bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                            placeholder="Model" value={agent.model}
+                            onChange={e => { const model = e.target.value; setEditAgentLlms(prev => prev.map((a, i) => i === aIdx ? { ...a, model } : a)); }} />
+                        </div>
+                      ))}
+                      <button className="rounded-lg border border-dashed border-[#2a3554] hover:border-[#3b4c6b] p-4 flex items-center justify-center gap-2 text-neutral-500 hover:text-neutral-300 transition-colors"
+                        onClick={() => {
+                          const first = providersWithKey[0];
+                          if (!first) return;
+                          const preset = VENDOR_PRESETS[first.vendor_type];
+                          setEditAgentLlms(prev => [...prev, { provider_id: first.id, model: preset?.defaultModel ?? "" }]);
+                        }}>
+                        <span className="text-lg">+</span>
+                        <span className="text-sm">{en ? "Add Agent LLM" : "新增 Agent LLM"}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ═══ Serper API ═══ */}
+              <div className="mb-5">
+                <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                  {en ? "Search API" : "搜尋 API"}
+                </div>
+                <div className="bg-[#0f1729] rounded-lg p-4 border border-[#2a3554]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-neutral-300 text-sm font-medium">Serper API Key</span>
+                    <a href="https://serper.dev" target="_blank" rel="noopener" className="text-[10px] text-blue-400 hover:underline">serper.dev →</a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input type="password" className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                      placeholder="Serper API Key" value={editSerperKey} onChange={e => setEditSerperKey(e.target.value)} />
+                    <button className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                      onClick={testSerperKey}>
+                      {providerTestResults.serper === "testing" ? "..." : providerTestResults.serper === "ok" ? "✓ OK" : providerTestResults.serper === "fail" ? "✕ Fail" : "Test"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* ═══ Onboarding reset ═══ */}
+              <div className="border-t border-[#2a3554] mt-4 pt-4">
+                <button className="text-sm text-neutral-500 hover:text-[#e94560] transition-colors"
                   onClick={async () => {
-                    await apiFetch("/api/settings", {
-                      method: "PUT",
-                      body: JSON.stringify({ onboarding_completed: false }),
-                    });
+                    await apiFetch("/api/settings", { method: "PUT", body: JSON.stringify({ onboarding_completed: false }) });
                     window.location.reload();
-                  }}
-                >
-                  {locale === "en" ? "Re-run Onboarding Wizard" : "重新執行設定精靈"}
+                  }}>
+                  {en ? "Re-run Onboarding Wizard" : "重新執行設定精靈"}
                 </button>
               </div>
             </>
-          )}
+            );
+          })()}
 
           {activeTab === "appearance" && (
             <AppearancePanel />

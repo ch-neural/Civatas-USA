@@ -210,6 +210,57 @@ def build_state_dimensions(state_po: str, counties: list[dict], state: dict, lea
         ]),
     }
 
+    # ── Race (B02001) ──
+    race = state.get("race", {})
+    dims["race"] = {
+        "type": "categorical",
+        "categories": round_weights([
+            ("White", race.get("white", 0) or 0),
+            ("Black or African American", race.get("black", 0) or 0),
+            ("Asian", race.get("asian", 0) or 0),
+            ("American Indian / Alaska Native", race.get("american_indian", 0) or 0),
+            ("Native Hawaiian / Pacific Islander", race.get("pacific_islander", 0) or 0),
+            ("Other", race.get("other", 0) or 0),
+            ("Two or More Races", race.get("two_or_more", 0) or 0),
+        ]),
+    }
+
+    # ── Hispanic / Latino (B03003) ──
+    hisp = state.get("hispanic_or_latino", 0) or 0
+    non_hisp = state.get("not_hispanic_or_latino", 0) or 0
+    dims["hispanic_or_latino"] = {
+        "type": "categorical",
+        "categories": round_weights([
+            ("Hispanic or Latino", hisp),
+            ("Not Hispanic or Latino", non_hisp),
+        ]),
+    }
+
+    # ── Household income (B19001, 7 brackets) ──
+    inc = state.get("household_income_brackets", {})
+    dims["household_income"] = {
+        "type": "categorical",
+        "categories": round_weights([
+            ("Under $25k", inc.get("lt_25k", 0) or 0),
+            ("$25k–$50k", inc.get("25k_50k", 0) or 0),
+            ("$50k–$75k", inc.get("50k_75k", 0) or 0),
+            ("$75k–$100k", inc.get("75k_100k", 0) or 0),
+            ("$100k–$150k", inc.get("100k_150k", 0) or 0),
+            ("$150k–$200k", inc.get("150k_200k", 0) or 0),
+            ("$200k+", inc.get("gte_200k", 0) or 0),
+        ]),
+    }
+
+    # ── Household type (B11001) ──
+    hh = state.get("households", {})
+    dims["household_type"] = {
+        "type": "categorical",
+        "categories": round_weights([
+            ("Family Household", hh.get("family", 0) or 0),
+            ("Non-Family Household", hh.get("nonfamily", 0) or 0),
+        ]),
+    }
+
     # ── Media habit (Pew defaults) ──
     dims["media_habit"] = {
         "type": "categorical",

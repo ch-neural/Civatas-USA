@@ -38,6 +38,7 @@ const LEAN_TYPE_LABELS: Record<string, string> = {
 export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   // ── UI Locale — user-toggleable, drives text labels only ──
   const t = useTr();
+  const locale = useLocaleStore((s) => s.locale);
 
   // ── Data ──
   const [counties, setCounties] = useState<any[]>([]);
@@ -58,23 +59,26 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   // ── Survey Method ──
   const [surveyMethod, setSurveyMethod] = useState<"phone" | "mobile" | "online" | "street">("mobile");
 
-  // Restore surveyMethod from workspace settings
+  // Restore all settings from workspace
   useEffect(() => {
     getUiSettings(wsId, "population-setup").then((s: any) => {
       if (s?.surveyMethod) setSurveyMethod(s.surveyMethod);
+      if (s?.targetCount) setTargetCount(s.targetCount);
+      if (s?.ageMin != null) setAgeMin(s.ageMin);
+      if (s?.ageMax != null) setAgeMax(s.ageMax);
     }).catch(() => {});
   }, [wsId]);
 
-  // Persist surveyMethod when changed
+  // Persist settings when changed
   useEffect(() => {
-    saveUiSettings(wsId, "population-setup", { surveyMethod }).catch(() => {});
-  }, [wsId, surveyMethod]);
+    saveUiSettings(wsId, "population-setup", { surveyMethod, targetCount, ageMin, ageMax }).catch(() => {});
+  }, [wsId, surveyMethod, targetCount, ageMin, ageMax]);
 
   // ── Generation ──
   const [targetCount, setTargetCount] = useState(100);
-  const [ageMin, setAgeMin] = useState(20);
-  const [ageMax, setAgeMax] = useState(80);
-  const [personaStrategy, setPersonaStrategy] = useState("template");
+  const [ageMin, setAgeMin] = useState(18);
+  const [ageMax, setAgeMax] = useState(95);
+  const [personaStrategy, setPersonaStrategy] = useState("llm");
   const [generating, setGenerating] = useState(false);
   const [genPhase, setGenPhase] = useState("");
   const [genStep, setGenStep] = useState(0); // 0=idle, 1-4=phases
@@ -82,6 +86,7 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [resultCount, setResultCount] = useState(0);
+  const [existingPersonas, setExistingPersonas] = useState<any[]>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Resume polling if generation was running when user left ──
@@ -129,6 +134,21 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
       } catch { }
     })();
   }, []);
+
+  // ── Check for existing personas ──
+  useEffect(() => {
+    if (!wsId) return;
+    (async () => {
+      try {
+        const result = await getWorkspacePersonas(wsId);
+        const agents = result?.agents ?? (Array.isArray(result) ? result : []);
+        if (agents.length > 0) {
+          setExistingPersonas(agents);
+          setResultCount(agents.length);
+        }
+      } catch { /* no personas yet */ }
+    })();
+  }, [wsId]);
 
   // ── Load districts when county changes ──
   useEffect(() => {
@@ -382,10 +402,14 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
       <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "auto" }}>
         <GuideBanner
           guideKey="guide_population_setup"
-          title="開始設定"
-          titleEn="Getting Started"
-          message="您的模板已預先設定好人口統計參數。檢視設定，調整後按「生成 Persona」建立代理人群體。"
-          messageEn="Your template has pre-configured demographics. Review the settings, adjust if needed, then click Generate Personas to create your agent population."
+          title={existingPersonas.length > 0 ? "已有代理人" : "開始設定"}
+          titleEn={existingPersonas.length > 0 ? "Personas Ready" : "Getting Started"}
+          message={existingPersonas.length > 0
+            ? `已生成 ${existingPersonas.length} 位代理人。可直接前往 Evolution，或調整設定後重新生成。`
+            : "您的模板已預先設定好人口統計參數。檢視設定，調整後按「生成 Persona」建立代理人群體。"}
+          messageEn={existingPersonas.length > 0
+            ? `${existingPersonas.length} agents are ready. Proceed to Evolution, or adjust settings and re-generate.`
+            : "Your template has pre-configured demographics. Review the settings, adjust if needed, then click Generate Personas to create your agent population."}
         />
         <div style={{ padding: "16px clamp(16px, 2vw, 32px)", display: "flex", flexDirection: "column", gap: 16 }}>
           {/* Header */}
@@ -492,7 +516,20 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
                 {showTemplateSwitcher && !templatesLoading && (
                   <select
                     value={usTemplate}
-                    onChange={(e) => setUsTemplate(e.target.value)}
+                    onChange={(e) => {
+                      const newTpl = e.target.value;
+                      if (existingPersonas.length > 0 && newTpl !== usTemplate) {
+                        if (confirm(
+                          locale === "en"
+                            ? `Changing template will invalidate existing ${existingPersonas.length} personas. You should re-generate after switching. Continue?`
+                            : `切換模板將使現有 ${existingPersonas.length} 個 personas 失效。切換後建議重新生成。確定要切換嗎？`
+                        )) {
+                          setUsTemplate(newTpl);
+                        }
+                      } else {
+                        setUsTemplate(newTpl);
+                      }
+                    }}
                     disabled={generating}
                     style={{
                       width: "100%", marginTop: 8, padding: "8px 12px", borderRadius: 8,
@@ -540,28 +577,95 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
                   <input type="number" min={0} max={120} value={ageMax} onChange={e => setAgeMax(Number(e.target.value) || 80)}
                     style={{ width: "100%", marginTop: 4, padding: "6px 10px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 13 }} />
                 </label>
-                <label style={{ flex: "1 1 130px", color: "rgba(255,255,255,0.7)", fontSize: 12 }}>
-                  {t("popsetup.persona_strategy")}
-                  <select value={personaStrategy} onChange={e => setPersonaStrategy(e.target.value)}
-                    style={{ width: "100%", marginTop: 4, padding: "6px 10px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 13 }}>
-                    <option value="template">{t("popsetup.strategy_template")}</option>
-                    <option value="llm">{t("popsetup.strategy_llm")}</option>
-                  </select>
-                </label>
+                {/* Persona strategy hidden — always use LLM */}
               </div>
+
+              {/* Existing personas summary */}
+              {existingPersonas.length > 0 && !generating && !done && (() => {
+                const count = (arr: any[], key: string) => {
+                  const m: Record<string, number> = {};
+                  arr.forEach((a) => { const v = a[key] ?? "Unknown"; m[v] = (m[v] ?? 0) + 1; });
+                  return Object.entries(m).sort((a, b) => b[1] - a[1]);
+                };
+                const politicalStats = count(existingPersonas, "political_leaning");
+                const genderStats = count(existingPersonas, "gender");
+                const raceStats = count(existingPersonas, "race");
+                const stateStats = count(existingPersonas, "district");
+                const leanColor = (lean: string) => {
+                  if (lean?.includes("Solid") && lean?.includes("Dem")) return "#2563eb";
+                  if (lean?.includes("Lean") && lean?.includes("Dem")) return "#60a5fa";
+                  if (lean?.includes("Tossup") || lean?.includes("Swing")) return "#a855f7";
+                  if (lean?.includes("Lean") && lean?.includes("Rep")) return "#f87171";
+                  if (lean?.includes("Solid") && lean?.includes("Rep")) return "#dc2626";
+                  return "#6b7280";
+                };
+                return (
+                  <div style={{ padding: "14px", borderRadius: 8, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                      <span style={{ color: "#86efac", fontSize: 13, fontWeight: 600 }}>
+                        ✓ {existingPersonas.length} {t("popsetup.agents_exist") || "agents generated"}
+                      </span>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
+                      {/* Political */}
+                      <div>
+                        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 4 }}>Political</div>
+                        {politicalStats.slice(0, 5).map(([label, c]) => (
+                          <div key={label} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, marginBottom: 2 }}>
+                            <div style={{ width: 6, height: 6, borderRadius: 2, backgroundColor: leanColor(label), flexShrink: 0 }} />
+                            <span style={{ color: "rgba(255,255,255,0.6)", flex: 1 }}>{label}</span>
+                            <span style={{ color: "rgba(255,255,255,0.4)" }}>{c}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Gender */}
+                      <div>
+                        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 4 }}>Gender</div>
+                        {genderStats.map(([label, c]) => (
+                          <div key={label} style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginBottom: 2 }}>
+                            {label}: <span style={{ color: "rgba(255,255,255,0.4)" }}>{c}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Race */}
+                      <div>
+                        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 4 }}>Race</div>
+                        {raceStats.slice(0, 5).map(([label, c]) => (
+                          <div key={label} style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginBottom: 2 }}>
+                            {label}: <span style={{ color: "rgba(255,255,255,0.4)" }}>{c}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Top states */}
+                      <div>
+                        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 4 }}>Top States</div>
+                        {stateStats.slice(0, 5).map(([label, c]) => (
+                          <div key={label} style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginBottom: 2 }}>
+                            {label}: <span style={{ color: "rgba(255,255,255,0.4)" }}>{c}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Generate button — label follows the active template's region */}
               <button onClick={handleGenerateUS} disabled={generating}
                 style={{
                   padding: "10px 20px", borderRadius: 8, border: "none", cursor: generating ? "not-allowed" : "pointer",
-                  background: generating ? "rgba(59,130,246,0.3)" : "#3b82f6",
+                  background: generating ? "rgba(59,130,246,0.3)" : existingPersonas.length > 0 ? "rgba(245,158,11,0.8)" : "#3b82f6",
                   color: "#fff", fontSize: 14, fontWeight: 700,
                 }}>
                 {generating
                   ? `${genPhase}`
-                  : selectedTemplateMeta?.election?.scope === "state"
-                    ? t("popsetup.generate.state", { region: selectedTemplateMeta.region || selectedTemplateMeta.region_code || "" })
-                    : t("popsetup.generate.national")}
+                  : existingPersonas.length > 0
+                    ? (selectedTemplateMeta?.election?.scope === "state"
+                      ? `🔄 Re-generate ${selectedTemplateMeta.region || selectedTemplateMeta.region_code || "State"} Population`
+                      : `🔄 Re-generate National Population`)
+                    : selectedTemplateMeta?.election?.scope === "state"
+                      ? t("popsetup.generate.state", { region: selectedTemplateMeta.region || selectedTemplateMeta.region_code || "" })
+                      : t("popsetup.generate.national")}
               </button>
 
               {/* Step progress */}
@@ -590,11 +694,47 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
                   ⚠ {error}
                 </div>
               )}
-              {done && (
-                <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", color: "#86efac", fontSize: 12 }}>
-                  ✓ Generated {resultCount} agents. Move on to Evolution → Prediction.
-                </div>
-              )}
+              {(done || existingPersonas.length > 0) && !generating && (() => {
+                const agents = existingPersonas.length > 0 ? existingPersonas : [];
+                if (!agents.length) return null;
+                const count = (arr: any[], key: string) => {
+                  const m: Record<string, number> = {};
+                  arr.forEach((a) => { const v = a[key] ?? "Unknown"; if (v) m[v] = (m[v] ?? 0) + 1; });
+                  return Object.entries(m).sort((a, b) => b[1] - a[1]);
+                };
+                const MiniBar = ({ title, data, color }: { title: string; data: [string, number][]; color: string }) => {
+                  const max = Math.max(...data.map(([, v]) => v), 1);
+                  return (
+                    <div>
+                      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>{title}</div>
+                      {data.slice(0, 7).map(([label, c]) => (
+                        <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2, fontSize: 11 }}>
+                          <span style={{ color: "rgba(255,255,255,0.5)", width: 90, textAlign: "right", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>{label}</span>
+                          <div style={{ flex: 1, background: "rgba(255,255,255,0.06)", borderRadius: 3, height: 10, overflow: "hidden" }}>
+                            <div style={{ height: "100%", borderRadius: 3, width: `${(c / max) * 100}%`, backgroundColor: color }} />
+                          </div>
+                          <span style={{ color: "rgba(255,255,255,0.35)", width: 24, fontSize: 10, textAlign: "right", flexShrink: 0 }}>{c}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                };
+                return (
+                  <div style={{ padding: 16, borderRadius: 8, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)" }}>
+                    <div style={{ color: "#86efac", fontSize: 13, fontWeight: 600, marginBottom: 14 }}>
+                      ✓ {agents.length} agents generated
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
+                      <MiniBar title="Political Leaning" data={count(agents, "political_leaning")} color="#e94560" />
+                      <MiniBar title="Race" data={count(agents, "race")} color="#f59e0b" />
+                      <MiniBar title="Gender" data={count(agents, "gender")} color="#a78bfa" />
+                      <MiniBar title="Household Income" data={count(agents, "household_income")} color="#22d3ee" />
+                      <MiniBar title="Education" data={count(agents, "education")} color="#fbbf24" />
+                      <MiniBar title="Top States" data={count(agents, "district")} color="#34d399" />
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

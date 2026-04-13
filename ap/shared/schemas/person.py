@@ -17,6 +17,9 @@ class Person(BaseModel):
 
     education: str | None = None
     occupation: str | None = None
+    race: str | None = None
+    hispanic_or_latino: str | None = None
+    household_income: str | None = None
     income_band: str | None = None
     household_type: str | None = None
     marital_status: str | None = None

@@ -1,9 +1,10 @@
 // ap/services/web/src/components/onboarding/OnboardingWizard.tsx
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { useLocaleStore } from "@/store/locale-store";
+import { useLocalizePersonaValue } from "@/lib/i18n";
 import { useShellStore } from "@/store/shell-store";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,6 +13,7 @@ import {
   type Provider,
   type RoleAssignment,
   buildSettingsPayload,
+  parseSettingsToProvidersAndRoles,
 } from "@/lib/vendor-presets";
 
 /* ─── Section header for accordion ─── */
@@ -82,12 +84,25 @@ interface TemplateInfo {
   scope?: string;
   cycle?: string;
   candidate_count?: number;
+  is_generic?: boolean;
+  metadata?: {
+    source?: { demographics?: string; elections?: string; leaning?: string };
+    national_pvi?: number;
+    national_pvi_label?: string;
+    state_pvi?: number;
+    state_pvi_label?: string;
+    county_count?: number;
+    counties_with_lean?: number;
+    state_count?: number;
+    population_total?: number;
+  };
 }
 
 export function OnboardingWizard() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const en = useLocaleStore((s) => s.locale) === "en";
+  const localize = useLocalizePersonaValue();
   const [step, setStep] = useState(1);
 
   // Step 1: Providers
@@ -100,8 +115,6 @@ export function OnboardingWizard() {
   const [serperKey, setSerperKey] = useState("");
   const [keyError, setKeyError] = useState("");
   const [testResults, setTestResults] = useState<Record<string, "ok" | "fail" | "testing">>({});
-  // Accordion state
-  const [expandedSection, setExpandedSection] = useState<1 | 2 | 3>(1);
 
   // Step 2: Project
   const [templates, setTemplates] = useState<TemplateInfo[]>([]);
@@ -115,19 +128,42 @@ export function OnboardingWizard() {
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [personaDone, setPersonaDone] = useState(false);
+  const [personas, setPersonas] = useState<any[]>([]);
+  const [showStats, setShowStats] = useState(false);
+  const [showDataSources, setShowDataSources] = useState(false);
+  const [hoveredPersona, setHoveredPersona] = useState<any | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  // Accordion section completion
-  const section1Complete = providers.some((p) => p.api_key.trim() !== "");
-  const section2Complete =
-    section1Complete &&
+  // Step 1 completion checks
+  const hasProviderWithKey = providers.some((p) => p.api_key.trim() !== "");
+  const rolesComplete =
+    hasProviderWithKey &&
     !!systemLlm.provider_id &&
     !!systemLlm.model &&
     agentLlms.length >= 1 &&
     agentLlms.every((a) => !!a.provider_id && !!a.model);
-  const section3Complete = serperKey.trim() !== "";
-  const allComplete = section1Complete && section2Complete && section3Complete;
+  const serperComplete = serperKey.trim() !== "";
+  const allComplete = rolesComplete && serperComplete;
 
   const providersWithKey = providers.filter((p) => p.api_key.trim() !== "");
+
+  // Load existing settings on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const settings = await apiFetch("/api/settings");
+        if (settings?.llm_vendors?.length) {
+          const parsed = parseSettingsToProvidersAndRoles(settings);
+          if (parsed.providers.length > 0) setProviders(parsed.providers);
+          if (parsed.systemLlm.provider_id) setSystemLlm(parsed.systemLlm);
+          if (parsed.agentLlms.length > 0) setAgentLlms(parsed.agentLlms);
+        }
+        if (settings?.serper_api_key) setSerperKey(settings.serper_api_key);
+      } catch { /* first run — no settings yet */ }
+      setInitialLoading(false);
+    })();
+  }, []);
 
   // Add provider
   const addProvider = () => {
@@ -173,10 +209,6 @@ export function OnboardingWizard() {
                 : a,
             ),
           );
-        }
-        // Auto-advance to section 2 when first key is entered
-        if (updates.api_key && updates.api_key.trim() && !prev.some((pp) => pp.api_key.trim())) {
-          setTimeout(() => setExpandedSection(2), 300);
         }
         return next;
       });
@@ -257,11 +289,11 @@ export function OnboardingWizard() {
 
   // Save API keys
   const saveKeys = async (advance = true) => {
-    if (!section1Complete) {
+    if (!hasProviderWithKey) {
       setKeyError(en ? "At least one LLM API key is required" : "至少需要一組 LLM API Key");
       return false;
     }
-    if (!section2Complete) {
+    if (!rolesComplete) {
       setKeyError(en ? "Please assign system and agent LLM roles" : "請指定系統與 Agent LLM 角色");
       return false;
     }
@@ -270,6 +302,7 @@ export function OnboardingWizard() {
       return false;
     }
     setKeyError("");
+    setSaving(true);
     try {
       const payload = buildSettingsPayload(providers, systemLlm, agentLlms, serperKey);
       await apiFetch("/api/settings", {
@@ -277,11 +310,13 @@ export function OnboardingWizard() {
         body: JSON.stringify(payload),
       });
       if (advance) {
-        loadTemplates();
+        await loadTemplates();
         setStep(2);
       }
+      setSaving(false);
       return true;
     } catch (e: any) {
+      setSaving(false);
       setKeyError(e.message || "Failed to save");
       return false;
     }
@@ -292,7 +327,21 @@ export function OnboardingWizard() {
     setLoadingTemplates(true);
     try {
       const raw = await apiFetch("/api/templates");
-      const data: TemplateInfo[] = Array.isArray(raw) ? raw : raw.templates ?? [];
+      const arr: any[] = Array.isArray(raw) ? raw : raw.templates ?? [];
+      const data: TemplateInfo[] = arr
+        .filter((t: any) => t.election) // only templates with election info
+        .map((t: any) => ({
+          id: t.id,
+          name: t.name,
+          region: t.region,
+          region_code: t.region_code,
+          country: t.country,
+          scope: t.election?.scope ?? t.scope,
+          cycle: t.election?.cycle ?? t.cycle,
+          candidate_count: t.election?.candidate_count ?? t.candidate_count,
+          is_generic: t.election?.is_generic,
+          metadata: t.metadata,
+        }));
       setTemplates(data);
       if (data.length > 0) setSelectedTemplate(data[0].id);
     } catch { /* ignore */ }
@@ -312,9 +361,8 @@ export function OnboardingWizard() {
       setCreatedWsId(wsId);
 
       // Apply template
-      await apiFetch(`/api/workspaces/${wsId}/apply-template`, {
+      await apiFetch(`/api/workspaces/${wsId}/apply-template?name=${encodeURIComponent(selectedTemplate)}`, {
         method: "POST",
-        body: JSON.stringify({ template_id: selectedTemplate }),
       });
 
       // Cache workspace
@@ -345,12 +393,20 @@ export function OnboardingWizard() {
         body: JSON.stringify({ strategy: "template", concurrency: 5 }),
       });
 
-      // Poll progress
+      // Poll progress + fetch persona data
       const poll = async () => {
         try {
           const p = await apiFetch(`/api/workspaces/${createdWsId}/persona-progress`);
-          setProgress({ done: p.done ?? 0, total: p.total ?? targetCount });
-          if (p.done >= p.total || p.status === "done" || p.status === "completed") {
+          const done = p.done ?? 0;
+          const total = p.total ?? targetCount;
+          setProgress({ done, total });
+          // Fetch generated personas so far
+          try {
+            const result = await apiFetch(`/api/workspaces/${createdWsId}/persona-result`);
+            const agents = result?.agents ?? (Array.isArray(result) ? result : []);
+            if (agents.length > 0) setPersonas(agents);
+          } catch { /* not ready yet */ }
+          if (done >= total || p.status === "done" || p.status === "completed") {
             setPersonaDone(true);
             setGenerating(false);
             return;
@@ -372,7 +428,7 @@ export function OnboardingWizard() {
       body: JSON.stringify({ onboarding_completed: true }),
     });
     queryClient.invalidateQueries({ queryKey: ["settings"] });
-    router.push(`/workspaces/${createdWsId}/population-setup`);
+    router.push(`/workspaces/${createdWsId}/evolution-quickstart`);
   };
 
   // Group templates
@@ -414,305 +470,289 @@ export function OnboardingWizard() {
           ))}
         </div>
 
-        {/* Step 1: API Keys — Accordion */}
-        {step === 1 && (
+        {/* Step 1: API Keys — Card-based layout */}
+        {step === 1 && initialLoading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-8 h-8 border-2 border-[#e94560] border-t-transparent rounded-full animate-spin mb-4" />
+            <div className="text-neutral-500 text-sm">{en ? "Loading settings..." : "載入設定中..."}</div>
+          </div>
+        )}
+        {step === 1 && !initialLoading && (
           <div>
             <h2 className="text-xl font-semibold text-white mb-1">
               {en ? "Configure API Keys" : "設定 API Key"}
             </h2>
             <p className="text-neutral-500 text-sm mb-6">
               {en
-                ? "Add at least one LLM provider, assign roles, and enter your Serper key."
-                : "新增至少一個 LLM 供應商、指定角色，並輸入 Serper Key。"}
+                ? "Add LLM providers, assign roles, and enter your Serper key."
+                : "新增 LLM 供應商、指定角色，並輸入 Serper Key。"}
             </p>
 
-            <div className="space-y-3">
-                  {/* ═══ Section 1: LLM Providers ═══ */}
-                  <div className={`rounded-lg border ${expandedSection === 1 ? "border-[#3b4c6b]" : section1Complete ? "border-[#3b4c6b]" : "border-[#2a3554]"} bg-[#0f1729]`}>
-                    <SectionHeader
-                      num={1}
-                      title={en ? "LLM Providers" : "LLM 供應商"}
-                      subtitle={en ? "Add API keys for your LLM services" : "新增 LLM 服務的 API Key"}
-                      complete={section1Complete}
-                      locked={false}
-                      summary={
-                        section1Complete
-                          ? `${providersWithKey.length} ${en ? "provider(s)" : "個供應商"}`
-                          : undefined
-                      }
-                      expanded={expandedSection === 1}
-                      en={en}
-                      onClick={() => setExpandedSection(1)}
-                    />
-                    {expandedSection === 1 && (
-                      <div className="px-3 pb-4 space-y-3">
-                        {providers.map((p, idx) => (
-                          <div
-                            key={p.id}
-                            className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]"
-                          >
-                            <div className="flex items-center gap-3 mb-3">
-                              <select
-                                className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
-                                value={p.vendor_type}
-                                onChange={(e) => updateProvider(idx, { vendor_type: e.target.value })}
-                              >
-                                {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
-                                  <option key={key} value={key}>{preset.label}</option>
-                                ))}
-                              </select>
-                              <div className="flex-1" />
-                              {providers.length > 1 && (
-                                <button
-                                  className="text-neutral-600 hover:text-red-400 text-sm"
-                                  onClick={() => removeProvider(idx)}
-                                >
-                                  ✕
-                                </button>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <input
-                                className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                                type="password"
-                                placeholder="API Key"
-                                value={p.api_key}
-                                onChange={(e) => updateProvider(idx, { api_key: e.target.value })}
-                              />
-                              <button
-                                className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
-                                onClick={() => testProvider(p.id)}
-                              >
-                                {testResults[p.id] === "testing"
-                                  ? "..."
-                                  : testResults[p.id] === "ok"
-                                  ? "✓ OK"
-                                  : testResults[p.id] === "fail"
-                                  ? "✕ Fail"
-                                  : en ? "Test" : "測試"}
-                              </button>
-                            </div>
-                            <input
-                              className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none mb-1"
-                              placeholder={en ? "Base URL (optional)" : "Base URL（選填）"}
-                              value={p.base_url}
-                              onChange={(e) => updateProvider(idx, { base_url: e.target.value })}
-                            />
-                            {VENDOR_PRESETS[p.vendor_type]?.keyUrl && (
-                              <a
-                                href={VENDOR_PRESETS[p.vendor_type].keyUrl}
-                                target="_blank"
-                                rel="noopener"
-                                className="text-[10px] text-blue-400 hover:underline mt-1 inline-block"
-                              >
-                                {en
-                                  ? `Get ${VENDOR_PRESETS[p.vendor_type].label} API Key →`
-                                  : `申請 ${VENDOR_PRESETS[p.vendor_type].label} API Key →`}
-                              </a>
-                            )}
-                          </div>
+            {/* ═══ LLM Providers ═══ */}
+            <div className="mb-5">
+              <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                {en ? "LLM Providers" : "LLM 供應商"}
+              </div>
+              <div className="space-y-3">
+                {providers.map((p, idx) => (
+                  <div
+                    key={p.id}
+                    className="bg-[#0f1729] rounded-lg p-4 border border-[#2a3554]"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <select
+                        className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
+                        value={p.vendor_type}
+                        onChange={(e) => updateProvider(idx, { vendor_type: e.target.value })}
+                      >
+                        {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
+                          <option key={key} value={key}>{preset.label}</option>
                         ))}
+                      </select>
+                      <div className="flex-1" />
+                      {providers.length > 1 && (
                         <button
-                          className="text-sm text-green-400 hover:text-green-300"
-                          onClick={addProvider}
+                          className="text-neutral-600 hover:text-red-400 text-sm"
+                          onClick={() => removeProvider(idx)}
                         >
-                          + {en ? "Add another provider" : "新增供應商"}
+                          ✕
                         </button>
-                      </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <input
+                        className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                        type="password"
+                        placeholder="API Key"
+                        value={p.api_key}
+                        onChange={(e) => updateProvider(idx, { api_key: e.target.value })}
+                      />
+                      <button
+                        className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                        onClick={() => testProvider(p.id)}
+                      >
+                        {testResults[p.id] === "testing"
+                          ? "..."
+                          : testResults[p.id] === "ok"
+                          ? "✓ OK"
+                          : testResults[p.id] === "fail"
+                          ? "✕ Fail"
+                          : en ? "Test" : "測試"}
+                      </button>
+                    </div>
+                    <input
+                      className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none mb-1"
+                      placeholder={en ? "Base URL (optional)" : "Base URL（選填）"}
+                      value={p.base_url}
+                      onChange={(e) => updateProvider(idx, { base_url: e.target.value })}
+                    />
+                    {VENDOR_PRESETS[p.vendor_type]?.keyUrl && (
+                      <a
+                        href={VENDOR_PRESETS[p.vendor_type].keyUrl}
+                        target="_blank"
+                        rel="noopener"
+                        className="text-[10px] text-blue-400 hover:underline mt-1 inline-block"
+                      >
+                        {en
+                          ? `Get ${VENDOR_PRESETS[p.vendor_type].label} API Key →`
+                          : `申請 ${VENDOR_PRESETS[p.vendor_type].label} API Key →`}
+                      </a>
                     )}
                   </div>
+                ))}
+                <button
+                  className="text-sm text-green-400 hover:text-green-300"
+                  onClick={addProvider}
+                >
+                  + {en ? "Add another provider" : "新增供應商"}
+                </button>
+              </div>
+            </div>
 
-                  {/* ═══ Section 2: Assign LLM Roles ═══ */}
-                  <div className={`rounded-lg border ${!section1Complete ? "border-[#2a3554]" : "border-[#3b4c6b]"} bg-[#0f1729]`}>
-                    <SectionHeader
-                      num={2}
-                      title={en ? "Assign LLM Roles" : "指定 LLM 角色"}
-                      subtitle={en ? "Choose which providers handle system vs agent tasks" : "選擇系統與 Agent 任務的供應商"}
-                      complete={section2Complete}
-                      locked={!section1Complete}
-                      summary={
-                        section2Complete
-                          ? `${en ? "System" : "系統"}: ${systemLlm.model}, ${agentLlms.length} ${en ? "agent(s)" : "個 Agent"}`
-                          : undefined
-                      }
-                      expanded={expandedSection === 2}
-                      en={en}
-                      onClick={() => setExpandedSection(2)}
+            {/* ═══ Role Cards (visible once at least one provider has a key) ═══ */}
+            {hasProviderWithKey && (
+              <div className="mb-5">
+                <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                  {en ? "Assign LLM Roles" : "指定 LLM 角色"}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+                  {/* ── Left column: System LLM ── */}
+                  <div className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-4 flex flex-col">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-2 h-2 rounded-full bg-cyan-400 shrink-0" />
+                      <span className="text-sm font-medium text-neutral-200">
+                        {en ? "System LLM" : "系統 LLM"}
+                      </span>
+                    </div>
+                    <div className="text-neutral-500 text-[10px] mb-3">
+                      {en
+                        ? "News analysis, data parsing, election OCR"
+                        : "新聞分析、資料解析、選舉 OCR"}
+                    </div>
+                    <select
+                      className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
+                      value={systemLlm.provider_id}
+                      onChange={(e) => {
+                        const pid = e.target.value;
+                        const prov = providers.find((pp) => pp.id === pid);
+                        const preset = prov ? VENDOR_PRESETS[prov.vendor_type] : null;
+                        setSystemLlm({ provider_id: pid, model: preset?.systemModel ?? systemLlm.model });
+                      }}
+                    >
+                      {providersWithKey.map((p) => (
+                        <option key={p.id} value={p.id}>{p.display_name}</option>
+                      ))}
+                    </select>
+                    <input
+                      className="bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                      placeholder="Model"
+                      value={systemLlm.model}
+                      onChange={(e) => setSystemLlm((prev) => ({ ...prev, model: e.target.value }))}
                     />
-                    {expandedSection === 2 && section1Complete && (
-                      <div className="px-3 pb-4 space-y-4">
-                        {/* System LLM */}
-                        <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
-                          <div className="text-neutral-400 text-xs mb-1">
-                            {en ? "System LLM" : "系統 LLM"}{" "}
-                            <span className="text-neutral-600">
-                              {en ? "(news analysis, data parsing, etc.)" : "（新聞分析、資料解析等）"}
-                            </span>
-                          </div>
-                          <div className="text-neutral-500 text-[10px] mb-3">
-                            {en
-                              ? "A capable thinking model is recommended."
-                              : "建議使用較強的推理模型。"}
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <select
-                              className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
-                              value={systemLlm.provider_id}
-                              onChange={(e) => {
-                                const pid = e.target.value;
-                                const prov = providers.find((pp) => pp.id === pid);
-                                const preset = prov ? VENDOR_PRESETS[prov.vendor_type] : null;
-                                setSystemLlm({ provider_id: pid, model: preset?.systemModel ?? systemLlm.model });
-                              }}
-                            >
-                              {providersWithKey.map((p) => (
-                                <option key={p.id} value={p.id}>{p.display_name}</option>
-                              ))}
-                            </select>
-                            <input
-                              className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
-                              placeholder="Model"
-                              value={systemLlm.model}
-                              onChange={(e) => setSystemLlm((prev) => ({ ...prev, model: e.target.value }))}
-                            />
-                          </div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="border-t border-[#2a3554]" />
-
-                        {/* Agent LLMs */}
-                        <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
-                          <div className="text-neutral-400 text-xs mb-1">
-                            {en ? "Agent LLM(s)" : "Agent LLM"}{" "}
-                            <span className="text-neutral-600">
-                              {en ? "(persona generation, opinion evolution)" : "（人格生成、觀點演化）"}
-                            </span>
-                          </div>
-                          <div className="text-neutral-500 text-[10px] mb-3">
-                            {en
-                              ? "Select which providers to use for agent tasks. At least one is required."
-                              : "選擇用於 Agent 任務的供應商，至少需要一個。"}
-                          </div>
-                          <div className="space-y-2">
-                            {providersWithKey.map((p) => {
-                              const isChecked = agentLlms.some((a) => a.provider_id === p.id);
-                              const assignment = agentLlms.find((a) => a.provider_id === p.id);
-                              const isLastChecked = isChecked && agentLlms.length === 1;
-                              return (
-                                <div key={p.id} className="flex items-center gap-3">
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    disabled={isLastChecked}
-                                    className="accent-[#e94560]"
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
-                                        const preset = VENDOR_PRESETS[p.vendor_type];
-                                        setAgentLlms((prev) => [
-                                          ...prev,
-                                          { provider_id: p.id, model: preset?.defaultModel ?? "" },
-                                        ]);
-                                      } else {
-                                        setAgentLlms((prev) => prev.filter((a) => a.provider_id !== p.id));
-                                      }
-                                    }}
-                                  />
-                                  <span className="text-neutral-300 text-sm w-20 shrink-0">
-                                    {p.display_name}
-                                  </span>
-                                  {isChecked && (
-                                    <input
-                                      className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
-                                      placeholder="Model"
-                                      value={assignment?.model ?? ""}
-                                      onChange={(e) => {
-                                        const model = e.target.value;
-                                        setAgentLlms((prev) =>
-                                          prev.map((a) =>
-                                            a.provider_id === p.id ? { ...a, model } : a,
-                                          ),
-                                        );
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
-                  {/* ═══ Section 3: Search API ═══ */}
-                  <div className={`rounded-lg border ${!section2Complete ? "border-[#2a3554]" : "border-[#3b4c6b]"} bg-[#0f1729]`}>
-                    <SectionHeader
-                      num={3}
-                      title={en ? "Search API" : "搜尋 API"}
-                      subtitle={en ? "Serper key for Google News search" : "用於 Google 新聞搜尋的 Serper Key"}
-                      complete={section3Complete}
-                      locked={!section2Complete}
-                      summary={section3Complete ? (en ? "Key set" : "已設定") : undefined}
-                      expanded={expandedSection === 3}
-                      en={en}
-                      onClick={() => setExpandedSection(3)}
-                    />
-                    {expandedSection === 3 && section2Complete && (
-                      <div className="px-3 pb-4">
-                        <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
-                          <div className="text-neutral-400 text-xs mb-2">
-                            Serper API Key <span className="text-[#e94560]">*</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <input
-                              className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
-                              type="password"
-                              placeholder="Serper API Key"
-                              value={serperKey}
-                              onChange={(e) => setSerperKey(e.target.value)}
-                            />
+                  {/* ── Right column: Agent LLM cards + Add button ── */}
+                  <div className="flex flex-col gap-3">
+                    {agentLlms.map((agent, aIdx) => (
+                      <div
+                        key={`${agent.provider_id}-${aIdx}`}
+                        className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-4 flex flex-col"
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 rounded-full bg-[#e94560] shrink-0" />
+                          <span className="text-sm font-medium text-neutral-200">
+                            Agent LLM {agentLlms.length > 1 ? `#${aIdx + 1}` : ""}
+                          </span>
+                          <div className="flex-1" />
+                          {agentLlms.length > 1 && (
                             <button
-                              className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
-                              onClick={testSerper}
+                              className="text-neutral-600 hover:text-red-400 text-xs"
+                              onClick={() => setAgentLlms((prev) => prev.filter((_, i) => i !== aIdx))}
                             >
-                              {testResults.serper === "testing"
-                                ? "..."
-                                : testResults.serper === "ok"
-                                ? "✓ OK"
-                                : testResults.serper === "fail"
-                                ? "✕ Fail"
-                                : en ? "Test" : "測試"}
+                              ✕
                             </button>
-                          </div>
-                          <a
-                            href="https://serper.dev/api-key"
-                            target="_blank"
-                            rel="noopener"
-                            className="text-[10px] text-blue-400 hover:underline mt-2 inline-block"
-                          >
-                            {en ? "Get Serper API Key (Google Search) →" : "申請 Serper API Key（Google 搜尋）→"}
-                          </a>
+                          )}
                         </div>
+                        <div className="text-neutral-500 text-[10px] mb-3">
+                          {en
+                            ? "Persona generation, opinion evolution"
+                            : "人格生成、觀點演化"}
+                        </div>
+                        <select
+                          className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
+                          value={agent.provider_id}
+                          onChange={(e) => {
+                            const pid = e.target.value;
+                            const p = providers.find((pp) => pp.id === pid);
+                            const preset = p ? VENDOR_PRESETS[p.vendor_type] : null;
+                            setAgentLlms((prev) =>
+                              prev.map((a, i) =>
+                                i === aIdx
+                                  ? { provider_id: pid, model: preset?.defaultModel ?? a.model }
+                                  : a,
+                              ),
+                            );
+                          }}
+                        >
+                          {providersWithKey.map((p) => (
+                            <option key={p.id} value={p.id}>{p.display_name}</option>
+                          ))}
+                        </select>
+                        <input
+                          className="bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                          placeholder="Model"
+                          value={agent.model}
+                          onChange={(e) => {
+                            const model = e.target.value;
+                            setAgentLlms((prev) =>
+                              prev.map((a, i) => (i === aIdx ? { ...a, model } : a)),
+                            );
+                          }}
+                        />
                       </div>
-                    )}
+                    ))}
+
+                    {/* Add Agent LLM (dashed card) */}
+                    <button
+                      className="rounded-lg border border-dashed border-[#2a3554] hover:border-[#3b4c6b] p-4 flex items-center justify-center gap-2 text-neutral-500 hover:text-neutral-300 transition-colors"
+                      onClick={() => {
+                        const firstWithKey = providersWithKey[0];
+                        if (!firstWithKey) return;
+                        const preset = VENDOR_PRESETS[firstWithKey.vendor_type];
+                        setAgentLlms((prev) => [
+                          ...prev,
+                          { provider_id: firstWithKey.id, model: preset?.defaultModel ?? "" },
+                        ]);
+                      }}
+                    >
+                      <span className="text-lg">+</span>
+                      <span className="text-sm">{en ? "Add Agent LLM" : "新增 Agent LLM"}</span>
+                    </button>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* ═══ Search API (Serper) ═══ */}
+            {hasProviderWithKey && (
+              <div className="mb-2">
+                <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                  {en ? "Search API" : "搜尋 API"}
+                </div>
+                <div className="bg-[#0f1729] rounded-lg p-4 border border-[#2a3554]">
+                  <div className="text-neutral-400 text-xs mb-2">
+                    Serper API Key <span className="text-[#e94560]">*</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                      type="password"
+                      placeholder="Serper API Key"
+                      value={serperKey}
+                      onChange={(e) => setSerperKey(e.target.value)}
+                    />
+                    <button
+                      className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                      onClick={testSerper}
+                    >
+                      {testResults.serper === "testing"
+                        ? "..."
+                        : testResults.serper === "ok"
+                        ? "✓ OK"
+                        : testResults.serper === "fail"
+                        ? "✕ Fail"
+                        : en ? "Test" : "測試"}
+                    </button>
+                  </div>
+                  <a
+                    href="https://serper.dev/api-key"
+                    target="_blank"
+                    rel="noopener"
+                    className="text-[10px] text-blue-400 hover:underline mt-2 inline-block"
+                  >
+                    {en ? "Get Serper API Key (Google Search) →" : "申請 Serper API Key（Google 搜尋）→"}
+                  </a>
+                </div>
+              </div>
+            )}
 
             {keyError && (
               <div className="text-red-400 text-sm mt-4 mb-2">{keyError}</div>
             )}
 
             <button
-              className={`w-full mt-6 py-2.5 rounded-lg font-medium transition-colors ${
-                allComplete
+              className={`w-full mt-6 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${
+                allComplete && !saving
                   ? "bg-[#e94560] hover:bg-[#d63851] text-white"
                   : "bg-neutral-700 text-neutral-500 cursor-not-allowed"
               }`}
-              disabled={!allComplete}
+              disabled={!allComplete || saving}
               onClick={() => saveKeys()}
             >
-              {en ? "Next: Create Project →" : "下一步：建立專案 →"}
+              {saving && <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+              {saving
+                ? (en ? "Saving..." : "儲存中...")
+                : (en ? "Next: Create Project →" : "下一步：建立專案 →")}
             </button>
           </div>
         )}
@@ -741,8 +781,17 @@ export function OnboardingWizard() {
               />
             </div>
 
-            <div className="text-neutral-400 text-xs mb-2">
-              {en ? "Select Template" : "選擇模板"}
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-neutral-400 text-xs">
+                {en ? "Select Template" : "選擇模板"}
+              </div>
+              <button
+                className="text-[10px] text-blue-400 hover:text-blue-300 hover:underline transition-colors flex items-center gap-1"
+                onClick={() => setShowDataSources(true)}
+              >
+                <span className="inline-block w-3 h-3 rounded-full border border-blue-400 text-blue-400 text-[8px] leading-3 text-center shrink-0">i</span>
+                {en ? "Data Sources" : "資料來源"}
+              </button>
             </div>
 
             {loadingTemplates ? (
@@ -809,11 +858,229 @@ export function OnboardingWizard() {
             >
               {en ? "Next: Generate Personas →" : "下一步：生成 Persona →"}
             </button>
+
+            {/* ── Data Sources Modal (dynamic per selected template) ── */}
+            {showDataSources && (() => {
+              const sel = templates.find((t) => t.id === selectedTemplate);
+              const m = sel?.metadata;
+              const src = m?.source;
+              const isState = sel?.scope === "state";
+              const pviLabel = isState ? m?.state_pvi_label : m?.national_pvi_label;
+              const pop = m?.population_total;
+              const fmtPop = pop ? pop.toLocaleString() : "—";
+              const countyCount = m?.county_count ?? (isState ? "—" : "3,142");
+              const stateCount = m?.state_count ?? (isState ? 1 : 51);
+              const cwl = m?.counties_with_lean;
+
+              return (
+              <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-6" onClick={() => setShowDataSources(false)}>
+                <div
+                  className="bg-[#0f1729] border border-[#2a3554] rounded-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6 shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-white">
+                      {en ? "Data Sources" : "資料來源"}
+                    </h3>
+                    <button className="text-neutral-500 hover:text-white text-lg" onClick={() => setShowDataSources(false)}>✕</button>
+                  </div>
+                  {sel && (
+                    <div className="text-neutral-500 text-xs mb-5">
+                      {sel.name}
+                      {sel.region && sel.scope === "state" ? ` · ${sel.region}` : ""}
+                    </div>
+                  )}
+
+                  {/* Summary stats row */}
+                  {m && (
+                    <div className="grid grid-cols-3 gap-3 mb-5">
+                      <div className="bg-[#16213e] rounded-lg p-3 border border-[#0f3460] text-center">
+                        <div className="text-lg font-bold text-white">{fmtPop}</div>
+                        <div className="text-neutral-500 text-[10px] mt-0.5">{en ? "Population" : "人口"}</div>
+                      </div>
+                      <div className="bg-[#16213e] rounded-lg p-3 border border-[#0f3460] text-center">
+                        <div className="text-lg font-bold text-white">{countyCount}</div>
+                        <div className="text-neutral-500 text-[10px] mt-0.5">{en ? "Counties" : "縣"}</div>
+                      </div>
+                      <div className="bg-[#16213e] rounded-lg p-3 border border-[#0f3460] text-center">
+                        <div className={`text-lg font-bold ${pviLabel?.startsWith("D") ? "text-blue-400" : pviLabel?.startsWith("R") ? "text-red-400" : "text-purple-400"}`}>
+                          {pviLabel ?? "—"}
+                        </div>
+                        <div className="text-neutral-500 text-[10px] mt-0.5">{isState ? (en ? "State PVI" : "州 PVI") : (en ? "National PVI" : "全國 PVI")}</div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-4 text-sm">
+                    {/* ACS Census */}
+                    <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-400 mt-1.5 shrink-0" />
+                        <div>
+                          <div className="text-neutral-200 font-medium">
+                            {en ? "U.S. Census Bureau — ACS" : "美國人口調查局 — ACS"}
+                          </div>
+                          <div className="text-neutral-500 text-[11px] mt-0.5">
+                            {src?.demographics ?? "ACS 2024 5-year (via censusreporter.org)"}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-neutral-400 text-xs leading-relaxed ml-5">
+                        <p className="mb-1.5">
+                          {isState
+                            ? (en
+                              ? `Covering ${sel?.region ?? "state"}: ${countyCount} counties, population ${fmtPop}.`
+                              : `涵蓋${sel?.region ?? "州"}：${countyCount} 個縣，人口 ${fmtPop}。`)
+                            : (en
+                              ? `Covering ${stateCount} states + ${countyCount} counties, population ${fmtPop}.`
+                              : `涵蓋 ${stateCount} 州 + ${countyCount} 個縣，人口 ${fmtPop}。`)}
+                        </p>
+                        <div className="text-neutral-500">
+                          <span className="text-neutral-400">{en ? "Dimensions: " : "維度："}</span>
+                          {en
+                            ? "Gender, Age (7 brackets), Race (7 categories, B02001), Hispanic/Latino (B03003), Education (4 levels), Household Income (7 brackets, B19001), Household Type (B11001), Employment (5 categories), Housing tenure, Media habit"
+                            : "性別、年齡（7 區間）、種族（7 類，B02001）、西語裔（B03003）、教育（4 級）、家庭收入（7 區間，B19001）、家庭類型（B11001）、就業（5 類）、住房、媒體習慣"}
+                        </div>
+                        <div className="text-neutral-500 mt-1">
+                          <span className="text-neutral-400">{en ? "Tables: " : "表格："}</span>
+                          B01001, B15003, B19001, B23025, B25003
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* MEDSL Elections */}
+                    <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                        <div>
+                          <div className="text-neutral-200 font-medium">
+                            {en ? "MIT Election Data — MEDSL" : "MIT 選舉資料 — MEDSL"}
+                          </div>
+                          <div className="text-neutral-500 text-[11px] mt-0.5">
+                            {src?.elections ?? "MEDSL countypres_2000-2024 (Harvard Dataverse)"} · CC0 1.0
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-neutral-400 text-xs leading-relaxed ml-5">
+                        {en
+                          ? `County-level presidential results for ${isState ? sel?.region : "all states"} (2020 + 2024). Used to compute partisan lean.`
+                          : `${isState ? sel?.region : "全國"}縣級總統選舉結果（2020 + 2024），用於計算黨派傾向。`}
+                      </div>
+                    </div>
+
+                    {/* Cook PVI */}
+                    <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-purple-400 mt-1.5 shrink-0" />
+                        <div>
+                          <div className="text-neutral-200 font-medium">
+                            {en ? "Cook Partisan Voting Index (PVI)" : "Cook 黨派投票指數 (PVI)"}
+                          </div>
+                          <div className="text-neutral-500 text-[11px] mt-0.5">
+                            {src?.leaning ?? "Cook PVI computed from 2020+2024 two-party share"}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-neutral-400 text-xs leading-relaxed ml-5">
+                        <p className="mb-1.5">
+                          {isState
+                            ? (en
+                              ? `${sel?.region}: ${countyCount} counties, overall ${pviLabel ?? "—"}.`
+                              : `${sel?.region}：${countyCount} 個縣，整體 ${pviLabel ?? "—"}。`)
+                            : (en
+                              ? `${cwl ?? countyCount} counties with computed PVI. National baseline: ${pviLabel ?? "R+0"}.`
+                              : `${cwl ?? countyCount} 個縣有計算 PVI，全國基線：${pviLabel ?? "R+0"}。`)}
+                        </p>
+                        <div className="text-neutral-500">
+                          <span className="text-neutral-400">{en ? "Formula: " : "公式："}</span>
+                          {en
+                            ? "mean(county Dem 2-party% − national Dem%) across 2020 & 2024"
+                            : "2020/2024（縣民主黨兩黨得票率 − 全國民主黨得票率）平均值"}
+                        </div>
+                        <div className="text-neutral-500 mt-1">
+                          <span className="text-neutral-400">{en ? "5 buckets: " : "5 分類："}</span>
+                          Solid D · Lean D · Tossup · Lean R · Solid R
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Geography */}
+                    <div className="bg-[#16213e] rounded-lg p-4 border border-[#0f3460]">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-green-400 mt-1.5 shrink-0" />
+                        <div>
+                          <div className="text-neutral-200 font-medium">
+                            {en ? "Geographic Boundaries" : "地理邊界"}
+                          </div>
+                          <div className="text-neutral-500 text-[11px] mt-0.5">
+                            us-atlas v3 · jsdelivr CDN · TopoJSON → GeoJSON
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-neutral-400 text-xs leading-relaxed ml-5">
+                        {isState
+                          ? (en
+                            ? `${countyCount} county boundaries for ${sel?.region}. Linked via 5-digit FIPS codes.`
+                            : `${sel?.region} ${countyCount} 個縣邊界，以 5 碼 FIPS 關聯。`)
+                          : (en
+                            ? "3,233 county + 56 state features (including territories). Linked via 5-digit FIPS codes."
+                            : "3,233 個縣 + 56 個州特徵（含領地），以 5 碼 FIPS 關聯。")}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              );
+            })()}
           </div>
         )}
 
         {/* Step 3: Generate Personas */}
-        {step === 3 && (
+        {step === 3 && (() => {
+          /* ── Persona color helpers ── */
+          const leanColor = (lean: string) => {
+            if (lean?.includes("Solid") && lean?.includes("Dem")) return "#2563eb";
+            if (lean?.includes("Lean") && lean?.includes("Dem")) return "#60a5fa";
+            if (lean?.includes("Tossup") || lean?.includes("Swing")) return "#a855f7";
+            if (lean?.includes("Lean") && lean?.includes("Rep")) return "#f87171";
+            if (lean?.includes("Solid") && lean?.includes("Rep")) return "#dc2626";
+            return "#6b7280";
+          };
+
+          /* ── Stats computation ── */
+          const computeStats = () => {
+            const count = (arr: any[], key: string) => {
+              const m: Record<string, number> = {};
+              arr.forEach((a) => { const v = a[key] ?? "Unknown"; m[v] = (m[v] ?? 0) + 1; });
+              return Object.entries(m).sort((a, b) => b[1] - a[1]);
+            };
+            return {
+              gender: count(personas, "gender"),
+              race: count(personas, "race"),
+              hispanic: count(personas, "hispanic_or_latino"),
+              income: count(personas, "household_income"),
+              householdType: count(personas, "household_type"),
+              state: count(personas, "district"),
+              education: count(personas, "education"),
+              political: count(personas, "political_leaning"),
+              media: count(personas, "media_habit"),
+              age: (() => {
+                const buckets: Record<string, number> = { "18-24": 0, "25-34": 0, "35-44": 0, "45-54": 0, "55-64": 0, "65+": 0 };
+                personas.forEach((a) => {
+                  const age = a.age ?? 0;
+                  if (age < 25) buckets["18-24"]++;
+                  else if (age < 35) buckets["25-34"]++;
+                  else if (age < 45) buckets["35-44"]++;
+                  else if (age < 55) buckets["45-54"]++;
+                  else if (age < 65) buckets["55-64"]++;
+                  else buckets["65+"]++;
+                });
+                return Object.entries(buckets);
+              })(),
+            };
+          };
+
+          return (
           <div>
             <h2 className="text-xl font-semibold text-white mb-1">
               {en ? "Generate Personas" : "生成 Persona"}
@@ -839,18 +1106,191 @@ export function OnboardingWizard() {
               </div>
             </div>
 
-            {progress && (
+            {/* ── Animated persona blocks grid ── */}
+            {(generating || personaDone) && (
               <div className="mb-4">
-                <div className="bg-neutral-800 rounded-full h-2 overflow-hidden mb-1">
-                  <div
-                    className="bg-[#e94560] h-full rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, (progress.done / progress.total) * 100)}%` }}
-                  />
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-neutral-500 text-xs">
+                    {progress ? `${progress.done}/${progress.total}` : "0/0"}{" "}
+                    {en ? "personas" : "persona"}
+                    {generating && " ..."}
+                  </span>
+                  {personas.length > 0 && (
+                    <button
+                      className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                      onClick={() => setShowStats(true)}
+                    >
+                      {en ? "View Statistics" : "查看統計"}
+                    </button>
+                  )}
                 </div>
-                <div className="text-neutral-500 text-xs">
-                  {progress.done}/{progress.total} {en ? "personas generated" : "persona 已生成"}
-                  {generating && " ..."}
+                {/* Blocks grid */}
+                <div className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-3">
+                  <div className="flex flex-wrap gap-1">
+                    {personas.map((p, i) => (
+                      <div
+                        key={p.person_id ?? i}
+                        className={`w-5 h-5 rounded-sm cursor-pointer transition-all duration-150 ${
+                          hoveredPersona?.person_id === p.person_id
+                            ? "scale-[1.8] ring-1 ring-white/50 z-10"
+                            : "hover:scale-150 hover:z-10"
+                        }`}
+                        style={{
+                          backgroundColor: leanColor(p.political_leaning),
+                          animation: `fadeInScale 0.3s ease-out ${Math.min(i * 0.02, 2)}s both`,
+                        }}
+                        onMouseEnter={() => setHoveredPersona(p)}
+                        onMouseLeave={() => setHoveredPersona(null)}
+                      />
+                    ))}
+                    {/* Placeholder blocks with loading animation */}
+                    {generating && Array.from({ length: Math.max(0, targetCount - personas.length) }).map((_, i) => (
+                      <div
+                        key={`ph-${i}`}
+                        className="w-5 h-5 rounded-sm"
+                        style={{
+                          backgroundColor: `rgba(100,116,139,${i < 5 ? 0.5 : 0.2})`,
+                          animation: i < 5 ? `pulse 1.2s ease-in-out ${i * 0.15}s infinite` : undefined,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  {/* Loading indicator when generating but no personas yet */}
+                  {generating && personas.length === 0 && (
+                    <div className="flex items-center justify-center gap-2 py-4">
+                      <div className="w-4 h-4 border-2 border-[#e94560] border-t-transparent rounded-full animate-spin" />
+                      <span className="text-neutral-500 text-xs">{en ? "Synthesizing population..." : "合成人口中..."}</span>
+                    </div>
+                  )}
                 </div>
+
+                {/* ── Persona detail panel (fixed at bottom of viewport) ── */}
+                {hoveredPersona && (() => {
+                  const p = hoveredPersona;
+                  return (
+                    <div className="fixed bottom-0 left-0 right-0 z-[55] pointer-events-none">
+                      <div className="max-w-3xl mx-auto px-4 pb-4 pointer-events-auto">
+                        <div className="bg-[#0f1729]/95 backdrop-blur-sm rounded-xl border border-[#3b4c6b] p-4 shadow-2xl">
+                          {/* Header */}
+                          <div className="flex items-center gap-3 mb-3">
+                            <div
+                              className="w-8 h-8 rounded-md shrink-0"
+                              style={{ backgroundColor: leanColor(p.political_leaning) }}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-neutral-200 font-semibold text-sm">
+                                {p.name ?? `Persona #${p.person_id}`}
+                              </div>
+                              <div className="text-neutral-500 text-[11px] truncate">
+                                {p.description || p.user_char || ""}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-4 gap-4">
+                            {/* Demographics */}
+                            <div>
+                              <div className="text-neutral-500 text-[10px] uppercase tracking-wider mb-1.5">{en ? "Demographics" : "人口特徵"}</div>
+                              <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-[11px]">
+                                <span className="text-neutral-500">{en ? "Age" : "年齡"}</span>
+                                <span className="text-neutral-300">{p.age}</span>
+                                <span className="text-neutral-500">{en ? "Gender" : "性別"}</span>
+                                <span className="text-neutral-300">{localize(p.gender)}</span>
+                                <span className="text-neutral-500">{en ? "State" : "州"}</span>
+                                <span className="text-neutral-300">{p.district}</span>
+                                {p.race && <>
+                                  <span className="text-neutral-500">{en ? "Race" : "種族"}</span>
+                                  <span className="text-neutral-300 truncate">{localize(p.race)}</span>
+                                </>}
+                                {p.hispanic_or_latino && <>
+                                  <span className="text-neutral-500">{en ? "Ethnicity" : "族裔"}</span>
+                                  <span className="text-neutral-300 truncate">{localize(p.hispanic_or_latino)}</span>
+                                </>}
+                                <span className="text-neutral-500">{en ? "Edu" : "教育"}</span>
+                                <span className="text-neutral-300 truncate">{localize(p.education)}</span>
+                                <span className="text-neutral-500">{en ? "Work" : "就業"}</span>
+                                <span className="text-neutral-300 truncate">{localize(p.occupation)}</span>
+                                {(p.household_income || p.income_band) && <>
+                                  <span className="text-neutral-500">{en ? "Income" : "收入"}</span>
+                                  <span className="text-neutral-300 truncate">{localize(p.household_income || p.income_band)}</span>
+                                </>}
+                                {p.household_type && <>
+                                  <span className="text-neutral-500">{en ? "Household" : "家庭"}</span>
+                                  <span className="text-neutral-300 truncate">{localize(p.household_type)}</span>
+                                </>}
+                              </div>
+                            </div>
+
+                            {/* Political */}
+                            <div>
+                              <div className="text-neutral-500 text-[10px] uppercase tracking-wider mb-1.5">{en ? "Political" : "政治"}</div>
+                              <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-[11px]">
+                                <span className="text-neutral-500">{en ? "Lean" : "傾向"}</span>
+                                <span className="font-medium" style={{ color: leanColor(p.political_leaning) }}>{p.political_leaning}</span>
+                                <span className="text-neutral-500">{en ? "Media" : "媒體"}</span>
+                                <span className="text-neutral-300 truncate">{localize(p.media_habit)}</span>
+                                {p.llm_vendor && <>
+                                  <span className="text-neutral-500">LLM</span>
+                                  <span className="text-neutral-300 truncate">{p.llm_vendor}</span>
+                                </>}
+                              </div>
+                            </div>
+
+                            {/* Personality */}
+                            {p.personality && (
+                              <div>
+                                <div className="text-neutral-500 text-[10px] uppercase tracking-wider mb-1.5">{en ? "Personality" : "個性"}</div>
+                                <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-[11px]">
+                                  {p.personality.expressiveness && <>
+                                    <span className="text-neutral-500">{en ? "Expr" : "表達"}</span>
+                                    <span className="text-neutral-300">{localize(p.personality.expressiveness)}</span>
+                                  </>}
+                                  {p.personality.emotional_stability && <>
+                                    <span className="text-neutral-500">{en ? "Stab" : "穩定"}</span>
+                                    <span className="text-neutral-300">{localize(p.personality.emotional_stability)}</span>
+                                  </>}
+                                  {p.personality.sociability && <>
+                                    <span className="text-neutral-500">{en ? "Social" : "社交"}</span>
+                                    <span className="text-neutral-300">{localize(p.personality.sociability)}</span>
+                                  </>}
+                                  {p.personality.openness && <>
+                                    <span className="text-neutral-500">{en ? "Open" : "開放"}</span>
+                                    <span className="text-neutral-300">{localize(p.personality.openness)}</span>
+                                  </>}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Individuality */}
+                            {p.individuality && (
+                              <div>
+                                <div className="text-neutral-500 text-[10px] uppercase tracking-wider mb-1.5">{en ? "Individuality" : "個體化"}</div>
+                                <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-[11px]">
+                                  {p.individuality.cognitive_bias && <>
+                                    <span className="text-neutral-500">{en ? "Bias" : "偏誤"}</span>
+                                    <span className="text-neutral-300">{localize(p.individuality.cognitive_bias)}</span>
+                                  </>}
+                                  {p.individuality.noise_scale != null && <>
+                                    <span className="text-neutral-500">{en ? "Noise" : "雜訊"}</span>
+                                    <span className="text-neutral-300">{p.individuality.noise_scale.toFixed(2)}</span>
+                                  </>}
+                                  {p.individuality.temperature_offset != null && <>
+                                    <span className="text-neutral-500">{en ? "Temp" : "溫度"}</span>
+                                    <span className="text-neutral-300">{p.individuality.temperature_offset > 0 ? "+" : ""}{p.individuality.temperature_offset.toFixed(2)}</span>
+                                  </>}
+                                  {p.individuality.memory_inertia != null && <>
+                                    <span className="text-neutral-500">{en ? "Inertia" : "慣性"}</span>
+                                    <span className="text-neutral-300">{p.individuality.memory_inertia.toFixed(2)}</span>
+                                  </>}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             )}
 
@@ -869,15 +1309,87 @@ export function OnboardingWizard() {
                   : (en ? "Generate Personas" : "生成 Persona")}
               </button>
             ) : (
-              <button
-                className="w-full bg-[#e94560] hover:bg-[#d63851] text-white py-2.5 rounded-lg font-medium transition-colors"
-                onClick={() => setStep(4)}
-              >
-                {en ? "Next →" : "下一步 →"}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  className="flex-1 bg-[#16213e] hover:bg-[#1a2744] text-neutral-300 py-2.5 rounded-lg font-medium transition-colors border border-[#2a3554]"
+                  onClick={() => setShowStats(true)}
+                >
+                  {en ? "View Statistics" : "查看統計"}
+                </button>
+                <button
+                  className="flex-1 bg-[#e94560] hover:bg-[#d63851] text-white py-2.5 rounded-lg font-medium transition-colors"
+                  onClick={() => setStep(4)}
+                >
+                  {en ? "Next →" : "下一步 →"}
+                </button>
+              </div>
             )}
+
+            {/* ── Statistics Modal ── */}
+            {showStats && personas.length > 0 && (() => {
+              const stats = computeStats();
+              const BarChart = ({ title, data, color }: { title: string; data: [string, number][]; color: string }) => {
+                const max = Math.max(...data.map(([, v]) => v), 1);
+                return (
+                  <div className="mb-5">
+                    <div className="text-neutral-300 text-xs font-medium mb-2">{title}</div>
+                    <div className="space-y-1">
+                      {data.slice(0, 10).map(([label, count]) => (
+                        <div key={label} className="flex items-center gap-2 text-[10px]">
+                          <span className="text-neutral-400 w-28 text-right truncate shrink-0">{label}</span>
+                          <div className="flex-1 bg-neutral-800 rounded-full h-3 overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${(count / max) * 100}%`, backgroundColor: color }}
+                            />
+                          </div>
+                          <span className="text-neutral-500 w-8 shrink-0">{count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              };
+              return (
+                <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-6" onClick={() => setShowStats(false)}>
+                  <div
+                    className="bg-[#0f1729] border border-[#2a3554] rounded-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6 shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-between mb-5">
+                      <h3 className="text-lg font-semibold text-white">
+                        {en ? "Persona Statistics" : "Persona 統計"}
+                        <span className="text-neutral-500 text-sm font-normal ml-2">({personas.length})</span>
+                      </h3>
+                      <button className="text-neutral-500 hover:text-white text-lg" onClick={() => setShowStats(false)}>✕</button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                      <BarChart title={en ? "Political Leaning" : "政治傾向"} data={stats.political} color="#e94560" />
+                      <BarChart title={en ? "Age Distribution" : "年齡分佈"} data={stats.age} color="#60a5fa" />
+                      <BarChart title={en ? "Gender" : "性別"} data={stats.gender} color="#a78bfa" />
+                      <BarChart title={en ? "Race" : "種族"} data={stats.race} color="#f59e0b" />
+                      <BarChart title={en ? "Hispanic/Latino" : "西語裔"} data={stats.hispanic} color="#14b8a6" />
+                      <BarChart title={en ? "State" : "州別"} data={stats.state} color="#34d399" />
+                      <BarChart title={en ? "Education" : "教育程度"} data={stats.education} color="#fbbf24" />
+                      <BarChart title={en ? "Household Income" : "家庭收入"} data={stats.income} color="#22d3ee" />
+                      <BarChart title={en ? "Household Type" : "家庭類型"} data={stats.householdType} color="#c084fc" />
+                      <BarChart title={en ? "Media Habit" : "媒體習慣"} data={stats.media} color="#f472b6" />
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Keyframe styles */}
+            <style jsx>{`
+              @keyframes fadeInScale {
+                from { opacity: 0; transform: scale(0); }
+                to { opacity: 1; transform: scale(1); }
+              }
+            `}</style>
           </div>
-        )}
+          );
+        })()}
 
         {/* Step 4: Ready */}
         {step === 4 && (

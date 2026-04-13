@@ -234,6 +234,98 @@
         }
       ]
     },
+    "race": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "White",
+          "weight": 0.5233
+        },
+        {
+          "value": "Black or African American",
+          "weight": 0.129
+        },
+        {
+          "value": "Asian",
+          "weight": 0.1067
+        },
+        {
+          "value": "American Indian / Alaska Native",
+          "weight": 0.0071
+        },
+        {
+          "value": "Native Hawaiian / Pacific Islander",
+          "weight": 0.0004
+        },
+        {
+          "value": "Other",
+          "weight": 0.1128
+        },
+        {
+          "value": "Two or More Races",
+          "weight": 0.1207
+        }
+      ]
+    },
+    "hispanic_or_latino": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Hispanic or Latino",
+          "weight": 0.2347
+        },
+        {
+          "value": "Not Hispanic or Latino",
+          "weight": 0.7653
+        }
+      ]
+    },
+    "household_income": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Under $25k",
+          "weight": 0.1109
+        },
+        {
+          "value": "$25k–$50k",
+          "weight": 0.1227
+        },
+        {
+          "value": "$50k–$75k",
+          "weight": 0.1295
+        },
+        {
+          "value": "$75k–$100k",
+          "weight": 0.1142
+        },
+        {
+          "value": "$100k–$150k",
+          "weight": 0.1855
+        },
+        {
+          "value": "$150k–$200k",
+          "weight": 0.1194
+        },
+        {
+          "value": "$200k+",
+          "weight": 0.2178
+        }
+      ]
+    },
+    "household_type": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Family Household",
+          "weight": 0.6812
+        },
+        {
+          "value": "Non-Family Household",
+          "weight": 0.3188
+        }
+      ]
+    },
     "media_habit": {
       "type": "categorical",
       "categories": [

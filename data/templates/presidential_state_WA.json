@@ -306,6 +306,98 @@
         }
       ]
     },
+    "race": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "White",
+          "weight": 0.6401
+        },
+        {
+          "value": "Black or African American",
+          "weight": 0.041
+        },
+        {
+          "value": "Asian",
+          "weight": 0.1072
+        },
+        {
+          "value": "American Indian / Alaska Native",
+          "weight": 0.0123
+        },
+        {
+          "value": "Native Hawaiian / Pacific Islander",
+          "weight": 0.0076
+        },
+        {
+          "value": "Other",
+          "weight": 0.0562
+        },
+        {
+          "value": "Two or More Races",
+          "weight": 0.1356
+        }
+      ]
+    },
+    "hispanic_or_latino": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Hispanic or Latino",
+          "weight": 0.1501
+        },
+        {
+          "value": "Not Hispanic or Latino",
+          "weight": 0.8499
+        }
+      ]
+    },
+    "household_income": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Under $25k",
+          "weight": 0.1113
+        },
+        {
+          "value": "$25k–$50k",
+          "weight": 0.1278
+        },
+        {
+          "value": "$50k–$75k",
+          "weight": 0.1389
+        },
+        {
+          "value": "$75k–$100k",
+          "weight": 0.1244
+        },
+        {
+          "value": "$100k–$150k",
+          "weight": 0.1912
+        },
+        {
+          "value": "$150k–$200k",
+          "weight": 0.1132
+        },
+        {
+          "value": "$200k+",
+          "weight": 0.1932
+        }
+      ]
+    },
+    "household_type": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Family Household",
+          "weight": 0.625
+        },
+        {
+          "value": "Non-Family Household",
+          "weight": 0.375
+        }
+      ]
+    },
     "media_habit": {
       "type": "categorical",
       "categories": [

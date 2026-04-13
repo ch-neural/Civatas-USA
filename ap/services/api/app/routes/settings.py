@@ -78,14 +78,15 @@ async def api_update_settings(req: SettingsUpdate):
             entry["api_key"] = current_map[entry["id"]]["api_key"]
         new_vendors.append(entry)
 
+    # If no vendors were sent, preserve existing ones (partial update like onboarding_completed)
     updated = {
-        "llm_mode": req.llm_mode,
-        "llm_vendors": new_vendors,
-        "active_vendors": req.active_vendors,
-        "vendor_ratio": req.vendor_ratio,
-        "primary_vendor_id": req.primary_vendor_id,
-        "fallback_vendor_id": req.fallback_vendor_id,
-        "system_vendor_id": req.system_vendor_id,
+        "llm_mode": req.llm_mode if req.llm_vendors else current.get("llm_mode", "multi"),
+        "llm_vendors": new_vendors if new_vendors else current.get("llm_vendors", []),
+        "active_vendors": req.active_vendors if req.active_vendors else current.get("active_vendors", []),
+        "vendor_ratio": req.vendor_ratio if req.llm_vendors else current.get("vendor_ratio", "1"),
+        "primary_vendor_id": req.primary_vendor_id or current.get("primary_vendor_id", ""),
+        "fallback_vendor_id": req.fallback_vendor_id or current.get("fallback_vendor_id", ""),
+        "system_vendor_id": req.system_vendor_id or current.get("system_vendor_id", ""),
     }
 
     # Preserve search API keys — only update if explicitly provided (not masked)

@@ -1,6 +1,6 @@
 {
-  "name": "US Presidential — National (Generic)",
-  "name_zh": "美國總統大選 — 全國（通用兩黨）",
+  "name": "US Presidential — 2028 (Who's Next?)",
+  "name_zh": "美國總統大選 — 2028（誰是下一位？）",
   "region": "United States",
   "region_code": "US",
   "fips": "00",
@@ -481,35 +481,62 @@
   "election": {
     "type": "presidential",
     "scope": "national",
-    "cycle": null,
-    "is_generic": true,
+    "cycle": 2028,
+    "is_generic": false,
     "candidates": [
       {
-        "id": "D",
-        "name": "Generic Democrat",
+        "id": "vance_2028",
+        "name": "JD Vance",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": true,
+        "color": "#ef4444",
+        "description": "Sitting Vice President under Trump (2025-). Former US Senator from Ohio. Author of 'Hillbilly Elegy'. Likely Republican frontrunner if Trump endorses."
+      },
+      {
+        "id": "newsom_2028",
+        "name": "Gavin Newsom",
         "party": "D",
         "party_label": "Democratic",
         "is_incumbent": false,
         "color": "#3b82f6",
-        "description": "Generic Democratic nominee. Use this slot to test scenarios without committing to a specific candidate profile."
+        "description": "Governor of California (2019-). Former Mayor of San Francisco. High national profile, frequent media presence. Progressive policy record on climate, immigration, gun control."
       },
       {
-        "id": "R",
-        "name": "Generic Republican",
+        "id": "desantis_2028",
+        "name": "Ron DeSantis",
         "party": "R",
         "party_label": "Republican",
         "is_incumbent": false,
-        "color": "#ef4444",
-        "description": "Generic Republican nominee. Use this slot to test scenarios without committing to a specific candidate profile."
+        "color": "#7f1d1d",
+        "description": "Governor of Florida (2019-). Ran in 2024 Republican primary. Known for anti-'woke' policies, COVID reopening stance, immigration enforcement."
       },
       {
-        "id": "I",
-        "name": "Generic Independent",
-        "party": "I",
-        "party_label": "Independent",
+        "id": "whitmer_2028",
+        "name": "Gretchen Whitmer",
+        "party": "D",
+        "party_label": "Democratic",
         "is_incumbent": false,
-        "color": "#94a3b8",
-        "description": "Generic third-party / independent candidate. Typically polls in single digits but can affect margin in close states."
+        "color": "#1e40af",
+        "description": "Governor of Michigan (2019-). Key swing-state executive. Known for Midwest pragmatism, reproductive rights advocacy, infrastructure investment."
+      },
+      {
+        "id": "haley_2028",
+        "name": "Nikki Haley",
+        "party": "R",
+        "party_label": "Republican",
+        "is_incumbent": false,
+        "color": "#f87171",
+        "description": "Former Governor of South Carolina, former UN Ambassador under Trump. Strong 2024 primary showing. Positioned as moderate-conservative alternative."
+      },
+      {
+        "id": "shapiro_2028",
+        "name": "Josh Shapiro",
+        "party": "D",
+        "party_label": "Democratic",
+        "is_incumbent": false,
+        "color": "#60a5fa",
+        "description": "Governor of Pennsylvania (2023-). Former Attorney General. Key swing-state figure. Centrist Democrat with bipartisan appeal."
       }
     ],
     "party_palette": {
@@ -573,12 +600,12 @@
       ]
     },
     "default_macro_context": {
-      "en": "[Federal context — generic two-party scenario]\nThis template models a generic US presidential race without committing to a specific incumbent. Adjust the macro context to match the cycle you want to simulate.\n\nResponsibility attribution principles:\n- National issues (inflation, gas prices, foreign policy, immigration, the economy) → typically pinned on whichever party holds the White House\n- State / local issues (housing costs, public safety, schools) → pinned on the in-state governing party",
-      "zh-TW": "【聯邦背景 — 兩黨通用情境】\n本 template 模擬一場通用的美國總統選舉，未指定執政黨。請根據您想模擬的週期調整此 macro context。\n\n責任歸屬原則：\n- 全國性議題（通膨、油價、外交、移民、經濟）→ 通常歸咎執政黨\n- 州 / 地方議題（住房、治安、教育）→ 歸咎州內執政黨"
+      "en": "[2028 US presidential election — speculative scenario]\nDonald Trump is the sitting 47th president (Republican, term-limited). JD Vance is the sitting Vice President and likely Republican frontrunner.\n\nPotential Democratic challengers include governors Gavin Newsom (CA), Gretchen Whitmer (MI), and Josh Shapiro (PA). On the Republican side, Ron DeSantis (FL) and Nikki Haley may challenge Vance.\n\nKey issues likely to shape the 2028 race:\n- Economy, inflation aftermath, national debt\n- Immigration and border policy legacy\n- AI and technology regulation\n- Climate change and energy transition\n- Foreign policy: Ukraine, China-Taiwan, Middle East\n- Healthcare costs and insurance access\n- Social Security and Medicare solvency",
+      "zh-TW": "【2028 美國總統大選 — 假設情境】\nDonald Trump 為現任第 47 屆總統（共和黨，任期限制）。JD Vance 為現任副總統，可能的共和黨領跑者。\n\n潛在民主黨挑戰者包括加州州長 Gavin Newsom、密西根州長 Gretchen Whitmer、賓州州長 Josh Shapiro。共和黨方面，Ron DeSantis 和 Nikki Haley 可能挑戰 Vance。\n\n2028 大選可能的主要議題：\n- 經濟、通膨後遺症、國債\n- 移民與邊境政策\n- AI 與科技監管\n- 氣候變遷與能源轉型\n- 外交：烏克蘭、台海、中東\n- 醫療費用與保險\n- 社會安全與聯邦醫療保險"
     },
     "default_search_keywords": {
-      "local": "swing state polling\nPennsylvania Michigan Wisconsin election\nGeorgia Arizona Nevada North Carolina",
-      "national": "US presidential election polling\ninflation economy gas prices voters\nimmigration border policy\nabortion rights post-Dobbs\nhealthcare costs affordability"
+      "local": "2028 election swing state polling\nPennsylvania Michigan Wisconsin Arizona Georgia\ngovernor race state politics 2028",
+      "national": "2028 presidential election candidates\nVance Newsom DeSantis Whitmer 2028\neconomy jobs AI regulation voters\nimmigration border policy debate\nSocial Security Medicare reform"
     },
     "default_calibration_params": {
       "news_impact": 2.2,
@@ -613,7 +640,7 @@
     "party_base_scores": {
       "D": 50,
       "R": 50,
-      "I": 25
+      "I": 20
     },
     "default_evolution_params": {
       "sim_days": 60,
@@ -626,6 +653,10 @@
     },
     "default_alignment": {
       "mode": "none"
+    },
+    "default_evolution_window": {
+      "start_date": "2027-11-03",
+      "end_date": "2028-11-02"
     }
   }
 }

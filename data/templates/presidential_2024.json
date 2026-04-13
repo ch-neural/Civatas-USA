@@ -1,6 +1,6 @@
 {
   "name": "US Presidential — 2024 (Trump vs Harris)",
-  "name_zh": "美國總統大選 — 2024（川普對賀錦麗）",
+  "name_zh": "美國總統大選 — 2024（川普 vs 賀錦麗）",
   "region": "United States",
   "region_code": "US",
   "fips": "00",
@@ -11,12 +11,12 @@
     "source": {
       "demographics": "ACS 2024 5-year (via censusreporter.org)",
       "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
-      "leaning": "Cook PVI computed from 2020+2024 two-party share"
+      "leaning": "Cook PVI computed from 2016+2020 two-party share"
     },
-    "national_pvi": -0.004178,
+    "national_pvi": -0.001238,
     "national_pvi_label": "R+0",
     "county_count": 3142,
-    "counties_with_lean": 3106,
+    "counties_with_lean": 3107,
     "state_count": 51,
     "population_total": 334913011
   },
@@ -276,6 +276,52 @@
         }
       ]
     },
+    "race": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "White",
+          "weight": 0.6096
+        },
+        {
+          "value": "Black or African American",
+          "weight": 0.1222
+        },
+        {
+          "value": "Asian",
+          "weight": 0.0595
+        },
+        {
+          "value": "American Indian / Alaska Native",
+          "weight": 0.0092
+        },
+        {
+          "value": "Native Hawaiian / Pacific Islander",
+          "weight": 0.0019
+        },
+        {
+          "value": "Other",
+          "weight": 0.0713
+        },
+        {
+          "value": "Two or More Races",
+          "weight": 0.1263
+        }
+      ]
+    },
+    "hispanic_or_latino": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Hispanic or Latino",
+          "weight": 0.1934
+        },
+        {
+          "value": "Not Hispanic or Latino",
+          "weight": 0.8066
+        }
+      ]
+    },
     "education": {
       "type": "categorical",
       "categories": [
@@ -297,28 +343,74 @@
         }
       ]
     },
+    "household_income": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Under $25k",
+          "weight": 0.1463
+        },
+        {
+          "value": "$25k–$50k",
+          "weight": 0.1673
+        },
+        {
+          "value": "$50k–$75k",
+          "weight": 0.155
+        },
+        {
+          "value": "$75k–$100k",
+          "weight": 0.1263
+        },
+        {
+          "value": "$100k–$150k",
+          "weight": 0.1755
+        },
+        {
+          "value": "$150k–$200k",
+          "weight": 0.096
+        },
+        {
+          "value": "$200k+",
+          "weight": 0.1336
+        }
+      ]
+    },
+    "household_type": {
+      "type": "categorical",
+      "categories": [
+        {
+          "value": "Family Household",
+          "weight": 0.6422
+        },
+        {
+          "value": "Non-Family Household",
+          "weight": 0.3578
+        }
+      ]
+    },
     "party_lean": {
       "type": "categorical",
       "categories": [
         {
           "value": "Solid Dem",
-          "weight": 0.1867
+          "weight": 0.1997
         },
         {
           "value": "Lean Dem",
-          "weight": 0.1965
+          "weight": 0.186
         },
         {
           "value": "Tossup",
-          "weight": 0.2425
+          "weight": 0.2331
         },
         {
           "value": "Lean Rep",
-          "weight": 0.1637
+          "weight": 0.1632
         },
         {
           "value": "Solid Rep",
-          "weight": 0.2106
+          "weight": 0.218
         }
       ]
     },
@@ -399,7 +491,7 @@
         "party_label": "Democratic",
         "is_incumbent": true,
         "color": "#3b82f6",
-        "description": "Sitting Vice President under Biden. Became the Democratic nominee in July 2024 after Biden withdrew. Former US Senator from California and former Attorney General of California."
+        "description": "Sitting Vice President under Biden. Became the Democratic nominee in July 2024 after Biden withdrew. Lost the general election; Trump won 312 electoral votes to her 226."
       },
       {
         "id": "trump_2024",
@@ -408,7 +500,7 @@
         "party_label": "Republican",
         "is_incumbent": false,
         "color": "#ef4444",
-        "description": "Republican nominee, 45th president (2017-2021). Seeking a non-consecutive second term. Facing multiple legal proceedings. Strong support among rural and non-college-educated white voters."
+        "description": "Republican nominee, 45th president (2017-2021), challenger in 2024. Won the 2024 election with 312 electoral votes. Sworn in as 47th president January 2025."
       }
     ],
     "party_palette": {
@@ -472,8 +564,8 @@
       ]
     },
     "default_macro_context": {
-      "en": "[2024 US presidential election — pre-election simulation]\nJoe Biden is the incumbent president (Democratic). Kamala Harris is the sitting Vice President and became the Democratic nominee in July 2024 after Biden withdrew from the race.\nDonald Trump is the Republican nominee and 45th president (2017-2021), seeking a return to office.\nThe race is extremely close in polls; key battleground states include PA, GA, MI, WI, AZ, NV, NC.\nEconomic issues (inflation, grocery prices, housing costs) dominate voter concerns.\nImmigration and border security are top priorities for Republican-leaning voters.\nAbortion rights remain a mobilizing issue for Democratic-leaning voters after the Dobbs decision.\nBlame dynamics: voters unhappy with the economy tend to blame the incumbent administration (Biden/Harris); voters concerned about democratic norms tend to blame Trump and the Republican Party.",
-      "zh-TW": "[2024 美國總統大選 — 選前模擬]\n現任總統為民主黨拜登。副總統乃賀錦麗（Kamala Harris），2024年7月拜登退選後成為民主黨提名人。\n共和黨提名人為川普（Donald Trump），第45任總統（2017-2021），尋求重返白宮。\n民調顯示選情極度膠著；關鍵搖擺州包括 PA、GA、MI、WI、AZ、NV、NC。\n經濟議題（通膨、物價、住房成本）主導選民關切。\n移民與邊境安全是共和黨傾向選民的首要議題。\n墮胎權在 Dobbs 判決後持續動員民主黨傾向選民。\n歸責方向：對經濟不滿的選民傾向歸咎現任政府（拜登/賀錦麗）；關注民主規範的選民傾向歸咎川普與共和黨。"
+      "en": "[2024 US presidential election — actual cycle]\nJoe Biden is the incumbent president (Democratic). Kamala Harris is the sitting Vice President and became the Democratic nominee in July 2024 after Biden's withdrawal. Donald Trump is the Republican nominee and the 45th president (2017-2021).\n\nMajor issues driving the 2024 race:\n- Inflation and grocery / gas prices (peaked in 2022, still elevated in 2024)\n- Immigration and the southern border\n- Abortion rights post-Dobbs (June 2022 Supreme Court decision)\n- January 6 prosecutions and Trump's legal cases\n- Foreign policy: Ukraine war, Israel-Gaza conflict\n\nResponsibility attribution: as the incumbent Democratic administration, the Biden-Harris team is on the defensive about inflation and the border. Trump campaigns on a 'restoration' message.",
+      "zh-TW": "【2024 美國總統大選 — 實際週期】\nJoe Biden 為現任總統（民主黨）。Kamala Harris 為現任副總統，於 2024 年 7 月 Biden 退選後成為民主黨提名人。Donald Trump 為共和黨提名人，曾任第 45 任總統（2017-2021）。\n\n2024 大選主要議題：\n- 通膨與生活物資 / 油價（2022 達峰，2024 仍高）\n- 移民與南方邊境\n- 後 Dobbs 案的墮胎權（2022 年 6 月最高法院判決）\n- 1/6 起訴與 Trump 的法律案件\n- 外交政策：烏俄戰爭、以哈衝突\n\n責任歸屬：身為現任民主黨政府，Biden-Harris 團隊在通膨與邊境問題上處於守勢。Trump 以「復興」為主軸競選。"
     },
     "default_search_keywords": {
       "local": "Harris Trump swing state polling\nPennsylvania Michigan Wisconsin election 2024\nGeorgia Arizona Nevada North Carolina",
@@ -527,8 +619,8 @@
       "mode": "none"
     },
     "default_evolution_window": {
-      "start_date": "2024-05-05",
-      "end_date": "2024-11-03"
+      "start_date": "2023-11-05",
+      "end_date": "2024-11-04"
     }
   }
 }

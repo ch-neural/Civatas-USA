@@ -448,6 +448,27 @@ def _check_eligibility(event: dict, agent: dict) -> bool:
         if any(kw in agent_occ for kw in occ_exclude):
             return False
 
+    # Race (race_not = exclude this race)
+    race_not = elig.get("race_not")
+    if race_not is not None:
+        agent_race = agent.get("race", "")
+        if agent_race == race_not:
+            return False
+
+    # Hispanic/Latino
+    required_hisp = elig.get("hispanic_or_latino")
+    if required_hisp is not None:
+        agent_hisp = agent.get("hispanic_or_latino", "")
+        if agent_hisp != required_hisp:
+            return False
+
+    # Tenure (Owner/Renter)
+    required_tenure = elig.get("tenure")
+    if required_tenure is not None:
+        agent_tenure = agent.get("household_type", agent.get("tenure", ""))
+        if required_tenure not in str(agent_tenure):
+            return False
+
     return True
 
 

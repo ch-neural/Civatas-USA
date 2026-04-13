@@ -341,7 +341,7 @@ export async function getNewsPool() {
 export async function injectNewsArticle(title: string, summary: string, sourceTag?: string) {
   return apiFetch("/api/pipeline/evolution/news-pool/inject", {
     method: "POST",
-    body: JSON.stringify({ title, summary, source_tag: sourceTag || "手動注入" }),
+    body: JSON.stringify({ title, summary, source_tag: sourceTag || "Manual" }),
   });
 }
 
@@ -363,10 +363,12 @@ export async function previewFeed(agent: Record<string, unknown>) {
   });
 }
 
-export async function startEvolution(agents: Record<string, unknown>[], days: number, concurrency: number = 5) {
+export async function startEvolution(agents: Record<string, unknown>[], days: number, concurrency: number = 5, candidateNames?: string[]) {
+  const body: Record<string, unknown> = { agents, days, concurrency };
+  if (candidateNames?.length) body.candidate_names = candidateNames;
   return apiFetch("/api/pipeline/evolution/evolve", {
     method: "POST",
-    body: JSON.stringify({ agents, days, concurrency }),
+    body: JSON.stringify(body),
   });
 }
 

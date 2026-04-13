@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { getEvolutionDashboard } from "@/lib/api";
 import USMap from "@/components/USMap";
 import { useTr } from "@/lib/i18n";
+import { useLocaleStore } from "@/store/locale-store";
 import { StepGate } from "@/components/shared/StepGate";
 import { useWorkflowStatus } from "@/hooks/use-workflow-status";
 import { useShellStore } from "@/store/shell-store";
@@ -34,6 +35,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
   const [crossTabDim, setCrossTabDim] = useState<string>("age_group");
   const [crossTabMetric, setCrossTabMetric] = useState<string>("count");
   const t = useTr();
+  const en = useLocaleStore((s) => s.locale) === "en";
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchData = async () => {
@@ -67,22 +69,22 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
     return (
       <StepGate
         requiredStep={1}
-        requiredStepName="人設生成"
+        requiredStepName={en ? "Persona Generation" : "人設生成"}
         requiredStepNameEn="Persona"
-        description="請先在第 1 步生成 Persona，才能進行演化。"
+        description={en ? "Generate Personas in Step 1 before running evolution." : "請先在第 1 步生成 Persona，才能進行演化。"}
         descriptionEn="Generate personas in Step 1 before running evolution."
         targetRoute={_wsId ? `/workspaces/${_wsId}/population-setup` : "/workspaces"}
       />
     );
   }
 
-  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "var(--text-faint)" }}>載入中...</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "var(--text-faint)" }}>{en ? "Loading..." : "載入中..."}</div>;
   if (!data || !data.daily_trends?.length) {
     return (
       <div style={{ padding: 40, textAlign: "center" }}>
         <span style={{ fontSize: 32 }}>📊</span>
         <p style={{ color: "var(--text-faint)", fontFamily: "var(--font-cjk)", fontSize: 13 }}>
-          尚無演化資料。請先在「歷史演化」中開始演化。
+          {en ? "No evolution data yet. Start evolution in Quick Start." : "尚無演化資料。請先開始演化。"}
         </p>
       </div>
     );
@@ -559,7 +561,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 11, color: "var(--text-secondary)", fontFamily: "var(--font-cjk)", lineHeight: 1.5 }}>
-                    {a.diary || "（無日記）"}
+                    {a.diary || (en ? "(no diary)" : "（無日記）")}
                   </div>
                   {a.news_titles?.length > 0 && (
                     <div style={{ fontSize: 9, color: "var(--text-faint)", marginTop: 2 }}>
@@ -568,10 +570,10 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                   )}
                 </div>
                 <div style={{ display: "flex", gap: 8, flexShrink: 0, fontSize: 10, fontFamily: "var(--font-mono)" }}>
-                  <span title={`地方施政滿意度 (Local Satisfaction): ${a.local_satisfaction}/100\n${a.local_satisfaction > 60 ? "✅ 滿意" : a.local_satisfaction > 40 ? "➖ 普通" : "❌ 不滿"} — 對市長/縣長施政的評價`} style={{ color: "#3b82f6", cursor: "help" }}>L:{a.local_satisfaction}</span>
-                  <span title={`全國施政滿意度 (National Satisfaction): ${a.national_satisfaction}/100\n${a.national_satisfaction > 60 ? "✅ 滿意" : a.national_satisfaction > 40 ? "➖ 普通" : "❌ 不滿"} — 對總統/行政院施政的評價`} style={{ color: "#f97316", cursor: "help" }}>N:{a.national_satisfaction}</span>
-                  <span title={`焦慮度 (Anxiety): ${a.anxiety}/100\n${a.anxiety > 70 ? "🔴 極度焦慮" : a.anxiety > 50 ? "🟡 中等焦慮" : "🟢 平靜"} — 對經濟、物價、就業的不安程度`} style={{ color: a.anxiety > 60 ? "#ef4444" : "#6b7280", cursor: "help" }}>A:{a.anxiety}</span>
-                  <span title={`新聞相關性 (Relevance): ${a.relevance}\n${{ high: "🔴 高度相關 — 新聞直接衝擊此 Agent", medium: "🟡 中度相關", low: "⚪ 低度相關", none: "➖ 無相關新聞" }[a.relevance] || "未知"}`} style={{
+                  <span title={`Local Satisfaction: ${a.local_satisfaction}/100\n${a.local_satisfaction > 60 ? "✅ Satisfied" : a.local_satisfaction > 40 ? "➖ Neutral" : "❌ Dissatisfied"} — Governor / Mayor / state government`} style={{ color: "#3b82f6", cursor: "help" }}>L:{a.local_satisfaction}</span>
+                  <span title={`National Satisfaction: ${a.national_satisfaction}/100\n${a.national_satisfaction > 60 ? "✅ Satisfied" : a.national_satisfaction > 40 ? "➖ Neutral" : "❌ Dissatisfied"} — President / Congress / federal policy`} style={{ color: "#f97316", cursor: "help" }}>N:{a.national_satisfaction}</span>
+                  <span title={`Anxiety: ${a.anxiety}/100\n${a.anxiety > 70 ? "🔴 Highly anxious" : a.anxiety > 50 ? "🟡 Moderate" : "🟢 Calm"} — economy, prices, jobs`} style={{ color: a.anxiety > 60 ? "#ef4444" : "#6b7280", cursor: "help" }}>A:{a.anxiety}</span>
+                  <span title={`Relevance: ${a.relevance}\n${{ high: "🔴 High — news directly impacts this agent", medium: "🟡 Medium", low: "⚪ Low", none: "➖ No relevant news" }[a.relevance] || "unknown"}`} style={{
                     padding: "1px 4px", borderRadius: 3, fontSize: 8, cursor: "help",
                     background: (REL_COLORS[a.relevance] || "#374151") + "22",
                     color: REL_COLORS[a.relevance] || "#6b7280",
@@ -582,7 +584,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
               </div>
             ))}
             {activity.length === 0 && (
-              <p style={{ textAlign: "center", color: "var(--text-faint)", fontSize: 12, padding: 16 }}>尚無 Agent 活動</p>
+              <p style={{ textAlign: "center", color: "var(--text-faint)", fontSize: 12, padding: 16 }}>{en ? "No agent activity" : "尚無 Agent 活動"}</p>
             )}
           </div>
         </div>

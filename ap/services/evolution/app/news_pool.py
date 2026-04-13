@@ -178,6 +178,14 @@ def get_pool() -> list[dict]:
     return list(_pool)
 
 
+def clear_pool():
+    """Clear all articles from the news pool."""
+    global _pool
+    _pool.clear()
+    _save_pool()
+    logger.info("News pool cleared")
+
+
 def _trim_pool():
     """Keep only the newest MAX_POOL_SIZE articles, balanced across channels.
 

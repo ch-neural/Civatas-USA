@@ -43,7 +43,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ELEC = ROOT / "data" / "elections"
-YEARS = (2020, 2024)
+DEFAULT_YEARS = (2020, 2024)
 
 
 def load_year(year: int) -> dict[str, dict]:
@@ -114,7 +114,9 @@ def load_year(year: int) -> dict[str, dict]:
     return out
 
 
-def main() -> int:
+def compute(years: tuple[int, int] = DEFAULT_YEARS, output_suffix: str = "") -> int:
+    """Compute PVI for a given year pair. Output to leaning_profile_us{suffix}.json."""
+    YEARS = years
     cycles: dict[int, dict[str, dict]] = {}
     for y in YEARS:
         cycles[y] = load_year(y)
@@ -181,13 +183,13 @@ def main() -> int:
 
     out = {
         "schema_version": 1,
-        "methodology": "Cook PVI = mean over 2020,2024 of (county Dem two-party share − national Dem two-party share). Source: MEDSL countypres_2000-2024.",
+        "methodology": f"Cook PVI = mean over {YEARS[0]},{YEARS[1]} of (county Dem two-party share − national Dem two-party share). Source: MEDSL countypres_2000-2024.",
         "source": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ",
         "license": "CC0-1.0",
         "national": {str(k): v for k, v in national.items()},
         "counties": counties_out,
     }
-    dest = ELEC / "leaning_profile_us.json"
+    dest = ELEC / f"leaning_profile_us{output_suffix}.json"
     dest.write_text(json.dumps(out, indent=2))
 
     # Distribution check.
@@ -201,6 +203,11 @@ def main() -> int:
     print(f"  Strong D (>D+20): {extremes_d}    Strong R (>R+20): {extremes_r}")
     print(f"  -> {dest.relative_to(ROOT)}")
     return 0
+
+
+def main() -> int:
+    """CLI entry: compute default (2020+2024) PVI."""
+    return compute(DEFAULT_YEARS)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { getAllAgentStats } from "@/lib/api";
+import { useLocaleStore } from "@/store/locale-store";
 
 /* ── Colour maps ──────────────────────────────────────────────── */
 
@@ -606,6 +607,7 @@ interface GroupedStatsPanelProps {
 }
 
 export default function GroupedStatsPanel({ personas, btnStyle, autoRefresh = false, refreshInterval = 5000, pollOptions, pollGroups, jobGroupEstimates, jobGroupLeanCand, jobDistrictEstimates, jobGenderEstimates, jobVendorEstimates }: GroupedStatsPanelProps) {
+  const en = useLocaleStore((s) => s.locale) === "en";
   const hasMultiGroups = pollGroups && pollGroups.length > 1 && pollGroups.some(g => g.candidates.some(c => c.name));
   const isCandidateMode = hasMultiGroups || (pollOptions && pollOptions.length > 0);
   // Primary mode: detect if any group is head2head (same-party primary)
@@ -746,7 +748,7 @@ export default function GroupedStatsPanel({ personas, btnStyle, autoRefresh = fa
                 overrideDistrictShares={jobDistrictEstimates?.[gc.name]}
               />
               <CandidateBarPanel
-                title="🏛️ 各政治傾向"
+                title={en ? "🏛️ By Political Leaning" : "🏛️ 各政治傾向"}
                 groups={groupAndAvg("political_leaning")}
                 candidateNames={gc.candidateNames}
                 candidateColors={gc.candidateColors}
@@ -756,7 +758,7 @@ export default function GroupedStatsPanel({ personas, btnStyle, autoRefresh = fa
                 filterByOverride={!!(pollGroups?.[gi]?.agentFilter?.leanings?.length)}
               />
               <CandidateBarPanel
-                title="📍 各行政區"
+                title={en ? "📍 By State" : "📍 各行政區"}
                 groups={groupAndAvg("district")}
                 candidateNames={gc.candidateNames}
                 candidateColors={gc.candidateColors}
@@ -765,7 +767,7 @@ export default function GroupedStatsPanel({ personas, btnStyle, autoRefresh = fa
                 filterByOverride={!!(pollGroups?.[gi]?.agentFilter?.leanings?.length)}
               />
               <CandidateBarPanel
-                title="🚻 性別"
+                title={en ? "🚻 By Gender" : "🚻 性別"}
                 groups={groupAndAvg("gender")}
                 candidateNames={gc.candidateNames}
                 candidateColors={gc.candidateColors}
@@ -773,7 +775,7 @@ export default function GroupedStatsPanel({ personas, btnStyle, autoRefresh = fa
                 overrideShares={jobGenderEstimates?.[gc.name]}
               />
               <CandidateBarPanel
-                title="🤖 各 LLM Vendor"
+                title={en ? "🤖 By LLM Vendor" : "🤖 各 LLM Vendor"}
                 groups={groupAndAvg("llm_vendor")}
                 candidateNames={gc.candidateNames}
                 candidateColors={gc.candidateColors}
@@ -846,29 +848,29 @@ export default function GroupedStatsPanel({ personas, btnStyle, autoRefresh = fa
       {groupedStats && !isCandidateMode && (
         <>
           <DemographicPiePanel
-            title="🥧 選民結構與政治傾向地圖"
+            title={en ? "🥧 Voter Demographics & Political Leaning Map" : "🥧 選民結構與政治傾向地圖"}
             agents={groupedStats}
             colorMap={LEANING_COLORS}
             defaultOpen={true}
             isPrimary={false}
           />
           <DualBarPanel
-            title="🏛️ 各政治傾向 — 滿意度 / 焦慮度"
+            title={en ? "🏛️ By Political Leaning — Satisfaction / Anxiety" : "🏛️ 各政治傾向 — 滿意度 / 焦慮度"}
             groups={groupAndAvg("political_leaning")}
             colorMap={LEANING_COLORS}
             defaultOpen
           />
           <DualBarPanel
-            title="🤖 各 LLM Vendor — 滿意度 / 焦慮度"
+            title={en ? "🤖 By LLM Vendor — Satisfaction / Anxiety" : "🤖 各 LLM Vendor — 滿意度 / 焦慮度"}
             groups={groupAndAvg("llm_vendor")}
             colorMap={VENDOR_COLORS}
           />
           <DualBarPanel
-            title="📍 各行政區 — 滿意度 / 焦慮度"
+            title={en ? "📍 By State — Satisfaction / Anxiety" : "📍 各行政區 — 滿意度 / 焦慮度"}
             groups={groupAndAvg("district")}
           />
           <DualBarPanel
-            title="🚻 性別 — 滿意度 / 焦慮度"
+            title={en ? "🚻 By Gender — Satisfaction / Anxiety" : "🚻 性別 — 滿意度 / 焦慮度"}
             groups={groupAndAvg("gender")}
           />
         </>

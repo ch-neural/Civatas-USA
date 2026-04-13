@@ -33,7 +33,8 @@ export function useWorkflowStatus(wsId: string | null) {
     personaQuery.data?.agents?.length ?? personaQuery.data?.length ?? 0;
   const hasPersonas = personaCount > 0;
 
-  const evolutionJobs: any[] = evolutionQuery.data?.jobs ?? evolutionQuery.data ?? [];
+  const rawEvo = evolutionQuery.data?.jobs ?? evolutionQuery.data;
+  const evolutionJobs: any[] = Array.isArray(rawEvo) ? rawEvo : [];
   const hasEvolution = evolutionJobs.some(
     (j: any) => j.status === "completed" || j.status === "done"
   );

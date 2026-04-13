@@ -26,12 +26,16 @@ _DIM_TO_FIELD: dict[str, str] = {
     "household_type": "household_type", "家庭型態": "household_type",
     "household_tenure": "household_type",  # US: ACS B25003 → household_type field
     "marital_status": "marital_status", "婚姻狀態": "marital_status",
+    "race": "race",                         # US: ACS B02001
+    "hispanic_or_latino": "hispanic_or_latino",  # US: ACS B03003
+    "household_income": "household_income", # US: ACS B19001
     "party_lean": "party_lean",            # US: PA template's PVI 5-tier dim
     "media_habit": "media_habit",
 }
 
 _PERSON_FIELDS = {
     "person_id", "age", "gender", "district",
+    "race", "hispanic_or_latino", "household_income",
     "education", "occupation", "income_band", "household_type",
     "marital_status", "party_lean", "issue_1", "issue_2",
     "media_habit", "mbti", "vote_probability", "custom_fields",
@@ -54,6 +58,7 @@ _STAT_VALUE_KEYWORDS = {
 
 # Known personal attribute field names — always included.
 _KNOWN_PERSONAL = {"gender", "age", "district", "education", "occupation",
+                   "race", "hispanic_or_latino", "household_income",
                    "income_band", "household_type", "marital_status"}
 
 

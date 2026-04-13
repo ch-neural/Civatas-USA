@@ -168,7 +168,7 @@ def build_national_dimensions(counties: list[dict], leaning: dict) -> tuple[dict
         "categories": round_weights([(lbl, sum_field(counties, p)) for lbl, p in edu_keys]),
     }
 
-    # ── Party lean — discretize PVI into 5 buckets, weighted by 2024 turnout ──
+    # ── Party lean — discretize PVI into 5 buckets, weighted by latest cycle turnout ──
     bucket_weight: dict[str, float] = {
         "Solid Dem": 0.0, "Lean Dem": 0.0, "Tossup": 0.0,
         "Lean Rep": 0.0, "Solid Rep": 0.0,
@@ -181,8 +181,10 @@ def build_national_dimensions(counties: list[dict], leaning: dict) -> tuple[dict
         lp = leaning["counties"].get(fips)
         if not lp:
             continue
-        cycle24 = lp["cycles"].get("2024", {})
-        turnout = (cycle24.get("dem", 0) + cycle24.get("rep", 0)) or 0
+        # Use the latest available cycle for turnout weighting
+        cycles_available = sorted(lp.get("cycles", {}).keys(), reverse=True)
+        latest_cycle = lp["cycles"].get(cycles_available[0], {}) if cycles_available else {}
+        turnout = (latest_cycle.get("dem", 0) + latest_cycle.get("rep", 0)) or 0
         bucket_weight[pvi_bucket(lp["pvi"])] += turnout
         state_pvi_weighted += lp["pvi"] * turnout
         state_pvi_denom += turnout
@@ -233,11 +235,67 @@ def build_national_dimensions(counties: list[dict], leaning: dict) -> tuple[dict
         ],
     }
 
+    # ── Race (B02001) ──
+    race_keys = [
+        ("White", "race.white"),
+        ("Black or African American", "race.black"),
+        ("Asian", "race.asian"),
+        ("American Indian / Alaska Native", "race.american_indian"),
+        ("Native Hawaiian / Pacific Islander", "race.pacific_islander"),
+        ("Other", "race.other"),
+        ("Two or More Races", "race.two_or_more"),
+    ]
+    race_dim = {
+        "type": "categorical",
+        "categories": round_weights([(lbl, sum_field(counties, p)) for lbl, p in race_keys]),
+    }
+
+    # ── Hispanic / Latino (B03003) ──
+    hisp_total = sum(c.get("hispanic_or_latino", 0) or 0 for c in counties)
+    non_hisp_total = sum(c.get("not_hispanic_or_latino", 0) or 0 for c in counties)
+    hispanic_dim = {
+        "type": "categorical",
+        "categories": round_weights([
+            ("Hispanic or Latino", hisp_total),
+            ("Not Hispanic or Latino", non_hisp_total),
+        ]),
+    }
+
+    # ── Household income (B19001, 7 brackets) ──
+    income_keys = [
+        ("Under $25k", "household_income_brackets.lt_25k"),
+        ("$25k–$50k", "household_income_brackets.25k_50k"),
+        ("$50k–$75k", "household_income_brackets.50k_75k"),
+        ("$75k–$100k", "household_income_brackets.75k_100k"),
+        ("$100k–$150k", "household_income_brackets.100k_150k"),
+        ("$150k–$200k", "household_income_brackets.150k_200k"),
+        ("$200k+", "household_income_brackets.gte_200k"),
+    ]
+    income_dim = {
+        "type": "categorical",
+        "categories": round_weights([(lbl, sum_field(counties, p)) for lbl, p in income_keys]),
+    }
+
+    # ── Household type (B11001) ──
+    hh_family = sum(c.get("households", {}).get("family", 0) or 0 for c in counties)
+    hh_nonfamily = sum(c.get("households", {}).get("nonfamily", 0) or 0 for c in counties)
+    household_type_dim = {
+        "type": "categorical",
+        "categories": round_weights([
+            ("Family Household", hh_family),
+            ("Non-Family Household", hh_nonfamily),
+        ]),
+    }
+
     dims = {
         "gender": gender_dim,
         "age": age_dim,
         "state": state_dim,
+        "race": race_dim,
+        "hispanic_or_latino": hispanic_dim,
         "education": edu_dim,
+        "household_income": income_dim,
+        "household_type": household_type_dim,
         "party_lean": party_lean_dim,
         "employment_status": emp_dim,
         "household_tenure": tenure_dim,
@@ -529,6 +587,156 @@ def build_election_2024() -> dict:
     }
 
 
+def build_election_2028() -> dict:
+    """2028 US Presidential — potential candidates for future scenario simulation."""
+    return {
+        "type": "presidential",
+        "scope": "national",
+        "cycle": 2028,
+        "is_generic": False,
+        "candidates": [
+            {
+                "id": "vance_2028",
+                "name": "JD Vance",
+                "party": "R",
+                "party_label": "Republican",
+                "is_incumbent": True,
+                "color": US_PARTY_PALETTE["R"][1],
+                "description": (
+                    "Sitting Vice President under Trump (2025-). Former US Senator "
+                    "from Ohio. Author of 'Hillbilly Elegy'. Likely Republican "
+                    "frontrunner if Trump endorses."
+                ),
+            },
+            {
+                "id": "newsom_2028",
+                "name": "Gavin Newsom",
+                "party": "D",
+                "party_label": "Democratic",
+                "is_incumbent": False,
+                "color": US_PARTY_PALETTE["D"][1],
+                "description": (
+                    "Governor of California (2019-). Former Mayor of San Francisco. "
+                    "High national profile, frequent media presence. Progressive "
+                    "policy record on climate, immigration, gun control."
+                ),
+            },
+            {
+                "id": "desantis_2028",
+                "name": "Ron DeSantis",
+                "party": "R",
+                "party_label": "Republican",
+                "is_incumbent": False,
+                "color": US_PARTY_PALETTE["R"][0],
+                "description": (
+                    "Governor of Florida (2019-). Ran in 2024 Republican primary. "
+                    "Known for anti-'woke' policies, COVID reopening stance, "
+                    "immigration enforcement."
+                ),
+            },
+            {
+                "id": "whitmer_2028",
+                "name": "Gretchen Whitmer",
+                "party": "D",
+                "party_label": "Democratic",
+                "is_incumbent": False,
+                "color": US_PARTY_PALETTE["D"][0],
+                "description": (
+                    "Governor of Michigan (2019-). Key swing-state executive. "
+                    "Known for Midwest pragmatism, reproductive rights advocacy, "
+                    "infrastructure investment."
+                ),
+            },
+            {
+                "id": "haley_2028",
+                "name": "Nikki Haley",
+                "party": "R",
+                "party_label": "Republican",
+                "is_incumbent": False,
+                "color": US_PARTY_PALETTE["R"][2],
+                "description": (
+                    "Former Governor of South Carolina, former UN Ambassador under "
+                    "Trump. Strong 2024 primary showing. Positioned as moderate-"
+                    "conservative alternative."
+                ),
+            },
+            {
+                "id": "shapiro_2028",
+                "name": "Josh Shapiro",
+                "party": "D",
+                "party_label": "Democratic",
+                "is_incumbent": False,
+                "color": US_PARTY_PALETTE["D"][2],
+                "description": (
+                    "Governor of Pennsylvania (2023-). Former Attorney General. "
+                    "Key swing-state figure. Centrist Democrat with bipartisan "
+                    "appeal."
+                ),
+            },
+        ],
+        "party_palette": US_PARTY_PALETTE,
+        "party_detection": US_PARTY_DETECTION,
+        "default_macro_context": {
+            "en": (
+                "[2028 US presidential election — speculative scenario]\n"
+                "Donald Trump is the sitting 47th president (Republican, term-limited). "
+                "JD Vance is the sitting Vice President and likely Republican frontrunner.\n\n"
+                "Potential Democratic challengers include governors Gavin Newsom (CA), "
+                "Gretchen Whitmer (MI), and Josh Shapiro (PA). On the Republican side, "
+                "Ron DeSantis (FL) and Nikki Haley may challenge Vance.\n\n"
+                "Key issues likely to shape the 2028 race:\n"
+                "- Economy, inflation aftermath, national debt\n"
+                "- Immigration and border policy legacy\n"
+                "- AI and technology regulation\n"
+                "- Climate change and energy transition\n"
+                "- Foreign policy: Ukraine, China-Taiwan, Middle East\n"
+                "- Healthcare costs and insurance access\n"
+                "- Social Security and Medicare solvency"
+            ),
+            "zh-TW": (
+                "【2028 美國總統大選 — 假設情境】\n"
+                "Donald Trump 為現任第 47 屆總統（共和黨，任期限制）。"
+                "JD Vance 為現任副總統，可能的共和黨領跑者。\n\n"
+                "潛在民主黨挑戰者包括加州州長 Gavin Newsom、密西根州長 "
+                "Gretchen Whitmer、賓州州長 Josh Shapiro。共和黨方面，"
+                "Ron DeSantis 和 Nikki Haley 可能挑戰 Vance。\n\n"
+                "2028 大選可能的主要議題：\n"
+                "- 經濟、通膨後遺症、國債\n"
+                "- 移民與邊境政策\n"
+                "- AI 與科技監管\n"
+                "- 氣候變遷與能源轉型\n"
+                "- 外交：烏克蘭、台海、中東\n"
+                "- 醫療費用與保險\n"
+                "- 社會安全與聯邦醫療保險"
+            ),
+        },
+        "default_search_keywords": {
+            "local": (
+                "2028 election swing state polling\n"
+                "Pennsylvania Michigan Wisconsin Arizona Georgia\n"
+                "governor race state politics 2028"
+            ),
+            "national": (
+                "2028 presidential election candidates\n"
+                "Vance Newsom DeSantis Whitmer 2028\n"
+                "economy jobs AI regulation voters\n"
+                "immigration border policy debate\n"
+                "Social Security Medicare reform"
+            ),
+        },
+        "default_calibration_params": US_PRES_CALIB_DEFAULTS,
+        "default_kol": US_DEFAULT_KOL,
+        "default_poll_groups": US_DEFAULT_POLL_GROUPS,
+        "party_base_scores": {"D": 50, "R": 50, "I": 20},
+        "default_evolution_params": US_DEFAULT_EVOLUTION_PARAMS,
+        "default_alignment": US_DEFAULT_ALIGNMENT,
+        "default_evolution_window": {
+            "start_date": "2027-11-03",
+            "end_date": "2028-11-02",
+        },
+    }
+
+
 # ── Top-level builder ────────────────────────────────────────────────
 
 
@@ -594,17 +802,44 @@ def main() -> int:
     out_generic.write_text(json.dumps(generic, indent=2, ensure_ascii=False))
     print(f"  -> {out_generic.relative_to(ROOT)}")
 
-    # ── 2024 cycle template ──
-    cycle_2024 = build_template(
-        name="US Presidential — 2024 (Trump vs Harris)",
-        name_zh="美國總統大選 — 2024（川普對賀錦麗）",
+    # ── 2024 cycle template (PVI from 2016+2020 — pre-election, no future data) ──
+    leaning_2024 = ELEC / "leaning_profile_us_2016_2020.json"
+    if leaning_2024.exists():
+        leaning_pre = json.loads(leaning_2024.read_text())
+        dims_2024, summary_2024 = build_national_dimensions(counties, leaning_pre)
+        summary_2024["source"] = {
+            "demographics": "ACS 2024 5-year (via censusreporter.org)",
+            "elections": "MEDSL countypres_2000-2024 (Harvard Dataverse)",
+            "leaning": "Cook PVI computed from 2016+2020 two-party share",
+        }
+        election_2024 = build_election_2024()
+        election_2024["default_evolution_window"] = {
+            "start_date": "2023-11-05",
+            "end_date": "2024-11-04",
+        }
+        cycle_2024 = build_template(
+            name="US Presidential — 2024 (Trump vs Harris)",
+            name_zh="美國總統大選 — 2024（川普 vs 賀錦麗）",
+            dims=dims_2024,
+            summary=summary_2024,
+            election=election_2024,
+        )
+        cycle_2024["metadata"]["source"] = summary_2024["source"]
+        out_2024 = TPL / "presidential_2024.json"
+        out_2024.write_text(json.dumps(cycle_2024, indent=2, ensure_ascii=False))
+        print(f"  -> {out_2024.relative_to(ROOT)}  (PVI from 2016+2020)")
+
+    # ── 2028 future template ──
+    cycle_2028 = build_template(
+        name="US Presidential — 2028 (Who's Next?)",
+        name_zh="美國總統大選 — 2028（誰是下一位？）",
         dims=dims,
         summary=summary,
-        election=build_election_2024(),
+        election=build_election_2028(),
     )
-    out_2024 = TPL / "presidential_2024.json"
-    out_2024.write_text(json.dumps(cycle_2024, indent=2, ensure_ascii=False))
-    print(f"  -> {out_2024.relative_to(ROOT)}")
+    out_2028 = TPL / "presidential_2028.json"
+    out_2028.write_text(json.dumps(cycle_2028, indent=2, ensure_ascii=False))
+    print(f"  -> {out_2028.relative_to(ROOT)}")
 
     return 0
 
