@@ -318,18 +318,38 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
     const locPick = () => localKws[Math.floor(Math.random() * localKws.length)] || "";
 
     // Category-specific query templates — avoid candidate names in non-candidate queries
-    const localStates = ["Pennsylvania", "Michigan", "Wisconsin", "Georgia", "Arizona", "Nevada", "Virginia", "New Jersey", "Ohio", "North Carolina"];
+    const localStates = ["Pennsylvania", "Michigan", "Wisconsin", "Georgia", "Arizona", "Nevada", "Virginia", "New Jersey", "Ohio", "North Carolina", "Florida", "Texas", "Minnesota", "Colorado"];
     const randomState = () => localStates[Math.floor(Math.random() * localStates.length)];
-    const nationalTopics = ["inflation cost of living", "jobs unemployment report", "healthcare Medicare", "immigration border policy", "gun control legislation", "infrastructure spending", "student loan debt", "Social Security benefits", "climate energy policy", "Supreme Court ruling"];
+    const nationalTopics = [
+      "inflation cost of living groceries", "jobs unemployment layoffs hiring",
+      "healthcare Medicare Medicaid drug prices", "immigration ICE border enforcement",
+      "gun violence shooting legislation", "infrastructure roads bridges spending",
+      "student loan debt college tuition", "Social Security retirement benefits",
+      "housing market mortgage rates", "consumer confidence economy wages",
+      "federal budget deficit spending", "SNAP food stamps benefits",
+      "gas prices energy costs", "minimum wage workers rights",
+    ];
     const randomNatTopic = () => nationalTopics[Math.floor(Math.random() * nationalTopics.length)];
-    const localTopics = ["governor budget", "state legislature bill", "school board education", "local crime public safety", "housing development zoning", "transportation infrastructure", "property tax revenue", "community public health"];
+    const localTopics = [
+      "governor signs bill", "state budget education funding",
+      "local police crime report", "city council zoning housing",
+      "school district teachers", "state highway road construction",
+      "county property tax assessment", "community health clinic",
+      "mayor city development plan", "state court ruling law",
+    ];
     const randomLocTopic = () => localTopics[Math.floor(Math.random() * localTopics.length)];
-    const intlTopics = ["NATO alliance Europe", "China trade tariff", "Middle East diplomacy", "Ukraine Russia conflict", "G7 summit agreement", "global economy recession", "climate summit COP", "UN General Assembly"];
+    const intlTopics = [
+      "NATO Europe alliance defense", "China trade tariff sanctions",
+      "Middle East Israel diplomacy", "Ukraine Russia war conflict",
+      "G7 summit world leaders", "global recession economy forecast",
+      "climate change COP summit", "UN General Assembly resolution",
+      "India economy trade partnership", "UK Europe Brexit policy",
+    ];
     const randomIntlTopic = () => intlTopics[Math.floor(Math.random() * intlTopics.length)];
     const categoryQueries = {
       candidate: () => candidateNames ? `${candidateNames} campaign rally poll` : `US presidential candidate poll approval`,
       national: () => randomNatTopic(),
-      local: () => `${randomState()} ${randomLocTopic()}`,
+      local: () => `"${randomState()}" ${randomLocTopic()}`,
       international: () => randomIntlTopic(),
     };
 

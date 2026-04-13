@@ -1473,11 +1473,13 @@ async def evolve_one_day(
             new_local_sat = new_local_sat * (1 - _satisfaction_decay) + 50 * _satisfaction_decay
             new_national_sat = new_national_sat * (1 - _satisfaction_decay) + 50 * _satisfaction_decay
 
-        # Anxiety ceiling resistance: as anxiety approaches extremes (>65),
-        # apply increasing downward pressure. This prevents small groups
-        # (e.g. 6 Lean Rep agents) from runaway anxiety spirals.
-        if new_anxiety > 65:
-            _resistance = (new_anxiety - 65) * 0.1
+        # Anxiety ceiling resistance: progressive dampening above 60.
+        # Uses quadratic curve so resistance grows sharply near extremes.
+        # At 65: resistance = 0.5, at 70: resistance = 2.0, at 75: resistance = 4.5
+        # This caps practical anxiety around 70-72 for most agents.
+        if new_anxiety > 60:
+            _excess = new_anxiety - 60
+            _resistance = _excess * _excess * 0.02 + _excess * 0.05
             new_anxiety -= _resistance
 
         # Mean-reversion boost: when satisfaction drifts far below 50,
