@@ -52,11 +52,13 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
   const en = useLocaleStore((s) => s.locale) === "en";
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // AI Analysis state — accumulated per 10-day period
+  // AI Analysis state — accumulated per 10-day period, cached in sessionStorage
   const ANALYSIS_INTERVAL = 10;
-  const [analysisSegments, setAnalysisSegments] = useState<{ dayRange: string; data: Record<string, string | null> }[]>([]);
+  const cacheKey = `evo_analysis_${_wsId || "default"}`;
+  const _initCache = (() => { try { return JSON.parse(sessionStorage.getItem(cacheKey) || "{}"); } catch { return {}; } })();
+  const [analysisSegments, setAnalysisSegments] = useState<{ dayRange: string; data: Record<string, string | null> }[]>(_initCache.segments || []);
   const [analysisLoading, setAnalysisLoading] = useState(false);
-  const lastAnalyzedDayRef = useRef<number>(0); // highest day we've analyzed up to
+  const lastAnalyzedDayRef = useRef<number>(_initCache.lastDay || 0);
 
   const requestAnalysis = useCallback(async (dashData: any, fromDay: number, toDay: number) => {
     if (analysisLoading) return;
@@ -81,7 +83,11 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
         period_label: `Day ${fromDay}–${toDay}`,
       });
       const label = fromDay === toDay ? `Day ${fromDay}` : `Day ${fromDay}–${toDay}`;
-      setAnalysisSegments((prev) => [...prev, { dayRange: label, data: result }]);
+      setAnalysisSegments((prev) => {
+        const updated = [...prev, { dayRange: label, data: result }];
+        try { sessionStorage.setItem(cacheKey, JSON.stringify({ segments: updated, lastDay: toDay })); } catch {}
+        return updated;
+      });
       lastAnalyzedDayRef.current = toDay;
     } catch (e) {
       console.warn("Analysis failed:", e);
@@ -279,7 +285,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                 <span style={{ width: 12, height: 12, border: "2px solid rgba(167,139,250,0.3)", borderTopColor: "#a78bfa", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
               )}
               {analysisSegments.length > 0 && !analysisLoading && (
-                <button onClick={() => { setAnalysisSegments([]); lastAnalyzedDayRef.current = 0; }}
+                <button onClick={() => { setAnalysisSegments([]); lastAnalyzedDayRef.current = 0; try { sessionStorage.removeItem(cacheKey); } catch {} }}
                   style={{ marginLeft: "auto", background: "none", border: "1px solid rgba(139,92,246,0.2)", color: "rgba(167,139,250,0.6)", fontSize: 10, padding: "2px 8px", borderRadius: 4, cursor: "pointer" }}>
                   {en ? "Clear" : "清除"}
                 </button>
