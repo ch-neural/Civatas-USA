@@ -391,6 +391,149 @@ to localized labels at render time via `useLocalizePersonaValue()`.
 - `news_pool.py`: added `clear_pool()` function + API endpoint
 - `evolver.py`: `(無新聞)` → `(no news)`, candidate awareness text Chinese → English
 
+## Evolution System Overhaul (2026-04-13)
+
+### US Political Engine Rewrite
+The evolution engine was rewritten from Taiwan-specific logic to US context:
+
+**Candidate Scoring** (`evolver.py`):
+- Taiwan parties (KMT/DPP/TPP) → US parties (Democrat/Republican/Independent)
+- Role detection: incumbent, governor, senator (replaces 市長/縣長/立委)
+- Party-leaning alignment uses Cook PVI buckets (Solid Dem/Lean Dem/Tossup/Lean Rep/Solid Rep)
+
+**Political Leaning Shifts** (`evolver.py`):
+- Labels: `偏右派/偏左派/中立` → `Solid Dem/Lean Dem/Tossup/Lean Rep/Solid Rep`
+- Shift rules: Right-leaning → Tossup on low local satisfaction; Left-leaning → Tossup on low national satisfaction; Tossup → Lean Rep/Dem on high satisfaction
+- All shift messages in English
+- `consecutive_extreme_days` persists in agent state across jobs
+
+**Attitude System** (`evolver.py`, `prompts.py`):
+- `cross_strait` field → `national_identity` (with backward-compat fallback)
+- Values: `主權/經濟/民生` → `social justice/economy/quality of life`
+- Prompt variable: `{cross_strait_label}` → `{national_identity_label}`
+
+**Chinese String Cleanup** (4 files):
+- `evolver.py`: social post labels, section headers, district news headers
+- `crawler.py`: `LEANING_OPTIONS`, default leaning → Cook PVI buckets
+- `news_pool.py`: inject defaults → "Manual inject" / "Tossup"
+- `feed_engine.py`: article categorization keywords (Taiwan terms → US), occupation matching, source names, fuzzy matching patterns, irrelevant content filters
+
+### Advanced Evolution Parameters
+`EvolutionQuickStartPanel.tsx` — expandable "Advanced Parameters" section with 6 categories:
+
+| Category | Parameters |
+|----------|-----------|
+| Political Leaning Shifts | enable toggle, low sat threshold, high anx threshold, consecutive days |
+| News Impact & Echo Chamber | news_impact, serendipity_rate, articles_per_agent, forget_rate |
+| Emotional Response | delta_cap_mult, satisfaction_decay, anxiety_decay |
+| Undecided & Party Effects | base_undecided, max_undecided, party_align_bonus, incumbency_bonus |
+| Life Events | individuality_multiplier, neutral_ratio |
+| News Category Mix | candidate%, national%, local%, international% (must sum to 100) |
+
+Parameters flow: template `default_calibration_params` → Quick Start `advParams` state → `scoring_params` in evolution API → `evolver.py` reads from `job["scoring_params"]`.
+
+### Differentiated Template Calibration
+Each template context has tuned defaults in `build_national_template.py`:
+
+| Parameter | Generic | 2024 | 2028 | State |
+|-----------|---------|------|------|-------|
+| news_impact | 2.0 | 2.5 | 1.8 | 2.2 |
+| serendipity_rate | 0.05 | 0.03 | 0.08 | 0.04 |
+| base_undecided | 0.12 | 0.08 | 0.20 | 0.10 |
+| incumbency_bonus | 10 | 8 | 0 | 8 |
+| shift_consecutive_days_req | 5 | 7 | 4 | 5 |
+| news_mix_candidate | 15% | 35% | 30% | 20% |
+| news_mix_local | 35% | 25% | 25% | 45% |
+
+### LLM Negativity Bias Corrections
+LLMs have inherent negativity bias — they consistently rate satisfaction lower and
+anxiety higher when reacting to real news. Multiple corrections are applied:
+
+1. **Asymmetry correction** (`evolver.py`): negative sat deltas × 0.70, positive × 1.30
+   (configurable via `negativity_dampen` / `positivity_boost` in scoring_params)
+2. **Satisfaction decay** toward baseline 50: default 0.04/day (doubled from original 0.02)
+3. **Mean-reversion boost**: when sat < 45, extra upward pull `(45 - sat) × 0.08`
+4. **Anxiety ceiling resistance**: quadratic dampening above 60 → practical cap ~70-72
+   Formula: `excess² × 0.02 + excess × 0.05` where `excess = anx - 60`
+5. **Partisan prompt guidance** (`prompts.py`): explicit instruction that Republican agents
+   should react positively to GOP news, with "Do NOT let your own political views as
+   an AI override the character's leaning"
+6. **Income-scaled reactions** (`prompts.py`): explicit numerical ranges per income bracket
+   (Under $25k → anxiety +8~15 on economic news; $200k+ → +0~2)
+
+### News Category Mix System
+Quick Start distributes search queries across 4 categories using topic pools:
+- **Candidate**: uses candidate names + partisan sources (CNN, Fox, etc.)
+- **National**: 14 topic pools (inflation, jobs, healthcare, immigration, etc.) + neutral sources
+- **Local**: state name (quoted for exact match) + 10 local topics + neutral sources
+- **International**: 10 global topics (NATO, China trade, UN, etc.) + neutral sources
+
+Non-candidate queries deliberately use neutral sources (Reuters, AP, PBS) to avoid
+getting candidate-heavy results from partisan sites.
+
+### Evolution Dashboard AI Analysis
+`POST /api/pipeline/evolution/analyze` — System LLM generates structured analysis:
+- Triggers every 10 simulation days (configurable via `ANALYSIS_INTERVAL`)
+- Also triggers when evolution completes (for remaining unanalyzed days)
+- Returns JSON: `overall`, `satisfaction_anxiety`, `political_leaning`,
+  `candidate_awareness`, `candidate_sentiment`
+- Accumulated segments displayed in purple gradient card on Dashboard
+- Per-chart `ChartInsight` blocks below each chart
+- Cached in `sessionStorage` per workspace — no redundant LLM calls on page revisit
+
+### Evolution Quick Start Lifecycle
+**Fresh Start** (Start Evolution button):
+1. Query `/evolve/jobs` for all running/pending jobs → stop each one
+2. Wait 2s for state writes to flush
+3. Call `/evolve/reset` (clears agent_states, history, diaries, ChromaDB)
+4. Clear news pool
+5. Start round 1
+
+**Resume** (after pause): skips reset, continues from paused round
+
+**Page Reload Recovery**: mount detects `evolution-progress` status:
+- `evolving` + backend job running → starts polling loop, then continues next round
+- `evolving` + backend job stopped/failed → clears stale progress
+- `paused` → shows Resume/Restart/Stop buttons
+- `done` → shows completion UI
+
+**Completion Detection** (`use-workflow-status.ts`):
+- Sidebar ✓ requires `evolution-progress.status === "done"` (not just any completed job)
+- Spinner on Evolution label when any job is running/pending (polls `/evolve/jobs` every 5s)
+
+### Live Message Ring Buffer
+`MAX_LIVE_MESSAGES = 50`, `MAX_PRIORITY_MESSAGES = 20`.
+Leaning shift messages (`shifted from`) are tagged as priority (same as KOL posts)
+so they survive ring buffer eviction by regular diary messages.
+
+### Sidebar & Branding
+- Site name: **Civatas USA** (layout.tsx, WorkflowSidebar, OnboardingWizard, i18n)
+- Evolution sub-items order: Quick Start → Dashboard → Agent Explorer → News Sources
+- `WorkspaceListPanel`: auth token check removed (no more redirect to deleted `/login`)
+
+### Known Monitoring Observations (as of 2026-04-13)
+From extensive monitoring of 10-30 day evolution runs:
+- **sat** typically settles around 45-48 over 10 days (mean-reversion prevents collapse below 45)
+- **anx** typically settles around 55-58 (ceiling resistance prevents runaway above 70)
+- **Leaning shifts** require 5+ consecutive days at threshold — typically 0-2 shifts in 10-day runs
+- **Lean Rep** group (6 agents) has high variance due to small sample size
+- **Rep+Trump positive reaction rate**: ~35-50% (up from ~0% before prompt fix)
+- **Income sensitivity**: low income anxiety ~2-3× higher than high income on economic news
+- **Personality traits** correctly modulate: stable agents ±0-3, sensitive agents ±10-30
+- **Cognitive biases** differentiate: apathetic +1 anx, conformist +8 anx, pessimist +4 anx
+
+### Development Notes
+- Persona personality values are still in Chinese (穩定冷靜/敏感衝動/etc.) — `evolver.py`
+  `_personality_modifiers()` matches both Chinese and English values, so it works correctly.
+  Full English persona values would require re-generating all personas.
+- `main.py` has extensive Taiwan-specific code in prediction/calibration/historical-run
+  sections (~lines 1500-3800). These are **not yet localized** — they still reference
+  Taiwan parties, Chinese prompts, and TW-specific logic. Only the `start_evolve` path
+  (Quick Start) has been fully US-localized.
+- `feed_engine.py` diet_map and source_leanings still contain some Taiwan-era source
+  names — they don't affect US operations since Quick Start injects news via Serper,
+  but would need cleanup for a full open-source release.
+
 ## 語言規則
 - 思考過程（thinking）可以使用英文
 - 所有最終回覆必須使用繁體中文
