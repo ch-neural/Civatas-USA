@@ -43,18 +43,20 @@ export function useWorkflowStatus(wsId: string | null) {
     personaQuery.data?.agents?.length ?? personaQuery.data?.length ?? 0;
   const hasPersonas = personaCount > 0;
 
-  // History: check if any evolution has completed (history entries don't have status)
-  const rawEvo = evolutionQuery.data?.history ?? evolutionQuery.data?.jobs ?? evolutionQuery.data;
-  const evolutionHistory: any[] = Array.isArray(rawEvo) ? rawEvo : [];
-  const hasEvolution = evolutionHistory.length > 0 || (evolutionJobsQuery.data?.jobs ?? []).some(
-    (j: any) => j.status === "completed" || j.status === "done"
-  );
-
-  // Jobs: check if any job is currently running
+  // Jobs: check running and completion status
   const jobsList: any[] = evolutionJobsQuery.data?.jobs ?? [];
   const isEvolutionRunning = jobsList.some(
     (j: any) => j.status === "running" || j.status === "pending"
   );
+
+  // Evolution is "completed" only when there are completed jobs AND nothing
+  // is still running. Quick Start runs multi-round evolution where each round
+  // is a separate job — intermediate rounds complete but the overall flow is
+  // not done until the last round finishes and no new round starts.
+  const hasCompletedJobs = jobsList.some(
+    (j: any) => j.status === "completed" || j.status === "done"
+  );
+  const hasEvolution = hasCompletedJobs && !isEvolutionRunning;
 
   const status: WorkflowStatus = {
     persona: hasPersonas ? "completed" : "available",
