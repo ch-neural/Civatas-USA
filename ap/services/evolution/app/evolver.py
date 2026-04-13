@@ -946,9 +946,9 @@ async def evolve_one_day(
                         kol_preview = tp['text'][:25] + "..." if len(tp.get('text', '')) > 25 else tp.get('text', '')
                         feed.append({
                             "article_id": f"kol-{hash(tp['text'])}",
-                            "title": f"社群轉貼：{tp['text']}",
+                            "title": f"Social repost: {tp['text']}",
                             "summary": "",
-                            "source_tag": "社群熱議",
+                            "source_tag": "Social trending",
                         })
                         if job is not None:
                             _push_live(job, f"📱 Agent #{aid} {agent_name} saw a shared post: \"{kol_preview}\"")
@@ -998,7 +998,7 @@ async def evolve_one_day(
         social_posts_text = ""
         if matched_posts:
             lines = [f"- 「{p['text'][:60]}」" for p in matched_posts]
-            social_posts_text = f"【你也聽到身邊的人在說】\n" + "\n".join(lines)
+            social_posts_text = "[What people around you are saying]\n" + "\n".join(lines)
 
         # ── Feature 3: District local news ──
         district_news_titles: list[str] = []
@@ -1011,7 +1011,7 @@ async def evolve_one_day(
                 d_feed = d_articles[:_dn_count]
                 district_news_titles = [a.get("title", "") for a in d_feed]
                 lines = [f"- {a['title']}" + (f"：{a['summary'][:50]}" if a.get('summary') else "") for a in d_feed]
-                district_news_text = f"【你所在的{my_district}最近發生的事】\n" + "\n".join(lines)
+                district_news_text = f"[Recent events in your area — {my_district}]\n" + "\n".join(lines)
 
         # ── Feature 5: Candidate Awareness Tracking ──
         # Load existing awareness from state; initialize from candidate visibility if first time
@@ -1168,7 +1168,7 @@ async def evolve_one_day(
         persona_desc = agent.get("user_char", "") or agent.get("description", "")
         p_delta = prof.get("persona_delta", "")
         if p_delta:
-            persona_desc = f"{persona_desc}\n【經歷近期事件後的價值觀變化】：{p_delta}"
+            persona_desc = f"{persona_desc}\n[Recent life events and value shifts]: {p_delta}"
 
         current_leaning = state.get("current_leaning", agent.get("political_leaning", "Tossup"))
         political_leaning = current_leaning

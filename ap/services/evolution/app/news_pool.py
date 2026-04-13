@@ -235,7 +235,7 @@ def replace_pool(articles: list[CrawledArticle]):
     logger.info(f"News pool updated: {len(_pool)} articles")
 
 
-def inject_article(title: str, summary: str, source_tag: str = "手動注入", source_leaning: str = "中立") -> dict:
+def inject_article(title: str, summary: str, source_tag: str = "Manual inject", source_leaning: str = "Tossup") -> dict:
     """Manually inject a breaking-news event into the pool (God mode)."""
     if not _pool:
         _load_pool()

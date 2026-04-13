@@ -119,50 +119,34 @@ def _recency_score(crawled_at: str | None, now: datetime | None = None) -> float
 
 # ── Irrelevant article filter ────────────────────────────────────────
 
-# PTT boards and keywords that indicate non-political content
+# Source patterns that indicate non-political content
 _IRRELEVANT_BOARD_PATTERNS = [
     # Entertainment / Lifestyle
-    "joke", "食記", "food", "beauty", "gossiping_fake",
-    "stupidclown", "lifeismoney", "pokemongo",
+    "joke", "food", "beauty", "recipe", "celebrity", "gossip",
     # Sports
-    "baseball", "nba", "lol", "mma", "sportlottery",
+    "baseball", "nba", "nfl", "mma", "espn", "sports",
     # Media / Gaming
-    "c_chat", "marvel", "movie", "koreadrama", "japandrama",
-    "youtuber", "steam", "playstation", "nintendo",
+    "marvel", "movie", "drama", "youtube", "steam", "playstation", "nintendo",
     # Tech / Cars / Hardware (non-political)
-    "car", "biker", "mobilcomm", "pc_shopping", "hardware",
-    # Other non-political boards
-    "sex", "babymother", "home-sale", "womentalk",
-    "headphone", "audiophile", "diy", "recipe",
-    # Social media non-political
-    "mobile01", "eprice",
+    "car", "tech", "gadget", "hardware", "review",
+    # Other non-political
+    "fashion", "travel", "diy", "fitness",
 ]
 
 _IRRELEVANT_TITLE_KEYWORDS = [
-    "[趣事]", "[笑話]", "[食記]", "[遊記]", "[閒聊]",
-    "[討論]", "[問題]", "[請益]", "[心得]", "[試用]", "[評測]",
-    "波多野", "AV女優", "A片",
-    "看板youtuber", "看板car", "看板sex",
-    "看板biker", "看板mobilcomm", "看板pc_shopping",
-    "看板hardware", "看板womentalk", "看板babymother",
-    "看板home-sale", "看板recipe",
-    "看板e-appliance", "看板air-quality", "看板lifeismoney",
-    "看板headphone", "看板audiophile",
-    # Product review / consumer content keywords
-    "空氣清淨機", "清淨機", "Dyson", "Blueair", "HEPA",
-    "濾網", "濾材", "除濕機", "全熱交換", "冷氣",
-    "空氣循環", "居家生活板", "E-appliance",
+    # Non-political content markers
+    "[ad]", "[sponsored]", "[quiz]", "[video]", "[gallery]",
+    # Product / consumer content
+    "product review", "best deals", "gift guide", "coupon",
+    # Entertainment
+    "celebrity", "kardashian", "reality tv", "box office",
 ]
 
 # Content-level keywords that indicate non-political articles even if title looks political
 _NOISE_CONTENT_KEYWORDS = [
-    # Product reviews disguised with PM2.5 / air quality framing
-    "空氣清淨機", "清淨機", "Dyson", "Blueair", "HEPA",
-    "濾網大家都多久換", "濾材", "空氣循環清淨機", "空氣過濾",
-    "前置濾箱", "除濕機or", "冷氣PM2.5",
-    # Non-political forum discussions
-    "居家生活板", "E-appliance", "考試板",
-    "專技高考", "環境工程技師",
+    # Product reviews / consumer content
+    "product review", "best buy", "amazon deal",
+    "coupon code", "promo code", "affiliate link",
 ]
 
 
@@ -198,11 +182,11 @@ def _categorize_article(title: str, summary: str) -> str:
     text = (title + " " + summary).lower()
     
     cat_keywords = {
-        "Economy": ["物價", "通膨", "漲跌", "經濟", "股市", "薪資", "電價", "房價", "買房", "外銷", "景氣", "加薪", "基本工資"],
-        "CrossStrait": ["兩岸", "中國", "中共", "台海", "武統", "共軍", "統獨", "九二共識", "美國", "國防", "軍售", "疑美"],
-        "Livelihood": ["交通", "行人", "車禍", "違停", "補助", "育兒", "托育", "停電", "治安", "詐騙", "黑道"],
-        "GenderSocial": ["平權", "性騷", "metoo", "女權", "同志", "同婚", "少子化", "性別"],
-        "Politics": ["選舉", "立法院", "質詢", "立委", "總統", "貪污", "弊案", "圖利", "罷免", "初選"]
+        "Economy": ["inflation", "economy", "stock", "wages", "gas price", "housing", "jobs", "unemployment", "gdp", "recession", "interest rate", "cost of living", "minimum wage"],
+        "ForeignPolicy": ["china", "russia", "ukraine", "nato", "tariff", "trade war", "immigration", "border", "defense", "military", "sanctions", "diplomacy"],
+        "Livelihood": ["traffic", "infrastructure", "school", "transit", "power outage", "childcare", "crime", "gun violence", "police", "scam", "fentanyl", "opioid"],
+        "GenderSocial": ["abortion", "roe", "dobbs", "lgbtq", "gender", "metoo", "dei", "civil rights", "affirmative action", "voting rights"],
+        "Politics": ["election", "congress", "senate", "supreme court", "president", "corruption", "impeach", "primary", "polling", "campaign", "legislation"]
     }
     
     # Simple highest-match logic
@@ -229,29 +213,27 @@ def _demographic_affinity(agent: dict, category: str) -> float:
         
     gender = agent.get("context", {}).get("gender", "")
     occupation = agent.get("context", {}).get("occupation", "")
-    leaning = agent.get("political_leaning", "中立")
-    
+    leaning = agent.get("political_leaning", "Tossup")
+
     if category == "Economy":
-        # Older people, business owners, workers care more about economy/inflation
         if age_num > 40: affinity += 0.2
-        if any(w in occupation for w in ["商人", "企業", "勞工", "上班族", "金融", "服務業"]): affinity += 0.3
-        
-    elif category == "CrossStrait":
-        # Strong partisans and older generations often track cross-strait more closely
-        if leaning in ["偏左派", "偏右派"]: affinity += 0.3
+        occ_lower = occupation.lower()
+        if any(w in occ_lower for w in ["business", "finance", "manager", "sales", "service"]): affinity += 0.3
+
+    elif category == "ForeignPolicy":
+        # Strong partisans and older generations track foreign policy more closely
+        if leaning in ("Solid Dem", "Solid Rep", "Lean Dem", "Lean Rep"): affinity += 0.3
         if age_num > 50: affinity += 0.2
-        
+
     elif category == "Livelihood":
-        # Broadly appealing, slightly higher for parents/young adults
         if 25 <= age_num <= 45: affinity += 0.3
-        
+
     elif category == "GenderSocial":
-        # Strongly appeals to younger cohorts and females
         if age_num < 35: affinity += 0.4
-        if "女" in gender: affinity += 0.3
-        
+        if gender and gender.lower().startswith("f"): affinity += 0.3
+
     elif category == "Politics":
-        if leaning in ["偏左派", "偏右派"]: affinity += 0.2
+        if leaning in ("Solid Dem", "Solid Rep", "Lean Dem", "Lean Rep"): affinity += 0.2
         
     return min(affinity, 1.8)  # Cap the multiplier
 
@@ -309,30 +291,29 @@ def select_feed(
 
     # ── Determine agent preferences ─────────────────────────────────
     media_habit = agent.get("media_habit") or ""
-    agent_leaning = agent.get("political_leaning") or "中立"
+    agent_leaning = agent.get("political_leaning") or "Tossup"
 
     preferred_tags: set[str] = set()
     for habit_key, tag_list in diet_map.items():
         if habit_key in media_habit:
             preferred_tags.update(tag_list)
 
-    # Fallback to mainstream if no match
+    # Fallback to mainstream US sources if no match
     if not preferred_tags:
-        preferred_tags = {"Yahoo新聞", "ETtoday"}
+        preferred_tags = {"Reuters", "Associated Press", "The Hill"}
 
     now = datetime.now(timezone.utc)
 
     def _fuzzy_match_source(source_tag: str, known_names: set[str]) -> str | None:
         """Fuzzy match a Serper source_tag to a known diet_map source name.
-        E.g. 'TVBS新聞網' matches 'TVBS新聞', '自由財經' matches '自由時報'.
+        E.g. 'CNN Politics' matches 'CNN', 'Fox News Digital' matches 'Fox News'.
         """
         if source_tag in known_names:
             return source_tag
+        tag_lower = source_tag.lower()
         for name in known_names:
-            # Strip common suffixes and check containment
-            core = name.replace("新聞", "").replace("時事", "").replace("電子報", "")
-            tag_core = source_tag.replace("新聞網", "").replace("新聞雲", "").replace("新聞", "").replace("財經網", "").replace("財經", "").replace("評論網", "").replace("股市", "")
-            if len(core) >= 2 and (core in source_tag or core in tag_core or tag_core in name):
+            name_lower = name.lower()
+            if len(name_lower) >= 3 and (name_lower in tag_lower or tag_lower in name_lower):
                 return name
         return None
 
@@ -355,12 +336,12 @@ def select_feed(
 
         art_leaning = (
             article.get("source_leaning")
-            or source_leanings.get(effective_tag, source_leanings.get(tag, "中立"))
+            or source_leanings.get(effective_tag, source_leanings.get(tag, "Tossup"))
         )
 
         # Channel match: 1.0 if in preferred set (fuzzy), 0.0 if not
-        # Special: "情境注入" articles always get delivered (prediction scenarios)
-        if tag in ("情境注入", "手動注入"):
+        # Special: injected articles always get delivered (prediction scenarios)
+        if tag in ("Scenario inject", "Manual inject"):
             channel_score = 1.0
             rec_score = 1.0  # Always fresh
         else:
@@ -402,7 +383,7 @@ def select_feed(
     if len(scored) <= n:
         return [a for _, a in scored]
 
-    # Add jitter when scores are too uniform (common with 情境注入)
+    # Add jitter when scores are too uniform (common with scenario injection)
     unique_scores = set(s for s, _ in scored)
     if len(unique_scores) <= 2:
         scored = [(s + random.uniform(-0.2, 0.2), a) for s, a in scored]
@@ -435,7 +416,7 @@ def preview_feed(agent: dict, news_pool: list[dict]) -> dict:
     return {
         "agent_id": agent.get("person_id"),
         "media_habit": agent.get("media_habit", ""),
-        "political_leaning": agent.get("political_leaning", "中立"),
+        "political_leaning": agent.get("political_leaning", "Tossup"),
         "articles_count": len(feed),
         "articles": feed,
     }

@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 # ── Political leaning options ────────────────────────────────────────
 
-LEANING_OPTIONS = ["偏左派", "中立", "偏右派"]
+LEANING_OPTIONS = ["Lean Dem", "Tossup", "Lean Rep"]
 
 # ── Default source registry ──────────────────────────────────────────
 
@@ -27,7 +27,7 @@ class CrawlSource:
     source_id: str
     name: str
     url: str
-    tag: str                 # e.g. "PTT八卦版", "Yahoo新聞"
+    tag: str                 # e.g. "Reuters", "CNN"
     selector_title: str      # CSS selector for headline elements
     selector_summary: str    # CSS selector for summary text
     max_items: int = 10
@@ -168,7 +168,7 @@ def build_default_sources() -> list[CrawlSource]:
             selector_summary=s.get("selector_summary", ""),
             max_items=s.get("max_items", 10),
             is_default=True,
-            leaning=s.get("leaning", "中立"),
+            leaning=s.get("leaning", "Tossup"),
         ))
     return results
 
