@@ -30,16 +30,29 @@ export function useWorkflowStatus(wsId: string | null) {
     refetchInterval: 10_000,
   });
 
+  // Jobs endpoint has status field (running/pending/completed) — history does not
+  const evolutionJobsQuery = useQuery({
+    queryKey: ["evolution-jobs", wsId],
+    queryFn: () => apiFetch(`/api/pipeline/evolution/evolve/jobs`),
+    enabled: !!wsId,
+    retry: false,
+    refetchInterval: 5_000,
+  });
+
   const personaCount =
     personaQuery.data?.agents?.length ?? personaQuery.data?.length ?? 0;
   const hasPersonas = personaCount > 0;
 
-  const rawEvo = evolutionQuery.data?.jobs ?? evolutionQuery.data;
-  const evolutionJobs: any[] = Array.isArray(rawEvo) ? rawEvo : [];
-  const hasEvolution = evolutionJobs.some(
+  // History: check if any evolution has completed (history entries don't have status)
+  const rawEvo = evolutionQuery.data?.history ?? evolutionQuery.data?.jobs ?? evolutionQuery.data;
+  const evolutionHistory: any[] = Array.isArray(rawEvo) ? rawEvo : [];
+  const hasEvolution = evolutionHistory.length > 0 || (evolutionJobsQuery.data?.jobs ?? []).some(
     (j: any) => j.status === "completed" || j.status === "done"
   );
-  const isEvolutionRunning = evolutionJobs.some(
+
+  // Jobs: check if any job is currently running
+  const jobsList: any[] = evolutionJobsQuery.data?.jobs ?? [];
+  const isEvolutionRunning = jobsList.some(
     (j: any) => j.status === "running" || j.status === "pending"
   );
 
