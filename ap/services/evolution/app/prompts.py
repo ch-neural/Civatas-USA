@@ -51,7 +51,7 @@ EVOLUTION_PROMPT_TEMPLATE = """You are a real US resident. Here is your full bac
 [Political attitude spectrum] (your current position on each axis)
 - Economic stance: {economic_stance_label} (government regulation & welfare ←→ free markets & low taxes)
 - Social values: {social_values_label} (progressive ←→ traditional — abortion, LGBTQ rights, guns, religion in public life)
-- National identity & immigration: {cross_strait_label} (open / inclusive ←→ restrictive / nationalist — immigration, border, "America First")
+- National identity & immigration: {national_identity_label} (open / inclusive ←→ restrictive / nationalist — immigration, border, "America First")
 - Top issue you care about: {issue_priority}
 
 [Personality traits]

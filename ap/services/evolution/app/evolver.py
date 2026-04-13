@@ -1196,7 +1196,7 @@ async def evolve_one_day(
             return "strongly right"
         _econ_label = _att_label(attitudes["economic_stance"])
         _social_label = _att_label(attitudes["social_values"])
-        _cross_label = _att_label(attitudes["cross_strait"])
+        _cross_label = _att_label(attitudes.get("national_identity", attitudes.get("cross_strait", 50)))
 
         agent_vendor = agent.get("llm_vendor")
         _ev = enabled_vendors or (job.get("enabled_vendors") if job else None)
@@ -1306,7 +1306,7 @@ async def evolve_one_day(
                 issues=_ag_issues,
                 economic_stance_label=_econ_label,
                 social_values_label=_social_label,
-                cross_strait_label=_cross_label,
+                national_identity_label=_cross_label,
                 issue_priority=_issue_priority,
                 local_satisfaction=round(local_satisfaction),
                 national_satisfaction=round(national_satisfaction),
@@ -1372,8 +1372,8 @@ async def evolve_one_day(
         new_attitudes = {
             "economic_stance": max(0, min(100, attitudes["economic_stance"] + _shift_map.get(_econ_shift_raw, 0))),
             "social_values": max(0, min(100, attitudes["social_values"] + _shift_map.get(_social_shift_raw, 0))),
-            "cross_strait": max(0, min(100, attitudes["cross_strait"] + _shift_map.get(_cross_shift_raw, 0))),
-            "issue_priority": result.get("issue_priority", attitudes.get("issue_priority", "民生")),
+            "national_identity": max(0, min(100, attitudes.get("national_identity", attitudes.get("cross_strait", 50)) + _shift_map.get(_cross_shift_raw, 0))),
+            "issue_priority": result.get("issue_priority", attitudes.get("issue_priority", "quality of life")),
         }
 
         # Apply personality modulation to deltas
