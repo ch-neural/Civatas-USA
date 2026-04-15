@@ -630,7 +630,11 @@
       "concurrency": 5
     },
     "default_alignment": {
-      "mode": "none"
+      "mode": "ground_truth",
+      "ground_truth": {
+        "Donald Trump": 49.81,
+        "Kamala Harris": 48.33
+      }
     },
     "default_evolution_window": {
       "start_date": "2023-11-05",

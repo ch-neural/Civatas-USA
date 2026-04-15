@@ -131,15 +131,63 @@ export default function PredictionAnalysisPanel({ wsId }: { wsId: string }) {
         summary += `Recommended: ${cc.recommended} (margin ${cc.recommended_margin}%)\n`;
       }
       if (ds.length >= 2) {
-        summary += `\n【情緒變化】\n`;
+        summary += `\n[Emotion Change]\n`;
         const d1 = ds[0], dN = ds[ds.length - 1];
-        summary += `  滿意度: Day1=${d1.avg_satisfaction} → Day${dN.day}=${dN.avg_satisfaction}\n`;
-        summary += `  焦慮度: Day1=${d1.avg_anxiety} → Day${dN.day}=${dN.avg_anxiety}\n`;
+        summary += `  Satisfaction: Day1=${d1.avg_satisfaction} → Day${dN.day}=${dN.avg_satisfaction}\n`;
+        summary += `  Anxiety: Day1=${d1.avg_anxiety} → Day${dN.day}=${dN.avg_anxiety}\n`;
       }
       if (sr.leaning_distribution) {
-        summary += `\n【選民政治傾向】\n`;
+        summary += `\n[Voter Political Leaning Distribution]\n`;
         summary += Object.entries(sr.leaning_distribution).map(([k, v]) => `  ${k}: ${v}%`).join("\n") + "\n";
       }
+      // Per-day candidate support trend (helps LLM discuss momentum)
+      if (ds.length >= 2 && sr.poll_group_results) {
+        const firstGroupName = Object.keys(sr.poll_group_results)[0];
+        if (firstGroupName) {
+          summary += `\n[Daily Support Trend — ${firstGroupName}]\n`;
+          for (const d of ds) {
+            const ge = d.group_estimates?.[firstGroupName] || d.candidate_estimate || {};
+            const parts = Object.entries(ge).filter(([k]) => k !== "Undecided" && k !== "不表態").map(([k, v]) => `${k}=${v}%`).join(" · ");
+            if (parts) summary += `  Day ${d.day}: ${parts}\n`;
+          }
+        }
+      }
+      // Winner hint — derive locally to avoid closure TDZ issues
+      const _llmEntries = hasLlmResults
+        ? Object.entries(sr.llm_poll_group_results || {}).reduce<Record<string, number>>((acc, [_gn, gd]: any) => {
+            for (const [c, p] of Object.entries(gd || {})) {
+              if (c === "Undecided" || c === "不表態" || c === "__weighted_combined__") continue;
+              acc[c] = (acc[c] || 0) + (p as number);
+            }
+            return acc;
+          }, {})
+        : null;
+      const _winnerSource = _llmEntries && Object.keys(_llmEntries).length > 0
+        ? Object.fromEntries(Object.entries(_llmEntries).map(([k, v]) => [k, Math.round((v as number) / Object.keys(sr.llm_poll_group_results || {}).length * 10) / 10]))
+        : (Object.keys(sr.poll_group_results?.[Object.keys(sr.poll_group_results||{})[0]] || {}).length > 0
+            ? sr.poll_group_results[Object.keys(sr.poll_group_results)[0]]
+            : {});
+      const _winnerSorted = Object.entries(_winnerSource)
+        .filter(([k]) => k !== "Undecided" && k !== "不表態" && k !== "__weighted_combined__")
+        .sort(([, a]: any, [, b]: any) => b - a) as [string, number][];
+      if (_winnerSorted.length > 0) {
+        const [winName, winPct] = _winnerSorted[0];
+        const runnerUp = _winnerSorted[1];
+        summary += `\n[Winner Summary]\n`;
+        summary += `  Top candidate: ${winName} (${winPct}%)\n`;
+        if (runnerUp) {
+          const margin = winPct - runnerUp[1];
+          summary += `  Runner-up: ${runnerUp[0]} (${runnerUp[1]}%)\n`;
+          summary += `  Margin: ${margin > 0 ? "+" : ""}${margin.toFixed(1)}%\n`;
+        }
+      }
+      summary += `\n[Analysis Focus — IMPORTANT]\n`;
+      summary += `Please provide your analysis in this structured order:\n`;
+      summary += `1. WINNER: Explicitly state who wins and by how much. Describe confidence (decisive / close / too-close-to-call).\n`;
+      summary += `2. KEY FACTORS: What 2–3 factors drove the result (voter mood, group dynamics, undecided movement, demographic shift)?\n`;
+      summary += `3. MOMENTUM: Did support trend up or down during simulation? Was this race stable or volatile?\n`;
+      summary += `4. CAVEATS: What conditions might flip this outcome (simulation-length limits, sample size, external shocks)?\n`;
+      summary += `Keep each section tight (2–4 sentences). Use English.\n`;
       const res = await analyzePrediction(summary, predData.question || t("predanalysis.fallback_question"));
       const text = res.analysis || t("predanalysis.no_analysis");
       setAnalysisText(text);
@@ -257,8 +305,10 @@ export default function PredictionAnalysisPanel({ wsId }: { wsId: string }) {
     }
     if (tw > 0) for (const k of Object.keys(llmMerged)) llmMerged[k] = Math.round(llmMerged[k] / tw * 10) / 10;
   }
-  const primaryResults = hasLlmResults ? llmMerged : votePrediction;
-  const primaryLabel = hasLlmResults ? "LLM Voting" : "Weighted Poll";
+  // Priority: LLM vote (most realistic) > weighted candidate tally > simple vote_prediction buckets
+  const hasWeightedCands = Object.keys(weightedTotal).filter(k => k !== "Undecided" && k !== "不表態").length > 0;
+  const primaryResults = hasLlmResults ? llmMerged : (hasWeightedCands ? weightedTotal : votePrediction);
+  const primaryLabel = hasLlmResults ? "LLM Voting" : (hasWeightedCands ? "Weighted Poll" : "Satisfaction Survey");
   const vpEntries = Object.entries(primaryResults).filter(([k]) => k !== "Undecided" && k !== "Undecided" && k !== "不表態").sort(([,a], [,b]) => b - a);
   const vpUndecided = primaryResults["Undecided"] ?? primaryResults["不表態"] ?? 0;
   const overallWinner = vpEntries[0];

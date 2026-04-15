@@ -995,7 +995,7 @@ export default function EvolutionPanel({
                   {evolJob.daily_summary && evolJob.daily_summary.length > 0 && (
                     <div style={{ marginTop: 16 }}>
                       <h4 style={{ fontFamily: "var(--font-cjk)", fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                        📋 每日演化摘要
+                        {en ? "📋 Daily Evolution Summary" : "📋 每日演化摘要"}
                       </h4>
                       <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "var(--font-sans)", fontSize: 12 }}>
                         <thead>
@@ -1003,7 +1003,7 @@ export default function EvolutionPanel({
                             <th style={{ padding: "6px 8px", textAlign: "left", color: "var(--text-muted)", fontWeight: 500 }}>{en ? "Day" : "天"}</th>
                             <th style={{ padding: "6px 8px", textAlign: "right", color: "#4ade80", fontWeight: 500 }}>{en ? "Avg Satisfaction" : "平均滿意度"}</th>
                             <th style={{ padding: "6px 8px", textAlign: "right", color: "#f87171", fontWeight: 500 }}>{en ? "Avg Anxiety" : "平均焦慮度"}</th>
-                            <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-muted)", fontWeight: 500 }}>有反應的人數</th>
+                            <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-muted)", fontWeight: 500 }}>{en ? "Agents Reacted" : "有反應的人數"}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1014,7 +1014,7 @@ export default function EvolutionPanel({
                               <td style={{ padding: "5px 8px", textAlign: "right", color: "#f87171" }}>{d.avg_anxiety}</td>
                               <td style={{ padding: "5px 8px", textAlign: "right", color: d.entries_count === 0 ? "#ff6b6b" : "var(--text-muted)" }}>
                                 {d.entries_count} / {evolJob.agent_count}
-                                {d.entries_count === 0 && <span style={{ marginLeft: 6, fontSize: 11 }}>⚠️ 新聞池空</span>}
+                                {d.entries_count === 0 && <span style={{ marginLeft: 6, fontSize: 11 }}>{en ? "⚠️ No articles" : "⚠️ 新聞池空"}</span>}
                               </td>
                             </tr>
                           ))}
@@ -1084,7 +1084,7 @@ export default function EvolutionPanel({
                           <span style={{ fontSize: 9, opacity: 0.6, color: "#fb923c" }}>📱 {p.media_habit}</span>
                         )}
                         {p.political_leaning && (
-                          <span style={{ fontSize: 9, opacity: 0.7, color: p.political_leaning?.includes("本土") ? "#4ade80" : p.political_leaning?.includes("統") ? "#f87171" : "#94a3b8" }}>
+                          <span style={{ fontSize: 9, opacity: 0.7, color: p.political_leaning?.includes("Dem") ? "#3b82f6" : p.political_leaning?.includes("Rep") ? "#ef4444" : "#94a3b8" }}>
                             🏛️ {p.political_leaning}
                           </span>
                         )}
@@ -1123,7 +1123,7 @@ export default function EvolutionPanel({
                           </div>
                         )}
                         {ap.political_leaning && (
-                          <div style={{ marginTop: 4, fontSize: 12, fontFamily: "var(--font-cjk)", color: ap.political_leaning?.includes("本土") ? "#4ade80" : ap.political_leaning?.includes("統") ? "#f87171" : "#94a3b8" }}>
+                          <div style={{ marginTop: 4, fontSize: 12, fontFamily: "var(--font-cjk)", color: ap.political_leaning?.includes("Dem") ? "#3b82f6" : ap.political_leaning?.includes("Rep") ? "#ef4444" : "#94a3b8" }}>
                             🏛️ {en ? "Leaning" : "政治傾向"}: {ap.political_leaning}
                           </div>
                         )}

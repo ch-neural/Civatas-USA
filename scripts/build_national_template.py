@@ -710,7 +710,16 @@ def build_election_2024() -> dict:
         "default_poll_groups": US_DEFAULT_POLL_GROUPS,
         "party_base_scores": US_PARTY_BASE_SCORES,
         "default_evolution_params": US_DEFAULT_EVOLUTION_PARAMS,
-        "default_alignment": US_DEFAULT_ALIGNMENT,
+        # Actual 2024 national certified results — used by predictor's
+        # leaning-redistribution step as ground truth when no calibration pack
+        # is linked to the snapshot. Two-party + write-in share (source: FEC).
+        "default_alignment": {
+            "mode": "ground_truth",
+            "ground_truth": {
+                "Donald Trump":  49.81,
+                "Kamala Harris": 48.33,
+            },
+        },
         # 2024-specific absolute window: 6 months before election day → election day.
         # Generic templates leave this off, falling back to "1 year ago → today".
         "default_evolution_window": {

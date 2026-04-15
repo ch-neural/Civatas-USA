@@ -78,20 +78,21 @@ export function WorkflowSidebar() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#16213e] text-sm select-none">
+    <div className="h-full flex flex-col text-sm select-none" style={{ backgroundColor: "var(--bg-sidebar)", color: "var(--text-primary)" }}>
       {/* Logo */}
-      <div className="px-4 py-3 border-b border-[#0f3460]">
-        <div className="text-[#e94560] font-bold text-lg tracking-wide">CIVATAS USA</div>
-        <div className="text-neutral-500 text-[10px] mt-0.5">Open Source Edition</div>
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+        <div className="font-bold text-lg tracking-wide" style={{ color: "var(--accent)" }}>CIVATAS USA</div>
+        <div className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>Open Source Edition</div>
       </div>
 
       {/* Project selector */}
-      <div className="px-4 py-2.5 border-b border-[#0f3460]">
-        <div className="text-neutral-500 text-[10px] uppercase tracking-wider mb-1">
+      <div className="px-4 py-2.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+        <div className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "var(--text-muted)" }}>
           {en ? "Project" : "專案"}
         </div>
         <select
-          className="w-full bg-[#0f3460] text-neutral-300 text-xs rounded px-2 py-1.5 border-none outline-none cursor-pointer"
+          className="w-full text-xs rounded px-2 py-1.5 border-none outline-none cursor-pointer"
+          style={{ backgroundColor: "var(--bg-input)", color: "var(--text-secondary)" }}
           value={wsId ?? ""}
           onChange={(e) => {
             const id = e.target.value;
@@ -123,7 +124,7 @@ export function WorkflowSidebar() {
 
       {/* Workflow steps */}
       <div className="flex-1 overflow-y-auto py-2">
-        <div className="px-4 py-1 text-neutral-600 text-[9px] uppercase tracking-widest">
+        <div className="px-4 py-1 text-[9px] uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
           {en ? "Workflow" : "工作流程"}
         </div>
 
@@ -148,21 +149,22 @@ export function WorkflowSidebar() {
                 }}
                 disabled={isLocked}
               >
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  status === "completed"
-                    ? "bg-green-500 text-white"
-                    : isLocked
-                    ? "bg-neutral-700 text-neutral-500"
-                    : "bg-[#e94560] text-white"
-                }`}>
+                <div
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                  style={{
+                    backgroundColor: status === "completed" ? "#22c55e" : isLocked ? "#404040" : "var(--accent)",
+                    color: isLocked ? "#737373" : "#fff",
+                  }}
+                >
                   {status === "completed" ? "✓" : step.number}
                 </div>
-                <span className={`font-medium ${isLocked ? "text-neutral-600" : "text-neutral-200"}`}>
+                <span className="font-medium" style={{ color: isLocked ? "var(--text-muted)" : "var(--text-primary)" }}>
                   {stepLabel}
                 </span>
                 {step.key === "evolution" && workflowStatus.evolutionRunning && (
                   <span
-                    className="ml-1 inline-block w-3.5 h-3.5 rounded-full border-2 border-[#e94560]/30 border-t-[#e94560]"
+                    className="ml-1 inline-block w-3.5 h-3.5 rounded-full border-2"
+                    style={{ borderColor: "var(--accent-border)", borderTopColor: "var(--accent)" }}
                     style={{ animation: "spin 1s linear infinite" }}
                   />
                 )}
@@ -178,11 +180,12 @@ export function WorkflowSidebar() {
                     return (
                       <button
                         key={panelType}
-                        className={`w-full text-left px-4 py-1.5 pl-8 text-xs transition-colors ${
-                          active
-                            ? "text-[#e94560] bg-[#e94560]/10 border-l-2 border-[#e94560]"
-                            : "text-neutral-400 hover:text-neutral-200 hover:bg-white/5 border-l-2 border-transparent"
-                        }`}
+                        className="w-full text-left px-4 py-1.5 pl-8 text-xs transition-colors border-l-2"
+                        style={{
+                          color: active ? "var(--accent)" : "var(--text-secondary)",
+                          backgroundColor: active ? "var(--accent-bg)" : "transparent",
+                          borderColor: active ? "var(--accent)" : "transparent",
+                        }}
                         onClick={() => navigateTo(panelType)}
                       >
                         {panelLabel(info, locale)}

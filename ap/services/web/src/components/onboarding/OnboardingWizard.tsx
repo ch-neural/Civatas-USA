@@ -2,7 +2,7 @@
 "use client";
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, saveUiSettings } from "@/lib/api";
 import { useLocaleStore } from "@/store/locale-store";
 import { useLocalizePersonaValue } from "@/lib/i18n";
 import { useShellStore } from "@/store/shell-store";
@@ -15,6 +15,7 @@ import {
   buildSettingsPayload,
   parseSettingsToProvidersAndRoles,
 } from "@/lib/vendor-presets";
+import { setActiveTemplateId } from "@/hooks/use-active-template";
 
 /* ─── Section header for accordion ─── */
 function SectionHeader({
@@ -122,6 +123,8 @@ export function OnboardingWizard() {
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [createdWsId, setCreatedWsId] = useState("");
+  const [customCandidates, setCustomCandidates] = useState<string[]>([]);
+  const [candidateInput, setCandidateInput] = useState("");
 
   // Step 3: Persona
   const [targetCount, setTargetCount] = useState(100);
@@ -348,6 +351,17 @@ export function OnboardingWizard() {
     setLoadingTemplates(false);
   };
 
+  // Reset candidate list when selected template changes
+  useEffect(() => {
+    const tpl = templates.find((t) => t.id === selectedTemplate);
+    if (tpl?.is_generic || tpl?.scope === "state") {
+      setCustomCandidates(["Generic Democrat", "Generic Republican", "Generic Independent"]);
+    } else {
+      setCustomCandidates([]);
+    }
+    setCandidateInput("");
+  }, [selectedTemplate, templates]);
+
   // Create project
   const createProject = async () => {
     if (!projectName.trim()) return;
@@ -364,6 +378,15 @@ export function OnboardingWizard() {
       await apiFetch(`/api/workspaces/${wsId}/apply-template?name=${encodeURIComponent(selectedTemplate)}`, {
         method: "POST",
       });
+
+      // Persist active template so Evolution/Prediction panels can read it
+      setActiveTemplateId(wsId, selectedTemplate);
+
+      // Save custom candidates (for generic/state templates)
+      const tplInfo = templates.find((t) => t.id === selectedTemplate);
+      if (tplInfo?.is_generic || tplInfo?.scope === "state") {
+        await saveUiSettings(wsId, "custom-candidates", { candidates: customCandidates }).catch(() => {});
+      }
 
       // Cache workspace
       useShellStore.getState().setActiveWorkspace(wsId, projectName);
@@ -780,6 +803,72 @@ export function OnboardingWizard() {
                 onChange={(e) => setProjectName(e.target.value)}
               />
             </div>
+
+            {/* Candidate editor — shown for generic / state templates */}
+            {(() => {
+              const tpl = templates.find((t) => t.id === selectedTemplate);
+              if (!tpl || (!tpl.is_generic && tpl.scope !== "state")) return null;
+              return (
+                <div className="bg-[#16213e] rounded-lg p-4 mb-4 border border-[#0f3460]">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-neutral-400 text-xs">
+                      {en ? "Candidates (optional)" : "候選人（選填）"}
+                    </div>
+                    <div className="text-neutral-600 text-[10px]">
+                      {en ? "Leave empty to skip awareness tracking" : "留空則不追蹤知名度"}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-3 min-h-[28px]">
+                    {customCandidates.map((name) => (
+                      <div key={name} className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0f3460] border border-neutral-600 text-sm text-neutral-300">
+                        <span>{name}</span>
+                        <button
+                          type="button"
+                          className="text-neutral-500 hover:text-neutral-200 leading-none ml-1 text-base"
+                          onClick={() => setCustomCandidates((prev) => prev.filter((n) => n !== name))}
+                        >×</button>
+                      </div>
+                    ))}
+                    {customCandidates.length === 0 && (
+                      <span className="text-neutral-600 text-xs italic self-center">
+                        {en ? "No candidates" : "無候選人"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none placeholder:text-neutral-600"
+                      placeholder={en ? "Type a name and press Enter…" : "輸入名稱後按 Enter…"}
+                      value={candidateInput}
+                      onChange={(e) => setCandidateInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const name = candidateInput.trim();
+                          if (name && !customCandidates.includes(name)) {
+                            setCustomCandidates((prev) => [...prev, name]);
+                          }
+                          setCandidateInput("");
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="px-3 py-1.5 rounded bg-[#0f3460] text-neutral-400 hover:text-neutral-200 text-sm transition-colors border border-neutral-700"
+                      onClick={() => {
+                        const name = candidateInput.trim();
+                        if (name && !customCandidates.includes(name)) {
+                          setCustomCandidates((prev) => [...prev, name]);
+                          setCandidateInput("");
+                        }
+                      }}
+                    >
+                      {en ? "+ Add" : "+ 新增"}
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
 
             <div className="flex items-center justify-between mb-2">
               <div className="text-neutral-400 text-xs">

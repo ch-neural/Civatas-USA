@@ -28,10 +28,16 @@ const leaningColors: Record<string, string> = {
   "unknown": "#6b7280",
 };
 const personalityColors: Record<string, string> = {
+  // Chinese (legacy personas)
   "高度表達": "#a78bfa", "中等表達": "#7c3aed", "沉默寡言": "#4c1d95",
   "穩定冷靜": "#34d399", "一般穩定": "#059669", "敏感衝動": "#991b1b",
   "外向社交": "#60a5fa", "適度社交": "#2563eb", "內向獨處": "#1e3a5f",
   "開放多元": "#fbbf24", "中等開放": "#d97706", "固守觀點": "#92400e",
+  // English (US personas)
+  "highly expressive": "#a78bfa", "moderate": "#7c3aed", "reserved": "#4c1d95",
+  "very stable": "#34d399", "fairly stable": "#059669", "sensitive/impulsive": "#991b1b",
+  "highly social": "#60a5fa", "moderately social": "#2563eb", "introverted": "#1e3a5f",
+  "very open": "#fbbf24", "moderately open": "#d97706", "set in views": "#92400e",
 };
 
 /* ── helpers ── */
@@ -285,12 +291,20 @@ function PersonaTable({ personas, wsId, onUpdate }: { personas: any[]; wsId: str
                             "理性分析": "rgba(56,189,248,0.15)", "從眾型": "rgba(251,191,36,0.15)",
                             "陰謀論傾向": "rgba(168,85,247,0.15)", "轉嫁怨氣": "rgba(249,115,22,0.15)",
                             "無感冷漠": "rgba(107,114,128,0.15)",
+                            "optimistic": "rgba(34,197,94,0.15)", "pessimistic": "rgba(239,68,68,0.15)",
+                            "rational": "rgba(56,189,248,0.15)", "conformist": "rgba(251,191,36,0.15)",
+                            "conspiracy-prone": "rgba(168,85,247,0.15)", "scapegoating": "rgba(249,115,22,0.15)",
+                            "apathetic": "rgba(107,114,128,0.15)",
                           } as Record<string, string>)[p.individuality.cognitive_bias] || "rgba(255,255,255,0.05)",
                           color: ({
                             "樂觀偏向": "#22c55e", "悲觀偏向": "#ef4444",
                             "理性分析": "#38bdf8", "從眾型": "#fbbf24",
                             "陰謀論傾向": "#a855f7", "轉嫁怨氣": "#f97316",
                             "無感冷漠": "#6b7280",
+                            "optimistic": "#22c55e", "pessimistic": "#ef4444",
+                            "rational": "#38bdf8", "conformist": "#fbbf24",
+                            "conspiracy-prone": "#a855f7", "scapegoating": "#f97316",
+                            "apathetic": "#6b7280",
                           } as Record<string, string>)[p.individuality.cognitive_bias] || "#9ca3af",
                         }}>
                           {tp(p.individuality.cognitive_bias) || "?"}
@@ -639,8 +653,8 @@ export default function PersonaPanel({ wsId }: { wsId: string }) {
           const biasGroups: Record<string, any[]> = {};
           const esGroups: Record<string, any[]> = {};
           personas.forEach(p => {
-            const bias = p.individuality?.cognitive_bias || "未設定";
-            const es = p.personality?.emotional_stability || "未設定";
+            const bias = p.individuality?.cognitive_bias || "Not set";
+            const es = p.personality?.emotional_stability || "Not set";
             if (!biasGroups[bias]) biasGroups[bias] = [];
             biasGroups[bias].push(p);
             if (!esGroups[es]) esGroups[es] = [];
@@ -651,6 +665,8 @@ export default function PersonaPanel({ wsId }: { wsId: string }) {
           const biasColors: Record<string, string> = {
             "樂觀偏向": "#22c55e", "悲觀偏向": "#ef4444", "理性分析": "#38bdf8",
             "從眾型": "#fbbf24", "陰謀論傾向": "#a855f7", "轉嫁怨氣": "#f97316", "無感冷漠": "#6b7280", "未設定": "#4b5563",
+            "optimistic": "#22c55e", "pessimistic": "#ef4444", "rational": "#38bdf8",
+            "conformist": "#fbbf24", "conspiracy-prone": "#a855f7", "scapegoating": "#f97316", "apathetic": "#6b7280", "Not set": "#4b5563",
           };
 
           return (

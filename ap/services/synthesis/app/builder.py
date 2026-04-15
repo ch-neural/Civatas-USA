@@ -24,7 +24,7 @@ _DIM_TO_FIELD: dict[str, str] = {
     "經濟戶長職業別": "occupation",
     "employment_status": "occupation",   # US: ACS B23025 → occupation field
     "household_type": "household_type", "家庭型態": "household_type",
-    "household_tenure": "household_type",  # US: ACS B25003 → household_type field
+    "household_tenure": "household_tenure",  # US: ACS B25003 → its own field (Owner/Renter)
     "marital_status": "marital_status", "婚姻狀態": "marital_status",
     "race": "race",                         # US: ACS B02001
     "hispanic_or_latino": "hispanic_or_latino",  # US: ACS B03003
@@ -36,7 +36,7 @@ _DIM_TO_FIELD: dict[str, str] = {
 _PERSON_FIELDS = {
     "person_id", "age", "gender", "district",
     "race", "hispanic_or_latino", "household_income",
-    "education", "occupation", "income_band", "household_type",
+    "education", "occupation", "income_band", "household_type", "household_tenure",
     "marital_status", "party_lean", "issue_1", "issue_2",
     "media_habit", "mbti", "vote_probability", "custom_fields",
 }
@@ -59,7 +59,8 @@ _STAT_VALUE_KEYWORDS = {
 # Known personal attribute field names — always included.
 _KNOWN_PERSONAL = {"gender", "age", "district", "education", "occupation",
                    "race", "hispanic_or_latino", "household_income",
-                   "income_band", "household_type", "marital_status"}
+                   "income_band", "household_type", "household_tenure",
+                   "marital_status"}
 
 
 def _is_personal_attribute(dim_name: str, dim: Dimension) -> bool:
@@ -622,6 +623,35 @@ def _enforce_logical_consistency(row: dict) -> None:
     age = row.get("age", 30)
     if not isinstance(age, int):
         return
+
+    # marital_status: heuristic from age + gender when template did not supply it
+    # (most US ACS templates omit B12001; fill with rough age-banded distribution).
+    if not row.get("marital_status"):
+        import random as _rng
+        gender = (row.get("gender") or "").lower()
+        # (Never married, Married, Divorced/Separated, Widowed)
+        if age < 18:
+            buckets, weights = ["Never married"], [1.0]
+        elif age < 25:
+            buckets = ["Never married", "Married", "Divorced/Separated"]
+            weights = [0.85, 0.13, 0.02]
+        elif age < 35:
+            buckets = ["Never married", "Married", "Divorced/Separated"]
+            weights = [0.40, 0.50, 0.10]
+        elif age < 55:
+            buckets = ["Never married", "Married", "Divorced/Separated", "Widowed"]
+            weights = [0.18, 0.62, 0.18, 0.02]
+        elif age < 75:
+            buckets = ["Never married", "Married", "Divorced/Separated", "Widowed"]
+            weights = [0.09, 0.64, 0.18, 0.09]
+        else:
+            buckets = ["Never married", "Married", "Divorced/Separated", "Widowed"]
+            # Widowhood skews female due to longevity gap
+            if gender in ("female", "f", "女"):
+                weights = [0.04, 0.42, 0.10, 0.44]
+            else:
+                weights = [0.06, 0.66, 0.13, 0.15]
+        row["marital_status"] = _rng.choices(buckets, weights=weights, k=1)[0]
 
     # Education logic
     edu = row.get("education", "")

@@ -48,6 +48,7 @@ class InjectArticleRequest(BaseModel):
     title: str
     summary: str
     source_tag: str = "manual"
+    workspace_id: str = ""
 
 
 class DietRulesUpdate(BaseModel):
@@ -76,6 +77,9 @@ class StartEvolutionRequest(BaseModel):
     enabled_vendors: list[str] | None = None
     candidate_names: list[str] | None = None
     scoring_params: dict | None = None  # tunable evolution parameters
+    candidate_descriptions: dict | None = None  # name -> description text
+    party_detection: dict | None = None  # {"D": [...], "R": [...], "I": [...]}
+    workspace_id: str = ""  # scope state + news pool to this workspace
 
 
 class MemorySearchRequest(BaseModel):
@@ -177,14 +181,18 @@ def get_news_pool():
 
 @app.post("/news-pool/inject")
 def inject_news(req: InjectArticleRequest):
-    from .news_pool import inject_article
+    from .news_pool import inject_article, set_active_workspace
+    if req.workspace_id:
+        set_active_workspace(req.workspace_id)
     article = inject_article(req.title, req.summary, req.source_tag)
     return {"injected": True, "article": article}
 
 
 @app.post("/news-pool/clear")
-def clear_news_pool():
-    from .news_pool import clear_pool
+def clear_news_pool(workspace_id: str = ""):
+    from .news_pool import clear_pool, set_active_workspace
+    if workspace_id:
+        set_active_workspace(workspace_id)
     clear_pool()
     return {"cleared": True}
 
@@ -201,13 +209,18 @@ def evolution_dashboard(job_id: str = "", workspace_id: str = ""):
         set_evo_ws(workspace_id)
     from .evolver import _load_diaries, _load_states
 
-    # Find job
+    # Find job — check both _historical_jobs (cycle-mode) and evolver._jobs (Quick Start)
+    from .evolver import list_jobs as _list_evo_jobs
+    _all_jobs = {**_historical_jobs}
+    for ej in _list_evo_jobs():
+        _all_jobs[ej["job_id"]] = ej
+
     job = None
-    if job_id and job_id in _historical_jobs:
-        job = _historical_jobs[job_id]
+    if job_id and job_id in _all_jobs:
+        job = _all_jobs[job_id]
     else:
         # Find latest run
-        for j in sorted(_historical_jobs.values(), key=lambda x: x.get("started_at", 0), reverse=True):
+        for j in sorted(_all_jobs.values(), key=lambda x: x.get("started_at", 0), reverse=True):
             if j.get("status") in ("running", "completed"):
                 job = j
                 break
@@ -516,31 +529,94 @@ def evolution_dashboard(job_id: str = "", workspace_id: str = ""):
             rows.append(row)
         cross_tabs[dim] = rows
 
-    # ── Candidate awareness/sentiment trends (from diary entries) ──
+    # ── Candidate awareness/sentiment trends ──
+    # Awareness: average from diary entries' candidate_awareness state.
+    # Sentiment: derived from daily summary candidate_estimate — measures
+    # net favorability: (candidate_pct - fair_share) / fair_share, clamped to [-1, 1].
     candidate_trends: list[dict] = []
     _cand_names_seen: set[str] = set()
-    for day in sorted(days_data.keys()):
-        entries = days_data[day]
-        # Collect candidate_awareness and candidate_sentiment from entries
+    # Collect daily candidate estimates from ALL job summaries, mapped to global days.
+    # Each job uses local day 1..N; we map to global using started_at ordering.
+    # These are the authoritative per-day snapshots computed by evolver.py on each
+    # simulation day from live agent states — NOT derived/smoothed.
+    _daily_estimates: dict[int, dict] = {}
+    _sorted_jobs = sorted(_all_jobs.values(), key=lambda x: x.get("started_at", 0))
+    _global_offset = 0
+    for sj in _sorted_jobs:
+        for ds in sj.get("daily_summary", []):
+            ce = ds.get("candidate_estimate", {})
+            if ce:
+                _daily_estimates[_global_offset + ds["day"]] = ce
+                for cn in ce.keys():
+                    if cn != "Undecided":
+                        _cand_names_seen.add(cn)
+        _total = sj.get("total_days", 0)
+        if _total > 0:
+            _global_offset += _total
+
+    # Merge the set of days we have data for: diary-derived days ∪ daily_summary days.
+    # Diaries give awareness; daily_summary gives support + sentiment.
+    all_days: set[int] = set(days_data.keys()) | set(_daily_estimates.keys())
+    for day in sorted(all_days):
+        entries = days_data.get(day, [])
+        # Collect candidate_awareness from entries (may be empty if no tracked_candidates)
         cand_aw_sums: dict[str, float] = {}
-        cand_se_sums: dict[str, float] = {}
         cand_counts: dict[str, int] = {}
         for e in entries:
             ca = e.get("candidate_awareness", {})
-            cs = e.get("candidate_sentiment", {})
             for cn, val in ca.items():
                 cand_aw_sums[cn] = cand_aw_sums.get(cn, 0) + val
                 cand_counts[cn] = cand_counts.get(cn, 0) + 1
                 _cand_names_seen.add(cn)
-            for cn, val in cs.items():
-                cand_se_sums[cn] = cand_se_sums.get(cn, 0) + val
-        if cand_counts:
-            row: dict = {"day": day}
-            for cn in _cand_names_seen:
-                cnt = cand_counts.get(cn, 1)
-                row[f"{cn}_awareness"] = round(cand_aw_sums.get(cn, 0) / cnt, 3)
-                row[f"{cn}_sentiment"] = round(cand_se_sums.get(cn, 0) / cnt, 3)
-            candidate_trends.append(row)
+
+        est = _daily_estimates.get(day, {})
+        # Skip days with neither awareness nor support data
+        if not cand_counts and not est:
+            continue
+
+        row: dict = {"day": day}
+        n_cands = max(len([c for c in _cand_names_seen if c != "Undecided"]), 2)
+        # Fair share = decided votes only (excludes undecided), so a candidate at
+        # exactly "fair" support sits at sentiment=0 rather than systematically negative.
+        _undecided_pct = est.get("Undecided", 0)
+        fair_share = (100.0 - _undecided_pct) / n_cands
+
+        for cn in _cand_names_seen:
+            cnt = cand_counts.get(cn, 0)
+            # Emit null (not 0.0) when no agents reported awareness for this
+            # candidate on this day. 0.0 is visually identical to "everyone
+            # thinks 0%" and caused the chart to crash from a real value to 0
+            # on partially-aggregated days mid-run. Recharts treats null as
+            # a break in the line instead.
+            row[f"{cn}_awareness"] = round(cand_aw_sums.get(cn, 0) / cnt, 3) if cnt else None
+            # Sentiment from candidate estimate: how much above/below fair share
+            pct = est.get(cn, fair_share)
+            sentiment = max(-1.0, min(1.0, (pct - fair_share) / fair_share))
+            row[f"{cn}_sentiment"] = round(sentiment, 3)
+            # Raw support share (%) from candidate_estimate (fair_share fallback)
+            row[f"{cn}_support"] = round(pct, 1)
+        # Undecided share, if provided
+        if "Undecided" in est:
+            row["Undecided_support"] = round(est["Undecided"], 1)
+        candidate_trends.append(row)
+
+    # Candidate breakdown — latest daily_summary across all jobs (end-state snapshot)
+    candidate_breakdown: dict = {}
+    _latest_summary: dict | None = None
+    for sj in reversed(_sorted_jobs):
+        _ds_list = sj.get("daily_summary", [])
+        if _ds_list:
+            _latest_summary = _ds_list[-1]
+            break
+    if _latest_summary:
+        candidate_breakdown = {
+            "by_leaning": _latest_summary.get("by_leaning_candidate", {}),
+            "by_gender": _latest_summary.get("by_gender_candidate", {}),
+            "by_district": _latest_summary.get("by_district_candidate", {}),
+            "by_vendor": _latest_summary.get("by_vendor_candidate", {}),
+            "overall": _latest_summary.get("candidate_estimate", {}),
+            "day": _latest_summary.get("day", 0),
+        }
 
     # Get tracked candidate names from job
     tracked_candidate_names: list[str] = []
@@ -551,8 +627,8 @@ def evolution_dashboard(job_id: str = "", workspace_id: str = ""):
 
     return {
         "status": job.get("status") if job else "completed",
-        "current_day": job.get("current_day", latest_day) if job else latest_day,
-        "total_days": job.get("total_days", latest_day) if job else latest_day,
+        "current_day": _global_offset if _global_offset > 0 else (job.get("current_day", latest_day) if job else latest_day),
+        "total_days": _global_offset if _global_offset > 0 else (job.get("total_days", latest_day) if job else latest_day),
         "phase": job.get("phase", "") if job else "",
         "daily_trends": daily_trends,
         "district_stats": district_stats,
@@ -564,6 +640,7 @@ def evolution_dashboard(job_id: str = "", workspace_id: str = ""):
         "recent_activity": recent_activity,
         "cross_tabs": cross_tabs,
         "candidate_trends": candidate_trends,
+        "candidate_breakdown": candidate_breakdown,
         "tracked_candidate_names": tracked_candidate_names or list(_cand_names_seen),
         "live_messages": (job.get("live_messages", [])[-30:]) if job else [],
         "agent_count": len(set(d.get("agent_id") for d in diaries)),
@@ -974,8 +1051,21 @@ def preview_feed(req: PreviewFeedRequest):
 @app.post("/evolve")
 async def start_evolve(req: StartEvolutionRequest):
     from .evolver import start_evolution
+    # Scope state + news pool to this workspace BEFORE starting the job.
+    if req.workspace_id:
+        from .news_pool import set_active_workspace as set_news_ws
+        from .evolver import set_active_workspace as set_evo_ws
+        set_news_ws(req.workspace_id)
+        set_evo_ws(req.workspace_id)
     concurrency = req.concurrency if req.concurrency > 0 else (len(req.enabled_vendors) if req.enabled_vendors else 5)
-    result = await start_evolution(req.agents, req.days, concurrency=concurrency, candidate_names=req.candidate_names, scoring_params=req.scoring_params)
+    result = await start_evolution(
+        req.agents, req.days, concurrency=concurrency,
+        candidate_names=req.candidate_names,
+        scoring_params=req.scoring_params,
+        candidate_descriptions=req.candidate_descriptions,
+        party_detection=req.party_detection,
+        enabled_vendors=req.enabled_vendors,
+    )
     return result
 
 
@@ -1022,13 +1112,32 @@ def evolve_stop(job_id: str):
 
 
 @app.post("/evolve/reset")
-def evolve_reset():
+def evolve_reset(workspace_id: str = ""):
     """Clear all jobs, evolution history, agent states, and diaries."""
-    from .evolver import clear_jobs, _save_history, _save_states, _save_diaries
+    global _historical_jobs
+    from .evolver import clear_jobs, _save_history, _save_states, _save_diaries, set_active_workspace as set_evo_ws
+    from .news_pool import set_active_workspace as set_news_ws
+    if workspace_id:
+        set_evo_ws(workspace_id)
+        set_news_ws(workspace_id)
     cleared = clear_jobs()
+    _historical_jobs = {}   # Clear cycle-mode jobs so stale offsets don't pollute Quick Start
     _save_history([])      # Reset history file
     _save_states({})       # Reset agent states (satisfaction, anxiety, days_evolved)
     _save_diaries([])      # Reset all diary entries
+
+    # Delete all on-disk checkpoint files so they don't get re-restored on next container restart
+    try:
+        import glob as _glob
+        checkpoint_dir = _evo_jobs_dir()
+        for cp_file in _glob.glob(os.path.join(checkpoint_dir, "*.json")):
+            try:
+                os.remove(cp_file)
+                logger.info(f"[evo-reset] Deleted checkpoint: {os.path.basename(cp_file)}")
+            except Exception as e:
+                logger.warning(f"[evo-reset] Could not delete checkpoint {cp_file}: {e}")
+    except Exception as e:
+        logger.warning(f"[evo-reset] Checkpoint cleanup failed: {e}")
 
     # Clear ChromaDB vector memory
     try:
@@ -1112,6 +1221,8 @@ class SaveSnapshotRequest(BaseModel):
     name: str
     description: str = ""
     calibration_pack_id: str | None = None
+    workspace_id: str = ""
+    alignment_target: dict | None = None
 
 
 class RestoreSnapshotRequest(BaseModel):
@@ -1122,7 +1233,9 @@ class RestoreSnapshotRequest(BaseModel):
 def snapshot_save(req: SaveSnapshotRequest):
     """Save the current agent state as a named snapshot."""
     from .snapshot import save_snapshot
-    meta = save_snapshot(req.name, req.description, req.calibration_pack_id)
+    meta = save_snapshot(req.name, req.description, req.calibration_pack_id,
+                         workspace_id=req.workspace_id or "",
+                         alignment_target=req.alignment_target)
     return meta
 
 
@@ -1290,7 +1403,7 @@ class RunCalibrationRequest(BaseModel):
     kol_reach: float = 0.40
     sampling_modality: str = "unweighted"
     enabled_vendors: list[str] | None = None
-    min_voting_age: int = 20  # exclude agents younger than this
+    min_voting_age: int = 18  # exclude agents younger than this
 
 
 @app.post("/calibration/packs")
@@ -1548,7 +1661,7 @@ class HistoricalRunRequest(BaseModel):
     county: str = ""
     start_date: str = ""               # YYYY-MM-DD
     end_date: str = ""
-    min_voting_age: int = 20           # exclude agents younger than this from election simulations
+    min_voting_age: int = 18           # exclude agents younger than this from election simulations
     recording_id: str = ""             # if set, record step data for playback
     workspace_id: str = ""             # workspace that owns this run
     tracked_candidates: list[dict] = []  # [{name, party?, visibility?}] — candidates agents track awareness of
@@ -3080,7 +3193,7 @@ class RunPredictionRequest(BaseModel):
     prediction_id: str
     agents: list[dict]
     tracked_ids: list[str] | None = None
-    min_voting_age: int = 20  # exclude agents younger than this
+    min_voting_age: int = 18  # exclude agents younger than this
     recording_id: str = ""    # if set, record step data for playback
     workspace_id: str = ""
 
@@ -3107,6 +3220,14 @@ def prediction_create(req: CreatePredictionRequest):
 def prediction_list():
     from .predictor import list_predictions
     return {"predictions": list_predictions()}
+
+
+@app.get("/predictions/jobs")
+def prediction_jobs_list_early():
+    """Return all in-memory prediction jobs (lightweight summary).
+    Registered BEFORE /predictions/{pred_id} so "jobs" isn't captured as pred_id."""
+    from .predictor import list_pred_jobs
+    return {"jobs": list_pred_jobs()}
 
 
 @app.get("/predictions/{pred_id}")
@@ -3144,10 +3265,17 @@ async def prediction_run(req: RunPredictionRequest):
     # Reclassify '無工作' into meaningful subcategories
     agents = _refine_occupations(agents)
     try:
-        result = await run_prediction(req.prediction_id, agents, tracked_ids=req.tracked_ids, recording_id=req.recording_id)
+        result = await run_prediction(req.prediction_id, agents, tracked_ids=req.tracked_ids, recording_id=req.recording_id, workspace_id=req.workspace_id or "")
         return result
     except FileNotFoundError:
         raise HTTPException(404, "Prediction not found")
+
+
+@app.get("/predictions/jobs")
+def prediction_jobs_list():
+    """Return all in-memory prediction jobs (lightweight summary)."""
+    from .predictor import list_pred_jobs
+    return {"jobs": list_pred_jobs()}
 
 
 @app.get("/predictions/jobs/{job_id}")
@@ -3165,9 +3293,9 @@ async def satisfaction_survey(request: Request):
 
     Body: {
         snapshot_id: str,           # which snapshot to survey
-        person_name: str,           # e.g. "賴清德"
-        person_role: str,           # e.g. "總統", "台中市長", "立委候選人"
-        person_party: str,          # e.g. "民進黨" (optional, helps accuracy)
+        person_name: str,           # e.g. "Joe Biden"
+        person_role: str,           # e.g. "President", "Governor of Texas", "Senate candidate"
+        person_party: str,          # e.g. "Democrat" / "Republican" / "Independent"
     }
     Returns 5-level satisfaction distribution.
     """
@@ -3211,12 +3339,23 @@ async def satisfaction_survey(request: Request):
 
     # Determine which satisfaction metric to use
     _role_lower = person_role.lower()
-    is_national = any(k in _role_lower for k in ["總統", "行政院", "中央", "院長", "部長", "立法院", "國會"])
-    is_local = any(k in _role_lower for k in ["市長", "縣長", "副市長", "副縣長", "議長", "地方"])
-    is_candidate = any(k in _role_lower for k in ["候選人", "參選人", "初選"])
+    is_national = any(k in _role_lower for k in [
+        "president", "vice president", "vp ", "secretary", "cabinet", "federal",
+        "senate", "senator", "house", "congress", "congressman", "congresswoman",
+        "representative", "speaker",
+    ])
+    is_local = any(k in _role_lower for k in [
+        "governor", "lt. governor", "lieutenant governor", "mayor", "council",
+        "councilman", "councilwoman", "councilmember", "state senator",
+        "state assembly", "state representative", "sheriff", "district attorney",
+        "da ", "school board", "county", "city ", "local",
+    ])
+    is_candidate = any(k in _role_lower for k in [
+        "candidate", "nominee", "primary", "challenger", "running for",
+    ])
 
     # Compute per-agent satisfaction level
-    results = {"非常滿意": 0, "還算滿意": 0, "不太滿意": 0, "非常不滿意": 0, "未表態": 0}
+    results = {"Very satisfied": 0, "Fairly satisfied": 0, "Somewhat dissatisfied": 0, "Very dissatisfied": 0, "Undecided": 0}
     agent_details = []
 
     for aid, state in states.items():
@@ -3226,7 +3365,7 @@ async def satisfaction_survey(request: Request):
         local_sat = state.get("local_satisfaction", sat)
         national_sat = state.get("national_satisfaction", sat)
         anxiety = state.get("anxiety", 50)
-        leaning = state.get("current_leaning", "中立")
+        leaning = state.get("current_leaning", "Tossup")
         cand_sent = (state.get("candidate_sentiment") or {}).get(person_name, None)
         cand_aw = (state.get("candidate_awareness") or {}).get(person_name, None)
 
@@ -3244,18 +3383,26 @@ async def satisfaction_survey(request: Request):
             if cand_sent is not None:
                 base_score = base_score * 0.5 + (50 + cand_sent * 40) * 0.5
 
-        # Party alignment adjustment
+        # Party alignment adjustment (US two-party + Cook PVI buckets)
         if person_party:
-            is_kmt = any(k in person_party for k in ["國民黨", "藍"])
-            is_dpp = any(k in person_party for k in ["民進黨", "綠"])
-            if is_kmt and any(k in leaning for k in ["右", "藍", "統"]):
-                base_score += 8  # same party boost
-            elif is_kmt and any(k in leaning for k in ["左", "綠", "獨"]):
-                base_score -= 8  # opposite party penalty
-            elif is_dpp and any(k in leaning for k in ["左", "綠", "獨"]):
+            _pp = person_party.lower()
+            is_rep = any(k in _pp for k in ["republican", "gop", "rep ", "rep."]) or _pp.strip() in {"r", "rep"}
+            is_dem = any(k in _pp for k in ["democrat", "democratic", "dem "]) or _pp.strip() in {"d", "dem"}
+            is_ind = any(k in _pp for k in ["independent", "ind ", "third party", "libertarian", "green"]) or _pp.strip() in {"i", "ind"}
+            _lean = leaning or ""
+            lean_rep = any(k in _lean for k in ["Solid Rep", "Lean Rep"])
+            lean_dem = any(k in _lean for k in ["Solid Dem", "Lean Dem"])
+            lean_tossup = "Tossup" in _lean
+            if is_rep and lean_rep:
                 base_score += 8
-            elif is_dpp and any(k in leaning for k in ["右", "藍", "統"]):
+            elif is_rep and lean_dem:
                 base_score -= 8
+            elif is_dem and lean_dem:
+                base_score += 8
+            elif is_dem and lean_rep:
+                base_score -= 8
+            elif is_ind and lean_tossup:
+                base_score += 4  # independents get a smaller bump from swing voters
 
         # ── Multi-factor undecided probability ──
         # Real people don't just abstain because they don't know someone.
@@ -3269,16 +3416,16 @@ async def satisfaction_survey(request: Request):
 
         undecided_prob = 0.0
 
-        # Factor 1: Political apathy (cognitive_bias = 無感冷漠 → high undecided)
-        if cog_bias == "無感冷漠":
+        # Factor 1: Political apathy (matches both legacy CJK and English persona values)
+        if cog_bias in ("無感冷漠", "Apathetic", "apathetic"):
             undecided_prob += 0.40  # 40% chance of not caring
-        elif cog_bias == "理性分析":
+        elif cog_bias in ("理性分析", "Analytical", "analytical"):
             undecided_prob += 0.05  # rational people usually have an opinion
 
         # Factor 2: Unwilling to express (introverts don't share opinions)
-        if sociability == "獨立自處":
+        if sociability in ("獨立自處", "Independent", "independent"):
             undecided_prob += 0.15
-        elif sociability == "適度社交":
+        elif sociability in ("適度社交", "Moderately social", "moderately social"):
             undecided_prob += 0.03
 
         # Factor 3: Low awareness (but not absolute — some still guess)
@@ -3295,8 +3442,8 @@ async def satisfaction_survey(request: Request):
         if 42 < base_score < 58:
             undecided_prob += 0.12  # on the fence
 
-        # Factor 5: High anxiety + neutral leaning → confused/overwhelmed
-        if anxiety > 70 and "中立" in leaning:
+        # Factor 5: High anxiety + swing-voter leaning → confused/overwhelmed
+        if anxiety > 70 and ("Tossup" in (leaning or "") or "中立" in (leaning or "")):
             undecided_prob += 0.10
 
         # Cap and apply
@@ -3305,19 +3452,19 @@ async def satisfaction_survey(request: Request):
         # Map to 5-level first (before undecided override)
         base_score = max(0, min(100, base_score))
         if base_score >= 75:
-            level = "非常滿意"
+            level = "Very satisfied"
         elif base_score >= 55:
-            level = "還算滿意"
+            level = "Fairly satisfied"
         elif base_score >= 45:
-            level = "不太滿意" if base_score < 50 else "還算滿意"
+            level = "Somewhat dissatisfied" if base_score < 50 else "Fairly satisfied"
         elif base_score >= 25:
-            level = "不太滿意"
+            level = "Somewhat dissatisfied"
         else:
-            level = "非常不滿意"
+            level = "Very dissatisfied"
 
         # Apply undecided probability
         if _srv_rng.random() < undecided_prob:
-            level = "未表態"
+            level = "Undecided"
 
         results[level] += 1
         agent_details.append({
@@ -3328,8 +3475,8 @@ async def satisfaction_survey(request: Request):
         })
 
     total = sum(results.values())
-    satisfied = results["非常滿意"] + results["還算滿意"]
-    dissatisfied = results["不太滿意"] + results["非常不滿意"]
+    satisfied = results["Very satisfied"] + results["Fairly satisfied"]
+    dissatisfied = results["Somewhat dissatisfied"] + results["Very dissatisfied"]
 
     return {
         "person_name": person_name,
@@ -3340,7 +3487,7 @@ async def satisfaction_survey(request: Request):
         "percentages": {k: round(v / max(total, 1) * 100, 1) for k, v in results.items()},
         "satisfied_total": round(satisfied / max(total, 1) * 100, 1),
         "dissatisfied_total": round(dissatisfied / max(total, 1) * 100, 1),
-        "undecided_total": round(results["未表態"] / max(total, 1) * 100, 1),
+        "undecided_total": round(results["Undecided"] / max(total, 1) * 100, 1),
         "agent_details": agent_details,
         # By leaning breakdown
         "by_leaning": _survey_by_leaning(agent_details),
@@ -3348,19 +3495,24 @@ async def satisfaction_survey(request: Request):
 
 
 def _survey_by_leaning(details: list[dict]) -> dict:
-    """Group survey results by political leaning."""
+    """Group survey results by political leaning (US Cook PVI buckets)."""
+    _LEVELS = ["Very satisfied", "Fairly satisfied", "Somewhat dissatisfied", "Very dissatisfied", "Undecided"]
     groups: dict[str, dict[str, int]] = {}
     for d in details:
-        lean = d.get("leaning", "中立")
+        lean = d.get("leaning") or "Tossup"
         if lean not in groups:
-            groups[lean] = {"非常滿意": 0, "還算滿意": 0, "不太滿意": 0, "非常不滿意": 0, "未表態": 0, "total": 0}
-        groups[lean][d["level"]] += 1
+            groups[lean] = {k: 0 for k in _LEVELS}
+            groups[lean]["total"] = 0
+        # Defensive: legacy snapshots may still emit CJK levels; bucket them under matching English key
+        _lvl = d["level"]
+        if _lvl not in groups[lean]:
+            groups[lean][_lvl] = 0
+        groups[lean][_lvl] += 1
         groups[lean]["total"] += 1
-    # Convert to percentages
     for lean, data in groups.items():
         t = data["total"] or 1
-        for k in ["非常滿意", "還算滿意", "不太滿意", "非常不滿意", "未表態"]:
-            data[f"{k}_pct"] = round(data[k] / t * 100, 1)
+        for k in _LEVELS:
+            data[f"{k}_pct"] = round(data.get(k, 0) / t * 100, 1)
     return groups
 
 
@@ -3419,52 +3571,52 @@ async def pred_analyze(request: Request):
     results_summary = body.get("results_summary", "")
     question = body.get("question", "")
 
-    prompt = f"""你是一位資深的選舉分析師，擁有豐富的台灣地方政治與民意調查經驗。
+    prompt = f"""You are a senior US election analyst with deep experience in polling, voter behavior, and campaign strategy.
 
-以下是一項「虛擬人口民調模擬」的完整數據。模擬使用了經過校準的虛擬選民（AI 代理），每天閱讀真實新聞後更新心態，最終進行投票。資料非常詳盡，請仔細閱讀每一項數據後再分析。
+Below is the full dataset of a "synthetic voter simulation." Calibrated AI voter agents read real news each day, updated their mindset, and finally cast a vote. The data is rich — read every section carefully before analyzing.
 
-【預測問題】
+[Prediction Question]
 {question}
 
-【完整模擬數據】
+[Full Simulation Dataset]
 {results_summary}
 
-請根據以上所有數據，提供一份**深入且詳細**的選舉分析報告。必須包含以下各節：
+Produce a **deep, thorough** election analysis report. Required sections:
 
-## 📊 總體結論
-— 加權總成績的最終排名、領先差距是否穩固
-— 以數據佐證結論（引用具體百分比）
+## 📊 Overall Conclusion
+— Final weighted ranking; is the leading margin decisive, narrow, or within noise?
+— Back every claim with specific percentages.
 
-## 🏆 加權計分解讀
-— 各組別的權重如何影響最終排名
-— 黨員投票組（如有篩選）和全體民調組的差異代表什麼
-— 不表態率是否異常高？原因為何（同黨初選？焦慮度？）
+## 🏆 Weighted-Score Interpretation
+— How did each poll group's weight affect the final ranking?
+— What does the difference between party-member groups (if filtered) and general-voter groups reveal?
+— Is the Undecided rate unusually high? What drove it (primary contest? anxiety?)?
 
-## 📈 逐日趨勢深度解讀
-— 從 Day 1 到最後一天，候選人支持度的變化軌跡
-— 哪些天出現明顯轉折？可能與哪些新聞事件有關
-— 滿意度和焦慮度的變化如何影響候選人支持度
+## 📈 Daily Trend Deep-Read
+— Candidate support trajectory from Day 1 to final day.
+— Which days show clear turning points, and which news events plausibly caused them?
+— How did satisfaction and anxiety shifts translate into support changes?
 
-## 📰 新聞情感影響分析
-— 哪些新聞對哪位候選人造成最大正面/負面影響
-— 兩位候選人的累計新聞情感差異如何反映在選情上
-— 是否有「負面新聞反而提升知名度」的現象
+## 📰 News-Sentiment Impact Analysis
+— Which news items hit which candidate hardest (positive/negative)?
+— How does cumulative news sentiment differ between candidates, and does it match vote share?
+— Any "bad news that still raised awareness" effect?
 
-## 🏛️ 選民結構分析
-— 各政治傾向（偏右派/偏左派/中立）選民的投票偏好差異
-— 哪些選民群體是關鍵的搖擺票
-— 傾向轉變（如偏右→中立）的現象及其政治意涵
+## 🏛️ Voter Segment Analysis
+— Voting preferences across political leanings (Solid Dem / Lean Dem / Tossup / Lean Rep / Solid Rep).
+— Which voter groups are the pivotal swing bloc?
+— Any leaning shifts observed (e.g. Lean Rep → Tossup), and their political meaning.
 
-## 🔮 風險與不確定性
-— 模擬的侷限性和潛在偏差
-— 哪些外部因素可能翻轉選情
-— 不表態選民的最終流向預測
+## 🔮 Risks & Uncertainty
+— Simulation limits and potential biases (sample size, sim-day count, negativity bias).
+— External shocks that could flip the result.
+— Predicted final destination of Undecided voters.
 
-## 💡 策略建議
-— 為每位候選人提供具體、可行的競選策略建議
-— 基於數據指出每位候選人的最大優勢和最大弱點
+## 💡 Strategic Recommendations
+— Concrete, actionable campaign recommendations per candidate.
+— Each candidate's biggest strength and biggest weakness, grounded in the data.
 
-請用繁體中文撰寫，使用 Markdown 格式，引用具體數據佐證每一項分析。篇幅應在 1500-2500 字之間。"""
+Write the entire report **in English**, using Markdown formatting, citing specific data points. Target length: 1500-2500 words."""
 
     # Call system LLM for free-form text analysis
     try:
@@ -3480,7 +3632,7 @@ async def pred_analyze(request: Request):
         resp = await client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "system", "content": "你是一位資深台灣選舉分析師。請用繁體中文回答。使用 Markdown 格式。"},
+                {"role": "system", "content": "You are a senior US election analyst. Answer in English. Use Markdown formatting."},
                 {"role": "user", "content": prompt},
             ],
             temperature=0.7,
@@ -3575,17 +3727,18 @@ async def candidate_profile(req: CandidateProfileRequest):
     if not name:
         raise HTTPException(400, "Candidate name is required")
 
-    # 1. Search Chinese Wikipedia for the candidate
+    # 1. Search Wikipedia for the candidate — locale auto-detected from name
     wiki_text = ""
     wiki_title = ""
-    search_url = "https://zh.wikipedia.org/w/api.php"
+    search_url = _wiki_host_for(name)
+    _is_cjk_wiki = "zh.wikipedia" in search_url
     try:
         async with httpx.AsyncClient(
             timeout=600.0,
             follow_redirects=True,
             headers={"User-Agent": "CivatasBot/1.0 (https://civatas.app; civatas@example.com)"},
         ) as client:
-            # Step A: Direct title lookup with zh-tw variant
+            # Step A: Direct title lookup
             extract_params = {
                 "action": "query",
                 "format": "json",
@@ -3595,9 +3748,10 @@ async def candidate_profile(req: CandidateProfileRequest):
                 "explaintext": True,
                 "exsectionformat": "plain",
                 "redirects": 1,
-                "variant": "zh-tw",
-                "uselang": "zh-tw",
             }
+            if _is_cjk_wiki:
+                extract_params["variant"] = "zh-tw"
+                extract_params["uselang"] = "zh-tw"
             resp = await client.get(search_url, params=extract_params)
             data = resp.json()
             logger.info(f"Wiki direct lookup for '{name}': pages={list(data.get('query', {}).get('pages', {}).keys())}")
@@ -3617,8 +3771,9 @@ async def candidate_profile(req: CandidateProfileRequest):
                     "srsearch": name,
                     "srlimit": 5,
                     "srprop": "",
-                    "variant": "zh-tw",
                 }
+                if _is_cjk_wiki:
+                    search_params["variant"] = "zh-tw"
                 resp2 = await client.get(search_url, params=search_params)
                 search_data = resp2.json()
                 search_results = search_data.get("query", {}).get("search", [])
@@ -3629,8 +3784,15 @@ async def candidate_profile(req: CandidateProfileRequest):
                     if not sr_title:
                         continue
                     # Relevance check: search result must share at least one character with the query name
-                    if not any(ch in sr_title for ch in name):
-                        continue
+                    # Relevance check: any shared character/word with the query
+                    if _is_cjk_wiki:
+                        if not any(ch in sr_title for ch in name):
+                            continue
+                    else:
+                        nlow = name.lower()
+                        tlow = sr_title.lower()
+                        if not any(part in tlow for part in nlow.split() if part):
+                            continue
                     extract_params["titles"] = sr_title
                     resp3 = await client.get(search_url, params=extract_params)
                     data3 = resp3.json()
@@ -3652,36 +3814,39 @@ async def candidate_profile(req: CandidateProfileRequest):
 
     _wiki_is_stub = len(wiki_text) < 200  # Very short article — LLM may give unreliable numbers
 
-    # 2. Use LLM to generate a structured political profile
+    # 2. Use System LLM to generate a structured political profile
     from openai import AsyncOpenAI
-    llm_client = AsyncOpenAI(
-        api_key=os.getenv("LLM_API_KEY", ""),
-        base_url=os.getenv("LLM_BASE_URL") or None,
-    )
-    model = os.getenv("LLM_MODEL", "gpt-4o-mini")
+    from shared.global_settings import get_system_llm_credentials
+    creds = get_system_llm_credentials()
+    api_key = creds.get("api_key") or os.getenv("LLM_API_KEY", "") or os.getenv("OPENAI_API_KEY", "")
+    model = creds.get("model") or os.getenv("LLM_MODEL", "gpt-4o-mini")
+    base_url = creds.get("base_url") or os.getenv("LLM_BASE_URL") or None
+    if not api_key:
+        raise HTTPException(500, "No LLM API key configured. Set a System LLM in Settings.")
+    llm_client = AsyncOpenAI(api_key=api_key, base_url=base_url)
 
-    party_ctx = f"（所屬政黨：{req.party}）" if req.party else ""
-    prompt = f"""根據以下維基百科內容，為「{name}」{party_ctx}產生結構化政治人物資料。
+    party_ctx = f" (party: {req.party})" if req.party else ""
+    prompt = f"""Based on the following Wikipedia content, produce a structured political profile for "{name}"{party_ctx}.
 
-請以 JSON 格式回覆，包含以下欄位：
+Reply in JSON with these fields:
 {{
-  "party": "此人所屬政黨全名（如：民主進步黨、中國國民黨、台灣民眾黨、無黨籍）",
-  "description": "200~350字的政治人物介紹。必須包含：黨籍、現任/曾任職務、學歷、核心政見或專長領域、人物性格特質（如：清新/務實/基層/改革/組織力強）、選舉中的強項與弱項",
-  "origin_districts": "此人主要經營/深耕的行政區（鄉鎮市區層級），用逗號分隔。例如：豐原,神岡,后里。若為全市/全縣級人物則留空字串",
-  "local_visibility": 0到100的整數，代表在其經營地區的知名度。現任/曾任縣市長=90-95，現任立委=60-75，議員=40-60，素人=10-30,
-  "national_visibility": 0到100的整數，代表全國知名度。總統/院長級=90+，部會首長/黨主席=70-85，立法院副院長=75-85，一般立委=20-40，地方議員/素人=5-20
+  "party": "Full party name (e.g. Democratic Party, Republican Party, Independent, Libertarian Party, Green Party)",
+  "description": "200–350 word profile. Must include: party affiliation; current and prior offices held; education; core policy positions or area of expertise; personal style (e.g. populist, technocratic, moderate, hardline, grassroots organizer); electoral strengths and weaknesses.",
+  "origin_districts": "The candidate's primary base of support at the sub-state level — comma-separated counties, congressional districts, or metro areas. Example: 'Wayne County, Oakland County, Macomb County' or 'CA-12, San Francisco'. Leave empty string for purely statewide / national figures.",
+  "local_visibility": 0–100 integer, name recognition within their home state / district. Sitting / former governor or big-city mayor = 90–95, sitting US House member or state-level office = 60–75, state legislator / county exec = 40–60, newcomer = 10–30,
+  "national_visibility": 0–100 integer, name recognition nationwide. President / former President / VP = 95+, presidential candidates / Senate leadership / cabinet secretary / national party chair = 75–90, governors of large states / prominent senators = 60–80, rank-and-file US Representatives = 20–40, state-level officials / newcomers = 5–20
 }}
 
-只回覆 JSON，不要加其它文字。
+JSON only — no extra text.
 
-維基百科內容：
+Wikipedia content:
 {wiki_text}"""
 
     try:
         kwargs = {
             "model": model,
             "messages": [
-                {"role": "system", "content": "你是台灣政治分析專家。請根據維基百科資料撰寫精煉的候選人介紹。"},
+                {"role": "system", "content": "You are a US political analyst. Write concise, factual candidate profiles based on the supplied Wikipedia content."},
                 {"role": "user", "content": prompt},
             ],
         }
@@ -3735,7 +3900,7 @@ async def candidate_profile(req: CandidateProfileRequest):
         "origin_districts": origin_districts,
         "local_visibility": _local_vis_out,
         "national_visibility": _national_vis_out,
-        "wiki_source": f"https://zh.wikipedia.org/wiki/{wiki_title or name}",
+        "wiki_source": (("https://zh.wikipedia.org/wiki/" if _is_cjk_wiki else "https://en.wikipedia.org/wiki/") + (wiki_title or name).replace(" ", "_")),
         "wiki_length": len(wiki_text),
     }
 
@@ -3747,15 +3912,28 @@ class AutoTraitsRequest(BaseModel):
     candidates: list[dict]  # [{name, description, party}]
 
 
+def _wiki_host_for(name: str) -> str:
+    """Pick Wikipedia locale by name script. Non-CJK names → en.wikipedia."""
+    has_cjk = any('\u4e00' <= ch <= '\u9fff' for ch in name or "")
+    return "https://zh.wikipedia.org/w/api.php" if has_cjk else "https://en.wikipedia.org/w/api.php"
+
+
 async def _wiki_fetch_text(name: str) -> tuple[str, str]:
-    """Return (wiki_text, wiki_title) for a candidate name via Wikipedia API."""
+    """Return (wiki_text, wiki_title) for a candidate name via Wikipedia API.
+    English host for ASCII/Latin names, Chinese host for CJK names — so US
+    candidates get the authoritative English article rather than a thin zh
+    translation (which also biases the downstream LLM toward Chinese).
+    """
     import httpx
-    search_url = "https://zh.wikipedia.org/w/api.php"
+    search_url = _wiki_host_for(name)
+    is_cjk = "zh.wikipedia" in search_url
     extract_params = {
         "action": "query", "format": "json", "titles": name,
         "prop": "extracts", "exintro": False, "explaintext": True,
-        "exsectionformat": "plain", "redirects": 1, "variant": "zh-tw", "uselang": "zh-tw",
+        "exsectionformat": "plain", "redirects": 1,
     }
+    if is_cjk:
+        extract_params.update({"variant": "zh-tw", "uselang": "zh-tw"})
     try:
         async with httpx.AsyncClient(
             timeout=25.0, follow_redirects=True,
@@ -3770,7 +3948,9 @@ async def _wiki_fetch_text(name: str) -> tuple[str, str]:
                         return text, page.get("title", name)
             # Fallback: full-text search
             search_params = {"action": "query", "format": "json", "list": "search",
-                             "srsearch": name, "srlimit": 5, "srprop": "", "variant": "zh-tw"}
+                             "srsearch": name, "srlimit": 5, "srprop": ""}
+            if is_cjk:
+                search_params["variant"] = "zh-tw"
             resp2 = await client.get(search_url, params=search_params)
             for sr in resp2.json().get("query", {}).get("search", []):
                 title = sr.get("title", "")
@@ -3795,15 +3975,20 @@ async def auto_traits(req: AutoTraitsRequest):
     import os
     import json as _json
     from openai import AsyncOpenAI
+    from shared.global_settings import get_system_llm_credentials
 
     if not req.candidates:
         raise HTTPException(400, "candidates list is required")
 
-    model = os.getenv("LLM_MODEL", "gpt-4o-mini")
-    llm_client = AsyncOpenAI(
-        api_key=os.getenv("LLM_API_KEY", ""),
-        base_url=os.getenv("LLM_BASE_URL") or None,
-    )
+    # Prefer System LLM credentials (configured in Settings / Onboarding);
+    # fall back to env vars if the user hasn't set up a System LLM yet.
+    creds = get_system_llm_credentials()
+    api_key = creds.get("api_key") or os.getenv("LLM_API_KEY", "") or os.getenv("OPENAI_API_KEY", "")
+    model = creds.get("model") or os.getenv("LLM_MODEL", "gpt-4o-mini")
+    base_url = creds.get("base_url") or os.getenv("LLM_BASE_URL") or None
+    if not api_key:
+        raise HTTPException(500, "No LLM API key configured. Set a System LLM in Settings or LLM_API_KEY in .env")
+    llm_client = AsyncOpenAI(api_key=api_key, base_url=base_url)
 
     async def compute_one(cand: dict) -> dict:
         name = (cand.get("name") or "").strip()
@@ -3819,27 +4004,27 @@ async def auto_traits(req: AutoTraitsRequest):
         # 2. Build context
         context_parts = []
         if wiki_text:
-            context_parts.append(f"維基百科資料：\n{wiki_text[:4000]}")
+            context_parts.append(f"Wikipedia article:\n{wiki_text[:4000]}")
         if description:
-            context_parts.append(f"候選人描述：\n{description[:800]}")
+            context_parts.append(f"Candidate description:\n{description[:800]}")
         if not context_parts:
-            context_parts.append(f"候選人名稱：{name}" + (f"，政黨：{party}" if party else ""))
+            context_parts.append(f"Candidate name: {name}" + (f", party: {party}" if party else ""))
         context = "\n\n".join(context_parts)
 
-        party_ctx = f"（所屬政黨：{party}）" if party else ""
-        prompt = f"""你是台灣政治輿論分析專家。請根據以下資料，為「{name}」{party_ctx}計算在選民心理模型中的五個特質維度分數（整數，範圍 0～80）。
+        party_ctx = f" (party: {party})" if party else ""
+        prompt = f"""You are a US political analyst. Score the candidate "{name}"{party_ctx} on five trait dimensions used in a voter psychology model. Each score is an integer in 0–80.
 
-## 五個維度定義：
-1. **地方（loc）**：對「地方性議題」（基建、都市計畫、地方政策、選區服務）的曝光度與影響力。現任縣市長/地方深耕型 = 高（50-75）；全國性人物 = 低（10-30）。
-2. **全國（nat）**：對「全國性議題」（兩岸、經濟政策、國防、立院政治）的曝光度與影響力。黨主席/立院要員 = 高（50-75）；純地方型 = 低（10-25）。
-3. **焦慮（anx）**：與「負面情緒性新聞」（醜聞、爭議、危機）的連結程度。曾有重大爭議 = 高（40-65）；清廉形象強/新人 = 低（5-20）。
-4. **魅力（charm）**：個人魅力、親和力與群眾好感度。社群人氣高/親民 = 高（50-70）；政策型/強硬 = 低（20-40）。
-5. **跨黨（cross）**：吸引非本黨選民的能力。TPP/無黨/中間路線 = 高（40-65）；深藍/深綠主流 = 低（10-25）。
+## Dimensions
+1. **loc (local)** — exposure & influence on state / local issues (state policy, schools, infrastructure, public safety, county/city services). Sitting governor / mayor / state legislator deeply rooted in their state = high (50–75). Pure federal-only figure = low (10–30).
+2. **nat (national)** — exposure & influence on federal issues (federal policy, foreign policy, federal economy, congressional leadership). President / Speaker / Senate leader / cabinet secretary = high (50–75). Pure local figure = low (10–25).
+3. **anx (anxiety)** — connection to negative / scandal news cycles. Major scandals or persistent controversy = high (40–65). Clean reputation / political newcomer = low (5–20).
+4. **charm** — personal charisma, likability, popular appeal. Strong social-media following / retail-politics natural = high (50–70). Wonk / hardliner = low (20–40).
+5. **cross (cross-party)** — ability to attract voters from the other party / independents. Moderates, swing-state Dems/Reps, well-known Independents = high (40–65). Hardline base-only figures (far-right MAGA hardliner / progressive-only Dem) = low (10–25).
 
-請以 JSON 格式回覆：
-{{"loc": 整數, "loc_reason": "15字內說明根據", "nat": 整數, "nat_reason": "15字內說明根據", "anx": 整數, "anx_reason": "15字內說明根據", "charm": 整數, "charm_reason": "15字內說明根據", "cross": 整數, "cross_reason": "15字內說明根據"}}
+Reply in JSON only:
+{{"loc": int, "loc_reason": "<15 words", "nat": int, "nat_reason": "<15 words", "anx": int, "anx_reason": "<15 words", "charm": int, "charm_reason": "<15 words", "cross": int, "cross_reason": "<15 words"}}
 
-只回覆 JSON，不要其它文字。
+JSON only — no extra text.
 
 ---
 {context}"""
@@ -3848,7 +4033,7 @@ async def auto_traits(req: AutoTraitsRequest):
             kwargs: dict = {
                 "model": model,
                 "messages": [
-                    {"role": "system", "content": "你是台灣政治輿論分析專家，專精選民行為與候選人特質評估。"},
+                    {"role": "system", "content": "You are a US political analyst specializing in voter behavior and candidate trait assessment."},
                     {"role": "user", "content": prompt},
                 ],
             }
@@ -4045,26 +4230,6 @@ def election_db_spectrum(county: str = "", election_type: str = "president", ad_
         raise HTTPException(400, "county is required")
     from .election_db import get_spectrum_summary
     return get_spectrum_summary(county, election_type, ad_year)
-
-
-@app.get("/election-db/identity-trends")
-def election_db_identity_trends(year: int = None):
-    """Get NCCU Taiwanese/Chinese identity trend data. Optional year filter."""
-    from .election_db import get_identity_trends, get_identity_for_year
-    if year:
-        row = get_identity_for_year(year)
-        return {"trends": [row] if row else [], "year": year}
-    return {"trends": get_identity_trends()}
-
-
-@app.get("/election-db/stance-trends")
-def election_db_stance_trends(year: int = None):
-    """Get NCCU unification-independence stance trend data. Optional year filter."""
-    from .election_db import get_stance_trends, get_stance_for_year
-    if year:
-        row = get_stance_for_year(year)
-        return {"trends": [row] if row else [], "year": year}
-    return {"trends": get_stance_trends()}
 
 
 # ── Fast Parameter Calibration ─────────────────────────────────────────

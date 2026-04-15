@@ -667,10 +667,6 @@
     },
     "default_alignment": {
       "mode": "none"
-    },
-    "default_evolution_window": {
-      "start_date": "2027-11-03",
-      "end_date": "2028-11-02"
     }
   }
 }

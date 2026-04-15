@@ -1527,6 +1527,13 @@ async def satisfaction_survey_proxy(request: Request):
     return resp.json()
 
 
+@router.get("/evolution/predictions/jobs")
+async def prediction_jobs_list():
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        resp = await client.get(f"{EVOLUTION_URL}/predictions/jobs")
+    return resp.json()
+
+
 @router.get("/evolution/predictions/jobs/{job_id}")
 async def prediction_job_status(job_id: str):
     async with httpx.AsyncClient(timeout=600.0) as client:
@@ -1960,20 +1967,6 @@ async def election_db_trend(request: Request):
 async def election_db_spectrum(request: Request):
     async with httpx.AsyncClient(timeout=30.0) as client:
         resp = await client.get(f"{EVOLUTION_URL}/election-db/spectrum", params=dict(request.query_params))
-    return resp.json()
-
-
-@router.get("/evolution/election-db/identity-trends")
-async def election_db_identity_trends(request: Request):
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        resp = await client.get(f"{EVOLUTION_URL}/election-db/identity-trends", params=dict(request.query_params))
-    return resp.json()
-
-
-@router.get("/evolution/election-db/stance-trends")
-async def election_db_stance_trends(request: Request):
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        resp = await client.get(f"{EVOLUTION_URL}/election-db/stance-trends", params=dict(request.query_params))
     return resp.json()
 
 

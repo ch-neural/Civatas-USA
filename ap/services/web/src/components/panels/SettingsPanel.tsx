@@ -245,7 +245,7 @@ export default function SettingsPanel() {
         {/* Save bar */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "flex-end",
-          padding: "16px clamp(16px, 2vw, 32px)", borderBottom: "1px solid rgba(255,255,255,0.06)",
+          padding: "16px clamp(16px, 2vw, 32px)", borderBottom: "1px solid var(--border-subtle)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {saveMsg && (
@@ -267,7 +267,7 @@ export default function SettingsPanel() {
 
         {/* Tabs */}
         <div style={{
-          display: "flex", gap: 0, borderBottom: "1px solid rgba(255,255,255,0.06)",
+          display: "flex", gap: 0, borderBottom: "1px solid var(--border-subtle)",
           padding: "0 clamp(16px, 2vw, 32px)",
         }}>
           {TABS.map(tab => (
@@ -327,14 +327,14 @@ export default function SettingsPanel() {
             <>
               {/* ═══ LLM Providers ═══ */}
               <div className="mb-5">
-                <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                <div className="text-[var(--text-tertiary)] text-xs font-medium uppercase tracking-wider mb-2">
                   {en ? "LLM Providers" : "LLM 供應商"}
                 </div>
                 <div className="space-y-3">
                   {editProviders.map((p, idx) => (
-                    <div key={p.id} className="bg-[#0f1729] rounded-lg p-4 border border-[#2a3554]">
+                    <div key={p.id} className="bg-[var(--bg-card)] rounded-lg p-4 border border-[var(--border-subtle)]">
                       <div className="flex items-center gap-3 mb-3">
-                        <select className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none"
+                        <select className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-2 py-1.5 border-none outline-none"
                           value={p.vendor_type} onChange={e => updateSettingsProvider(idx, { vendor_type: e.target.value })}>
                           {Object.entries(VENDOR_PRESETS).map(([key, preset]) => (
                             <option key={key} value={key}>{preset.label}</option>
@@ -342,19 +342,19 @@ export default function SettingsPanel() {
                         </select>
                         <div className="flex-1" />
                         {editProviders.length > 1 && (
-                          <button className="text-neutral-600 hover:text-red-400 text-sm" onClick={() => removeSettingsProvider(p.id)}>✕</button>
+                          <button className="text-[var(--text-faint)] hover:text-red-400 text-sm" onClick={() => removeSettingsProvider(p.id)}>✕</button>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mb-2">
-                        <input className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                        <input className="flex-1 bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
                           type="password" placeholder="API Key" value={p.api_key}
                           onChange={e => updateSettingsProvider(idx, { api_key: e.target.value })} />
-                        <button className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                        <button className="text-xs bg-[var(--bg-input)] text-[var(--text-tertiary)] hover:text-white px-3 py-1.5 rounded transition-colors"
                           onClick={() => testSettingsProvider(p.id)}>
                           {providerTestResults[p.id] === "testing" ? "..." : providerTestResults[p.id] === "ok" ? "✓ OK" : providerTestResults[p.id] === "fail" ? "✕ Fail" : "Test"}
                         </button>
                       </div>
-                      <input className="w-full bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none mb-1"
+                      <input className="w-full bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-3 py-1.5 border-none outline-none mb-1"
                         placeholder={en ? "Base URL (optional)" : "Base URL（選填）"} value={p.base_url}
                         onChange={e => updateSettingsProvider(idx, { base_url: e.target.value })} />
                       {VENDOR_PRESETS[p.vendor_type]?.keyUrl && (
@@ -374,18 +374,18 @@ export default function SettingsPanel() {
               {/* ═══ Role Cards ═══ */}
               {providersWithKey.length > 0 && (
                 <div className="mb-5">
-                  <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                  <div className="text-[var(--text-tertiary)] text-xs font-medium uppercase tracking-wider mb-2">
                     {en ? "Assign LLM Roles" : "指定 LLM 角色"}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
                     {/* System LLM Card */}
-                    <div className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-4 flex flex-col">
+                    <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-subtle)] p-4 flex flex-col">
                       <div className="flex items-center gap-2 mb-1">
                         <div className="w-2 h-2 rounded-full bg-cyan-400 shrink-0" />
-                        <span className="text-sm font-medium text-neutral-200">{en ? "System LLM" : "系統 LLM"}</span>
+                        <span className="text-sm font-medium text-[var(--text-primary)]">{en ? "System LLM" : "系統 LLM"}</span>
                       </div>
-                      <div className="text-neutral-500 text-[10px] mb-3">{en ? "News analysis, data parsing, election OCR" : "新聞分析、資料解析、選舉 OCR"}</div>
-                      <select className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
+                      <div className="text-[var(--text-muted)] text-[10px] mb-3">{en ? "News analysis, data parsing, election OCR" : "新聞分析、資料解析、選舉 OCR"}</div>
+                      <select className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
                         value={editSystemLlm.provider_id}
                         onChange={e => {
                           const pid = e.target.value;
@@ -395,7 +395,7 @@ export default function SettingsPanel() {
                         }}>
                         {providersWithKey.map(p => <option key={p.id} value={p.id}>{p.display_name}</option>)}
                       </select>
-                      <input className="bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                      <input className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-3 py-1.5 border-none outline-none"
                         placeholder="Model" value={editSystemLlm.model}
                         onChange={e => setEditSystemLlm(prev => ({ ...prev, model: e.target.value }))} />
                     </div>
@@ -403,18 +403,18 @@ export default function SettingsPanel() {
                     {/* Agent LLM Cards */}
                     <div className="flex flex-col gap-3">
                       {editAgentLlms.map((agent, aIdx) => (
-                        <div key={`${agent.provider_id}-${aIdx}`} className="bg-[#0f1729] rounded-lg border border-[#2a3554] p-4 flex flex-col">
+                        <div key={`${agent.provider_id}-${aIdx}`} className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-subtle)] p-4 flex flex-col">
                           <div className="flex items-center gap-2 mb-1">
-                            <div className="w-2 h-2 rounded-full bg-[#e94560] shrink-0" />
-                            <span className="text-sm font-medium text-neutral-200">Agent LLM {editAgentLlms.length > 1 ? `#${aIdx + 1}` : ""}</span>
+                            <div className="w-2 h-2 rounded-full bg-[var(--accent)] shrink-0" />
+                            <span className="text-sm font-medium text-[var(--text-primary)]">Agent LLM {editAgentLlms.length > 1 ? `#${aIdx + 1}` : ""}</span>
                             <div className="flex-1" />
                             {editAgentLlms.length > 1 && (
-                              <button className="text-neutral-600 hover:text-red-400 text-xs"
+                              <button className="text-[var(--text-faint)] hover:text-red-400 text-xs"
                                 onClick={() => setEditAgentLlms(prev => prev.filter((_, i) => i !== aIdx))}>✕</button>
                             )}
                           </div>
-                          <div className="text-neutral-500 text-[10px] mb-3">{en ? "Persona generation, opinion evolution" : "人格生成、觀點演化"}</div>
-                          <select className="bg-[#0f3460] text-neutral-300 text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
+                          <div className="text-[var(--text-muted)] text-[10px] mb-3">{en ? "Persona generation, opinion evolution" : "人格生成、觀點演化"}</div>
+                          <select className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-2 py-1.5 border-none outline-none mb-2"
                             value={agent.provider_id}
                             onChange={e => {
                               const pid = e.target.value;
@@ -424,12 +424,12 @@ export default function SettingsPanel() {
                             }}>
                             {providersWithKey.map(p => <option key={p.id} value={p.id}>{p.display_name}</option>)}
                           </select>
-                          <input className="bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none"
+                          <input className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-3 py-1.5 border-none outline-none"
                             placeholder="Model" value={agent.model}
                             onChange={e => { const model = e.target.value; setEditAgentLlms(prev => prev.map((a, i) => i === aIdx ? { ...a, model } : a)); }} />
                         </div>
                       ))}
-                      <button className="rounded-lg border border-dashed border-[#2a3554] hover:border-[#3b4c6b] p-4 flex items-center justify-center gap-2 text-neutral-500 hover:text-neutral-300 transition-colors"
+                      <button className="rounded-lg border border-dashed border-[var(--border-subtle)] hover:border-[var(--border-input)] p-4 flex items-center justify-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
                         onClick={() => {
                           const first = providersWithKey[0];
                           if (!first) return;
@@ -446,18 +446,18 @@ export default function SettingsPanel() {
 
               {/* ═══ Serper API ═══ */}
               <div className="mb-5">
-                <div className="text-neutral-400 text-xs font-medium uppercase tracking-wider mb-2">
+                <div className="text-[var(--text-tertiary)] text-xs font-medium uppercase tracking-wider mb-2">
                   {en ? "Search API" : "搜尋 API"}
                 </div>
-                <div className="bg-[#0f1729] rounded-lg p-4 border border-[#2a3554]">
+                <div className="bg-[var(--bg-card)] rounded-lg p-4 border border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-neutral-300 text-sm font-medium">Serper API Key</span>
+                    <span className="text-[var(--text-secondary)] text-sm font-medium">Serper API Key</span>
                     <a href="https://serper.dev" target="_blank" rel="noopener" className="text-[10px] text-blue-400 hover:underline">serper.dev →</a>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input type="password" className="flex-1 bg-[#0f3460] text-neutral-300 text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
+                    <input type="password" className="flex-1 bg-[var(--bg-input)] text-[var(--text-secondary)] text-sm rounded px-3 py-1.5 border-none outline-none font-mono"
                       placeholder="Serper API Key" value={editSerperKey} onChange={e => setEditSerperKey(e.target.value)} />
-                    <button className="text-xs bg-[#0f3460] text-neutral-400 hover:text-white px-3 py-1.5 rounded transition-colors"
+                    <button className="text-xs bg-[var(--bg-input)] text-[var(--text-tertiary)] hover:text-white px-3 py-1.5 rounded transition-colors"
                       onClick={testSerperKey}>
                       {providerTestResults.serper === "testing" ? "..." : providerTestResults.serper === "ok" ? "✓ OK" : providerTestResults.serper === "fail" ? "✕ Fail" : "Test"}
                     </button>
@@ -466,8 +466,8 @@ export default function SettingsPanel() {
               </div>
 
               {/* ═══ Onboarding reset ═══ */}
-              <div className="border-t border-[#2a3554] mt-4 pt-4">
-                <button className="text-sm text-neutral-500 hover:text-[#e94560] transition-colors"
+              <div className="border-t border-[var(--border-subtle)] mt-4 pt-4">
+                <button className="text-sm text-[var(--text-muted)] hover:text-[#e94560] transition-colors"
                   onClick={async () => {
                     await apiFetch("/api/settings", { method: "PUT", body: JSON.stringify({ onboarding_completed: false }) });
                     window.location.reload();
@@ -605,7 +605,7 @@ function VendorEditModal({
             <button
               onClick={() => setShowKey(!showKey)}
               style={{
-                background: "rgba(255,255,255,0.06)", border: "1px solid var(--border-input)",
+                background: "var(--bg-input)", border: "1px solid var(--border-input)",
                 borderRadius: 8, padding: "0 10px", cursor: "pointer",
                 color: "var(--text-muted)", fontSize: 14,
               }}
@@ -658,7 +658,7 @@ function VendorEditModal({
           <button
             onClick={onCancel}
             style={{
-              background: "rgba(255,255,255,0.06)", border: "1px solid var(--border-subtle)",
+              background: "var(--bg-input)", border: "1px solid var(--border-subtle)",
               borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 600,
               fontFamily: "var(--font-cjk)", color: "var(--text-muted)", cursor: "pointer",
             }}

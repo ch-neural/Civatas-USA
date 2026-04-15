@@ -14,8 +14,9 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 # ── Global probability cap ──────────────────────────────────────────
-# At most ~8 % of agents will experience ANY event on a given day.
-GLOBAL_EVENT_PROB = 0.08
+# Probability that an agent experiences ANY event on a given day.
+# 15% ensures ~9 events/day for 60 agents (was 8%, too low for US catalog).
+GLOBAL_EVENT_PROB = 0.15
 
 # ── Occupation groups (for eligibility shorthand) ───────────────────
 _WHITE_COLLAR = {

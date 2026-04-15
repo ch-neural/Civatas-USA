@@ -6,13 +6,14 @@ import { useTr, useLocalizePersonaValue } from "@/lib/i18n";
 import { StepGate } from "@/components/shared/StepGate";
 import { useWorkflowStatus } from "@/hooks/use-workflow-status";
 import { useShellStore } from "@/store/shell-store";
+import { useLocaleStore } from "@/store/locale-store";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 
 const LEAN_COLORS: Record<string, string> = {
-  // TW
-  "偏左派": "#22c55e", "中立": "#94a3b8", "偏右派": "#3b82f6",
+  // US Cook PVI 5-tier
+  "Solid Dem": "#1e40af", "Lean Dem": "#3b82f6", "Tossup": "#94a3b8", "Lean Rep": "#f87171", "Solid Rep": "#dc2626",
   // US (Civatas-USA Stage 1.5+)
   "Solid Dem": "#1e40af", "Lean Dem": "#3b82f6",
   "Tossup": "#94a3b8",
@@ -23,6 +24,7 @@ const ttStyle = { background: "#1e1e2e", border: "1px solid rgba(255,255,255,0.1
 
 export default function AgentExplorerPanel({ wsId, recordingId = "" }: { wsId: string; recordingId?: string }) {
   const t = useTr();
+  const en = useLocaleStore((s) => s.locale) === "en";
   const tp = useLocalizePersonaValue();
   const _wsId = useShellStore((s) => s.activeWorkspaceId);
   const workflowStatus = useWorkflowStatus(_wsId);
@@ -96,16 +98,16 @@ export default function AgentExplorerPanel({ wsId, recordingId = "" }: { wsId: s
     return (
       <StepGate
         requiredStep={1}
-        requiredStepName="人設生成"
+        requiredStepName={en ? "Persona Generation" : "人設生成"}
         requiredStepNameEn="Persona"
-        description="請先在第 1 步生成 Persona，才能進行演化。"
+        description={en ? "Generate Personas in Step 1 before exploring agents." : "請先在第 1 步生成 Persona，才能進行演化。"}
         descriptionEn="Generate personas in Step 1 before running evolution."
         targetRoute={_wsId ? `/workspaces/${_wsId}/population-setup` : "/workspaces"}
       />
     );
   }
 
-  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "var(--text-faint)" }}>載入中...</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "var(--text-faint)" }}>{en ? "Loading..." : "載入中..."}</div>;
 
   const districtList = Object.entries(districts).sort((a, b) => (b[1] as any).count - (a[1] as any).count);
 
@@ -361,7 +363,7 @@ export default function AgentExplorerPanel({ wsId, recordingId = "" }: { wsId: s
                   if (!entry) return (
                     <div key={id} style={{ padding: 10, borderRadius: 6, border: `1px solid ${color}22`, opacity: 0.5 }}>
                       <span style={{ color, fontSize: 11 }}>#{id} {a?.name}</span>
-                      <span style={{ color: "var(--text-faint)", fontSize: 11, marginLeft: 8 }}>D{selectedDay} 無資料</span>
+                      <span style={{ color: "var(--text-faint)", fontSize: 11, marginLeft: 8 }}>D{selectedDay} {en ? "no data" : "無資料"}</span>
                     </div>
                   );
                   return (
@@ -378,7 +380,7 @@ export default function AgentExplorerPanel({ wsId, recordingId = "" }: { wsId: s
                         </div>
                       </div>
                       <div style={{ fontSize: 13, color: "var(--text-secondary)", fontFamily: "var(--font-cjk)", lineHeight: 1.8, marginBottom: 6 }}>
-                        {entry.diary_text || "（無日記）"}
+                        {entry.diary_text || (en ? "(no diary)" : "（無日記）")}
                       </div>
                       {entry.life_event && (
                         <div style={{ fontSize: 11, color: "#f59e0b", marginBottom: 3, fontFamily: "var(--font-cjk)" }}>

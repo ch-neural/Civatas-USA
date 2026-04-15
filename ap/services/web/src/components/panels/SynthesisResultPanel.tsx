@@ -8,7 +8,7 @@ import { getWorkspacePersonas } from "@/lib/api";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899", "#14b8a6", "#a855f7"];
-const LEAN_COLORS: Record<string, string> = { "偏左派": "#22c55e", "中立": "#94a3b8", "偏右派": "#60a5fa" };
+const LEAN_COLORS: Record<string, string> = { "Solid Dem": "#1e40af", "Lean Dem": "#3b82f6", "Tossup": "#94a3b8", "Lean Rep": "#f87171", "Solid Rep": "#dc2626" };
 const tooltipStyle = { background: "#1e1e2e", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 11 };
 
 // Stage 1.8: personality dimension labels resolved via i18n keys (template-locale aware)
@@ -34,15 +34,15 @@ function computeStats(list: any[]) {
     if (age < 25) ageGroups["0-24"]++; else if (age < 35) ageGroups["25-34"]++;
     else if (age < 45) ageGroups["35-44"]++; else if (age < 55) ageGroups["45-54"]++;
     else if (age < 65) ageGroups["55-64"]++; else ageGroups["65+"]++;
-    genderCount[p.gender || "未知"] = (genderCount[p.gender || "未知"] || 0) + 1;
-    eduCount[p.education || "未知"] = (eduCount[p.education || "未知"] || 0) + 1;
-    leanCount[p.political_leaning || p.leaning || "未設定"] = (leanCount[p.political_leaning || p.leaning || "未設定"] || 0) + 1;
-    occCount[p.occupation || "未知"] = (occCount[p.occupation || "未知"] || 0) + 1;
+    genderCount[p.gender || "Unknown"] = (genderCount[p.gender || "Unknown"] || 0) + 1;
+    eduCount[p.education || "Unknown"] = (eduCount[p.education || "Unknown"] || 0) + 1;
+    leanCount[p.political_leaning || p.leaning || "Not set"] = (leanCount[p.political_leaning || p.leaning || "Not set"] || 0) + 1;
+    occCount[p.occupation || "Unknown"] = (occCount[p.occupation || "Unknown"] || 0) + 1;
     const mar = p.marital_status || ""; if (mar) maritalCount[mar] = (maritalCount[mar] || 0) + 1;
     if (p.personality && typeof p.personality === "object") {
       hasPersonality = true;
       for (const { key } of PERSONALITY_DIM_KEYS) {
-        const val = p.personality[key] || "未知";
+        const val = p.personality[key] || "Unknown";
         if (!personalityStats[key]) personalityStats[key] = {};
         personalityStats[key][val] = (personalityStats[key][val] || 0) + 1;
       }
@@ -78,7 +78,7 @@ export default function SynthesisResultPanel({ wsId }: { wsId: string }) {
 
   const districtCount = useMemo(() => {
     const dc: Record<string, number> = {};
-    for (const p of personas) dc[p.district || "未知"] = (dc[p.district || "未知"] || 0) + 1;
+    for (const p of personas) dc[p.district || "Unknown"] = (dc[p.district || "Unknown"] || 0) + 1;
     return dc;
   }, [personas]);
 
@@ -90,11 +90,11 @@ export default function SynthesisResultPanel({ wsId }: { wsId: string }) {
   const toBar = (obj: Record<string, number>) => Object.entries(obj).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   const toPie = (obj: Record<string, number>) => Object.entries(obj).map(([name, value]) => ({ name, value })).filter(d => d.value > 0);
 
-  if (loading) return <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.3)" }}>載入中...</div>;
+  if (loading) return <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.3)" }}>Loading...</div>;
   if (!personas.length) return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
       <span style={{ fontSize: 32 }}>📭</span>
-      <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, fontFamily: "var(--font-cjk)" }}>尚未生成虛擬人口，請先在「人口設定」中生成。</span>
+      <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>No synthetic population yet. Generate in Population Setup first.</span>
     </div>
   );
 
@@ -322,7 +322,7 @@ export default function SynthesisResultPanel({ wsId }: { wsId: string }) {
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                  {["#", "區", "年齡", "性別", "教育", "職業", "婚姻", "政治", "表達", "穩定", "社交", "開放"].map(h => (
+                  {["#", "State", "Age", "Gender", "Edu", "Occ", "Marital", "Lean", "Expr", "Stab", "Social", "Open"].map(h => (
                     <th key={h} style={{ padding: "6px 8px", textAlign: "left", color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-cjk)", fontWeight: 600, position: "sticky", top: 0, background: "#141422" }}>{h}</th>
                   ))}
                 </tr>
@@ -350,7 +350,7 @@ export default function SynthesisResultPanel({ wsId }: { wsId: string }) {
                 ))}
               </tbody>
             </table>
-            {filtered.length > 300 && <div style={{ padding: "6px", textAlign: "center", color: "rgba(255,255,255,0.25)", fontSize: 9 }}>顯示前 300 筆 / 共 {filtered.length} 筆</div>}
+            {filtered.length > 300 && <div style={{ padding: "6px", textAlign: "center", color: "rgba(255,255,255,0.25)", fontSize: 9 }}>Showing first 300 of {filtered.length}</div>}
           </div>
         )}
       </div>

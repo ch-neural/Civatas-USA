@@ -338,7 +338,7 @@ def _calculate_heuristic_score(
     # cross appeal affects ALL voters (not just neutral) — high cross = broad tent
     _cross = sens.get("cross", 0.20)
     # Neutral/white voters: strong bonus
-    if any(x in leaning for x in ["中立", "白", "中間"]):
+    if any(x in leaning for x in ["中立", "白", "中間", "Tossup"]):
         score += _cross * charm_mult * 0.8
     # Same-party voters: weak consolidation penalty for low cross
     # (楊瓊瓔 cross=0.05 → 藍營voters get -3.8 pts; 江 cross=0.75 → -1.0 pts)
@@ -379,6 +379,7 @@ def _calculate_heuristic_score(
 def _redistribute_leaning_by_ground_truth(
     agents: list[dict],
     snapshot_id: str,
+    pred: dict | None = None,
 ) -> None:
     """Redistribute agents' `political_leaning` proportionally to match the
     ground-truth vote distribution stored in the calibration pack linked to this
@@ -400,19 +401,36 @@ def _redistribute_leaning_by_ground_truth(
             logger.warning(f"[leaning-redist] Snapshot not found: {snapshot_id}")
             return
 
+        # ── Ground-truth resolution order ──
+        # 1. Snapshot's calibration pack (classic calibration workflow)
+        # 2. Snapshot's alignment_target (auto-snapshot from evolution may
+        #    embed the template's declared ground truth here)
+        # 3. None → snapshot already carries meaningful leanings from evolution,
+        #    so silently keep them (not a warning; this is the default path
+        #    for evolution-then-predict workflows in Civatas-USA)
+        ground_truth: dict = {}
+
         pack_id = snap_meta.get("calibration_pack_id")
-        if not pack_id:
-            logger.warning("[leaning-redist] Snapshot has no calibration_pack_id, skipping")
-            return
+        if pack_id:
+            pack = get_calibration_pack(pack_id)
+            if pack:
+                ground_truth = pack.get("ground_truth", {}) or {}
+            else:
+                logger.warning(f"[leaning-redist] Calibration pack not found: {pack_id}")
 
-        pack = get_calibration_pack(pack_id)
-        if not pack:
-            logger.warning(f"[leaning-redist] Calibration pack not found: {pack_id}")
-            return
-
-        ground_truth: dict = pack.get("ground_truth", {})
         if not ground_truth:
-            logger.warning("[leaning-redist] No ground_truth in calibration pack, skipping")
+            # Try snapshot's alignment_target — auto-snapshots embed the
+            # template's election ground truth here when available.
+            at = snap_meta.get("alignment_target") or {}
+            if isinstance(at, dict) and at.get("ground_truth"):
+                ground_truth = at["ground_truth"]
+
+        if not ground_truth:
+            logger.info(
+                "[leaning-redist] No calibration pack or alignment ground truth; "
+                "keeping evolution-derived leanings as-is (expected for "
+                "evolution-based predictions)."
+            )
             return
 
         # Compute total vote to allow for percentage or fraction inputs
@@ -436,10 +454,50 @@ def _redistribute_leaning_by_ground_truth(
         if total_votes <= 0:
             return
 
+        # Assemble party lookup from multiple sources: pred.party_detection +
+        # snapshot alignment_target.party_detection. Supports both formats:
+        # {"D": ["harris", ...]} and {"Harris": "D"}.
+        pd_sources = []
+        if pred:
+            pd_sources.append(pred.get("_party_detection") or pred.get("party_detection") or {})
+        at = snap_meta.get("alignment_target") or {}
+        if isinstance(at, dict):
+            pd_sources.append(at.get("party_detection") or {})
+
+        name_to_code: dict[str, str] = {}
+        code_to_kws: dict[str, list[str]] = {"D": [], "R": [], "I": []}
+        for pd in pd_sources:
+            if not isinstance(pd, dict):
+                continue
+            for k, v in pd.items():
+                if isinstance(v, list):
+                    if k in code_to_kws:
+                        code_to_kws[k].extend([str(x).lower() for x in v])
+                    for name in v:
+                        name_to_code[str(name).lower()] = k
+                else:
+                    name_to_code[str(k).lower()] = str(v)
+
+        def _leaning_for(cand_key: str) -> str:
+            key_l = (cand_key or "").lower()
+            code = name_to_code.get(key_l)
+            if not code:
+                for c, kws in code_to_kws.items():
+                    if any(k and k in key_l for k in kws):
+                        code = c
+                        break
+            if code == "D":
+                return "Lean Dem"
+            if code == "R":
+                return "Lean Rep"
+            if code == "I":
+                return "Tossup"
+            return _get_leaning_for_candidate(cand_key)
+
         # Map leaning → desired proportion
         leaning_share: dict[str, float] = {}
         for cand, votes in ground_truth.items():
-            ln = _get_leaning_for_candidate(cand)
+            ln = _leaning_for(cand)
             leaning_share[ln] = leaning_share.get(ln, 0.0) + _extract_numeric(votes) / total_votes
 
         n = len(agents)
@@ -621,6 +679,32 @@ def pause_pred_job(job_id: str) -> bool:
     return False
 
 
+def list_pred_jobs() -> list[dict]:
+    """Return a lightweight summary of all in-memory prediction jobs.
+    Used by UI to find an active prediction without relying on sessionStorage
+    (e.g. after a tab close/reload, the Dashboard can still surface a running
+    job's live progress)."""
+    out = []
+    for jid, j in _pred_jobs.items():
+        out.append({
+            "job_id": jid,
+            "prediction_id": j.get("prediction_id"),
+            "status": j.get("status"),
+            "phase": j.get("phase"),
+            "current_scenario": j.get("current_scenario"),
+            "total_scenarios": j.get("total_scenarios"),
+            "current_day": j.get("current_day"),
+            "sim_days": j.get("sim_days"),
+            "agent_count": j.get("agent_count"),
+            "agents_processed": j.get("agents_processed"),
+            "workspace_id": j.get("workspace_id") or "",
+            "started_at": j.get("started_at"),
+            "recording_id": j.get("recording_id"),
+            "live_messages": (j.get("live_messages") or [])[-8:],
+        })
+    return out
+
+
 def resume_pred_job(job_id: str) -> bool:
     """Request a paused prediction job to resume."""
     if job_id in _pred_jobs:
@@ -651,6 +735,7 @@ async def run_prediction(
     agents: list[dict],
     tracked_ids: list[str] | None = None,
     recording_id: str = "",
+    workspace_id: str = "",
 ) -> dict:
     """Start a multi-scenario prediction as a background task.
 
@@ -722,6 +807,7 @@ async def run_prediction(
         "scenario_results": [],
         "live_messages": [],
         "recording_id": recording_id,
+        "workspace_id": workspace_id,
     }
     _pred_jobs[job_id] = job
 
@@ -829,7 +915,19 @@ async def _run_prediction_bg(
 
             # 1b. Optionally redistribute agent leanings to match calibration result
             if pred.get("use_calibration_result_leaning", True):
-                _redistribute_leaning_by_ground_truth(agents, snapshot_id)
+                _redistribute_leaning_by_ground_truth(agents, snapshot_id, pred)
+                # Sync redistributed leaning into agent_states.current_leaning, otherwise
+                # evolver will re-read the stale snapshot value and overwrite our change
+                # on day 1 (evolver.py writes agent["political_leaning"] = current_leaning).
+                _pred_states_redist = _load_states()
+                for _ag in agents:
+                    _aid = str(_ag.get("person_id", ""))
+                    if _aid and _aid in _pred_states_redist:
+                        _new_ln = _ag.get("political_leaning")
+                        if _new_ln:
+                            _pred_states_redist[_aid]["current_leaning"] = _new_ln
+                            _pred_states_redist[_aid]["leaning"] = _new_ln
+                _save_states(_pred_states_redist)
                 _push_pred_live(job, "🗳️ Initial political leaning distribution reset from election results")
             else:
                 # Reset current_leaning in agent_states back to the original leaning
@@ -946,7 +1044,7 @@ async def _run_prediction_bg(
                     _push_pred_live(
                         job,
                         f"⏱️ Time compression: {_pred_news_start}~{_pred_news_end} ({(_pred_ratio*sim_days):.0f} real days) "
-                        f"→ {sim_days} 演化天 (壓縮比 {_pred_ratio:.1f}×)"
+                        f"→ {sim_days} sim days (compression {_pred_ratio:.1f}×)"
                     )
 
                 for cycle_idx in range(num_cycles):
@@ -975,9 +1073,9 @@ async def _run_prediction_bg(
                     _push_pred_live(
                         job,
                         f"🔍 Cycle {cycle_idx+1}/{num_cycles} — sim days {cycle_start_day+1}~{cycle_start_day+cycle_days}"
-                        f" ↔ 真實新聞 {pred_news_start}~{pred_news_end}"
-                        f"（使用者 {len(fixed_local_kw)+len(fixed_national_kw)} + 系統 {len(sys_local_kw)+len(sys_national_kw)}"
-                        f" + 候選人 {len(cand_local_kw)+len(cand_national_kw)}）"
+                        f" ↔ real news {pred_news_start}~{pred_news_end}"
+                        f" (user {len(fixed_local_kw)+len(fixed_national_kw)} + system {len(sys_local_kw)+len(sys_national_kw)}"
+                        f" + candidate {len(cand_local_kw)+len(cand_national_kw)})"
                     )
 
                     _articles_per = sp.get("articles_per_agent", 3)
@@ -1156,7 +1254,7 @@ async def _run_prediction_bg(
 
                         ce = day_record.get("candidate_estimate", {})
                         if ce:
-                            est_str = " | ".join(f"{c}:{v}%" for c, v in ce.items() if c != "不表態")
+                            est_str = " | ".join(f"{c}:{v}%" for c, v in ce.items() if c != "Undecided")
                             _push_pred_live(job, f"  📅 {scenario_name} Day {day}/{sim_days}: {est_str}")
                         else:
                             _push_pred_live(job, f"  📅 {scenario_name} Day {day}/{sim_days}: sat={day_record.get('avg_satisfaction',0)} anx={day_record.get('avg_anxiety',0)}")
@@ -1323,7 +1421,7 @@ async def _run_prediction_bg(
                         demographics = agent_demographics_map.get(aid, {})
                     
                         # Read the mutated leaning from the diary entry and sync demographics map
-                        leaning = e.get("political_leaning") or demographics.get("leaning", "中立")
+                        leaning = e.get("political_leaning") or demographics.get("leaning", "Tossup")
                         if leaning != demographics.get("leaning") and aid in agent_demographics_map:
                             agent_demographics_map[aid]["leaning"] = leaning
                         
@@ -1460,7 +1558,7 @@ async def _run_prediction_bg(
                                     local_sat = e.get("local_satisfaction", sat)
                                     national_sat = e.get("national_satisfaction", sat)
                                     anxiety = e.get("anxiety", 50)
-                                    leaning = e.get("leaning", "中立")
+                                    leaning = e.get("leaning", "Tossup")
                                     cand_sent = (e.get("candidate_sentiment") or {}).get(cname, None)
 
                                     # Choose base score depending on role
@@ -1500,7 +1598,7 @@ async def _run_prediction_bg(
                                     undecided_prob = sp.get("base_undecided", 0.10)
                                     if 42 < base_score < 58:
                                         undecided_prob += 0.10
-                                    if anxiety > 70 and "中立" in leaning:
+                                    if anxiety > 70 and ("中立" in leaning or leaning == "Tossup"):
                                         undecided_prob += 0.08
                                     undecided_prob = min(sp.get("max_undecided", 0.45), undecided_prob)
 
@@ -1564,7 +1662,7 @@ async def _run_prediction_bg(
                                 continue
 
                             cand_scores: dict[str, float] = {c: 0.0 for c in cand_names}
-                            cand_scores["不表態"] = 0.0
+                            cand_scores["Undecided"] = 0.0
                             leaning_cand_scores: dict[str, dict[str, float]] = {}
                             total_w = 0.0
 
@@ -1581,7 +1679,7 @@ async def _run_prediction_bg(
                             for e in entries:
                                 aid = str(e.get("agent_id", e.get("person_id", "")))
                                 demographics = agent_demographics_map.get(aid, {})
-                                leaning = demographics.get("leaning", "中立")
+                                leaning = demographics.get("leaning", "Tossup")
                                 if _filter_leanings and leaning not in _filter_leanings:
                                     continue
                                 sat = e.get("satisfaction", 50)
@@ -1662,7 +1760,7 @@ async def _run_prediction_bg(
                                 undecided_prob = min(_max_undecided, _base_undecided + _both_unhappy * 0.25 + _close_race_bonus + _same_party_bonus + _no_match_bonus)
                                 for cname in cand_names:
                                     cand_scores[cname] += (scores[cname] / total_score) * (1 - undecided_prob) * agent_w
-                                cand_scores["不表態"] += undecided_prob * agent_w
+                                cand_scores["Undecided"] += undecided_prob * agent_w
                                 total_w += agent_w
 
                                 if leaning not in leaning_cand_scores:
@@ -1698,7 +1796,7 @@ async def _run_prediction_bg(
                                 gw = float(group.get("weight", 100)) / 100.0
                                 g_est2 = group_estimates.get(gn, {})
                                 for cname, pct in g_est2.items():
-                                    if cname == "不表態":
+                                    if cname == "Undecided":
                                         continue
                                     weighted_scores[cname] = weighted_scores.get(cname, 0.0) + float(pct) * gw
                                 total_weight += gw
@@ -1750,7 +1848,7 @@ async def _run_prediction_bg(
                     job["current_scenario_name"] = scenario_name
 
                     if candidate_estimate:
-                        est_str = " | ".join(f"{c}:{v}%" for c, v in candidate_estimate.items() if c != "不表態")
+                        est_str = " | ".join(f"{c}:{v}%" for c, v in candidate_estimate.items() if c != "Undecided")
                         _push_pred_live(job, f"  📅 {scenario_name} Day {day}/{sim_days}: {est_str}")
                     else:
                         _push_pred_live(job, f"  📅 {scenario_name} Day {day}/{sim_days}: sat={round(avg_sat,1)} anx={round(avg_anx,1)}")
@@ -1794,7 +1892,7 @@ async def _run_prediction_bg(
             for agent in agents:
                 aid = str(agent.get("person_id", 0))
                 state = final_states.get(aid, {})
-                leaning = agent.get("political_leaning", "中立")
+                leaning = agent.get("political_leaning", "Tossup")
                 sat = state.get("satisfaction", 50)
                 
                 # Get weight
@@ -1884,9 +1982,9 @@ async def _run_prediction_bg(
                         else:
                             top = max(gr.items(), key=lambda x: x[1] if isinstance(x[1], (int, float)) else 0)
                             summary_parts.append(f"{gn}: {top[0]} {top[1]}%")
-                _push_pred_live(job, f"✅ {scenario_name} 完成: {' │ '.join(summary_parts)}")
+                _push_pred_live(job, f"✅ {scenario_name} complete: {' │ '.join(summary_parts)}")
             else:
-                _push_pred_live(job, f"✅ {scenario_name} 完成: sat={scenario_result['final_avg_satisfaction']} 執政黨={vote_prediction['執政黨支持']}% 在野黨={vote_prediction['在野黨支持']}%")
+                _push_pred_live(job, f"✅ {scenario_name} complete: sat={scenario_result['final_avg_satisfaction']} incumbent={vote_prediction.get('執政黨支持', vote_prediction.get('incumbent', 0))}% opposition={vote_prediction.get('在野黨支持', vote_prediction.get('opposition', 0))}%")
 
             if job["status"] == "cancelled":
                 break
@@ -1901,7 +1999,7 @@ async def _run_prediction_bg(
                     # Check if groups share a common opponent
                     all_cands_per_group = {}
                     for gn, gr in pgr.items():
-                        cands_in_group = set(k for k in gr.keys() if k != "不表態")
+                        cands_in_group = set(k for k in gr.keys() if k != "Undecided")
                         all_cands_per_group[gn] = cands_in_group
                     all_cands = [c for cs in all_cands_per_group.values() for c in cs]
                     from collections import Counter
@@ -1911,7 +2009,7 @@ async def _run_prediction_bg(
                         opponent = common_opponents[0]  # e.g. 王美惠
                         contrast_results = []
                         for gn, gr in pgr.items():
-                            cands = [c for c in gr.keys() if c != "不表態" and c != opponent]
+                            cands = [c for c in gr.keys() if c != "Undecided" and c != opponent]
                             if not cands:
                                 continue
                             challenger = cands[0]  # e.g. 翁壽良 or 張啓楷
@@ -1941,11 +2039,11 @@ async def _run_prediction_bg(
                                 "recommended": best["challenger"],
                                 "recommended_margin": best["margin"],
                             }
-                            _push_pred_live(job, f"📊 Head-to-head results: {' vs '.join(r['challenger'] for r in contrast_results)} 對 {opponent}")
+                            _push_pred_live(job, f"📊 Head-to-head results: {' vs '.join(r['challenger'] for r in contrast_results)} vs {opponent}")
                             for r in contrast_results:
                                 sign = "+" if r["margin"] > 0 else ""
-                                _push_pred_live(job, f"  {r['challenger']}: {r['challenger_pct']}% vs {opponent} {r['opponent_pct']}% (差距 {sign}{r['margin']}%)")
-                            _push_pred_live(job, f"  ✅ Recommended: {best['challenger']} (largest margin vs {opponent} {'+' if best['margin']>0 else ''}{best['margin']}%）")
+                                _push_pred_live(job, f"  {r['challenger']}: {r['challenger_pct']}% vs {opponent} {r['opponent_pct']}% (margin {sign}{r['margin']}%)")
+                            _push_pred_live(job, f"  ✅ Recommended: {best['challenger']} (largest margin vs {opponent} {'+' if best['margin']>0 else ''}{best['margin']}%)")
 
             # 5. Save results to prediction file
             pred["results"] = {
@@ -2099,22 +2197,22 @@ async def _predict_votes(
 
     def _awareness_label(v: float) -> str:
         """Human-readable awareness band for the voting prompt."""
-        if v >= 0.85: return f"非常熟悉（{int(v*100)}%）"
-        if v >= 0.70: return f"相當熟悉（{int(v*100)}%）"
-        if v >= 0.50: return f"有一定認識（{int(v*100)}%）"
-        if v >= 0.30: return f"略有印象（{int(v*100)}%）"
-        if v >= 0.15: return f"只聽過名字（{int(v*100)}%）"
-        return f"完全沒聽過（{int(v*100)}%）"
+        if v >= 0.85: return f"very familiar ({int(v*100)}%)"
+        if v >= 0.70: return f"quite familiar ({int(v*100)}%)"
+        if v >= 0.50: return f"reasonably familiar ({int(v*100)}%)"
+        if v >= 0.30: return f"vaguely aware ({int(v*100)}%)"
+        if v >= 0.15: return f"only heard the name ({int(v*100)}%)"
+        return f"never heard of them ({int(v*100)}%)"
 
     def _sentiment_label(s: float) -> str:
         """Human-readable sentiment band. Range -1.0 ~ +1.0."""
-        if s >= 0.5: return f"非常正面（{s:+.2f}）— 你對他有好感"
-        if s >= 0.2: return f"略偏正面（{s:+.2f}）"
-        if s >= 0.05: return f"微正面（{s:+.2f}）"
-        if s > -0.05: return f"中性（{s:+.2f}）— 沒有特別好感或反感"
-        if s > -0.2: return f"微負面（{s:+.2f}）"
-        if s > -0.5: return f"略偏負面（{s:+.2f}）"
-        return f"非常負面（{s:+.2f}）— 你對他有反感"
+        if s >= 0.5: return f"very positive ({s:+.2f}) — you really like them"
+        if s >= 0.2: return f"somewhat positive ({s:+.2f})"
+        if s >= 0.05: return f"mildly positive ({s:+.2f})"
+        if s > -0.05: return f"neutral ({s:+.2f}) — no strong feelings either way"
+        if s > -0.2: return f"mildly negative ({s:+.2f})"
+        if s > -0.5: return f"somewhat negative ({s:+.2f})"
+        return f"very negative ({s:+.2f}) — you dislike them"
 
     def _build_cand_details_for_agent(agent_district: str, agent_state: dict | None = None) -> str:
         """Build per-agent candidate profile with BOTH awareness AND sentiment.
@@ -2161,56 +2259,56 @@ async def _predict_votes(
             except (TypeError, ValueError):
                 sentiment = 0.0
 
-            # Build per-candidate block: name + 認識程度 + 整體印象 + 簡介
-            block = [f"【{cname}】"]
-            block.append(f"  - 你對這位的認識程度：{_awareness_label(awareness)}")
-            block.append(f"  - 你目前對他的整體印象：{_sentiment_label(sentiment)}")
-            # Description visibility: stochastic, gated by awareness (matches old behavior)
+            # Build per-candidate block: name + awareness + sentiment + bio
+            block = [f"[{cname}]"]
+            block.append(f"  - Your familiarity with this candidate: {_awareness_label(awareness)}")
+            block.append(f"  - Your overall impression of them: {_sentiment_label(sentiment)}")
+            # Description visibility: stochastic, gated by awareness
             if _vote_rng.random() < awareness:
                 if desc:
-                    block.append(f"  - 候選人簡介：{desc}")
+                    block.append(f"  - Candidate background: {desc}")
             else:
-                block.append(f"  - 候選人簡介：（你對這位候選人不太了解，看不到完整介紹）")
+                block.append(f"  - Candidate background: (You don't know this candidate well, so you don't see the full bio)")
             lines.append("\n".join(block))
         return "\n\n".join(lines)
 
     _max_ch = max_choices
-    _prompt_base = """你是一位真實的台灣選民。以下是你的基本資料與政治傾向：
-【基本資料】
+    _prompt_base = """You are a real American voter. Below is your personal profile and political leaning.
+[Personal profile]
 {persona_desc}
 
-【政治光譜與傾向】
-- 你的政治傾向為：{political_leaning}
+[Political leaning]
+- Your political leaning: {political_leaning}
 
-{long_term_memory}【你目前的整體心態】
+{long_term_memory}[Your current overall mood]
 {semantic_state}
 
-最近幾天你的生活日記（標注「最新」的是你今天的心態，越近期的越重要）：
+Your recent diary entries (entries marked "latest" are today's mindset; more recent matters more):
 {recent_diary}
 
-現在有一份民調，以下是選項與對應的背景資訊（**請特別注意：「認識程度」與「整體印象」是兩個獨立訊號，請分別考量**）：
+A poll is being conducted. Here are the options and the information you have about each candidate (**Note: "familiarity" and "impression" are two INDEPENDENT signals — consider them separately**):
 {cand_details}
 
-{voting_day_context}【投票考量提示】
-- 題目中會標注候選人的政黨名稱（如「國民黨某某某」、「民眾黨某某某」）
-- ⚠️ **「認識程度」≠「好感度」**：你可能很熟悉某位候選人但因為他的爭議/醜聞而討厭他；也可能對某位陌生候選人有微正面印象（聽到的零星評價是好的）
-- 投票決策應綜合考量以下四個面向，依重要性排序：
-  1. **整體印象**（sentiment）：你對候選人的好惡 — 這是最直接的訊號
-  2. **政黨傾向**：你對其政黨的認同或排斥
-  3. **認識程度**（awareness）：你對候選人的熟悉程度
-  4. **政見/能力/形象**：候選人簡介中描述的具體內容
-- 決策範例：
-  - 高認識程度 + 正面印象 → 強烈傾向投他
-  - 高認識程度 + 負面印象 → **不投他**（即使認識），改投對手或不表態
-  - 低認識程度 + 政黨相符 → 依政黨基本盤投票
-  - 低認識程度 + 政黨不符 → 不表態 或 投對手
-  - 中性印象 + 認識度普通 → 主要看政黨傾向
-- 對比式民調中只有兩人對決，你必須在兩人之間選一個，或回答「不表態」
+{voting_day_context}[Voting considerations]
+- Party labels (Democratic / Republican / Independent) may appear next to candidate names.
+- ⚠️ **Familiarity ≠ Favorability**: you may know a candidate very well yet dislike them because of scandals/controversies, or you may have a mildly positive impression of a lesser-known candidate (scattered favorable reports).
+- Weight the four factors roughly in this order:
+  1. **Overall impression** (sentiment) — the most direct signal
+  2. **Party identification** — your alignment with or aversion to the candidate's party
+  3. **Familiarity** (awareness) — how well you know the candidate
+  4. **Policies / competence / image** — specifics from the bio
+- Decision heuristics:
+  - High familiarity + positive impression → strong vote for
+  - High familiarity + negative impression → **do NOT vote for them** (even if well-known); switch to opponent or answer Undecided
+  - Low familiarity + same party → default to party-line vote
+  - Low familiarity + different party → Undecided or cross-over to opponent
+  - Neutral impression + modest familiarity → follow your party leaning
+- In head-to-head polls with two candidates, pick one or answer "Undecided".
 
-最多只能選擇 {max_choices} 個選項。請真實反映你作為該位民眾的選擇（也可以回答「不表態」或「廢票」）。
-請以 JSON 回傳你的選擇（字串陣列）：
+You may select at most {max_choices} option(s). Give the honest choice you would make as this voter (you may also answer "Undecided" or "Spoiled ballot").
+Return your choice as JSON (array of strings):
 {{
-  "votes": ["選項名稱1", "選項名稱2"]
+  "votes": ["Option 1", "Option 2"]
 }}"""
 
     import asyncio
@@ -2274,7 +2372,7 @@ async def _predict_votes(
             diary_lines.append(f"- 第{day_num}天{tag}: {excerpt}")
         diary_text = "\n".join(diary_lines) if diary_lines else "無特別紀錄"
 
-        political_leaning = agent.get("political_leaning") or "中立"
+        political_leaning = agent.get("political_leaning") or "Tossup"
         agent_district = agent.get("district", agent.get("context", {}).get("district", ""))
         cand_details = _build_cand_details_for_agent(agent_district, state)
 
@@ -2312,7 +2410,7 @@ async def _predict_votes(
                     break
         
         if not matched_cands:
-            matched_cands = ["不表態"]
+            matched_cands = ["Undecided"]
             
         votes.append((matched_cands, weight))
         _push_pred_live(job, f"📊 Agent #{aid} (weight {weight}) voted: {', '.join(matched_cands)}")
@@ -2368,7 +2466,7 @@ async def _run_llm_satisfaction_survey(
         if not cand_names:
             continue
 
-        _push_pred_live(job, f"📊 LLM satisfaction survey — {', '.join(cand_names)}（{len(agents)} 人）...")
+        _push_pred_live(job, f"📊 LLM satisfaction survey — {', '.join(cand_names)} ({len(agents)} agents)...")
 
         # Build candidate descriptions
         cand_desc_map = {}
@@ -2504,7 +2602,7 @@ async def _run_llm_satisfaction_survey(
                 if not state:
                     return None
 
-                leaning = state.get("current_leaning", agent.get("political_leaning", "中立"))
+                leaning = state.get("current_leaning", agent.get("political_leaning", "Tossup"))
                 local_sat = state.get("local_satisfaction", state.get("satisfaction", 50))
                 national_sat = state.get("national_satisfaction", state.get("satisfaction", 50))
                 anxiety = state.get("anxiety", 50)
@@ -2768,7 +2866,17 @@ async def _run_rolling_init_bg(
 
         # 1b. Optionally redistribute agent leanings to match calibration result
         if pred.get("use_calibration_result_leaning", True):
-            _redistribute_leaning_by_ground_truth(agents, snapshot_id)
+            _redistribute_leaning_by_ground_truth(agents, snapshot_id, pred)
+            from .evolver import _load_states as _ld, _save_states as _sv
+            _rst = _ld()
+            for _ag in agents:
+                _aid = str(_ag.get("person_id", ""))
+                if _aid and _aid in _rst:
+                    _new_ln = _ag.get("political_leaning")
+                    if _new_ln:
+                        _rst[_aid]["current_leaning"] = _new_ln
+                        _rst[_aid]["leaning"] = _new_ln
+            _sv(_rst)
             _push_pred_live(job, "🗳️ Initial political leaning distribution reset from election results")
 
         # 2. Build background news pool
@@ -2891,8 +2999,8 @@ async def _run_rolling_init_bg(
 
         job["status"] = "waiting_for_news"
         est = day_record.get("candidate_estimate", {})
-        est_str = " | ".join(f"{c}:{v}%" for c, v in est.items() if c != "不表態") if est else ""
-        _push_pred_live(job, f"✅ Day 0 基線: {est_str}")
+        est_str = " | ".join(f"{c}:{v}%" for c, v in est.items() if c != "Undecided") if est else ""
+        _push_pred_live(job, f"✅ Day 0 baseline: {est_str}")
         _push_pred_live(job, f"📅 Waiting to inject Day 1 news...")
         logger.info(f"Rolling prediction Day 0 complete (bridged {sim_days} days): {job['job_id']}")
 
@@ -2973,7 +3081,7 @@ async def advance_rolling_day(
         background_pool.extend(new_items)
 
         replace_pool(background_pool)
-        _push_pred_live(job, f"📰 Day {next_day}: 背景{rolling_state.get('background_count', 0)}則 + 新增{len(new_items)}則 → 共{len(background_pool)}則")
+        _push_pred_live(job, f"📰 Day {next_day}: background {rolling_state.get('background_count', 0)} + new {len(new_items)} → total {len(background_pool)}")
 
         # 3. Build agent demographics
         agent_demographics_map: dict[str, dict] = {}
@@ -3013,8 +3121,8 @@ async def advance_rolling_day(
 
         job["status"] = "waiting_for_news"
         est = day_record.get("candidate_estimate", {})
-        est_str = " | ".join(f"{c}:{v}%" for c, v in est.items() if c != "不表態") if est else ""
-        _push_pred_live(job, f"✅ Day {next_day} 完成: {est_str}")
+        est_str = " | ".join(f"{c}:{v}%" for c, v in est.items() if c != "Undecided") if est else ""
+        _push_pred_live(job, f"✅ Day {next_day} complete: {est_str}")
 
     except Exception as e:
         logger.exception(f"Rolling advance failed: {e}")
@@ -3073,7 +3181,7 @@ def _compute_day_record(
     for e in entries:
         aid = str(e.get("agent_id", e.get("person_id", "")))
         demographics = agent_demographics_map.get(aid, {})
-        leaning = demographics.get("leaning", "中立")
+        leaning = demographics.get("leaning", "Tossup")
         sat = e["satisfaction"]
         anx = e["anxiety"]
 
@@ -3169,7 +3277,7 @@ def _compute_day_record(
                     local_sat = e.get("local_satisfaction", sat)
                     national_sat = e.get("national_satisfaction", sat)
                     anxiety = e.get("anxiety", 50)
-                    leaning = e.get("leaning", "中立")
+                    leaning = e.get("leaning", "Tossup")
                     cand_sent = (e.get("candidate_sentiment") or {}).get(cname, None)
 
                     if cand_sent is not None:
@@ -3203,7 +3311,7 @@ def _compute_day_record(
                     undecided_prob = sp.get("base_undecided", 0.10)
                     if 42 < base_score < 58:
                         undecided_prob += 0.10
-                    if anxiety > 70 and "中立" in leaning:
+                    if anxiety > 70 and ("中立" in leaning or leaning == "Tossup"):
                         undecided_prob += 0.08
                     undecided_prob = min(sp.get("max_undecided", 0.45), undecided_prob)
 
@@ -3260,7 +3368,7 @@ def _compute_day_record(
                 continue
 
             cand_scores: dict[str, float] = {c: 0.0 for c in cand_names}
-            cand_scores["不表態"] = 0.0
+            cand_scores["Undecided"] = 0.0
             leaning_cand_scores: dict[str, dict[str, float]] = {}
             district_cand_scores: dict[str, dict[str, float]] = {}
             district_cand_counts: dict[str, float] = {}
@@ -3284,7 +3392,7 @@ def _compute_day_record(
             for e in entries:
                 aid = str(e.get("agent_id", e.get("person_id", "")))
                 demographics = agent_demographics_map.get(aid, {})
-                leaning = demographics.get("leaning", "中立")
+                leaning = demographics.get("leaning", "Tossup")
                 if _filter_leanings2 and leaning not in _filter_leanings2:
                     continue
                 sat = e.get("satisfaction", 50)
@@ -3346,7 +3454,7 @@ def _compute_day_record(
                         leaning_cand_scores[leaning]["_count"] = 0.0
                     leaning_cand_scores[leaning][cname] = leaning_cand_scores[leaning].get(cname, 0) + frac * (1 - undecided_prob) * agent_w
 
-                cand_scores["不表態"] += undecided_prob * agent_w
+                cand_scores["Undecided"] += undecided_prob * agent_w
                 total_w += agent_w
                 if leaning in leaning_cand_scores:
                     leaning_cand_scores[leaning]["_count"] = leaning_cand_scores[leaning].get("_count", 0) + agent_w

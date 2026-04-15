@@ -255,11 +255,14 @@ def infer_political_leaning(age: int, occupation: str, education: str) -> str:
 # Four simplified personality dimensions (inspired by Big Five, adapted for simulation)
 # Each dimension has 3 levels for simplicity.
 
+# English values match the aliases that evolver._personality_modifiers and
+# evolver._BIAS_DESC look up. Keep the English wording exact — drift will
+# silently disable the personality-driven reaction tuning in evolution.
 _PERSONALITY_DIMS = {
-    "expressiveness": ["高度表達", "中等表達", "沉默寡言"],
-    "emotional_stability": ["穩定冷靜", "一般穩定", "敏感衝動"],
-    "sociability": ["外向社交", "適度社交", "內向獨處"],
-    "openness": ["開放多元", "中等開放", "固守觀點"],
+    "expressiveness": ["highly expressive", "moderately expressive", "reserved"],
+    "emotional_stability": ["stable and calm", "fairly stable", "sensitive / impulsive"],
+    "sociability": ["extroverted", "moderately social", "introverted"],
+    "openness": ["open to new ideas", "moderately open", "set in views"],
 }
 
 
@@ -290,7 +293,7 @@ def infer_personality(
     else:
         weights = [20, 35, 45]
     # Gender nuance: slight adjustment (small effect size)
-    if "女" in gen:
+    if "女" in gen or gen.lower() in ("female", "f"):
         weights[0] += 5  # slightly more expressive
         weights[2] -= 5
     result["expressiveness"] = random.choices(
@@ -312,16 +315,20 @@ def infer_personality(
 
     # ── 3) Sociability: occupation-driven ──
     weights = [30, 45, 25]  # default: slightly extraverted
+    _occ_lower = occ.lower()
     # Client-facing → more sociable
-    for kw in ["業務", "銷售", "服務", "教師", "老師", "醫師", "護理", "記者", "公關"]:
-        if kw in occ:
-            weights = [50, 35, 15]
-            break
-    # Technical / solo work → more introverted
-    for kw in ["工程", "程式", "會計", "研究", "資訊", "IT", "分析"]:
-        if kw in occ:
+    _client_kw_cjk = ["業務", "銷售", "服務", "教師", "老師", "醫師", "護理", "記者", "公關"]
+    _client_kw_en = ["sales", "retail", "hospitality", "education", "teacher",
+                     "healthcare", "nurse", "service", "public"]
+    if any(k in occ for k in _client_kw_cjk) or any(k in _occ_lower for k in _client_kw_en):
+        weights = [50, 35, 15]
+    else:
+        # Technical / solo work → more introverted
+        _tech_kw_cjk = ["工程", "程式", "會計", "研究", "資訊", "IT", "分析"]
+        _tech_kw_en = ["engineer", "engineering", "tech", "research", "professional services",
+                       "finance", "accounting", "analyst", "manufacturing"]
+        if any(k in occ for k in _tech_kw_cjk) or any(k in _occ_lower for k in _tech_kw_en):
             weights = [15, 35, 50]
-            break
     # Retired / elderly → mixed
     if age >= 65:
         weights = [25, 40, 35]
@@ -337,11 +344,12 @@ def infer_personality(
     else:
         weights = [20, 35, 45]  # older → more conservative
     # Higher education → slightly more open
-    for kw in ["大學", "碩士", "博士", "研究所", "大專"]:
-        if kw in edu:
-            weights[0] += 10
-            weights[2] -= 10
-            break
+    _edu_lower = edu.lower()
+    _edu_kw_cjk = ["大學", "碩士", "博士", "研究所", "大專"]
+    _edu_kw_en = ["bachelor", "master", "doctor", "graduate", "college", "associate"]
+    if any(k in edu for k in _edu_kw_cjk) or any(k in _edu_lower for k in _edu_kw_en):
+        weights[0] += 10
+        weights[2] -= 10
     result["openness"] = random.choices(
         _PERSONALITY_DIMS["openness"], weights=weights, k=1
     )[0]
@@ -508,6 +516,7 @@ def _from_template(
         "hispanic_or_latino": fields.get("hispanic_or_latino", ""),
         "household_income": fields.get("household_income", ""),
         "household_type": fields.get("household_type", ""),
+        "household_tenure": fields.get("household_tenure", ""),
         "income_band": fields.get("household_income", "") or fields.get("income_band", ""),
         "name": f"user_{p.person_id}",
         "username": f"civatas_{p.person_id:05d}",
@@ -518,7 +527,7 @@ def _from_template(
         "political_leaning": fields.get("political_leaning", "Tossup"),
         "llm_vendor": vendor,
         "personality": (_pers := {
-            "expressiveness": fields.get("expressiveness", "moderate"),
+            "expressiveness": fields.get("expressiveness", "moderately expressive"),
             "emotional_stability": fields.get("emotional_stability", "fairly stable"),
             "sociability": fields.get("sociability", "moderately social"),
             "openness": fields.get("openness", "moderately open"),
@@ -599,6 +608,16 @@ async def _from_llm(
     system = prompt or _default_llm_prompt(locale, county=_county_for_prompt)
     user_content = "\n".join(f"- {k}: {v}" for k, v in fields.items() if v)
 
+    # Per-agent geographic anchor — system prompt is built once per call but
+    # district varies per agent, so the cities list goes here in user content.
+    try:
+        from .prompts import state_anchor_block
+        _anchor = state_anchor_block(fields.get("district", ""))
+        if _anchor:
+            user_content = f"{_anchor}\n\n{user_content}"
+    except Exception:
+        pass
+
     # Sanitize content to prevent LLM API 400 errors (null bytes, control chars)
     user_content = user_content.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
     system = system.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
@@ -634,7 +653,12 @@ async def _from_llm(
     try:
         parsed = json.loads(cleaned)
         user_char = parsed.get("user_char", cleaned)
-        if parsed.get("media_habit"):
+        # Preserve synthesis-time media_habit (template's canonical bucket).
+        # Only accept LLM-inferred value when the source data didn't supply one,
+        # otherwise the LLM rewrites buckets like "Social Media (Facebook / X / TikTok)"
+        # into freeform variants ("Facebook, X, TikTok" / "Facebook,X,TikTok") that
+        # break downstream grouping.
+        if parsed.get("media_habit") and not media_habit:
             media_habit = parsed["media_habit"]
         if parsed.get("political_leaning"):
             political_leaning = parsed["political_leaning"]
@@ -665,6 +689,7 @@ async def _from_llm(
         "hispanic_or_latino": fields.get("hispanic_or_latino", ""),
         "household_income": fields.get("household_income", ""),
         "household_type": fields.get("household_type", ""),
+        "household_tenure": fields.get("household_tenure", ""),
         "income_band": fields.get("household_income", "") or fields.get("income_band", ""),
         "name": f"user_{p.person_id}",
         "username": f"civatas_{p.person_id:05d}",
@@ -675,10 +700,10 @@ async def _from_llm(
         "political_leaning": political_leaning,
         "llm_vendor": vendor,
         "personality": (_pers := {
-            "expressiveness": fields.get("expressiveness", "中等表達"),
-            "emotional_stability": fields.get("emotional_stability", "一般穩定"),
-            "sociability": fields.get("sociability", "適度社交"),
-            "openness": fields.get("openness", "中等開放"),
+            "expressiveness": fields.get("expressiveness", "moderately expressive"),
+            "emotional_stability": fields.get("emotional_stability", "fairly stable"),
+            "sociability": fields.get("sociability", "moderately social"),
+            "openness": fields.get("openness", "moderately open"),
         }),
         "individuality": compute_individuality(
             _pers,
@@ -701,7 +726,9 @@ async def _hybrid(
         enriched = await _from_llm(p, locale, llm_prompt, vendor_assignments)
         base["user_char"] = enriched["user_char"]
         base["description"] = enriched["description"]
-        if enriched.get("media_habit"):
+        # Same rationale as _from_llm: don't let the LLM overwrite the
+        # template-supplied media_habit bucket.
+        if enriched.get("media_habit") and not base.get("media_habit"):
             base["media_habit"] = enriched["media_habit"]
         if enriched.get("political_leaning"):
             base["political_leaning"] = enriched["political_leaning"]
@@ -719,45 +746,68 @@ def compute_individuality(personality: dict, age: int = 40, occupation: str = ""
     """
     import random as _rng
 
-    es = personality.get("emotional_stability", "一般穩定")
-    expr = personality.get("expressiveness", "中等表達")
-    op = personality.get("openness", "中等開放")
+    es = personality.get("emotional_stability", "fairly stable")
+    expr = personality.get("expressiveness", "moderately expressive")
+    op = personality.get("openness", "moderately open")
+
+    # Bilingual lookup helper: legacy CJK personas still in DB must keep working.
+    def _key(v: str, en_map: dict, cjk_map: dict, default):
+        if v in en_map: return en_map[v]
+        if v in cjk_map: return cjk_map[v]
+        return default
 
     # noise_scale: emotional volatility amplitude
-    noise_base = {"敏感衝動": 1.5, "一般穩定": 1.0, "穩定冷靜": 0.3}.get(es, 1.0)
-    if op == "開放多元": noise_base *= 1.2
-    elif op == "固守觀點": noise_base *= 0.7
+    noise_base = _key(es,
+        {"sensitive / impulsive": 1.5, "fairly stable": 1.0, "stable and calm": 0.3},
+        {"敏感衝動": 1.5, "一般穩定": 1.0, "穩定冷靜": 0.3}, 1.0)
+    if op in ("open to new ideas", "開放多元"): noise_base *= 1.2
+    elif op in ("set in views", "固守觀點"): noise_base *= 0.7
     noise_scale = noise_base + _rng.uniform(-0.2, 0.2)
 
     # temperature_offset: LLM creativity variance
-    temp_base = {"敏感衝動": 0.15, "一般穩定": 0.0, "穩定冷靜": -0.10}.get(es, 0.0)
+    temp_base = _key(es,
+        {"sensitive / impulsive": 0.15, "fairly stable": 0.0, "stable and calm": -0.10},
+        {"敏感衝動": 0.15, "一般穩定": 0.0, "穩定冷靜": -0.10}, 0.0)
     temperature_offset = temp_base + _rng.uniform(-0.05, 0.05)
 
     # reaction_multiplier: how strongly they react to news
-    react_base = {"敏感衝動": 1.3, "一般穩定": 1.0, "穩定冷靜": 0.7}.get(es, 1.0)
-    if expr == "高度表達": react_base *= 1.15
-    elif expr == "沉默寡言": react_base *= 0.85
+    react_base = _key(es,
+        {"sensitive / impulsive": 1.3, "fairly stable": 1.0, "stable and calm": 0.7},
+        {"敏感衝動": 1.3, "一般穩定": 1.0, "穩定冷靜": 0.7}, 1.0)
+    if expr in ("highly expressive", "高度表達"): react_base *= 1.15
+    elif expr in ("reserved", "沉默寡言"): react_base *= 0.85
     reaction_multiplier = react_base + _rng.uniform(-0.1, 0.1)
 
     # memory_inertia: resistance to opinion change
-    inertia_base = {"穩定冷靜": 0.25, "一般穩定": 0.15, "敏感衝動": 0.05}.get(es, 0.15)
+    inertia_base = _key(es,
+        {"stable and calm": 0.25, "fairly stable": 0.15, "sensitive / impulsive": 0.05},
+        {"穩定冷靜": 0.25, "一般穩定": 0.15, "敏感衝動": 0.05}, 0.15)
     memory_inertia = inertia_base + _rng.uniform(-0.03, 0.03)
 
     # delta_cap: max daily emotional swing
-    delta_cap = {"敏感衝動": 20, "一般穩定": 15, "穩定冷靜": 10}.get(es, 15)
+    delta_cap = _key(es,
+        {"sensitive / impulsive": 20, "fairly stable": 15, "stable and calm": 10},
+        {"敏感衝動": 20, "一般穩定": 15, "穩定冷靜": 10}, 15)
 
-    # cognitive_bias: affects HOW they interpret news (direction, not just magnitude)
+    # cognitive_bias values must match evolver._BIAS_DESC keys so the
+    # bias-specific guidance text actually fires in the evolution prompt.
     bias_pool = []
-    if es == "敏感衝動": bias_pool += ["悲觀偏向", "轉嫁怨氣", "從眾型"]
-    elif es == "穩定冷靜": bias_pool += ["理性分析", "無感冷漠"]
-    else: bias_pool += ["理性分析", "樂觀偏向", "從眾型"]
-    if op == "固守觀點": bias_pool += ["陰謀論傾向"]
-    if op == "開放多元": bias_pool += ["理性分析", "樂觀偏向"]
-    if income_band in ("高收入", "中高收入"): bias_pool += ["樂觀偏向"]
-    if income_band in ("低收入", "中低收入"): bias_pool += ["悲觀偏向", "轉嫁怨氣"]
-    if age < 30: bias_pool += ["從眾型"]
-    if age > 60: bias_pool += ["悲觀偏向"]
-    cognitive_bias = _rng.choice(bias_pool) if bias_pool else "理性分析"
+    if es in ("sensitive / impulsive", "敏感衝動"):
+        bias_pool += ["pessimistic", "scapegoating", "conformist"]
+    elif es in ("stable and calm", "穩定冷靜"):
+        bias_pool += ["rational", "apathetic"]
+    else:
+        bias_pool += ["rational", "optimistic", "conformist"]
+    if op in ("set in views", "固守觀點"): bias_pool += ["conspiracy-prone"]
+    if op in ("open to new ideas", "開放多元"): bias_pool += ["rational", "optimistic"]
+    _ib = (income_band or "").lower()
+    if any(k in income_band for k in ("高收入", "中高收入")) or any(k in _ib for k in ("$100k", "$150k", "$200k")):
+        bias_pool += ["optimistic"]
+    if any(k in income_band for k in ("低收入", "中低收入")) or any(k in _ib for k in ("under $25k", "$25k", "$50k")):
+        bias_pool += ["pessimistic", "scapegoating"]
+    if age < 30: bias_pool += ["conformist"]
+    if age > 60: bias_pool += ["pessimistic"]
+    cognitive_bias = _rng.choice(bias_pool) if bias_pool else "rational"
 
     return {
         "noise_scale": round(max(0.2, min(3.0, noise_scale)), 2),
@@ -888,6 +938,7 @@ def _person_fields(p: Person) -> dict[str, str]:
         "household_income": getattr(p, "household_income", "") or income_band,
         "income_band": getattr(p, "household_income", "") or income_band,
         "household_type": p.household_type or "",
+        "household_tenure": getattr(p, "household_tenure", "") or "",
         "marital_status": p.marital_status or "",
         "party_lean": party_lean,
         "issue_1": issue_1,

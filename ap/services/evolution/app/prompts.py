@@ -200,7 +200,8 @@ Output strictly in the following JSON format (no extra text):
   "economic_stance_shift": "left/none/right (today's news pushed you toward more regulation/welfare = left; no change = none; toward freer markets / lower taxes = right)",
   "social_values_shift": "progressive/none/conservative (more progressive = progressive; no change = none; more traditional = conservative)",
   "national_identity_shift": "inclusive/none/restrictive (more open / pro-immigration / pluralist = inclusive; no change = none; more restrictive / nationalist / America First = restrictive)",
-  "issue_priority": "economy/immigration/healthcare/abortion/guns/climate/foreign/crime/education/jobs (your top concern right now)"
+  "issue_priority": "economy/immigration/healthcare/abortion/guns/climate/foreign/crime/education/jobs (your top concern right now)",
+  "candidate_mentions": ["(array of candidate full names from the awareness list above that were explicitly mentioned — by name, title, or clear reference — in today's {n_articles} news articles. Use the exact full name as listed. Empty array [] if none were mentioned.)"]
 }}"""
 
 

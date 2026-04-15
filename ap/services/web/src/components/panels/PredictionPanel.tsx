@@ -8,6 +8,8 @@ import { GuideBanner } from "@/components/shared/GuideBanner";
 import { useWorkflowStatus } from "@/hooks/use-workflow-status";
 import { useShellStore } from "@/store/shell-store";
 import { useActiveTemplate } from "@/hooks/use-active-template";
+import { useLocaleStore } from "@/store/locale-store";
+import { useRouter } from "next/navigation";
 import {
   getDefaultMacroContext,
   getDefaultLocalKeywords,
@@ -63,6 +65,8 @@ import {
   autoComputeCandidateTraits,
   getUiSettings,
   saveUiSettings,
+  saveSnapshot,
+  createRecording,
 } from "@/lib/api";
 
 /* ── Types ──────────────────────────────────────────────────────── */
@@ -143,8 +147,32 @@ function getCandidateColors(opts: {name: string; description: string}[]): string
 
 export default function PredictionPanel({ wsId }: { wsId: string }) {
   const t = useTr();
+  const en = useLocaleStore((s) => s.locale) === "en";
+  const router = useRouter();
   const _wsId = useShellStore((s) => s.activeWorkspaceId);
   const workflowStatus = useWorkflowStatus(_wsId);
+
+  // If a prediction is already running for this workspace, send the user to
+  // the Dashboard — Setup is for configuration, not monitoring. Skips when
+  // the stored job has reached a terminal state.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const jid = sessionStorage.getItem(`activePredictionJob_${wsId}`);
+        if (!jid) return;
+        const res: any = await fetch(`/api/pipeline/evolution/predictions/jobs/${jid}`).then(r => r.json()).catch(() => null);
+        const st = res?.status;
+        if (cancelled) return;
+        if (st === "running" || st === "pending" || st === "paused") {
+          router.push(`/workspaces/${wsId}/prediction-evolution-dashboard`);
+        } else if (st === "completed" || st === "failed" || st === "cancelled") {
+          sessionStorage.removeItem(`activePredictionJob_${wsId}`);
+        }
+      } catch { /* ignore */ }
+    })();
+    return () => { cancelled = true; };
+  }, [wsId, router]);
 
   // Stage 1.8: read the workspace's active template (US presidential, etc.)
   // and use it to seed defaults instead of TW-hardcoded values.
@@ -163,6 +191,13 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
 
   const [snapshots, setSnapshots] = useState<any[]>([]);
   const [selectedSnap, setSelectedSnap] = useState<string>("");
+  // Snapshot-mismatch guard: when the chosen snapshot's agent_count diverges
+  // from the current persona count, the prediction's initial /evolve/reset
+  // + snapshot restore will leave the live agent_states with only the
+  // snapshot's N agents and silently discard whatever evolution run the
+  // user actually just finished. Open this picker so the user picks an
+  // up-to-date snapshot before the prediction starts.
+  const [snapMismatchOpen, setSnapMismatchOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [baseNews, setBaseNews] = useState("");
   const [predEventsData, setPredEventsData] = useState<{ day: number, news: any[] }[]>([]);
@@ -581,6 +616,43 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
       setSimDays(prev => prev === 30 ? 3 : prev);  // 3 days for election prediction
     } else if (predType === "mayoral") {
       setSimDays(prev => prev === 30 ? 5 : prev);  // 5 days for local races
+    }
+
+    // 7. ① Basic Setup: seed news-window dates + region from template.
+    //    For election templates with a cycle (e.g. 2024), pick the 7 days
+    //    leading up to Election Day (first Tuesday after first Monday of Nov).
+    //    For state templates, pre-fill the region code as the County/Region.
+    const cycle = activeTemplate.election?.cycle;
+    const ew = activeTemplate.election?.default_evolution_window;
+    const computeElectionDate = (yr: number): string => {
+      // First Tuesday after first Monday in November
+      const d = new Date(Date.UTC(yr, 10, 1));
+      while (d.getUTCDay() !== 1) d.setUTCDate(d.getUTCDate() + 1); // find Monday
+      d.setUTCDate(d.getUTCDate() + 1); // Tuesday after
+      return d.toISOString().slice(0, 10);
+    };
+    const addDaysStr = (iso: string, n: number) => {
+      const d = new Date(iso + "T00:00:00Z");
+      d.setUTCDate(d.getUTCDate() + n);
+      return d.toISOString().slice(0, 10);
+    };
+    if (cycle) {
+      const elDate = computeElectionDate(cycle);
+      const defEnd = ew?.end_date || addDaysStr(elDate, -1);
+      const defStart = addDaysStr(defEnd, -6); // 7-day news window
+      setPredStartDate(prev => prev ? prev : defStart);
+      setPredEndDate(prev => prev ? prev : defEnd);
+    } else if (ew?.start_date && ew?.end_date) {
+      const defEnd = ew.end_date;
+      const defStart = addDaysStr(defEnd, -6);
+      setPredStartDate(prev => prev ? prev : defStart);
+      setPredEndDate(prev => prev ? prev : defEnd);
+    }
+    // County/Region: for state-scoped templates, pre-fill the state code/name.
+    const tplScope = activeTemplate.election?.scope;
+    const regionCode = activeTemplate.region_code || activeTemplate.election?.region_code;
+    if (tplScope === "state" && regionCode) {
+      setPredCounty(prev => prev ? prev : regionCode);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1128,9 +1200,11 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
         if (!isMounted) return;
         failCount = 0;
         setJobStatus(status);
-        if (status.status === "completed" || status.status === "failed") {
+        if (status.status === "completed" || status.status === "failed" || status.status === "cancelled" || status.status === "stopped") {
           setRunning(false);
           if (pollRef.current) clearInterval(pollRef.current);
+          // Clear session key so banner + mount-redirect both stop tracking it
+          try { sessionStorage.removeItem(`activePredictionJob_${wsId}`); } catch {}
           if (status.scenario_results) {
             setPredResults(status.scenario_results);
           }
@@ -1371,6 +1445,19 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
       alert("Please select a calibration snapshot first.");
       return;
     }
+    // Snapshot ↔ persona count guard. Prediction start does a hard reset of
+    // agent_states then restores from the snapshot — if the snapshot has
+    // fewer agents than the current personas (e.g. old 60-agent snapshot
+    // with 100 live personas), we overwrite a fresh evolution with stale
+    // state. Surface available snapshots so the user picks the right one.
+    {
+      const snap = snapshots.find(s => s.snapshot_id === selectedSnap);
+      const personaN = rawPersonas.length;
+      if (snap && personaN > 0 && typeof snap.agent_count === "number" && snap.agent_count !== personaN) {
+        setSnapMismatchOpen(true);
+        return;
+      }
+    }
     if (predictionMode === "election" && pollGroups.length === 0) {
       alert(t("prediction.alert.no_groups"));
       return;
@@ -1384,6 +1471,53 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
     }
     setRunning(true);
     setPredResults(null);
+    // First-run auto-traits: if candidates exist and we've never computed their
+    // profile (loc/nat/anx/charm/cross) traits, compute them ONCE here before
+    // predicting. Subsequent runs keep whatever the user has (unless they click
+    // the "Auto-compute Traits" button manually to refresh).
+    // Use a local merged copy because React state is async — scoringParams
+    // below reads this variable, not state.
+    let effectiveTraits: Record<string, {loc:number;nat:number;anx:number;charm:number;cross:number}> = { ...candidateTraits };
+    try {
+      const needTraits: { name: string; description: string }[] = [];
+      if (predictionMode === "election") {
+        pollGroups.forEach(g => (g.candidates || []).forEach((c: any) => {
+          if (c.name && !candidateTraits[c.name] && !needTraits.find(x => x.name === c.name)) {
+            needTraits.push({ name: c.name, description: c.description || "" });
+          }
+        }));
+      } else if (predictionMode === "satisfaction") {
+        surveyItems.filter(s => s.name.trim()).forEach(s => {
+          if (!candidateTraits[s.name] && !needTraits.find(x => x.name === s.name)) {
+            needTraits.push({ name: s.name, description: s.party || "" });
+          }
+        });
+      }
+      if (needTraits.length > 0) {
+        setAutoTraitsLoading(true);
+        const res: any = await autoComputeCandidateTraits(needTraits.map(c => ({
+          name: c.name, description: c.description, party: "",
+        })));
+        const results = res?.results || [];
+        const newTraits: Record<string, {loc:number;nat:number;anx:number;charm:number;cross:number}> = {};
+        const newReasoning: Record<string, Record<string, string>> = {};
+        for (const r of results) {
+          if (r.name && r.traits && !r.error) {
+            newTraits[r.name] = r.traits;
+            newReasoning[r.name] = r.reasoning || {};
+          }
+        }
+        if (Object.keys(newTraits).length > 0) {
+          setCandidateTraits(prev => ({ ...prev, ...newTraits }));
+          setAutoTraitsReasoning(prev => ({ ...prev, ...newReasoning }));
+          effectiveTraits = { ...effectiveTraits, ...newTraits };
+        }
+        setAutoTraitsLoading(false);
+      }
+    } catch (e) {
+      console.warn("first-run auto-traits failed (continuing without):", e);
+      setAutoTraitsLoading(false);
+    }
     setJobStatus(null);
     try {
       // 0. Auto-reset: clear old evolution state + delete old predictions
@@ -1437,7 +1571,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
       // 2. Build single prediction scenario (dynamic search handles news during evolution)
       const mergedScenarios = [{
         id: "default",
-        name: "預測",
+        name: "Prediction",
         news: baseNews.trim() || "",
         events: predEventsData,
       }];
@@ -1477,7 +1611,9 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
           candidates: g.candidates.map(c => {
             if (!(c as any).isIncumbent) return c;
             let desc = c.description || "";
-            if (!desc.includes("現任")) desc += "。市長、現任、執政、市政、市府";
+            // Nudge LLM / role-detection that this candidate is the incumbent
+            // executive. English-only so it doesn't corrupt US-election prompts.
+            if (!/incumbent/i.test(desc)) desc += " [Incumbent — sitting executive, current administration.]";
             return { ...c, description: desc };
           }),
         }));
@@ -1496,7 +1632,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
         party_align_bonus: spAlignBonus,
         incumbency_bonus: spIncumbBonus,
         party_divergence_mult: spDivergenceMult,
-        candidate_traits: Object.keys(candidateTraits).length > 0 ? Object.fromEntries(Object.entries(candidateTraits).map(([k, v]) => [k, {loc: v.loc / 100, nat: v.nat / 100, anx: v.anx / 100, charm: (v.charm ?? 35) / 100, cross: (v.cross ?? 20) / 100}])) : undefined,
+        candidate_traits: Object.keys(effectiveTraits).length > 0 ? Object.fromEntries(Object.entries(effectiveTraits).map(([k, v]) => [k, {loc: v.loc / 100, nat: v.nat / 100, anx: v.anx / 100, charm: (v.charm ?? 35) / 100, cross: (v.cross ?? 20) / 100}])) : undefined,
         news_impact: newsImpact,
         delta_cap_mult: deltaCapMult,
         base_undecided: baseUndecided,
@@ -1525,9 +1661,37 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
           ? pollGroups.map(g => g.name).join(" / ")
           : "選情預測";
       const result = await createPrediction(autoQuestion, selectedSnap, mergedScenarios, simDays, concurrency, enableKol, kolRatio, kolReach, samplingModality, pollOptions, maxChoices, enrichedPollGroups, scoringParams, predictionMacroContext, undefined, useCalibResultLeaning, useDynamicSearch ? searchInterval : 0, predLocalKeywords, predNationalKeywords, predCounty, predStartDate, predEndDate, predictionMode, enableNewsSearch);
+      // Auto-create a recording for this prediction run so Dashboard can pull
+      // playback steps and generate a downloadable HTML replay. Reuse the
+      // existing recordingId if the user manually set one, else auto-create.
+      let effectiveRecordingId = recordingId;
+      if (!effectiveRecordingId) {
+        try {
+          const tplName = (activeTemplate as any)?.name || "Prediction";
+          const stamp = new Date().toLocaleString(undefined, { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+          const recTitle = en ? `${tplName} — ${stamp}` : `${tplName} — ${stamp}`;
+          const recDesc = en
+            ? `Auto-recorded prediction: ${autoQuestion}. simDays=${simDays}, ${pollGroups.reduce((s, g) => s + (g.candidates?.length || 0), 0)} candidates.`
+            : `自動錄製的預測：${autoQuestion}，模擬 ${simDays} 天。`;
+          const rec: any = await createRecording(recTitle, recDesc, "prediction", undefined, wsName || "");
+          if (rec?.recording_id) {
+            effectiveRecordingId = rec.recording_id;
+            setRecordingId(rec.recording_id);
+          }
+        } catch (e) {
+          console.warn("auto-create recording failed:", e);
+        }
+      }
       // 3. Run prediction with user-selected tracked IDs
-      const runResult = await runPrediction(result.prediction_id, agents, pinnedPersonaIds.length > 0 ? pinnedPersonaIds : undefined, recordingId, wsId);
+      const runResult = await runPrediction(result.prediction_id, agents, pinnedPersonaIds.length > 0 ? pinnedPersonaIds : undefined, effectiveRecordingId, wsId);
       setJobId(runResult.job_id);
+      // Persist active prediction job id so Dashboard can pick it up after redirect
+      try { sessionStorage.setItem(`activePredictionJob_${wsId}`, runResult.job_id); } catch {}
+      // Navigate user to the live Prediction Dashboard — Setup page is for
+      // configuration, monitoring belongs on the Dashboard.
+      try {
+        router.push(`/workspaces/${wsId}/prediction-evolution-dashboard`);
+      } catch {}
     } catch (e: any) {
       alert("Prediction start failed: " + (e.message || e));
       setRunning(false);
@@ -2021,9 +2185,36 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 6, fontFamily: "var(--font-cjk)" }}>{t("prediction.s1.snap_label")}</label>
                   {snapshots.length === 0 ? (
-                    <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, margin: 0 }}>
-                      {t("prediction.s1.no_snap")}
-                    </p>
+                    <div style={{ padding: 14, borderRadius: 10, border: "1px dashed rgba(34,197,94,0.4)", background: "rgba(34,197,94,0.06)" }}>
+                      <div style={{ color: "#86efac", fontSize: 13, marginBottom: 10, fontFamily: "var(--font-cjk)" }}>
+                        {en
+                          ? "No snapshot yet. Click below to use your current evolved agents as the prediction population."
+                          : "尚無 snapshot。點擊下方按鈕，將目前已演化的 agents 作為預測母體。"}
+                      </div>
+                      <button
+                        onClick={async () => {
+                          try {
+                            const name = (en ? "Evolution" : "演化結果") + " — " + new Date().toLocaleString(undefined, { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+                            const desc = en
+                              ? "Auto-created from current evolution state for prediction."
+                              : "由目前演化狀態自動建立，供預測使用。";
+                            const alignTarget = (activeTemplate as any)?.election?.default_alignment || null;
+                            const meta: any = await saveSnapshot(name, desc, undefined, wsId, alignTarget);
+                            await loadSnapshots();
+                            if (meta?.snapshot_id) setSelectedSnap(meta.snapshot_id);
+                          } catch (e: any) {
+                            alert((en ? "Failed to create snapshot: " : "建立 snapshot 失敗：") + (e?.message || e));
+                          }
+                        }}
+                        style={{
+                          padding: "8px 18px", borderRadius: 8, border: "none",
+                          background: "#22c55e", color: "#0b1220", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                          fontFamily: "var(--font-cjk)",
+                        }}
+                      >
+                        📸 {en ? "Use Current Evolution State" : "使用目前演化狀態作為母體"}
+                      </button>
+                    </div>
                   ) : (
                     <select
                       value={selectedSnap}
@@ -3858,7 +4049,9 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                         candidates: g.candidates.map(c => {
                           if (!(c as any).isIncumbent) return c;
                           let desc = c.description || "";
-                          if (!desc.includes("現任")) desc += "。市長、現任、執政、市政、市府";
+                          // Nudge LLM / role-detection that this candidate is the incumbent
+            // executive. English-only so it doesn't corrupt US-election prompts.
+            if (!/incumbent/i.test(desc)) desc += " [Incumbent — sitting executive, current administration.]";
                           return { ...c, description: desc };
                         }),
                       }));
@@ -4194,12 +4387,33 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
             </div>
           )}
 
+          {/* While a prediction is running, hide the big live block here and
+              redirect users to the Prediction Dashboard. The Setup page is
+              for configuration; monitoring belongs on the Dashboard. */}
+          {running && (
+            <div style={{ padding: 14, borderRadius: 10, background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.3)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginTop: 12 }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#c084fc", fontFamily: "var(--font-cjk)" }}>
+                  🟣 {en ? "A prediction is currently running." : "預測正在執行中"}
+                </div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>
+                  {en ? "Live progress, pause/stop, and per-agent tracking are on the Prediction Dashboard." : "即時進度、暫停／停止與 Agent 即時追蹤都在「預測儀表板」。"}
+                </div>
+              </div>
+              <button onClick={() => router.push(`/workspaces/${wsId}/prediction-evolution-dashboard`)} style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "#a855f7", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                {en ? "Open Prediction Dashboard →" : "前往預測儀表板 →"}
+              </button>
+            </div>
+          )}
+
           {/* ── Two-column layout: Live Progress (left) + Agent Tabs (right) ── */}
-          {(running || (jobStatus && (jobStatus.status === "completed" || jobStatus.status === "failed"))) && jobStatus && (
+          {/* Only show this full block for COMPLETED / FAILED jobs (post-run review);
+              running jobs are monitored on the Dashboard page. */}
+          {(jobStatus && (jobStatus.status === "completed" || jobStatus.status === "failed")) && !running && (
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           <div style={{ flex: "1.2 1 0%", minWidth: 0 }}>
           {/* Live status */}
-          {(running || (jobStatus && (jobStatus.status === "completed" || jobStatus.status === "failed"))) && jobStatus && (() => {
+          {(jobStatus && (jobStatus.status === "completed" || jobStatus.status === "failed")) && (() => {
             const ds = jobStatus.current_daily_data || [];
             const totalScenarios = jobStatus.total_scenarios || 1;
             const currentScenario = jobStatus.current_scenario || 0;
@@ -5559,6 +5773,92 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
           )}
 
         </div>
+
+        {/* ─────────────────────────────────────────────────────────────
+            Snapshot mismatch picker — blocks prediction start when the
+            chosen snapshot's agent_count ≠ current persona count, and
+            lists every available snapshot so the user can pick a
+            matching one. Clicking a row replaces selectedSnap inline.
+          ───────────────────────────────────────────────────────────── */}
+        {snapMismatchOpen && (() => {
+          const curSnap = snapshots.find(s => s.snapshot_id === selectedSnap);
+          const personaN = rawPersonas.length;
+          const matching = snapshots.filter(s => s.agent_count === personaN);
+          const others = snapshots.filter(s => s.agent_count !== personaN);
+          const fmtTime = (ts?: number) => ts ? new Date(ts * 1000).toLocaleString() : "";
+          const zhLocale = !en;
+          return (
+            <div onClick={() => setSnapMismatchOpen(false)}
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: 20 }}>
+              <div onClick={(e) => e.stopPropagation()}
+                style={{ width: "min(720px, 96vw)", maxHeight: "85vh", overflow: "auto", background: "#1a1a2e", borderRadius: 14, border: "1px solid rgba(245,158,11,0.3)", padding: 24, color: "var(--text-primary)" }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", marginBottom: 8 }}>
+                  ⚠️ {zhLocale ? "Snapshot 與 persona 數量不符" : "Snapshot does not match current personas"}
+                </div>
+                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 14, lineHeight: 1.6 }}>
+                  {zhLocale
+                    ? <>目前 persona 共 <strong>{personaN}</strong> 位，但所選 snapshot「<strong>{curSnap?.name || "?"}</strong>」只含 <strong>{curSnap?.agent_count ?? "?"}</strong> 位 agent。直接啟動預測會將當前演化狀態覆寫為此 snapshot，導致最新演化資料遺失。請選擇相符的 snapshot：</>
+                    : <>You have <strong>{personaN}</strong> personas in this workspace, but the selected snapshot "<strong>{curSnap?.name || "?"}</strong>" has only <strong>{curSnap?.agent_count ?? "?"}</strong> agents. Starting prediction now would overwrite the live evolution state with this stale snapshot. Pick a matching snapshot instead:</>}
+                </div>
+
+                {matching.length > 0 && (
+                  <>
+                    <div style={{ fontSize: 11, color: "#22c55e", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
+                      {zhLocale ? `相符 (${matching.length})` : `Matching (${matching.length})`}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 14 }}>
+                      {matching.map(s => (
+                        <button key={s.snapshot_id}
+                          onClick={() => { setSelectedSnap(s.snapshot_id); setSnapMismatchOpen(false); }}
+                          style={{ textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "1px solid rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.06)", color: "var(--text-primary)", cursor: "pointer", fontFamily: "inherit" }}>
+                          <div style={{ fontSize: 13, fontWeight: 600 }}>{s.name}</div>
+                          <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>
+                            {s.agent_count} agents · {fmtTime(s.created_at)} · {s.snapshot_id?.slice(0, 8)}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {others.length > 0 && (
+                  <>
+                    <div style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
+                      {zhLocale ? `其他 (${others.length})` : `Other (${others.length})`}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 14 }}>
+                      {others.map(s => (
+                        <button key={s.snapshot_id}
+                          onClick={() => { setSelectedSnap(s.snapshot_id); setSnapMismatchOpen(false); }}
+                          style={{ textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--border-subtle)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontFamily: "inherit", opacity: 0.85 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600 }}>{s.name}</div>
+                          <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>
+                            {s.agent_count} agents · {fmtTime(s.created_at)} · {s.snapshot_id?.slice(0, 8)}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {matching.length === 0 && (
+                  <div style={{ padding: 12, borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", color: "#fca5a5", fontSize: 12, lineHeight: 1.6, marginBottom: 12 }}>
+                    {zhLocale
+                      ? <>沒有任何 snapshot 的 agent_count 等於 {personaN}。請回到 Evolution Quick Start 重新跑完一次演化 — 完成時會自動建立相符的新 snapshot。</>
+                      : <>No snapshot matches {personaN} agents. Please go back to Evolution Quick Start and run a fresh evolution — a matching snapshot will be auto-created when it finishes.</>}
+                  </div>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 10 }}>
+                  <button onClick={() => setSnapMismatchOpen(false)}
+                    style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border-subtle)", background: "transparent", color: "var(--text-secondary)", cursor: "pointer", fontFamily: "inherit" }}>
+                    {zhLocale ? "取消" : "Cancel"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* ─────────────────────────────────────────────────────────────
             Voting-method help modal — explains 加權民調 vs LLM 投票

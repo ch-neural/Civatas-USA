@@ -58,7 +58,7 @@ export const WORKSPACE_PANEL_TYPES: Record<string, PanelTypeInfo> = {
   "prediction-evolution-dashboard": {
     type: "prediction-evolution-dashboard",
     route: (id) => `/workspaces/${id}/prediction-evolution-dashboard`,
-    label: "執行預測", labelEn: "Run Prediction", icon: "📊",
+    label: "預測儀表板", labelEn: "Prediction Dashboard", icon: "📊",
   },
   "prediction-analysis": {
     type: "prediction-analysis",

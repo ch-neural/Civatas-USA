@@ -113,6 +113,12 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
               if (pollRef.current) clearInterval(pollRef.current);
               setGenerating(false); setError(`Persona generation failed: ${prog.error || ""}`); setGenStep(0);
               localStorage.removeItem(`popgen_${wsId}`);
+            } else if (prog.status === "idle" || (!prog.status && (prog.total || 0) === 0)) {
+              // Backend has no active job (likely service restart wiped in-memory progress).
+              // Clear the stale "resuming" UI so the user can start a fresh run.
+              if (pollRef.current) clearInterval(pollRef.current);
+              setGenerating(false); setGenPhase(""); setGenStep(0);
+              localStorage.removeItem(`popgen_${wsId}`);
             }
           } catch { }
         }, 2000);
@@ -298,6 +304,23 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
     }
   }, [usTemplates, usTemplate]);
 
+  // Persist the user's template choice whenever it changes — even without
+  // clicking Generate. Previously setActiveTemplateId was only called inside
+  // handleGenerateUS, so if the user picked a template but skipped Generate
+  // (e.g. personas already exist), downstream panels (Quick Start) would see
+  // template=null and run evolution with default scoring_params.
+  // Only persist if localStorage already has a value (user has made a prior
+  // explicit choice) — this avoids writing the code-default "Generic" fallback
+  // and overwriting an intentional prior selection in another tab.
+  useEffect(() => {
+    if (!wsId || !usTemplate) return;
+    if (!usTemplates.find((t) => t.id === usTemplate)) return; // wait for list
+    const existing = getActiveTemplateId(wsId);
+    if (existing && existing !== usTemplate) {
+      setActiveTemplateId(wsId, usTemplate);
+    }
+  }, [wsId, usTemplate, usTemplates]);
+
   // Group templates by election type → scope for the selector UI
   const groupedTemplates = useMemo(() => {
     const groups: Record<string, TemplateMeta[]> = {
@@ -447,6 +470,7 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
                   );
                   if (stateTpl) {
                     setUsTemplate(stateTpl.id);
+                    setActiveTemplateId(wsId, stateTpl.id);
                   }
                 };
                 return (
@@ -525,9 +549,11 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
                             : `切換模板將使現有 ${existingPersonas.length} 個 personas 失效。切換後建議重新生成。確定要切換嗎？`
                         )) {
                           setUsTemplate(newTpl);
+                          setActiveTemplateId(wsId, newTpl);
                         }
                       } else {
                         setUsTemplate(newTpl);
+                        setActiveTemplateId(wsId, newTpl);
                       }
                     }}
                     disabled={generating}

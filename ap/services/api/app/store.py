@@ -423,7 +423,13 @@ def _slugify(name: str) -> str:
 # ---------------------------------------------------------------------------
 
 def get_workspace_llm_config(ws_id: str) -> dict:
-    """Get workspace LLM vendor config, falling back to env defaults."""
+    """Get workspace LLM vendor config, falling back to env defaults.
+
+    Workspace meta may carry stale vendor IDs from a prior settings.json
+    revision (e.g. "openai-1" before the user re-keyed Settings). Filter
+    against the current global active_vendors so synthesis-time vendor
+    assignment doesn't silently fall back to a single vendor.
+    """
     from shared.llm_vendors import get_default_vendor_names, get_default_ratio_str, get_available_vendors
 
     meta_path = WS_DIR / ws_id / "meta.json"
@@ -435,10 +441,22 @@ def get_workspace_llm_config(ws_id: str) -> dict:
         vendors = meta.get("llm_vendors", vendors)
         ratio = meta.get("llm_vendor_ratio", ratio)
 
+    available = get_available_vendors()
+    valid_ids = {v["name"] for v in available if v.get("available")}
+    filtered = [v for v in vendors if v in valid_ids]
+    if not filtered:
+        filtered = get_default_vendor_names()
+    if filtered != vendors:
+        # Stale IDs were dropped — collapse the ratio to a flat split since
+        # the original ratio refers to a vendor list that no longer matches.
+        if len(filtered) != len(vendors):
+            ratio = ":".join(["1"] * len(filtered)) if filtered else "1"
+        vendors = filtered
+
     return {
         "vendors": vendors,
         "ratio": ratio,
-        "available": get_available_vendors(),
+        "available": available,
     }
 
 

@@ -6,6 +6,7 @@ import CreateWorkspaceDialog from "./CreateWorkspaceDialog";
 import { OnboardingWizard } from "../onboarding/OnboardingWizard";
 import { useSettings } from "@/hooks/use-settings";
 import { Toaster } from "sonner";
+import { useThemeEffect } from "@/store/theme-store";
 
 export function DesktopShell({ children }: { children: React.ReactNode }) {
   const { data: settings, isLoading } = useSettings();
@@ -14,6 +15,7 @@ export function DesktopShell({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
+  useThemeEffect();
 
   useEffect(() => {
     if (!resizing) return;
@@ -31,8 +33,8 @@ export function DesktopShell({ children }: { children: React.ReactNode }) {
 
   if (!mounted || isLoading) {
     return (
-      <div className="h-screen bg-[#0a0a1a] flex items-center justify-center">
-        <div className="text-neutral-500 text-sm">Loading...</div>
+      <div className="h-screen flex items-center justify-center" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div className="text-sm" style={{ color: "var(--text-muted)" }}>Loading...</div>
       </div>
     );
   }
@@ -42,22 +44,23 @@ export function DesktopShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[#1a1a2e] text-neutral-200 overflow-hidden">
+    <div className="h-screen flex flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <div className="flex flex-1 overflow-hidden">
         <div style={{ width: sidebarWidth, minWidth: 180 }} className="shrink-0">
           <WorkflowSidebar />
         </div>
         <div
-          className="w-[3px] cursor-col-resize hover:bg-[#e94560]/30 transition-colors shrink-0"
+          className="w-[3px] cursor-col-resize transition-colors shrink-0"
+          style={{ backgroundColor: "transparent" }}
           onMouseDown={() => setResizing(true)}
         />
-        <main className="flex-1 overflow-y-auto bg-[#1a1a2e] p-6">
+        <main className="flex-1 overflow-y-auto p-6" style={{ backgroundColor: "var(--bg-primary)" }}>
           {children}
         </main>
       </div>
       <StatusBar />
       <CreateWorkspaceDialog />
-      <Toaster position="bottom-right" theme="dark" />
+      <Toaster position="bottom-right" />
     </div>
   );
 }

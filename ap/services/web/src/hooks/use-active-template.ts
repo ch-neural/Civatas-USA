@@ -17,7 +17,7 @@
  * the Taiwan workflow still works.
  */
 import { useEffect, useState } from "react";
-import { getTemplate, listTemplates, type TemplateMeta } from "@/lib/api";
+import { getTemplate, listTemplates, apiFetch, type TemplateMeta } from "@/lib/api";
 
 export type ActiveTemplate = any | null;
 
@@ -55,7 +55,9 @@ export function useActiveTemplate(wsId: string): {
 } {
   const [templateId, setTemplateId] = useState<string | null>(() => getActiveTemplateId(wsId));
   const [template, setTemplate] = useState<ActiveTemplate>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  // Start as loading when localStorage has no entry — the fallback inference
+  // effect below will set it false once the template is resolved or not found.
+  const [loading, setLoading] = useState<boolean>(() => !getActiveTemplateId(wsId));
 
   // Listen for active-template changes (same-tab CustomEvent + cross-tab storage)
   useEffect(() => {
@@ -71,6 +73,30 @@ export function useActiveTemplate(wsId: string): {
       window.removeEventListener("storage", onStorage);
     };
   }, [wsId]);
+
+  // If localStorage has no entry, fall back to inferring the template from
+  // the workspace's sources (supports workspaces created before this fix).
+  useEffect(() => {
+    if (templateId || !wsId) { setLoading(false); return; }
+    let cancelled = false;
+    apiFetch(`/api/workspaces/${wsId}`)
+      .then((ws: any) => {
+        if (cancelled) return;
+        const tplSource = (ws?.sources ?? []).find((s: any) =>
+          typeof s.id === "string" && s.id.startsWith("template_")
+        );
+        if (tplSource) {
+          const inferredId = tplSource.id.replace(/^template_/, "");
+          setActiveTemplateId(wsId, inferredId);
+          setTemplateId(inferredId);
+          // loading stays true until template body fetch completes below
+        } else {
+          setLoading(false); // no template source found
+        }
+      })
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [wsId, templateId]);
 
   // Fetch the full template body whenever the id changes
   useEffect(() => {

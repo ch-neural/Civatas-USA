@@ -22,6 +22,7 @@ class Person(BaseModel):
     household_income: str | None = None
     income_band: str | None = None
     household_type: str | None = None
+    household_tenure: str | None = None
     marital_status: str | None = None
     party_lean: str | None = None
     issue_1: str | None = None

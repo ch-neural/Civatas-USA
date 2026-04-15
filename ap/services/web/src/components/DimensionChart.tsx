@@ -32,19 +32,21 @@ const DIM_ICONS: Record<string, { bg: string; label: string }> = {
 };
 
 const DIM_LABELS: Record<string, string> = {
-  gender: "性別",
-  district: "行政區",
-  education: "教育程度",
-  occupation: "職業",
-  age: "年齡",
-  area: "都市計畫區",
-  indigenous: "原住民",
-  party_lean: "政黨傾向",
-  city_code: "縣市代碼",
-  media_habit: "媒體習慣",
-  candidate: "候選人得票",
-  turnout: "投票率",
-  ethnicity: "族群",
+  gender: "Gender",
+  district: "State / County",
+  education: "Education",
+  occupation: "Employment",
+  age: "Age",
+  race: "Race",
+  hispanic_or_latino: "Hispanic / Latino",
+  household_income: "Household Income",
+  household_type: "Household Type",
+  household_tenure: "Housing Tenure",
+  party_lean: "Political Leaning",
+  media_habit: "Media Habit",
+  candidate: "Candidate Vote Share",
+  turnout: "Voter Turnout",
+  ethnicity: "Ethnicity",
 };
 
 interface CategoryItem {
@@ -135,10 +137,10 @@ export default function DimensionChart({
       {/* Project summary */}
       {projectName && (
         <div className={styles.summaryRow}>
-          <span className={styles.summaryLabel}>統計模板：</span>
+          <span className={styles.summaryLabel}>Template:</span>
           <span className={styles.summaryValue}>{projectName}</span>
           <span className={styles.summaryLabel} style={{ marginLeft: "auto" }}>
-            {dimEntries.length} 個維度
+            {dimEntries.length}  dimensions
           </span>
         </div>
       )}
@@ -155,7 +157,7 @@ export default function DimensionChart({
             <path d="M7 1L1 5.5V13h4.5V9.5h3V13H13V5.5L7 1z" stroke="var(--accent-light)" strokeWidth="1.2" fill="none" />
           </svg>
           <span style={{ fontFamily: "var(--font-cjk)", fontSize: 12, color: "var(--text-secondary)" }}>
-            區域：
+            Region:
           </span>
           <select
             value={selectedDistrict}
@@ -171,12 +173,12 @@ export default function DimensionChart({
               outline: "none",
             }}
           >
-            <option value="__all__">全市（總體分佈）</option>
+            <option value="__all__">All (aggregate distribution)</option>
             {districtKeys.map((d) => (
               <option key={d} value={d}>
                 {d}
                 {districtProfiles![d].population > 0
-                  ? `（${districtProfiles![d].population.toLocaleString()} 人）`
+                  ? ` (pop. ${districtProfiles![d].population.toLocaleString()})`
                   : ""}
               </option>
             ))}
@@ -187,7 +189,7 @@ export default function DimensionChart({
               color: "var(--accent-light)", padding: "2px 6px",
               borderRadius: 4, backgroundColor: "rgba(108,92,231,0.12)",
             }}>
-              該區比例
+              District share
             </span>
           )}
         </div>
@@ -220,7 +222,7 @@ export default function DimensionChart({
                 </div>
                 <span className={styles.dimName}>{label}</span>
               </div>
-              <span className={styles.dimCount}>{items.length} 項</span>
+              <span className={styles.dimCount}>{items.length} more</span>
             </div>
 
             {displayItems.map((item, i) => (
@@ -246,7 +248,7 @@ export default function DimensionChart({
             {hasMore && (
               <div className={styles.barRow}>
                 <span className={styles.barLabel} style={{ color: "var(--text-muted)" }}>
-                  ... 其他 {items.length - maxBarsPerDim} 項
+                  ... +{items.length - maxBarsPerDim} more
                 </span>
                 <div className={styles.barTrack} />
                 <span className={styles.barPercent} />
@@ -260,12 +262,12 @@ export default function DimensionChart({
       {showAgentMapping && dimEntries.length > 0 && (
         <div className={styles.agentMappingSection}>
           <span className={styles.agentMappingTitle}>
-            如何用於 Agent 人設
+            How agents are generated
           </span>
           <span className={styles.agentMappingDesc}>
             {selectedDistrict !== "__all__"
-              ? `系統將根據「${selectedDistrict}」的人口分佈抽樣產生 Agent 屬性。`
-              : "系統根據上述權重分佈，以蒙地卡羅抽樣為每位 Agent 分配屬性。例如："}
+              ? `Agents are sampled from the demographic distribution of ${selectedDistrict}.`
+              : "Agents are assigned attributes via Monte Carlo sampling from the weights above. For example:"}
           </span>
           {dimEntries.slice(0, 4).map(([key, dim]) => {
             const label = DIM_LABELS[key] || key;
@@ -280,10 +282,10 @@ export default function DimensionChart({
                 />
                 <span className={styles.agentAttrText}>{label} →</span>
                 <span className={styles.agentAttrValue}>
-                  {topItem.value}（{(topItem.weight * 100).toFixed(1)}%）
+                  {topItem.value} ({(topItem.weight * 100).toFixed(1)}%)
                 </span>
                 <span className={styles.agentAttrText}>
-                  最高比例，Agent 最可能被分配此值
+                  Highest weight — most agents get this value
                 </span>
               </div>
             );

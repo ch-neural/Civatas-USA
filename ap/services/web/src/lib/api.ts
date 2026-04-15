@@ -338,10 +338,10 @@ export async function getNewsPool() {
   return apiFetch("/api/pipeline/evolution/news-pool");
 }
 
-export async function injectNewsArticle(title: string, summary: string, sourceTag?: string) {
+export async function injectNewsArticle(title: string, summary: string, sourceTag?: string, workspaceId?: string) {
   return apiFetch("/api/pipeline/evolution/news-pool/inject", {
     method: "POST",
-    body: JSON.stringify({ title, summary, source_tag: sourceTag || "Manual" }),
+    body: JSON.stringify({ title, summary, source_tag: sourceTag || "Manual", workspace_id: workspaceId || "" }),
   });
 }
 
@@ -363,10 +363,24 @@ export async function previewFeed(agent: Record<string, unknown>) {
   });
 }
 
-export async function startEvolution(agents: Record<string, unknown>[], days: number, concurrency: number = 5, candidateNames?: string[], scoringParams?: Record<string, unknown>) {
+export async function startEvolution(
+  agents: Record<string, unknown>[],
+  days: number,
+  concurrency: number = 5,
+  candidateNames?: string[],
+  scoringParams?: Record<string, unknown>,
+  candidateDescriptions?: Record<string, string>,
+  partyDetection?: Record<string, string[]>,
+  workspaceId?: string,
+  enabledVendors?: string[],
+) {
   const body: Record<string, unknown> = { agents, days, concurrency };
   if (candidateNames?.length) body.candidate_names = candidateNames;
   if (scoringParams) body.scoring_params = scoringParams;
+  if (candidateDescriptions) body.candidate_descriptions = candidateDescriptions;
+  if (partyDetection) body.party_detection = partyDetection;
+  if (workspaceId) body.workspace_id = workspaceId;
+  if (enabledVendors?.length) body.enabled_vendors = enabledVendors;
   return apiFetch("/api/pipeline/evolution/evolve", {
     method: "POST",
     body: JSON.stringify(body),
@@ -400,8 +414,9 @@ export async function stopEvolution(jobId: string) {
   return apiFetch(`/api/pipeline/evolution/evolve/stop/${jobId}`, { method: "POST" });
 }
 
-export async function resetEvolution() {
-  return apiFetch("/api/pipeline/evolution/evolve/reset", { method: "POST" });
+export async function resetEvolution(workspaceId?: string) {
+  const q = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : "";
+  return apiFetch(`/api/pipeline/evolution/evolve/reset${q}`, { method: "POST" });
 }
 
 export async function getAgentDiary(agentId: number, recordingId?: string) {
@@ -475,10 +490,16 @@ export async function deleteStatModule(moduleId: string) {
 
 /* ===== Snapshots (Calibration → Prediction) ===== */
 
-export async function saveSnapshot(name: string, description?: string, calibrationPackId?: string) {
+export async function saveSnapshot(name: string, description?: string, calibrationPackId?: string, workspaceId?: string, alignmentTarget?: Record<string, unknown> | null) {
   return apiFetch("/api/pipeline/evolution/snapshots/save", {
     method: "POST",
-    body: JSON.stringify({ name, description: description || "", calibration_pack_id: calibrationPackId }),
+    body: JSON.stringify({
+      name,
+      description: description || "",
+      calibration_pack_id: calibrationPackId,
+      workspace_id: workspaceId || "",
+      alignment_target: alignmentTarget || null,
+    }),
   });
 }
 
@@ -928,16 +949,6 @@ export async function getSpectrumSummary(county: string, election_type?: string,
   return apiFetch(`/api/pipeline/evolution/election-db/spectrum?${qs}`);
 }
 
-export async function getIdentityTrends(year?: number) {
-  const q = year ? `?year=${year}` : "";
-  return apiFetch(`/api/pipeline/evolution/election-db/identity-trends${q}`);
-}
-
-export async function getStanceTrends(year?: number) {
-  const q = year ? `?year=${year}` : "";
-  return apiFetch(`/api/pipeline/evolution/election-db/stance-trends${q}`);
-}
-
 export async function listCensusCounties(ad_year?: number) {
   const q = ad_year ? `?ad_year=${ad_year}` : "";
   return apiFetch(`/api/pipeline/evolution/election-db/census-counties${q}`);
@@ -1134,21 +1145,26 @@ export async function deleteRecording(recId: string) {
   return apiFetch(`/api/pipeline/recordings/${recId}`, { method: "DELETE" });
 }
 
-/* ===== Public Playback API (no auth) ===== */
+/* ===== Playback / Recordings API =====
+ * NOTE: Prior stages had standalone /api/playback/* endpoints; those were
+ * removed when authentication was stripped for the open-source release, and
+ * recordings now live under /api/pipeline/recordings/*. These helpers were
+ * left pointing at the old path which silently 404'd — breaking the
+ * Prediction Evolution Dashboard (it read `steps` from a 404 response). */
 
 const PLAYBACK_BASE = API_BASE;
 
 export async function listPublicRecordings(): Promise<{ recordings: Recording[] }> {
-  const res = await fetch(`${PLAYBACK_BASE}/api/playback/list?_t=${Date.now()}`, { cache: "no-store" });
+  const res = await fetch(`${PLAYBACK_BASE}/api/pipeline/recordings?_t=${Date.now()}`, { cache: "no-store" });
   return res.json();
 }
 
 export async function getPublicRecording(recId: string): Promise<Recording> {
-  const res = await fetch(`${PLAYBACK_BASE}/api/playback/${recId}?_t=${Date.now()}`, { cache: "no-store" });
+  const res = await fetch(`${PLAYBACK_BASE}/api/pipeline/recordings/${recId}?_t=${Date.now()}`, { cache: "no-store" });
   return res.json();
 }
 
 export async function getPlaybackSteps(recId: string): Promise<{ steps: any[] }> {
-  const res = await fetch(`${PLAYBACK_BASE}/api/playback/${recId}/steps?_t=${Date.now()}`, { cache: "no-store" });
+  const res = await fetch(`${PLAYBACK_BASE}/api/pipeline/recordings/${recId}/steps?_t=${Date.now()}`, { cache: "no-store" });
   return res.json();
 }

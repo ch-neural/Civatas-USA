@@ -523,16 +523,104 @@ From extensive monitoring of 10-30 day evolution runs:
 - **Cognitive biases** differentiate: apathetic +1 anx, conformist +8 anx, pessimist +4 anx
 
 ### Development Notes
-- Persona personality values are still in Chinese (穩定冷靜/敏感衝動/etc.) — `evolver.py`
-  `_personality_modifiers()` matches both Chinese and English values, so it works correctly.
-  Full English persona values would require re-generating all personas.
-- `main.py` has extensive Taiwan-specific code in prediction/calibration/historical-run
-  sections (~lines 1500-3800). These are **not yet localized** — they still reference
-  Taiwan parties, Chinese prompts, and TW-specific logic. Only the `start_evolve` path
-  (Quick Start) has been fully US-localized.
-- `feed_engine.py` diet_map and source_leanings still contain some Taiwan-era source
-  names — they don't affect US operations since Quick Start injects news via Serper,
-  but would need cleanup for a full open-source release.
+- Persona personality values are now emitted in English by default
+  (`highly expressive` / `stable and calm` / `extroverted` / `set in views`,
+  cognitive_bias as `optimistic` / `pessimistic` / `rational` / etc.) matching
+  `evolver._personality_modifiers` and `_BIAS_DESC` keys exactly. Legacy CJK
+  values (穩定冷靜/etc.) on pre-existing personas continue to work via the
+  bilingual lookup. Re-generating personas is only required to align display
+  labels in the UI; evolution math works either way.
+- `main.py` Taiwan-specific code: the **3 active prediction endpoints** were
+  US-localized on 2026-04-15 (`/satisfaction-survey`, `/auto-traits`,
+  `/candidate-profile`). The orphan `/election-db/identity-trends` and
+  `/stance-trends` endpoints (NCCU TW survey data, no UI callers) were deleted
+  along with their api.ts exports and pipeline.py proxies. Remaining ~55 CJK
+  lines are in deeper calibration / historical-run / occupation-reclassification
+  paths (lines ~1850–2100, ~2350–2720) that are not on the active 3-step workflow
+  and were left as-is.
+- `feed_engine.py` is **already clean** — 0 CJK characters and 0 Taiwan source
+  names. Earlier note about residual TW source names was stale.
+
+## Multi-Vendor Evolution Fix (2026-04-14)
+
+### 問題背景
+使用者在 persona 生成之後，才新增了 Moonshot（kimi-k2.5）廠商。因為 persona 生成時還沒有 moonshot，所以所有 agent 的 `llm_vendor` 都沒有分配到 moonshot，導致 Moonshot 從未被呼叫。
+
+### 修復項目
+
+**1. Agent 輪流重新分配（Round-robin redistribution）**
+
+`ap/services/evolution/app/evolver.py` — `_run_evolution_bg()` 開頭新增：
+```python
+if enabled_vendors:
+    for i, agent in enumerate(agents):
+        agents[i] = {**agent, "llm_vendor": enabled_vendors[i % len(enabled_vendors)]}
+    logger.info(f"[{job['job_id']}] Redistributed {len(agents)} agents across vendors: {enabled_vendors}")
+```
+
+`ap/services/evolution/app/main.py` — `start_evolve()` 傳入 `enabled_vendors=req.enabled_vendors`
+
+`ap/services/evolution/app/evolver.py` — `start_evolution()` 接收並儲存 `enabled_vendors`，傳給 background task
+
+**2. Moonshot kimi-k2.5 溫度限制修復**
+
+kimi-k2.5 只允許 temperature=1（送其他值回傳 HTTP 400）。根本原因：每個 agent 有 `temperature_offset`（個性差異），加到 temperature=1.0 後就不等於 1 了。
+
+修復：在 `_call_llm()` 中對 kimi/moonshot 完全省略 temperature 參數：
+```python
+_skip_temperature = "kimi" in model_lower or attempt_vendor.lower().startswith("moonshot") if attempt_vendor else False
+if _skip_temperature:
+    chat_coro = client.chat.completions.create(model=model, messages=messages, **token_kwargs, **resp_format_kwargs)
+else:
+    _final_temp = max(0.1, min(2.0, temperature + temperature_offset))
+    chat_coro = client.chat.completions.create(model=model, messages=messages, temperature=_final_temp, **token_kwargs, **resp_format_kwargs)
+```
+
+**重要**：修完 .py 後必須清除 Docker container 的 .pyc 快取，否則舊 bytecode 仍會被執行：
+```bash
+docker compose exec evolution find /app -name "*.pyc" -delete
+docker compose restart evolution
+```
+
+**3. Frontend 傳入 enabled_vendors**
+
+`ap/services/web/src/lib/api.ts` — `startEvolution()` 新增第 9 個參數 `enabledVendors?: string[]`，傳入 body 的 `enabled_vendors`
+
+`ap/services/web/src/components/panels/EvolutionQuickStartPanel.tsx` — 呼叫 `startEvolution` 前先 fetch `/api/settings`，取出所有非 system role 的廠商 id，作為 `enabledVendors` 傳入：
+```typescript
+const settingsRes = await apiFetch("/api/settings");
+const allVendors: any[] = settingsRes?.llm_vendors || [];
+const agentVendorIds = allVendors
+  .filter((v: any) => v.role !== "system" && v.id)
+  .map((v: any) => v.id as string);
+if (agentVendorIds.length) enabledVendors = agentVendorIds;
+```
+
+### 已驗證監控結果（job d9adc64e，3天60 agents，4廠商）
+
+**情緒穩定性** — 均在正常範圍：
+| 天 | avg_sat | avg_anx | hi_anx |
+|---|---|---|---|
+| Day 1 | 49.5 | 51.6 | 1 |
+| Day 2 | 49.0 | 51.8 | 5 |
+| Day 3 | 48.4 | 52.7 | 8 |
+
+**4 廠商輸出一致性** — Moonshot 完全正常（0 × 400 錯誤）：
+| 廠商 | Day3 Vance | Day3 DeSantis | Day3 Shapiro |
+|---|---|---|---|
+| OpenAI | 15.8% | 16.2% | 16.3% |
+| DeepSeek | 15.8% | 16.5% | 16.8% |
+| OpenAI-2 | 16.0% | 16.3% | 16.2% |
+| Moonshot (kimi-k2.5) | 17.0% | 16.5% | 16.5% |
+
+偏差 < 1.5%，屬各模型特性差異，正常。
+
+**候選人認知** — 3天穩定：DeSantis/Shapiro ~16.4%、Vance ~16%、Undecided ~21.5%（符合 2028 base_undecided=0.20）
+
+**其他注意事項**：
+- kimi-k2.5 偶爾會返回截斷的 JSON（partial JSON），系統自動修復（diary 存在則填入預設值），不影響結果
+- WatchFiles 熱重載：Uvicorn 偵測到 .py 變更會自動重啟 server，中斷正在跑的 evolution job。**演化進行中請勿編輯 evolver.py**，改完後用 `docker compose restart evolution` 乾淨重啟
+- `by_vendor_candidate` 欄位在 daily_summary 中可用於驗證各廠商是否均有被呼叫
 
 ## 語言規則
 - 思考過程（thinking）可以使用英文

@@ -17,6 +17,40 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+# ── Candidate alias table ─────────────────────────────────────────────
+# Maps every variant that might appear in news text → canonical full name.
+# Used as a fallback when the LLM does not return candidate_mentions.
+_CANDIDATE_ALIASES: dict[str, str] = {
+    # JD Vance
+    "JD Vance": "JD Vance", "J.D. Vance": "JD Vance", "Vance": "JD Vance",
+    "Vice President Vance": "JD Vance", "VP Vance": "JD Vance",
+    # Gavin Newsom
+    "Gavin Newsom": "Gavin Newsom", "Newsom": "Gavin Newsom",
+    "Gov. Newsom": "Gavin Newsom", "Governor Newsom": "Gavin Newsom",
+    # Ron DeSantis
+    "Ron DeSantis": "Ron DeSantis", "DeSantis": "Ron DeSantis",
+    "De Santis": "Ron DeSantis", "Gov. DeSantis": "Ron DeSantis",
+    # Gretchen Whitmer
+    "Gretchen Whitmer": "Gretchen Whitmer", "Whitmer": "Gretchen Whitmer",
+    "Gov. Whitmer": "Gretchen Whitmer", "Governor Whitmer": "Gretchen Whitmer",
+    # Nikki Haley
+    "Nikki Haley": "Nikki Haley", "Haley": "Nikki Haley",
+    "Ambassador Haley": "Nikki Haley",
+    # Josh Shapiro
+    "Josh Shapiro": "Josh Shapiro", "Shapiro": "Josh Shapiro",
+    "Gov. Shapiro": "Josh Shapiro", "Governor Shapiro": "Josh Shapiro",
+    # Donald Trump / Kamala Harris (2024 template)
+    "Donald Trump": "Donald Trump", "Trump": "Donald Trump",
+    "Kamala Harris": "Kamala Harris", "Harris": "Kamala Harris",
+    "VP Harris": "Kamala Harris", "Vice President Harris": "Kamala Harris",
+    # Generic template placeholders
+    "Generic Democrat": "Generic Democrat", "the Democrat": "Generic Democrat",
+    "Democratic candidate": "Generic Democrat",
+    "Generic Republican": "Generic Republican", "the Republican": "Generic Republican",
+    "Republican candidate": "Generic Republican",
+    "Generic Independent": "Generic Independent",
+}
+
 # US-only English prompts. (The original Taiwan dual-path was removed in
 # the Stage 1.9 cleanup — see docs/HISTORY.md.)
 try:
@@ -214,11 +248,15 @@ async def _call_llm(prompt: str, vendor: str | None = None, enabled_vendors: lis
         _rand.shuffle(shuffled)
         try_order = [None] + shuffled
 
-    # Sanitize prompt and system message to aggressively strip Unpaired Surrogates
+    # Sanitize prompt to strip characters that break JSON/UTF-8 encoding:
+    # - Control characters (Cc category) except \n \t \r
+    # - Lone surrogates (Cs category) — valid in Python but illegal in JSON/UTF-8
     import unicodedata
     def _sanitize(s: str) -> str:
         if not s: return ""
-        return ''.join(c for c in s if c in ('\n', '\t', '\r') or unicodedata.category(c) not in ('Cc', 'Cs'))
+        cleaned = ''.join(c for c in s if c in ('\n', '\t', '\r') or unicodedata.category(c) not in ('Cc', 'Cs'))
+        # Final guarantee: encode to UTF-8 replacing any remaining unencodable chars
+        return cleaned.encode('utf-8', errors='replace').decode('utf-8')
 
     safe_prompt = _sanitize(prompt)
 
@@ -281,6 +319,10 @@ async def _call_llm(prompt: str, vendor: str | None = None, enabled_vendors: lis
         if "reasoner" in model_lower or "reasoning" in model_lower:
             temperature = 1.0
 
+        # Moonshot kimi models only support temperature=1
+        if "kimi" in model_lower:
+            temperature = 1.0
+
         # Ollama local models (especially qwen3.5) have a "thinking mode" that
         # consumes all max_tokens on internal chain-of-thought reasoning, leaving
         # the content field completely empty. Disable thinking with /no_think.
@@ -301,14 +343,25 @@ async def _call_llm(prompt: str, vendor: str | None = None, enabled_vendors: lis
                 messages.append({"role": "user", "content": safe_prompt})
 
             # Apply per-agent temperature offset for diversity
-            _final_temp = max(0.1, min(2.0, temperature + temperature_offset))
-            chat_coro = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                temperature=_final_temp,
-                **token_kwargs,
-                **resp_format_kwargs,
-            )
+            # kimi models only support exactly temperature=1 — omit the parameter
+            # entirely to let the API use its default (avoids float vs int serialization issues)
+            _skip_temperature = "kimi" in model_lower or attempt_vendor.lower().startswith("moonshot") if attempt_vendor else False
+            if _skip_temperature:
+                chat_coro = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    **token_kwargs,
+                    **resp_format_kwargs,
+                )
+            else:
+                _final_temp = max(0.1, min(2.0, temperature + temperature_offset))
+                chat_coro = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=_final_temp,
+                    **token_kwargs,
+                    **resp_format_kwargs,
+                )
 
             if cancel_event:
                 # Run the coro and the event.wait() concurrently
@@ -754,6 +807,7 @@ async def evolve_one_day(
     concurrency: int = 5,
     enabled_vendors: list[str] | None = None,
     cancel_event: "asyncio.Event | None" = None,
+    global_day_offset: int = 0,
     district_news: dict[str, list[dict]] | None = None,
 ) -> list[dict]:
     """Run one day of evolution for all agents (concurrent).
@@ -871,13 +925,26 @@ async def evolve_one_day(
                     _n = _pc.get("name", "")
                     if _n and _n not in _job_cand_names:
                         _job_cand_names.append(_n)
-    # Strip party suffix for matching: "Donald Trump (R)" → also match "Donald Trump"
+    # Build short-name → full-name lookup for keyword-fallback awareness tracking.
+    # Primary source: _CANDIDATE_ALIASES table (covers last-name, title variants).
+    # Secondary: auto-extract last name for any candidate not in the alias table.
     import re as _re_cand
     _cand_short_names: dict[str, str] = {}  # short_name → full_name
     for _cn in _job_cand_names:
         _short = _re_cand.sub(r'[（(].+?[）)]', '', _cn).strip()
         _cand_short_names[_short] = _cn
-        _cand_short_names[_cn] = _cn  # also match full name
+        _cand_short_names[_cn] = _cn
+        # Inject all known aliases for this candidate
+        for _alias, _canonical in _CANDIDATE_ALIASES.items():
+            if _canonical == _cn or _canonical == _short:
+                if _alias not in _cand_short_names:
+                    _cand_short_names[_alias] = _cn
+        # Auto last-name fallback for candidates not in the alias table
+        _parts = _short.split()
+        if len(_parts) >= 2:
+            _last = _parts[-1]
+            if _last not in _cand_short_names:
+                _cand_short_names[_last] = _cn
 
     sem = asyncio.Semaphore(concurrency)
     # Shared mutable containers for collecting results
@@ -964,7 +1031,7 @@ async def evolve_one_day(
             le_mod = importlib.import_module(".life_events", package="app")
             _orig_catalog = getattr(le_mod, "EVENT_CATALOG", [])
             le_mod.EVENT_CATALOG = US_EVENT_CATALOG
-            life_event = roll_life_event(agent, state, current_day)
+            life_event = roll_life_event(agent, state, day)
             le_mod.EVENT_CATALOG = _orig_catalog  # restore
             if life_event:
                 life_event_text = (
@@ -974,7 +1041,7 @@ async def evolve_one_day(
                 )
                 _push_live(job, f"🎲 Agent #{aid} life event: {life_event['name']}")
         except Exception as e:
-            logger.debug(f"Life event roll failed for agent {aid}: {e}")
+            logger.warning(f"Life event roll failed for agent {aid}: {e}")
 
         # ── Feature 1: Social Interaction — match nearby social posts ──
         import random as _rng
@@ -1356,6 +1423,46 @@ async def evolve_one_day(
         raw_national = result.get("national_satisfaction", result.get("updated_satisfaction", round(national_satisfaction)))
         new_anxiety = result.get("updated_anxiety", round(anxiety))
 
+        # ── LLM-authoritative candidate awareness update ──
+        # The LLM has read the full article context and reported which candidates
+        # were explicitly mentioned today. This is more accurate than keyword
+        # scanning (handles titles, pronouns, "the Vice President", etc.).
+        # We start from yesterday's awareness values and re-apply from scratch.
+        _llm_mentions_raw = result.get("candidate_mentions", None)
+        if isinstance(_llm_mentions_raw, list) and _job_cand_names:
+            # Resolve LLM-returned names to canonical candidate names
+            _llm_mentioned: set[str] = set()
+            for _m in _llm_mentions_raw:
+                _m_str = str(_m).strip()
+                if _m_str in _job_cand_names:
+                    _llm_mentioned.add(_m_str)
+                else:
+                    # Try static alias table first (known candidates)
+                    _resolved = _CANDIDATE_ALIASES.get(_m_str)
+                    if _resolved and _resolved in _job_cand_names:
+                        _llm_mentioned.add(_resolved)
+                    else:
+                        # Fallback: check dynamic short-name map (covers auto-extracted
+                        # last names for any user-entered custom candidate)
+                        _resolved2 = _cand_short_names.get(_m_str)
+                        if _resolved2 and _resolved2 in _job_cand_names:
+                            _llm_mentioned.add(_resolved2)
+            # Re-derive awareness from yesterday's state (overrides keyword scan result)
+            _yesterday_aw = dict(state.get("candidate_awareness", {}))
+            for _cn in _job_cand_names:
+                _base = _yesterday_aw.get(_cn, 0.1)
+                if _cn in _llm_mentioned:
+                    cand_awareness[_cn] = min(_max_awareness, _base + _mention_boost)
+                else:
+                    cand_awareness[_cn] = max(0.05, _base - _decay_rate)
+            # Sentiment decay for unmentioned candidates (keyword scan already handled
+            # sentiment boosts for mentioned ones above)
+            for _cn in list(cand_sentiment.keys()):
+                if _cn not in _llm_mentioned:
+                    cand_sentiment[_cn] = cand_sentiment[_cn] * 0.9
+        # If LLM did not return candidate_mentions, the keyword-scan result
+        # computed earlier (lines above) remains in cand_awareness as fallback.
+
         # ── Parse multi-dimensional attitude shifts from LLM ──
         # Civatas-USA Stage 1.5: extended with US enums (inclusive/restrictive)
         # for the third axis. The cross_strait field name is reused but US
@@ -1609,10 +1716,11 @@ async def evolve_one_day(
             rel_tag = f" [{news_relevance}]" if news_relevance != "medium" else ""
             _push_live(job, f"📝 Agent #{aid} wrote diary: \"{snippet}\"  Local {new_local_sat} Nat'l {new_national_sat} {anx_icon}{int(new_anxiety)}{rel_tag}{status_tag}")
 
-        # Create diary entry
+        # Create diary entry (use global day for cross-round continuity)
+        _diary_day = global_day_offset + day
         entry = {
             "agent_id": aid,
-            "day": day,
+            "day": _diary_day,
             "fed_articles": [a.get("article_id") for a in feed],
             "fed_titles": [a.get("title") for a in feed],
             "diary_text": diary_text,
@@ -1747,9 +1855,11 @@ async def evolve_one_day(
                         }
 
             # Helper for candidate score lookup
-            _major_keywords = ["Democrat", "Republican", "DEM", "GOP", "D", "R"]
+            # NOTE: Do NOT use single-char "D"/"R"/"I" as substring keywords —
+            # they match candidate NAMES (e.g. "D" in "DONALD").
+            _major_keywords = ["Democrat", "Republican", "DEM", "GOP", "(D)", "(R)"]
             _minor_keywords = ["Libertarian", "Green", "Constitution"]
-            _indep_keywords = ["Independent", "No Party", "Unaffiliated", "I"]
+            _indep_keywords = ["Independent", "No Party", "Unaffiliated", "(I)"]
 
             def _resolve_base(party_name: str) -> float:
                 if party_name in party_base: return float(party_base[party_name])
@@ -1825,31 +1935,54 @@ async def evolve_one_day(
                         cand_party = _pm.group(1) if _pm else ""
 
                         # ── US Party detection ──
-                        party_src = (cand_party or desc).upper()
-                        is_dem = any(k in party_src for k in ["DEMOCRAT", "DEM", "D"])
-                        is_rep = any(k in party_src for k in ["REPUBLICAN", "REP", "R"])
-                        is_ind = any(k in party_src for k in ["INDEPENDENT", "IND", "I", "LIBERTARIAN", "GREEN"])
+                        # NOTE: Use only candidate name + explicit party, NOT the full
+                        # description which may mention other candidates' names.
+                        party_src = (cand_party or cname).upper()
+                        is_dem = any(k in party_src for k in ["DEMOCRAT", "DEMOCRATIC", "DEM ", " DEM", "(D)"])
+                        is_rep = any(k in party_src for k in ["REPUBLICAN", "REP ", " REP", "GOP", "(R)"])
+                        is_ind = any(k in party_src for k in ["INDEPENDENT", "IND ", " IND", "LIBERTARIAN", "GREEN", "(I)"])
                         is_major = is_dem or is_rep
 
                         # Use template party_detection patterns if available
+                        # NOTE: Only match against name + explicit party label, NOT the
+                        # full description — descriptions may mention OTHER candidates'
+                        # names (e.g. Harris's desc says "Trump won 312 EV"), which would
+                        # cause cross-contamination (Harris tagged as Republican).
                         if job:
                             _pd = job.get("_party_detection", {})
                             if _pd:
-                                _cand_full = f"{cname} {cand_party} {desc}".lower()
-                                is_dem = any(p.lower() in _cand_full for p in _pd.get("D", []))
-                                is_rep = any(p.lower() in _cand_full for p in _pd.get("R", []))
-                                is_ind = any(p.lower() in _cand_full for p in _pd.get("I", []))
+                                _cand_id = f"{cname} {cand_party}".lower()
+                                is_dem = any(p.lower() in _cand_id for p in _pd.get("D", []))
+                                is_rep = any(p.lower() in _cand_id for p in _pd.get("R", []))
+                                is_ind = any(p.lower() in _cand_id for p in _pd.get("I", []))
                                 is_major = is_dem or is_rep
 
                         score = _resolve_base(cand_party) if cand_party else (_resolve_base(desc) if not is_ind else 5.0)
 
-                        # ── Party-leaning alignment ──
-                        ag_is_dem = ag_leaning in ("Solid Dem", "Lean Dem")
-                        ag_is_rep = ag_leaning in ("Solid Rep", "Lean Rep")
+                        # ── Party-leaning alignment (tier-weighted) ──
+                        # Solid partisans stick with their party much harder
+                        # than Lean partisans — real US voter behavior. Flat
+                        # bonus was letting awareness / incumbency dynamics
+                        # flip Solid Dem to the opposing candidate in 12-day
+                        # runs. Also apply a symmetric cross-party PENALTY so
+                        # Solid Dem genuinely resist Trump, not just prefer
+                        # Harris.
+                        ag_is_solid_dem  = ag_leaning == "Solid Dem"
+                        ag_is_lean_dem   = ag_leaning == "Lean Dem"
+                        ag_is_solid_rep  = ag_leaning == "Solid Rep"
+                        ag_is_lean_rep   = ag_leaning == "Lean Rep"
+                        ag_is_dem = ag_is_solid_dem or ag_is_lean_dem
+                        ag_is_rep = ag_is_solid_rep or ag_is_lean_rep
                         ag_is_tossup = ag_leaning == "Tossup"
 
-                        if is_dem and ag_is_dem: score += party_align_bonus
-                        if is_rep and ag_is_rep: score += party_align_bonus
+                        _tier_mult = 1.6 if (ag_is_solid_dem or ag_is_solid_rep) else (1.0 if (ag_is_lean_dem or ag_is_lean_rep) else 0.3)
+                        if is_dem and ag_is_dem: score += party_align_bonus * _tier_mult
+                        if is_rep and ag_is_rep: score += party_align_bonus * _tier_mult
+                        # Cross-party penalty — Solid partisans actively dislike
+                        # the other side's candidate (mirror of the alignment
+                        # bonus but tier-weighted).
+                        if is_dem and ag_is_rep: score -= party_align_bonus * _tier_mult * 0.75
+                        if is_rep and ag_is_dem: score -= party_align_bonus * _tier_mult * 0.75
                         if is_ind and ag_is_tossup: score += party_align_bonus * 0.6
                         if is_major and ag_is_tossup: score += 3
 
@@ -1865,23 +1998,24 @@ async def evolve_one_day(
                         national_delta = (ag_nat_sat - 50) * news_impact
                         anx_delta = (ag_anx - 50) * news_impact
 
+                        # Anxiety direction in US politics:
+                        # High anxiety HURTS incumbent (voters blame status quo)
+                        # High anxiety HELPS challenger (voters want change)
                         if is_incumbent:
                             score += incumbency_bonus + national_delta * 0.8 + local_delta * 0.3
-                            if anx_delta > 0: score += anx_delta * 0.5
+                            if anx_delta > 0: score -= anx_delta * 0.3  # anxiety hurts incumbent
                         elif is_governor:
                             score += local_delta * 0.8 + national_delta * 0.3
                             score += 4  # executive experience bonus
-                            if anx_delta > 0: score += anx_delta * 0.3
                         elif is_senator:
                             score += national_delta * 0.7 + local_delta * 0.4
                             score += 3  # national visibility
                         elif is_dem:
                             score += national_delta * 1.0 + local_delta * 0.4
-                            score += anx_delta * 0.4
                         elif is_rep:
                             score -= national_delta * 0.8
                             score += local_delta * 0.6
-                            score -= anx_delta * 0.3
+                            if anx_delta > 0: score += anx_delta * 0.3  # anxiety helps challenger
                         else:
                             score += (local_delta + national_delta) * 0.15
 
@@ -1896,28 +2030,38 @@ async def evolve_one_day(
 
                         # Recognition penalty: independents without party or exec backing
                         # are virtually unknown to voters
-                        if is_independent and not is_exec:
+                        if is_ind and not (is_incumbent or is_governor):
                             score *= recognition_penalty
 
-                        # Visibility-based awareness scaling
-                        # Use dynamic awareness from evolution state if available
+                        # Visibility-based awareness scaling.
+                        # The floor was 0.3 which gave a ~2.5x spread between
+                        # a candidate at 20% awareness and one at 80% — enough
+                        # to overwhelm partisan alignment. Major-party
+                        # candidates in a presidential race are both nationally
+                        # known, so clamp the floor to 0.55 for major-party
+                        # nominees (keeps some awareness effect, but doesn't
+                        # let the more-covered candidate blow out the less-
+                        # covered one). Independents/minors keep the old
+                        # aggressive scaling (they genuinely are unknown).
                         _dyn_aw_src = (state_updates.get(ag_id) or states.get(ag_id) or {}).get("candidate_awareness", {})
                         _dyn_aw_val = _dyn_aw_src.get(cname)
                         _vis = _cand_visibility.get(cname)
+                        _aw_floor = 0.55 if is_major else 0.30
+                        _aw_span = 1.0 - _aw_floor
                         if _dyn_aw_val is not None:
                             _aw = float(_dyn_aw_val)
                             _ag_dist = ag.get("district", "")
                             _is_hometown = False
                             if _vis:
                                 _is_hometown = any(od in _ag_dist or _ag_dist in od for od in _vis["origins"]) if _ag_dist and _vis["origins"] else False
-                            score *= (0.3 + 0.7 * _aw)
+                            score *= (_aw_floor + _aw_span * _aw)
                             if _is_hometown:
                                 score += 8
                         elif _vis:
                             _ag_dist = ag.get("district", "")
                             _is_hometown = any(od in _ag_dist or _ag_dist in od for od in _vis["origins"]) if _ag_dist and _vis["origins"] else False
                             _aw = _vis["lv"] if _is_hometown else _vis["nv"]
-                            score *= (0.3 + 0.7 * _aw)
+                            score *= (_aw_floor + _aw_span * _aw)
                             if _is_hometown:
                                 score += 8  # hometown bonus
 
@@ -2125,6 +2269,9 @@ async def start_evolution(
     concurrency: int = 5,
     candidate_names: list[str] | None = None,
     scoring_params: dict | None = None,
+    candidate_descriptions: dict | None = None,
+    party_detection: dict | None = None,
+    enabled_vendors: list[str] | None = None,
 ) -> dict:
     """Start a multi-day evolution run as a background job."""
     from .news_pool import get_pool
@@ -2146,16 +2293,20 @@ async def start_evolution(
         "live_messages": [],
         "candidate_names": candidate_names or [],
         "scoring_params": scoring_params or {},
+        "candidate_descriptions": candidate_descriptions or {},
+        "_party_detection": party_detection or {},
+        "enabled_vendors": enabled_vendors or [],
     }
     _jobs[job_id] = job
     _save_jobs()
 
-    asyncio.create_task(_run_evolution_bg(job, agents, pool, days, concurrency))
+    asyncio.create_task(_run_evolution_bg(job, agents, pool, days, concurrency, enabled_vendors=enabled_vendors))
     return {"job_id": job_id, "status": "pending", "total_days": days, "concurrency": concurrency}
 
 
 async def _run_evolution_bg(
-    job: dict, agents: list[dict], pool: list[dict], days: int, concurrency: int = 5
+    job: dict, agents: list[dict], pool: list[dict], days: int, concurrency: int = 5,
+    enabled_vendors: list[str] | None = None,
 ):
     """Background task: run evolution for N days."""
     try:
@@ -2167,6 +2318,13 @@ async def _run_evolution_bg(
             memory_fn = store_diary
         except Exception:
             logger.warning("ChromaDB memory not available; skipping vector store.")
+
+        # When enabled_vendors is explicitly provided, redistribute agents round-robin
+        # so newly-added vendors (added after persona generation) are actually used.
+        if enabled_vendors:
+            for i, agent in enumerate(agents):
+                agents[i] = {**agent, "llm_vendor": enabled_vendors[i % len(enabled_vendors)]}
+            logger.info(f"[{job['job_id']}] Redistributed {len(agents)} agents across vendors: {enabled_vendors}")
 
         # Load history to determine global day offset
         history = _load_history()
@@ -2186,7 +2344,7 @@ async def _run_evolution_bg(
             logger.info(f"[{job['job_id']}] Evolving day {day}/{days}")
 
             _push_live(job, f"🌅 Day {day} started — {len(agents)} agents receiving news...")
-            
+
             # Setup agent leaning map for incremental updates
             agent_leaning_map = {}
             for a in agents:
@@ -2200,6 +2358,8 @@ async def _run_evolution_bg(
                 memory_fn=memory_fn,
                 job=job,
                 concurrency=concurrency,
+                enabled_vendors=enabled_vendors,
+                global_day_offset=global_day_offset,
             )
 
             # Aggregate daily stats
@@ -2230,8 +2390,9 @@ async def _run_evolution_bg(
                 found_summary["avg_anxiety"] = round(avg_anx, 1)
             _save_jobs()
 
-            # Append to global history with injection marker
             global_day = global_day_offset + day
+
+            # Append to global history with injection marker
             history.append({
                 "global_day": global_day,
                 "run_day": day,
