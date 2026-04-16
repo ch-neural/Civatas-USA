@@ -940,10 +940,10 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                   <span title={`Local Satisfaction: ${a.local_satisfaction}/100\n${a.local_satisfaction > 60 ? "✅ Satisfied" : a.local_satisfaction > 40 ? "➖ Neutral" : "❌ Dissatisfied"} — Governor / Mayor / state government`} style={{ color: "#3b82f6", cursor: "help" }}>L:{a.local_satisfaction}</span>
                   <span title={`National Satisfaction: ${a.national_satisfaction}/100\n${a.national_satisfaction > 60 ? "✅ Satisfied" : a.national_satisfaction > 40 ? "➖ Neutral" : "❌ Dissatisfied"} — President / Congress / federal policy`} style={{ color: "#f97316", cursor: "help" }}>N:{a.national_satisfaction}</span>
                   <span title={`Anxiety: ${a.anxiety}/100\n${a.anxiety > 70 ? "🔴 Highly anxious" : a.anxiety > 50 ? "🟡 Moderate" : "🟢 Calm"} — economy, prices, jobs`} style={{ color: a.anxiety > 60 ? "#ef4444" : "#6b7280", cursor: "help" }}>A:{a.anxiety}</span>
-                  <span title={`Relevance: ${a.relevance}\n${{ high: "🔴 High — news directly impacts this agent", medium: "🟡 Medium", low: "⚪ Low", none: "➖ No relevant news" }[a.relevance] || "unknown"}`} style={{
+                  <span title={`Relevance: ${a.relevance}\n${{ high: "🔴 High — news directly impacts this agent", medium: "🟡 Medium", low: "⚪ Low", none: "➖ No relevant news" }[a.relevance as string] || "unknown"}`} style={{
                     padding: "1px 4px", borderRadius: 3, fontSize: 8, cursor: "help",
-                    background: (REL_COLORS[a.relevance] || "#374151") + "22",
-                    color: REL_COLORS[a.relevance] || "#6b7280",
+                    background: (REL_COLORS[a.relevance as string] || "#374151") + "22",
+                    color: REL_COLORS[a.relevance as string] || "#6b7280",
                   }}>
                     {a.relevance}
                   </span>
