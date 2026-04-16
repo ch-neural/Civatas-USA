@@ -889,7 +889,7 @@ export default function EvolutionDashboardPanel({ wsId }: { wsId: string }) {
                     <XAxis type="number" tick={{ fontSize: 10, fill: "#9ca3af" }} domain={isCount ? [0, "auto"] : [0, 100]} />
                     <YAxis type="category" dataKey="label" width={70} tick={{ fontSize: 10, fill: "#9ca3af", fontFamily: "var(--font-cjk)" }} />
                     <Tooltip contentStyle={{ ...tooltipStyle, fontFamily: "var(--font-cjk)" }}
-                      formatter={(val: any, name: string) => [isCount ? `${val}` : `${val}`, name]} />
+                      formatter={(val: any, name: string | undefined) => [isCount ? `${val}` : `${val}`, name ?? ""]} />
                     <Legend wrapperStyle={{ fontSize: 10, fontFamily: "var(--font-cjk)", color: "var(--text-secondary)" }} />
                     <Bar dataKey={mk.left} name={t("evodash.chart.lean_left")} fill="#3b82f6" radius={[0, 3, 3, 0]} barSize={8} />
                     <Bar dataKey={mk.neutral} name={t("evodash.chart.lean_neutral")} fill="#94a3b8" radius={[0, 3, 3, 0]} barSize={8} />
