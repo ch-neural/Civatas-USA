@@ -1244,6 +1244,9 @@ class SaveSnapshotRequest(BaseModel):
     calibration_pack_id: str | None = None
     workspace_id: str = ""
     alignment_target: dict | None = None
+    scoring_params: dict | None = None
+    party_detection: dict | None = None
+    candidate_names: list[str] | None = None
 
 
 class RestoreSnapshotRequest(BaseModel):
@@ -1256,7 +1259,10 @@ def snapshot_save(req: SaveSnapshotRequest):
     from .snapshot import save_snapshot
     meta = save_snapshot(req.name, req.description, req.calibration_pack_id,
                          workspace_id=req.workspace_id or "",
-                         alignment_target=req.alignment_target)
+                         alignment_target=req.alignment_target,
+                         scoring_params=req.scoring_params,
+                         party_detection=req.party_detection,
+                         candidate_names=req.candidate_names)
     return meta
 
 

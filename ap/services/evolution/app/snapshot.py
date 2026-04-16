@@ -32,10 +32,18 @@ def save_snapshot(
     calibration_pack_id: str | None = None,
     workspace_id: str = "",
     alignment_target: dict | None = None,
+    scoring_params: dict | None = None,
+    party_detection: dict | None = None,
+    candidate_names: list[str] | None = None,
 ) -> dict:
     """Save the current agent states + diaries as a named snapshot.
 
     Returns snapshot metadata.
+
+    When scoring_params / party_detection / candidate_names are None, the snapshot
+    auto-inherits from the most recently completed evolution job for this workspace
+    so Prediction can pick up the exact parameters evolution used without the
+    caller having to thread them through.
     """
     from .evolver import _load_states, _load_diaries, _load_history, _load_profiles
 
@@ -59,6 +67,27 @@ def save_snapshot(
     with open(os.path.join(snap_dir, "agent_profiles.json"), "w") as f:
         json.dump(profiles, f, ensure_ascii=False, indent=2)
 
+    if scoring_params is None or party_detection is None or candidate_names is None:
+        try:
+            from .evolver import _jobs as _evo_jobs
+            candidates = [
+                j for j in _evo_jobs.values()
+                if j.get("status") == "completed"
+                and j.get("completed_at")
+                and (not workspace_id or j.get("workspace_id") in (workspace_id, "", None))
+            ]
+            candidates.sort(key=lambda j: j.get("completed_at") or 0, reverse=True)
+            latest = candidates[0] if candidates else None
+            if latest:
+                if scoring_params is None:
+                    scoring_params = latest.get("scoring_params") or {}
+                if party_detection is None:
+                    party_detection = latest.get("_party_detection") or {}
+                if candidate_names is None:
+                    candidate_names = latest.get("candidate_names") or []
+        except Exception as e:
+            logger.warning(f"Could not auto-inherit snapshot params from latest job: {e}")
+
     meta = {
         "snapshot_id": snap_id,
         "name": name,
@@ -71,6 +100,9 @@ def save_snapshot(
         "profiles_count": len(profiles),
         "created_at": time.time(),
         "alignment_target": alignment_target,
+        "scoring_params": scoring_params or {},
+        "party_detection": party_detection or {},
+        "candidate_names": candidate_names or [],
     }
     with open(os.path.join(snap_dir, "meta.json"), "w") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)

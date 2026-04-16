@@ -494,6 +494,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
   const [predAgentMode, setPredAgentMode] = useState<"full" | "sampled">("full");
   const [predSampleRate, setPredSampleRate] = useState(0.2);
   const [running, setRunning] = useState(false);
+  const [pausingPending, setPausingPending] = useState(false);
   const [jobId, setJobId] = useState<string | null>(null);
   const [jobStatus, setJobStatus] = useState<any>(null);
   const [predResults, setPredResults] = useState<any>(null);
@@ -796,6 +797,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
   const [rawPersonas, setRawPersonas] = useState<any[]>([]);
   const [snapAgentIds, setSnapAgentIds] = useState<Set<string>>(new Set());
   const [snapAlignmentInfo, setSnapAlignmentInfo] = useState<any>(null);
+  const [snapScoringSync, setSnapScoringSync] = useState<{ snapId: string; keys: string[] } | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Restore from server (primary) or localStorage (fallback) on mount
@@ -1118,6 +1120,85 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
     })();
   }, [selectedSnap]);
 
+  useEffect(() => {
+    if (!selectedSnap || !isLoaded) { setSnapScoringSync(null); return; }
+    (async () => {
+      const applied: string[] = [];
+      try {
+        const snapMeta = await getSnapshot(selectedSnap);
+        const sp = snapMeta?.scoring_params;
+        if (sp && typeof sp === "object" && Object.keys(sp).length > 0) {
+          if (sp.news_impact !== undefined) { setNewsImpact(sp.news_impact); applied.push("newsImpact"); }
+          if (sp.delta_cap_mult !== undefined) { setDeltaCapMult(sp.delta_cap_mult); applied.push("deltaCapMult"); }
+          if (sp.satisfaction_decay !== undefined) { setSatisfactionDecay(sp.satisfaction_decay); applied.push("satisfactionDecay"); }
+          if (sp.anxiety_decay !== undefined) { setAnxietyDecay(sp.anxiety_decay); applied.push("anxietyDecay"); }
+          if (sp.base_undecided !== undefined) { setBaseUndecided(sp.base_undecided); applied.push("baseUndecided"); }
+          if (sp.max_undecided !== undefined) { setMaxUndecided(sp.max_undecided); applied.push("maxUndecided"); }
+          if (sp.party_align_bonus !== undefined) { setSpAlignBonus(sp.party_align_bonus); applied.push("partyAlignBonus"); }
+          if (sp.incumbency_bonus !== undefined) { setSpIncumbBonus(sp.incumbency_bonus); applied.push("incumbencyBonus"); }
+          if (sp.individuality_multiplier !== undefined) { setIndividualityMult(sp.individuality_multiplier); applied.push("individualityMult"); }
+          if (sp.shift_sat_threshold_low !== undefined) { setShiftSatLow(sp.shift_sat_threshold_low); applied.push("shiftSatLow"); }
+          if (sp.shift_anx_threshold_high !== undefined) { setShiftAnxHigh(sp.shift_anx_threshold_high); applied.push("shiftAnxHigh"); }
+          if (sp.shift_consecutive_days_req !== undefined) { setShiftDaysReq(sp.shift_consecutive_days_req); applied.push("shiftDaysReq"); }
+          if (sp.enable_dynamic_leaning !== undefined) { setEnableDynamicLeaning(sp.enable_dynamic_leaning); applied.push("enableDynamicLeaning"); }
+        }
+      } catch (e) {
+        console.warn("Failed to sync scoring_params from snapshot:", e);
+      }
+
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const cycle = activeTemplate?.election?.cycle as number | undefined;
+        const ew = activeTemplate?.election?.default_evolution_window
+          || activeTemplate?.election?.election_window;
+        const computeElDate = (yr: number) => {
+          const d = new Date(Date.UTC(yr, 10, 1));
+          while (d.getUTCDay() !== 1) d.setUTCDate(d.getUTCDate() + 1);
+          d.setUTCDate(d.getUTCDate() + 1);
+          return d.toISOString().slice(0, 10);
+        };
+        const addDays = (iso: string, n: number) => {
+          const d = new Date(iso + "T00:00:00Z");
+          d.setUTCDate(d.getUTCDate() + n);
+          return d.toISOString().slice(0, 10);
+        };
+        let tplEnd: string | undefined;
+        let tplStart: string | undefined;
+        if (ew?.end_date && /^\d{4}-\d{2}-\d{2}$/.test(ew.end_date)) {
+          tplEnd = ew.end_date;
+          tplStart = ew.start_date || addDays(tplEnd, -6);
+        } else if (cycle) {
+          const elDate = computeElDate(cycle);
+          tplEnd = addDays(elDate, -1);
+          tplStart = addDays(tplEnd, -6);
+        }
+        const tplIsFuture = tplEnd && tplEnd > today;
+        const tplIsHistorical = tplEnd && tplEnd <= today;
+        if (tplIsFuture) {
+          const wsData = await apiFetch(`/api/workspaces/${wsId}`);
+          const ep = wsData?.ui_settings?.["evolution-progress"] || {};
+          const eq = wsData?.ui_settings?.["evolution-quickstart"] || {};
+          const evoEnd = ep.simDate || eq.endDate || ep.endDate;
+          if (evoEnd && /^\d{4}-\d{2}-\d{2}$/.test(evoEnd)) {
+            const startIso = evoEnd <= today ? evoEnd : today;
+            setPredStartDate(startIso);
+            setPredEndDate(today);
+            applied.push(`predDates→${startIso}~${today}`);
+          }
+        } else if (tplIsHistorical && tplStart) {
+          setPredStartDate(tplStart);
+          setPredEndDate(tplEnd);
+          applied.push(`predDates→${tplStart}~${tplEnd}`);
+        }
+      } catch (e) {
+        console.warn("Failed to auto-set prediction dates:", e);
+      }
+
+      if (applied.length > 0) setSnapScoringSync({ snapId: selectedSnap, keys: applied });
+      else setSnapScoringSync(null);
+    })();
+  }, [selectedSnap, isLoaded, wsId, activeTemplate]);
+
   // Auto-seed macro context from active template when snapshot is selected
   // and field is still empty. The template carries a locale-aware default
   // macro context (en + zh-TW); we pick the English version.
@@ -1150,14 +1231,8 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
     try {
       const data = await listPredictions();
       const all = data.predictions || [];
-      // Auto-clean stale pending/running predictions (can't be resumed without checkpoint)
-      const stale = all.filter((p: any) => p.status === "pending" || p.status === "running");
-      for (const p of stale) {
-        try { await deletePrediction(p.prediction_id); } catch {}
-      }
-      // Filter by this workspace's snapshots
       const wsSnapIds = new Set(snapshots.map((s: any) => s.snapshot_id));
-      const wsPreds = all.filter((p: any) => p.status !== "pending" && p.status !== "running" && wsSnapIds.has(p.snapshot_id));
+      const wsPreds = all.filter((p: any) => p.status !== "pending" && p.status !== "running" && p.status !== "paused" && wsSnapIds.has(p.snapshot_id));
       setPastPredictions(wsPreds);
     } catch (e) { console.error(e); }
   }, []);
@@ -1531,11 +1606,16 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
     }
     setJobStatus(null);
     try {
-      // 0. Auto-reset: clear old evolution state + delete old predictions
+      // 0. Auto-reset: clear old evolution state + delete completed predictions
+      // (preserve running / paused / pending — they may be the user's active job
+      // or a paused job with a recoverable checkpoint).
       try {
         await resetEvolution();
         const oldPreds = await listPredictions();
-        for (const p of (oldPreds.predictions || [])) {
+        const deletable = (oldPreds.predictions || []).filter((p: any) =>
+          p.status !== "running" && p.status !== "paused" && p.status !== "pending"
+        );
+        for (const p of deletable) {
           await deletePrediction(p.prediction_id).catch(() => {});
         }
         setPastPredictions([]);
@@ -1740,12 +1820,23 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
   const handlePausePrediction = async () => {
     if (!jobId) return;
     try {
+      setPausingPending(true);
       await pausePredictionJob(jobId);
-      setJobStatus((prev: any) => prev ? { ...prev, status: "paused", live_messages: [...(prev.live_messages || []), {text: "⏸️ Sending pause command..."}] } : null);
+      setJobStatus((prev: any) => prev ? { ...prev, live_messages: [...(prev.live_messages || []), {text: "⏳ Pause requested — will complete after current day finishes and checkpoint is written."}] } : null);
     } catch (e: any) {
+      setPausingPending(false);
       alert("Pause failed: " + e.message);
     }
   };
+
+  useEffect(() => {
+    if (!pausingPending) return;
+    const msgs = jobStatus?.live_messages || [];
+    const recent = msgs.slice(-30);
+    const saved = recent.some((m: any) => /Checkpoint saved|checkpoint.*saved/i.test(m?.text || ""));
+    if (saved) setPausingPending(false);
+    if (jobStatus?.status === "cancelled" || jobStatus?.status === "completed" || jobStatus?.status === "failed") setPausingPending(false);
+  }, [jobStatus?.live_messages, jobStatus?.status, pausingPending]);
 
   const handleResumePrediction = async () => {
     if (!jobId) return;
@@ -2352,6 +2443,11 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginBottom: 3, fontFamily: "var(--font-cjk)" }}>{t("prediction.s1.end_date")}</div>
                           <input type="date" value={predEndDate} onChange={e => setPredEndDate(e.target.value)}
                             style={{ padding: "5px 8px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 11 }} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginBottom: 3, fontFamily: "var(--font-cjk)" }}>{en ? "Sim days" : "模擬天數"}</div>
+                          <input type="number" min={1} max={90} value={simDays} onChange={e => setSimDays(Number(e.target.value))} disabled={running}
+                            style={{ width: 64, padding: "5px 8px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 11 }} />
                         </div>
                         {/* ── Time compression display ── */}
                         {(() => {
@@ -3032,6 +3128,20 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
               <h3 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0, marginBottom: 12, fontFamily: "var(--font-cjk)" }}>{t("prediction.s3.title")}</h3>
               <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 16px 0", fontFamily: "var(--font-cjk)" }}>{t("prediction.s3.subtitle")}</p>
 
+              {snapScoringSync && snapScoringSync.keys.length > 0 && (
+                <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.25)", marginBottom: 12 }}>
+                  <div style={{ color: "#a5b4fc", fontSize: 12, fontWeight: 700, marginBottom: 4, fontFamily: "var(--font-cjk)" }}>
+                    📌 {en ? "Advanced parameters synced from snapshot" : "進階參數已從 snapshot 同步"}
+                  </div>
+                  <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 11, lineHeight: 1.6, fontFamily: "var(--font-cjk)" }}>
+                    {en
+                      ? `Using the exact scoring_params this evolution ran with. ${snapScoringSync.keys.length} parameter${snapScoringSync.keys.length === 1 ? "" : "s"} applied: `
+                      : `使用演化實際使用的 scoring_params。已套用 ${snapScoringSync.keys.length} 個參數：`}
+                    <code style={{ color: "#c7d2fe", fontSize: 10 }}>{snapScoringSync.keys.join(", ")}</code>
+                  </div>
+                </div>
+              )}
+
               {/* Alignment Target Info Banner */}
               {snapAlignmentInfo && (
                 <div style={{ padding: "12px 16px", borderRadius: 10, background: "rgba(251,191,36,0.04)", border: "1px solid rgba(251,191,36,0.15)", marginBottom: 12 }}>
@@ -3122,10 +3232,6 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                   </div>
 
                   <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                <div>
-                  <label style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, display: "block", marginBottom: 4 }}>{t("prediction.s3.sim_days")}</label>
-                  <input type="number" min={1} max={90} value={simDays} onChange={(e) => setSimDays(Number(e.target.value))} disabled={running} style={{ width: 80, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", color: "#fff", fontSize: 13, outline: "none" }} />
-                </div>
                 <div>
                   <label style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, display: "block", marginBottom: 4 }}>{t("prediction.s3.concurrency")}</label>
                   <input type="number" min={1} max={20} value={concurrency} onChange={(e) => setConcurrency(Number(e.target.value))} disabled={running} style={{ width: 80, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", color: "#fff", fontSize: 13, outline: "none" }} />
@@ -4681,20 +4787,34 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
               <div style={card}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <h3 style={{ color: jobStatus.status === "completed" ? "#22c55e" : jobStatus.status === "failed" ? "#ef4444" : "#f59e0b", fontSize: 14, fontWeight: 600, margin: 0 }}>
-                      {jobStatus.status === "completed" ? "✅ Prediction complete" : jobStatus.status === "failed" ? "❌ Prediction failed" : jobStatus.status === "paused" ? "⏸️ Prediction paused" : "⏳ Running"}
+                    <h3 style={{ color: jobStatus.status === "completed" ? "#22c55e" : jobStatus.status === "failed" ? "#ef4444" : "#f59e0b", fontSize: 14, fontWeight: 600, margin: 0, display: "flex", alignItems: "center", gap: 6 }}>
+                      {jobStatus.status === "completed"
+                        ? "✅ Prediction complete"
+                        : jobStatus.status === "failed"
+                        ? "❌ Prediction failed"
+                        : pausingPending
+                        ? (<><span style={{ display: "inline-block", width: 12, height: 12, border: "2px solid #f59e0b", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />{en ? `⏳ Pausing — waiting for current day to finish${jobStatus.current_day ? ` (Day ${jobStatus.current_day})` : ""}...` : `⏳ 暫停中 — 等當前天${jobStatus.current_day ? `（Day ${jobStatus.current_day}）` : ""}處理完成...`}</>)
+                        : jobStatus.status === "paused"
+                        ? "⏸️ Prediction paused"
+                        : "⏳ Running"}
                     </h3>
-                    {running && jobStatus.status === "paused" && (
-                      <button 
+                    {running && jobStatus.status === "paused" && !pausingPending && (
+                      <button
                         onClick={handleResumePrediction}
                         style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
                       >▶️ Resume</button>
                     )}
-                    {running && jobStatus.status !== "paused" && jobStatus.status !== "completed" && jobStatus.status !== "failed" && (
-                      <button 
+                    {running && jobStatus.status !== "paused" && jobStatus.status !== "completed" && jobStatus.status !== "failed" && !pausingPending && (
+                      <button
                         onClick={handlePausePrediction}
                         style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)", color: "#f59e0b", fontSize: 11, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
                       >⏸️ Pause</button>
+                    )}
+                    {pausingPending && (
+                      <button
+                        disabled
+                        style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", color: "rgba(245,158,11,0.5)", fontSize: 11, fontWeight: 600, cursor: "not-allowed", display: "flex", alignItems: "center", gap: 4 }}
+                      >⏳ Pausing…</button>
                     )}
                     {running && (
                       <button 

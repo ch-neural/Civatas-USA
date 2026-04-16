@@ -1099,7 +1099,10 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
             borderRadius: 12, padding: 20,
           }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 6 }}>
+                {paused && phase === "evolving" && (
+                  <span style={{ display: "inline-block", width: 12, height: 12, border: "2px solid #60a5fa", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                )}
                 {phaseLabel}
               </div>
               <div style={{ display: "flex", gap: 8 }}>
@@ -1109,11 +1112,15 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
                   style={{
                     padding: "6px 16px", borderRadius: 8, fontSize: 12,
                     background: "rgba(59,130,246,0.15)", color: "#60a5fa",
-                    border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer",
-                    opacity: paused ? 0.5 : 1,
+                    border: "1px solid rgba(59,130,246,0.3)", cursor: paused ? "not-allowed" : "pointer",
+                    opacity: paused ? 0.6 : 1,
+                    display: "flex", alignItems: "center", gap: 4,
                   }}
                 >
-                  {paused ? (en ? "⏸ Pausing..." : "⏸ 暫停中...") : (en ? "⏸ Pause" : "⏸ 暫停")}
+                  {paused && phase === "evolving" && (
+                    <span style={{ display: "inline-block", width: 10, height: 10, border: "2px solid #60a5fa", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                  )}
+                  {paused ? (en ? "Pausing..." : "暫停中...") : (en ? "⏸ Pause" : "⏸ 暫停")}
                 </button>
                 <button
                   onClick={handleStop}
@@ -1127,6 +1134,17 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
                 </button>
               </div>
             </div>
+
+            {paused && phase === "evolving" && (
+              <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", color: "#93c5fd", fontSize: 12, marginBottom: 12, display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-cjk)" }}>
+                <span style={{ fontSize: 16 }}>⏳</span>
+                <span>
+                  {en
+                    ? `Pause requested. Evolution will complete the current round (${currentRound}/${totalRounds}) first, then save state. Safe to close the tab after "Paused after round ${currentRound}" appears.`
+                    : `已請求暫停。演化會先完成當前第 ${currentRound}/${totalRounds} 輪，儲存狀態後才真正停下。看到「第 ${currentRound} 輪後暫停」後即可關閉分頁。`}
+                </span>
+              </div>
+            )}
 
             {/* Progress bar */}
             <div style={{ background: "var(--bg-input)", borderRadius: 6, height: 8, marginBottom: 12, overflow: "hidden" }}>

@@ -43,6 +43,7 @@ export default function PredictionEvolutionDashboardPanel({ wsId }: { wsId: stri
   // any running/pending/paused job for this workspace. Banner disappears
   // once the job reaches a terminal state.
   const [liveJob, setLiveJob] = useState<any>(null);
+  const [pausingPending, setPausingPending] = useState(false);
   useEffect(() => {
     let cancelled = false;
     const fetchJob = async (jid: string) => {
@@ -84,6 +85,16 @@ export default function PredictionEvolutionDashboardPanel({ wsId }: { wsId: stri
     return () => { cancelled = true; clearInterval(h); };
   }, [wsId]);
 
+  useEffect(() => {
+    if (!pausingPending) return;
+    const msgs: any[] = Array.isArray(liveJob?.live_messages) ? liveJob.live_messages : [];
+    const recent = msgs.slice(-30).map((m: any) => typeof m === "string" ? m : (m?.text || ""));
+    const saved = recent.some((t: string) => /Checkpoint saved|checkpoint.*saved/i.test(t));
+    if (saved) setPausingPending(false);
+    const s = liveJob?.status;
+    if (s === "cancelled" || s === "completed" || s === "failed" || s === "stopped") setPausingPending(false);
+  }, [liveJob?.live_messages, liveJob?.status, pausingPending]);
+
   const liveBanner = liveJob && (liveJob.status === "running" || liveJob.status === "pending" || liveJob.status === "paused") ? (() => {
     const ds = liveJob.current_daily_data || [];
     const simDays = liveJob.sim_days || 3;
@@ -106,9 +117,16 @@ export default function PredictionEvolutionDashboardPanel({ wsId }: { wsId: stri
       <div style={{ padding: 14, borderRadius: 10, background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.3)", marginBottom: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#c084fc", fontFamily: "var(--font-cjk)" }}>
-              {liveJob.status === "paused"
-                ? (en ? "⏸ Prediction paused" : "⏸ 預測已暫停")
+            <div style={{ fontSize: 13, fontWeight: 700, color: pausingPending ? "#fbbf24" : "#c084fc", fontFamily: "var(--font-cjk)", display: "flex", alignItems: "center", gap: 6 }}>
+              {pausingPending && (
+                <span style={{ display: "inline-block", width: 11, height: 11, border: "2px solid #fbbf24", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+              )}
+              {pausingPending
+                ? (en
+                    ? `⏳ Pausing — waiting for Day ${curDay}/${simDays} to finish & checkpoint to save...`
+                    : `⏳ 暫停中 — 等 Day ${curDay}/${simDays} 處理完 + checkpoint 寫入...`)
+                : liveJob.status === "paused"
+                ? (en ? "⏸ Prediction paused (checkpoint saved)" : "⏸ 預測已暫停（checkpoint 已儲存）")
                 : (en ? "🟣 Prediction running" : "🟣 預測執行中")}
             </div>
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 4, display: "flex", flexWrap: "wrap", gap: 10 }}>
@@ -133,12 +151,17 @@ export default function PredictionEvolutionDashboardPanel({ wsId }: { wsId: stri
             )}
           </div>
           <div style={{ display: "flex", gap: 6 }}>
-            {liveJob.status === "paused" ? (
+            {pausingPending ? (
+              <button disabled style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid rgba(251,191,36,0.3)", background: "rgba(251,191,36,0.08)", color: "rgba(251,191,36,0.6)", fontSize: 12, fontWeight: 700, cursor: "not-allowed", display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ display: "inline-block", width: 10, height: 10, border: "2px solid #fbbf24", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                {en ? "Pausing…" : "暫停中…"}
+              </button>
+            ) : liveJob.status === "paused" ? (
               <button onClick={() => resumePredictionJob(liveJob.job_id).catch(() => {})} style={{ padding: "6px 14px", borderRadius: 6, border: "none", background: "#22c55e", color: "#0b1220", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
                 ▶ {en ? "Resume" : "繼續"}
               </button>
             ) : (
-              <button onClick={() => pausePredictionJob(liveJob.job_id).catch(() => {})} style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+              <button onClick={() => { setPausingPending(true); pausePredictionJob(liveJob.job_id).catch(() => setPausingPending(false)); }} style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
                 ⏸ {en ? "Pause" : "暫停"}
               </button>
             )}

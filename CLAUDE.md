@@ -752,6 +752,178 @@ Backend 實作已完整（`predictor.py` lines 2413-2431 `_get_sampling_weight()
 6. ✅ Evolution history 擴充寫入 `candidate_estimate` 與 `by_leaning`
 7. ✅ Dashboard 從 history 檔案 fallback（job 被 clear 後仍可還原）
 
+## Snapshot-Inherited Scoring Params + Symmetric Party Detection (2026-04-16)
+
+延續 04-15 P1 預測的 Vance bug 與 Moonshot 樣本污染，本日重跑 P2（2028 template, 100 personas）並一次解決多個結構性問題。所有 commit 都在 `25f361b` (`fix: symmetric party detection + news_pool timestamp handling`) 與後續 uncommitted 工作裡。
+
+### P2 30 天演化監控結果（pre-fix vs post-fix）
+
+| 指標 | Pre-fix run | **Post-fix run** | 改善 |
+|---|---|---|---|
+| 總時間 | 3h 20min | **1h 54min** | 1.75× 快 |
+| HTTP 失敗率 | Moonshot 39% × 429 + 10×OpenAI 502 | **僅 13×OpenAI 502** | 99.6% 成功 |
+| Solid Dem 對 Dem 候選人 | Dem 32.4 vs Rep 39.8（**反向 −7.4**）| **Dem 54.3 vs Rep 21.8（+32.5）** | 黨派對齊正常 |
+| Vance 排名 | **#1（22.4%）** 一家獨大 | **#3（14.7%）** Shapiro 18.6 領先 | 公平 |
+| news_pool crash | 8 次 HTTP 500 | **0 次** | 修復 |
+
+### 三大根本性修正
+
+**1. `news_pool._trim_pool` 在 ISO 8601 timestamp 下崩潰**
+- 位置：`ap/services/evolution/app/news_pool.py:206`
+- 症狀：`ValueError: could not convert string to float: '2026-04-14T14:26:13.628324+00:00'`
+- 觸發：每次 `POST /news-pool/inject` 觸發 trim 都中斷（混合 epoch float 與 ISO 字串）
+- 修正：新增 `_parse_crawled_ts()` helper，dual-format 解析
+
+**2. 候選人黨派辨識不對稱（最大 bug）**
+- 位置：`evolver.py:1955-1958` 用 template 的 `_party_detection` 名單比對
+- 根因：2028 template 的 R 名單只有 `[republican, gop, trump, vance, pence, ...]`，**只有 Vance 有對應姓氏**。Newsom / DeSantis / Whitmer / Haley / Shapiro 全部被視為 partyless → 沒有 `+party_align_bonus`、沒有 `cross_party_penalty` → Vance 在 Solid Dem 桶都能拿 16% +
+- 後果：30 天演化後 Vance 22.4%、Solid Dem 反而偏向 Rep 候選人
+- 修正（Option C，通用性最高）：
+  - `evolver.py` 新增 `_augment_party_detection()`：從 candidate desc 關鍵字（`democrat/progressive/reproductive rights → D`，`republican/gop/conservative/anti-woke → R`，`independent/libertarian/green party → I`）自動抽取姓氏加入名單
+  - 整合進 `start_evolution()` job 建立流程
+  - 同步整合進 `predictor.save_prediction()` 確保 prediction 端也對稱
+- 驗證：6 位 2028 候選人現全部正確分類（Newsom→D, DeSantis→R, Whitmer→D, Haley→R, Shapiro→D；Vance 原本就在 R）
+
+**3. Moonshot 排除（暫時性 workaround，非永久 fix）**
+- Pre-fix run 197 次 429（39% 失敗率）+ 513 次 fallback → Moonshot 的 `by_vendor_candidate` 是過濾後小樣本，造成虛假 vendor bias
+- 暫時把 Moonshot 從 `enabled_vendors` 移除，3 vendor (OpenAI/DeepSeek/OpenAI-2) 的 spread 只有 1-3%，乾淨
+- 真正修復方案（未做）：加 token bucket / 主動限流，或在 round-robin 時降低 Moonshot 權重
+
+### Snapshot 自包含 scoring_params（Option Z）
+
+**問題**：04-15 P1 預測 advanced params 從 ui-settings 載入，與 evolution 實際使用的不同步（`satisfactionDecay 0.02 vs 0.045`、`shiftSatLow 20 vs 25` 等 5 項）。每跑新 evolution 還要手動重設 prediction 參數。
+
+**解法（通用、自包含）**：snapshot 建立時**自動繼承**演化實際用的 scoring_params + augmented party_detection + candidate_names。Prediction 建立時自動 merge。
+
+| 檔案 | 變更 |
+|---|---|
+| `snapshot.py:save_snapshot()` | 新增 3 個參數 (`scoring_params`, `party_detection`, `candidate_names`)；若 None 則自動從同 workspace 最近一筆 `completed` job 繼承 |
+| `main.py:SaveSnapshotRequest` | 新增對應 3 個 optional 欄位 |
+| `predictor.py:save_prediction()` | 讀 `snap.scoring_params` 與使用者傳入的 scoring_params **merge**（user 優先）；party_detection 與 augmented 結果 merge |
+| `PredictionPanel.tsx` | 選 snapshot 時 useEffect 拉 `snap.scoring_params`，逐 key 套用到 13 個 advanced state；頂部紫色 banner 顯示「📌 已從 snapshot 同步 N 個參數」 |
+
+**Backfill 既有 snapshot**：對 P2 的 `bb18a488` 已執行（直接寫入 `meta.json`，原始備份在 `meta.json.bak`），現有 prediction 也能用。腳本邏輯：
+```python
+# in container
+from app.evolver import _jobs
+latest = sorted([j for j in _jobs.values() if j.get('status')=='completed'],
+                key=lambda j: j.get('completed_at',0), reverse=True)[0]
+meta['scoring_params'] = latest['scoring_params']
+meta['party_detection'] = latest['_party_detection']
+meta['candidate_names'] = latest['candidate_names']
+```
+
+### Prediction 自動日期偵測
+
+**問題**：2028 template 的 `default_evolution_window` 預設 2028-10-31~2028-11-06（未來），Serper 找不到任何新聞，agents 完全沒新聞可讀。
+
+**邏輯（PredictionPanel.tsx 在 selectedSnap useEffect 中執行）**：
+1. 從 `activeTemplate.election.cycle` 計算選舉日 (`computeElectionDate(2028) = 2028-11-07`)
+2. 比對今日：
+   - **未來型**（election day > today）→ override 為 `[evo simDate, today]`，從 `ws.ui_settings['evolution-progress'].simDate`（fallback `endDate`）讀
+   - **歷史型 / 回測**（election day ≤ today，如 2024）→ **保留 template 的 `election_window`**（如 2024-10-29~2024-11-04），讓 ground-truth 比對成立
+   - 套用結果列入 banner：`predDates→2026-03-17~2026-04-16`
+
+**注意**：用 `simDate`（最後 round 起始日）優於 `endDate`（規劃終點），因為 Quickstart 在 round 邊界更新 simDate，可給 prediction 一個有意義的多日窗口（30 天 vs 0 天）。
+
+### Sim days 移到 Base tab
+
+原本 `simDays` 輸入只在 Advanced tab、難找。在 PredictionPanel.tsx Base tab 的 Start/End date 旁加一格 Sim days 輸入（同一 state，新舊位置同步）。Advanced tab 的舊位置移除（concurrency 留下）。
+
+### Pause UX 改進（3 個 panel）
+
+**問題**：按 Pause 後立刻顯示 "Paused"，但 backend 其實要等當前 day 100 個 agents 全部處理完才到 day boundary，期間 status 已是 "paused" 但 checkpoint 尚未寫入。Resume 按鈕過早出現、checkpoint 不在磁碟。
+
+**Fix**（新增 `pausingPending` 中介狀態，三處同步）：
+| 檔案 | 改動 |
+|---|---|
+| `PredictionPanel.tsx` | `pausingPending` state + useEffect 監聽 live_messages 中 `Checkpoint saved` → 清掉；按鈕替換成 disabled `⏳ Pausing...` + spinner |
+| `PredictionEvolutionDashboardPanel.tsx`（**用戶實際看到的 Dashboard**）| 同上機制 |
+| `EvolutionQuickStartPanel.tsx` | phase label + button 加 spinner、新增藍色 banner：「會先完成當前第 X/Y 輪後才暫停」 |
+
+### 嚴重 Bug：refresh / 切頁會誤刪 active prediction
+
+**位置**：`PredictionPanel.tsx:1230-1244` 的 `loadPastPredictions()`
+
+```js
+// BAD: 跨所有 workspace 全刪
+const stale = all.filter((p: any) => p.status === "pending" || p.status === "running");
+for (const p of stale) {
+  try { await deletePrediction(p.prediction_id); } catch {}
+}
+```
+
+`useEffect` 在 PredictionPanel mount 時呼叫此函式 → 用戶 refresh 或從別處切回 → 把自己的 active prediction 刪掉。Docker logs 出現 `DELETE /predictions/c4902fe4 500`（重複刪報錯）。
+
+**Fix**：
+- `loadPastPredictions()` 移除 auto-delete 邏輯，改成只 list 已完成的（filter 排除 `running/paused/pending`）
+- 啟動流程 `handleStart` 也加上 filter：只刪 completed/failed/cancelled，保留 running/paused/pending（active job 與 checkpoint）
+
+### Pause / Resume 機制（跨 PC 接續）
+
+完整機制驗證：
+- 按 Pause → `pause_pred_job()` 設 `_pred_pauses[job_id] = True` + `_pred_checkpoint_pending = True`
+- 主迴圈在當日 100 agents 處理完到 day boundary 時，進入 pause loop → `_save_pred_checkpoint()` 寫 `/data/evolution/pred_jobs/{job_id}.json`
+- live_message 出現 `💾 Checkpoint saved (Day X) — can resume after restart`
+- 此時可安全 `docker compose down`
+
+**跨 PC 接續步驟**（前提：兩台 PC 都掛載同一個 NAS 到 `/Volumes/AI02/Civatas-USA/`）：
+```bash
+cd /Volumes/AI02/Civatas-USA/ap
+docker compose up -d
+# 進 http://localhost:3100 → prediction 頁，UI 應顯示 "Resume from checkpoint"
+# 或 API call:
+curl -X POST http://localhost:8000/api/pipeline/evolution/predictions/resume-checkpoint/{JOB_ID}
+```
+
+⚠️ **不要兩台 PC 同時跑 docker**（會搶寫 NAS 上的 state files）。
+
+### 📂 本日修改過的檔案
+
+| 檔案 | 變更摘要 |
+|---|---|
+| `ap/services/evolution/app/news_pool.py` | `_parse_crawled_ts()` helper + `_trim_pool` sort key |
+| `ap/services/evolution/app/evolver.py` | `_augment_party_detection()` helper + `start_evolution()` 整合 |
+| `ap/services/evolution/app/snapshot.py` | `save_snapshot()` 新增 3 個 optional 參數 + auto-inherit 邏輯 |
+| `ap/services/evolution/app/main.py` | `SaveSnapshotRequest` 加欄位 |
+| `ap/services/evolution/app/predictor.py` | `save_prediction()` augmented PD + scoring_params merge |
+| `ap/services/web/src/components/panels/PredictionPanel.tsx` | snap scoring_params sync + auto dates + Sim days input + pausingPending UX + 移除誤刪 |
+| `ap/services/web/src/components/panels/PredictionEvolutionDashboardPanel.tsx` | pausingPending UX |
+| `ap/services/web/src/components/panels/EvolutionQuickStartPanel.tsx` | pause spinner + banner |
+
+### 🔄 在另一台 PC 接續開發步驟
+
+1. **拉最新 commit + 暫存改動**：
+   ```bash
+   cd /Volumes/AI02/Civatas-USA
+   git pull   # 最後 commit: 25f361b
+   git status # 應有上表 8 檔 uncommitted
+   ```
+2. **啟動服務**：
+   ```bash
+   cd ap && docker compose up -d  # 不需 --build（程式 hot-reload 即可）
+   ```
+3. **驗證 P2 狀態**：
+   - 工作區 `b6009461`（P2，2028 template）
+   - Snapshot `bb18a488` 已 backfill scoring_params/party_detection（包含 augmented surnames）
+   - 進 http://localhost:3100/workspaces/b6009461/prediction 應自動：
+     - 套用 13 個 advanced params（紫色 banner）
+     - 日期 2026-03-17 ~ 今日
+     - Sim days 在 Base tab Start/End date 旁邊
+4. **若有 paused prediction**：UI 應顯示 Resume 按鈕（如先前測試的 c4902fe4 已被誤刪 bug 砍掉，這個已修，下次 pause 會正確保留）
+5. **Moonshot 修復**（未做、選擇性）：
+   - 方案 A：在 `evolver.py:_call_llm` 對 Moonshot 加 ratelimit asyncio.Semaphore(1) + jitter
+   - 方案 B：在 round-robin redistribution 時降低 Moonshot 權重（如 4 vendor 但 Moonshot 只占 1/6 槽）
+   - 方案 C：給 Moonshot 加 timeout + fallback（已有 fallback，但 timeout 太長）
+
+### 待辦事項（剩餘）
+
+優先序：
+1. **Moonshot rate-limit 主動限流** — 解決後可重啟 4 vendor 跑驗證
+2. **EC 預測準確度** — 100 agents 太少，考慮 1000+ 或 proportional sampling（CA ~120 agents、WY ~1.5）
+3. **Tossup 桶 leaning shift 永久性** — 觀察到 shift 多但會回復，可調 `shift_consecutive_days_req`
+4. **Settings.json 安全處理** — 內含真實 API keys 仍未從 git 移除，已在 .gitignore 但 tracked。需 `git rm --cached` + key rotation
+
 ## 語言規則
 - 思考過程（thinking）可以使用英文
 - 所有最終回覆必須使用繁體中文

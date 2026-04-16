@@ -150,6 +150,7 @@ def save_prediction(
         effective_groups = [{"name": "default", "candidates": poll_options}]
 
     from .evolver import _augment_party_detection
+    from .snapshot import get_snapshot
     _cand_names: list[str] = []
     _cand_descs: dict[str, str] = {}
     for _g in effective_groups:
@@ -159,6 +160,17 @@ def save_prediction(
                 _cand_names.append(_n)
                 _cand_descs[_n] = _c.get("description", "") or ""
     _auto_pd = _augment_party_detection({}, _cand_names, _cand_descs)
+
+    _snap_meta = get_snapshot(snapshot_id) if snapshot_id else None
+    _snap_scoring = (_snap_meta or {}).get("scoring_params") or {}
+    if _snap_scoring:
+        scoring_params = {**_snap_scoring, **(scoring_params or {})}
+    _snap_pd = (_snap_meta or {}).get("party_detection") or {}
+    if _snap_pd:
+        for _k in ("D", "R", "I"):
+            for _v in _snap_pd.get(_k, []) or []:
+                if _v and _v not in _auto_pd.get(_k, []):
+                    _auto_pd.setdefault(_k, []).append(_v)
 
     pred = {
         "prediction_id": pred_id,
