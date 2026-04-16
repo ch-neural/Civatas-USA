@@ -38,3 +38,4 @@ uploads/*
 
 # Claude local settings
 .claude/
+start_claude_danger.sh
