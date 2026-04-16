@@ -1166,11 +1166,11 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
         let tplStart: string | undefined;
         if (ew?.end_date && /^\d{4}-\d{2}-\d{2}$/.test(ew.end_date)) {
           tplEnd = ew.end_date;
-          tplStart = ew.start_date || addDays(tplEnd, -6);
+          tplStart = ew.start_date || addDays(tplEnd!, -6);
         } else if (cycle) {
           const elDate = computeElDate(cycle);
           tplEnd = addDays(elDate, -1);
-          tplStart = addDays(tplEnd, -6);
+          tplStart = addDays(tplEnd!, -6);
         }
         const tplIsFuture = tplEnd && tplEnd > today;
         const tplIsHistorical = tplEnd && tplEnd <= today;
