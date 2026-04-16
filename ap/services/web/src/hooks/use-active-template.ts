@@ -53,11 +53,23 @@ export function useActiveTemplate(wsId: string): {
   templateId: string | null;
   loading: boolean;
 } {
-  const [templateId, setTemplateId] = useState<string | null>(() => getActiveTemplateId(wsId));
+  // SSR-safe: always start with null/true so server and client agree on initial render.
+  // The useEffect below reads localStorage on the client after hydration.
+  const [templateId, setTemplateId] = useState<string | null>(null);
   const [template, setTemplate] = useState<ActiveTemplate>(null);
-  // Start as loading when localStorage has no entry — the fallback inference
-  // effect below will set it false once the template is resolved or not found.
-  const [loading, setLoading] = useState<boolean>(() => !getActiveTemplateId(wsId));
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Initialize from localStorage on client (after hydration — avoids React error #310)
+  useEffect(() => {
+    const stored = getActiveTemplateId(wsId);
+    if (stored) {
+      setTemplateId(stored);
+      // loading stays true until the template body fetch completes
+    } else {
+      // No entry in localStorage — let the fallback inference effect run
+      // (it will set loading=false when done)
+    }
+  }, [wsId]);
 
   // Listen for active-template changes (same-tab CustomEvent + cross-tab storage)
   useEffect(() => {
