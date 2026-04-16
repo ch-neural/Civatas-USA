@@ -157,6 +157,14 @@ export function OnboardingWizard() {
       try {
         const settings = await apiFetch("/api/settings");
         if (settings?.serper_api_key) setSerperKey(settings.serper_api_key);
+        // Pre-fill LLM providers when re-entering wizard (existing vendors saved).
+        // For truly new users llm_vendors is empty, so the blank OpenAI card stays.
+        if (settings?.llm_vendors?.length) {
+          const parsed = parseSettingsToProvidersAndRoles(settings);
+          if (parsed.providers.length > 0) setProviders(parsed.providers);
+          if (parsed.systemLlm.provider_id) setSystemLlm(parsed.systemLlm);
+          if (parsed.agentLlms.length > 0) setAgentLlms(parsed.agentLlms);
+        }
       } catch { /* first run — no settings yet */ }
       setInitialLoading(false);
     })();
