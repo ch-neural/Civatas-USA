@@ -9,8 +9,10 @@ build/
 node_modules/
 .next/
 
-# Environment
+# Environment & secrets
 .env
+ap/shared/settings.json
+ap/data/evolution/
 
 # Data caches
 data/*/raw/
