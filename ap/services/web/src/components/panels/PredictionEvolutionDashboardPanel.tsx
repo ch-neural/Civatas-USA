@@ -111,8 +111,8 @@ export default function PredictionEvolutionDashboardPanel({ wsId }: { wsId: stri
     const elapsed = liveJob.started_at ? Math.max(0, Math.floor((Date.now() / 1000) - liveJob.started_at)) : 0;
     const fmtElapsed = elapsed < 60 ? `${elapsed}s` : `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
     const phaseLabel = en
-      ? { searching: "🔍 Searching news", scoring: "📊 Scoring news", district_news: "📰 District news", evolving: "🧠 Agent evolution", polling: "🗳️ Running poll", completing: "✨ Finalizing" }[phase] || phase
-      : { searching: "🔍 搜尋新聞中", scoring: "📊 新聞評分中", district_news: "📰 地方新聞", evolving: "🧠 Agent 演化中", polling: "🗳️ 投票中", completing: "✨ 結算中" }[phase] || phase;
+      ? ({ searching: "🔍 Searching news", scoring: "📊 Scoring news", district_news: "📰 District news", evolving: "🧠 Agent evolution", polling: "🗳️ Running poll", completing: "✨ Finalizing" } as Record<string, string>)[phase] || phase
+      : ({ searching: "🔍 搜尋新聞中", scoring: "📊 新聞評分中", district_news: "📰 地方新聞", evolving: "🧠 Agent 演化中", polling: "🗳️ 投票中", completing: "✨ 結算中" } as Record<string, string>)[phase] || phase;
     return (
       <div style={{ padding: 14, borderRadius: 10, background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.3)", marginBottom: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>

@@ -473,7 +473,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
 
     // 9. Build summary
     const tips: string[] = [];
-    tips.push(`調查方式：${{phone:"市話",mobile:"手機",online:"網路",street:"街頭"}[surveyMethod] || surveyMethod}`);
+    tips.push(`調查方式：${({phone:"市話",mobile:"手機",online:"網路",street:"街頭"} as Record<string,string>)[surveyMethod] || surveyMethod}`);
     if (isContrastStyle) tips.push(`Head-to-head poll (common opponent: ${commonOpponent})`);
     if (isTwoWay) tips.push("兩人對決模式");
     if (isSameParty) tips.push("同黨初選 → 同黨懲罰 10%");

@@ -62,7 +62,7 @@ export function EvolutionDashboard({ steps, currentStep }: { steps: any[]; curre
     const agents = step.agents || [];
     const map: Record<string, number> = { high: 0, medium: 0, low: 0, none: 0 };
     for (const a of agents) map[a.news_relevance || "none"] = (map[a.news_relevance || "none"] || 0) + 1;
-    return Object.entries(map).filter(([, v]) => v > 0).map(([name, value]) => ({ name: { high: "高影響", medium: "中影響", low: "低影響", none: "無影響" }[name] || name, value }));
+    return Object.entries(map).filter(([, v]) => v > 0).map(([name, value]) => ({ name: ({ high: "高影響", medium: "中影響", low: "低影響", none: "無影響" } as Record<string,string>)[name] || name, value }));
   }, [step]);
 
   const first = steps[0]?.aggregate || {};
