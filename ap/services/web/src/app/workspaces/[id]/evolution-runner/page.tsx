@@ -6,5 +6,5 @@ import EvolutionPanel from "@/components/panels/EvolutionPanel";
 export default function EvolutionRunnerPage() {
   const params = useParams();
   const wsId = params.id as string;
-  return <EvolutionPanel wsId={wsId} defaultTab="runner" />;
+  return <EvolutionPanel wsId={wsId} />;
 }

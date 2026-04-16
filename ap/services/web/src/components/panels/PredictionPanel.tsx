@@ -4823,10 +4823,10 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                       >🛑 Stop</button>
                     )}
                     {!running && (jobStatus.status === "completed" || jobStatus.status === "failed") && (
-                      <button 
+                      <button
                         onClick={() => { setJobStatus(null); setJobId(null); }}
-                        style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", color: "#a78bfa", fontSize: 11, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
-                      >↩️ Back to setup</button>
+                        style={{ padding: "6px 14px", borderRadius: 8, background: "linear-gradient(135deg, #a855f7, #7c3aed)", border: "none", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, boxShadow: "0 2px 8px rgba(168,85,247,0.4)" }}
+                      >＋ New Prediction</button>
                     )}
                   </div>
                   <span style={{ padding: "2px 10px", borderRadius: 10, fontSize: 10, fontWeight: 600, background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}>
