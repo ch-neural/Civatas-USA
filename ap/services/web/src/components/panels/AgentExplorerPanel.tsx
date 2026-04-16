@@ -13,8 +13,6 @@ import {
 
 const LEAN_COLORS: Record<string, string> = {
   // US Cook PVI 5-tier
-  "Solid Dem": "#1e40af", "Lean Dem": "#3b82f6", "Tossup": "#94a3b8", "Lean Rep": "#f87171", "Solid Rep": "#dc2626",
-  // US (Civatas-USA Stage 1.5+)
   "Solid Dem": "#1e40af", "Lean Dem": "#3b82f6",
   "Tossup": "#94a3b8",
   "Lean Rep": "#ef4444", "Solid Rep": "#991b1b",
