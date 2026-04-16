@@ -1,7 +1,7 @@
-# 🗳️ Civatas USA — AI Political Simulation Platform
+# 🗳️ Civatas USA
 
-> **What if you could run the 2028 presidential election before it happens?**  
-> Civatas USA simulates thousands of real American voters, feeds them real news, watches their opinions evolve — and then calls the election.
+> **Civatas is SimCity for elections.**  
+> Build 1,000 Americans from Census data. Feed them 30 days of real news. Watch their opinions shift. Run the 2028 race — before it happens.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue)](ap/docker-compose.yml)
