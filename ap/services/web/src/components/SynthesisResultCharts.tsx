@@ -80,7 +80,7 @@ export default function SynthesisResultCharts({ persons, wsId }: Props) {
       });
 
       // Personality sub-dimensions (nested object)
-      const pers = person.personality as Record<string, string> | undefined;
+      const pers = (person.personality as unknown) as Record<string, string> | undefined;
       if (pers && typeof pers === "object") {
         Object.entries(PERSONALITY_LABEL_KEYS).forEach(([dimKey, labelKey]) => {
           const raw = pers[dimKey];
