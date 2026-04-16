@@ -109,6 +109,29 @@ export function getDefaultCalibParams(template: ActiveTemplate): typeof US_DEFAU
   return { ...US_DEFAULT_CALIB_PARAMS, ...overrides };
 }
 
+/**
+ * Default Vote Weighting (sampling_modality) per template.
+ * Real-world turnout in US elections consistently favors older voters,
+ * so "mixed_73" (Likely Voter) matches actual outcomes best for forecasting.
+ *
+ *  - presidential / senate / gubernatorial / house / mayoral → "mixed_73"
+ *  - If template explicitly sets `election.default_sampling_modality`, use it.
+ *  - Fallback → "mixed_73" (best for any US general election).
+ *  - If no election block → "unweighted" (raw popular vote).
+ */
+export function getDefaultSamplingModality(template: ActiveTemplate): "unweighted" | "mixed_73" | "landline_only" {
+  const override = (template as any)?.election?.default_sampling_modality;
+  if (override === "unweighted" || override === "mixed_73" || override === "landline_only") {
+    return override;
+  }
+  const electionType = template?.election?.type;
+  if (!electionType) return "unweighted";
+  if (["presidential", "senate", "gubernatorial", "house", "mayoral"].includes(electionType)) {
+    return "mixed_73";
+  }
+  return "mixed_73";
+}
+
 /** Default KOL settings. */
 export function getDefaultKolSettings(template: ActiveTemplate): { enabled: boolean; ratio: number; reach: number } {
   return template?.election?.default_kol || { enabled: false, ratio: 0.05, reach: 0.40 };

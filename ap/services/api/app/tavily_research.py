@@ -107,10 +107,11 @@ async def _search_serper_news(query: str, start_date: str, end_date: str, num: i
         "q": query,
         "gl": SERPER_GL,
         "hl": SERPER_HL,
+        "lr": "lang_en",   # Restrict results to English-language articles
         "num": min(num, 100),
         "tbs": tbs,
     }
-    
+
     headers = {
         "X-API-KEY": api_key,
         "Content-Type": "application/json",
@@ -134,22 +135,35 @@ async def _search_serper_news(query: str, start_date: str, end_date: str, num: i
             raise
     
     raw_results = data.get("news", [])
-    
-    # Pre-filter: parse Serper dates and reject results outside range
+
+    def _has_cjk(text: str) -> bool:
+        """Return True if the text contains any CJK unified ideograph characters."""
+        return any('\u4e00' <= c <= '\u9fff' or '\u3400' <= c <= '\u4dbf' or
+                   '\u3040' <= c <= '\u30ff' for c in (text or ""))
+
+    # Pre-filter: parse Serper dates and reject results outside range + CJK
     filtered = []
+    cjk_rejected = 0
     for r in raw_results:
+        title = r.get("title", "")
+        snippet = r.get("snippet", "")
+        # Reject CJK-language articles — this is an English-only US simulation
+        if _has_cjk(title) or _has_cjk(snippet):
+            logger.info(f"  ✗ CJK-filter rejected: '{title[:60]}'")
+            cjk_rejected += 1
+            continue
         raw_date = r.get("date", "")
         iso_date = _parse_serper_date(raw_date)
         if iso_date:
             r["_parsed_date"] = iso_date
             if not skip_date_filter and (iso_date < start_date or iso_date > end_date):
-                logger.info(f"  ✗ Pre-filter rejected: [{iso_date}] '{r.get('title', '')[:40]}' (range: {start_date}~{end_date})")
+                logger.info(f"  ✗ Pre-filter rejected: [{iso_date}] '{title[:40]}' (range: {start_date}~{end_date})")
                 continue
         filtered.append(r)
-    
+
     rejected = len(raw_results) - len(filtered)
     if rejected > 0:
-        logger.info(f"Serper news '{query[:30]}': {len(raw_results)} raw → {len(filtered)} after date pre-filter ({rejected} rejected)")
+        logger.info(f"Serper news '{query[:30]}': {len(raw_results)} raw → {len(filtered)} after filters ({cjk_rejected} CJK, {rejected - cjk_rejected} date)")
     else:
         logger.info(f"Serper news '{query[:30]}': {len(filtered)} results")
     return filtered

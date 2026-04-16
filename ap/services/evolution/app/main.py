@@ -554,6 +554,27 @@ def evolution_dashboard(job_id: str = "", workspace_id: str = ""):
         if _total > 0:
             _global_offset += _total
 
+    # Fallback: read candidate_estimate from persisted history file for days
+    # not covered by in-memory jobs (e.g., after a service restart or reset).
+    try:
+        from .evolver import _load_history as _evolver_load_history
+        _hist_entries = _evolver_load_history()
+        for _he in _hist_entries:
+            _gd = _he.get("global_day")
+            if _gd and _gd not in _daily_estimates:
+                _hce = _he.get("candidate_estimate", {})
+                if _hce:
+                    _daily_estimates[_gd] = _hce
+                    for _cn in _hce.keys():
+                        if _cn != "Undecided":
+                            _cand_names_seen.add(_cn)
+            # Also surface candidate names stored in history entries
+            for _cn in _he.get("candidate_names", []):
+                if _cn and _cn != "Undecided":
+                    _cand_names_seen.add(_cn)
+    except Exception:
+        pass  # Non-fatal: in-memory data already used above
+
     # Merge the set of days we have data for: diary-derived days ∪ daily_summary days.
     # Diaries give awareness; daily_summary gives support + sentiment.
     all_days: set[int] = set(days_data.keys()) | set(_daily_estimates.keys())
@@ -3187,6 +3208,7 @@ class CreatePredictionRequest(BaseModel):
     end_date: str = ""
     prediction_mode: str = "election"   # "election" or "satisfaction"
     enable_news_search: bool = True    # if False, skip cycle search and run on snapshot state alone
+    use_electoral_college: bool = False  # US presidential: compute state-level winner-take-all EV
 
 
 class RunPredictionRequest(BaseModel):
@@ -3213,6 +3235,7 @@ def prediction_create(req: CreatePredictionRequest):
         start_date=req.start_date, end_date=req.end_date,
         prediction_mode=req.prediction_mode,
         enable_news_search=req.enable_news_search,
+        use_electoral_college=req.use_electoral_college,
     )
 
 

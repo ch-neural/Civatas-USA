@@ -19,6 +19,7 @@ import {
   getDefaultCandidateBaseScores,
   getDefaultPredictionQuestion,
   getDefaultCalibParams,
+  getDefaultSamplingModality,
   makePartyColorResolver,
   makePartyIdResolver,
 } from "@/lib/template-defaults";
@@ -229,7 +230,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
   const [keywordBonusCap, setKeywordBonusCap] = useState<number>(10);
   const [anxietySensitivityMult, setAnxietySensitivityMult] = useState<number>(0.15);
   const [anxietyDecay, setAnxietyDecay] = useState<number>(0.05);
-  const [satisfactionDecay, setSatisfactionDecay] = useState<number>(0.02);
+  const [satisfactionDecay, setSatisfactionDecay] = useState<number>(0.04);
   const [individualityMult, setIndividualityMult] = useState<number>(1.0);
   const [sentimentMult, setSentimentMult] = useState<number>(0.15);
   // ── Charm & cross-party appeal params ──
@@ -244,6 +245,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
   const [shiftAnxHigh, setShiftAnxHigh] = useState<number>(80);
   const [shiftDaysReq, setShiftDaysReq] = useState<number>(5);
   const [samplingModality, setSamplingModality] = useState<string>("unweighted");
+  const [useElectoralCollege, setUseElectoralCollege] = useState<boolean>(false);
   const [availableVendors, setAvailableVendors] = useState<{name:string;available:boolean;model:string;api_key_hint:string}[]>([]);
   const [enabledVendors, setEnabledVendors] = useState<Set<string>>(new Set());
   const [pollOptions, setPollOptions] = useState<{id: string, name: string, description: string}[]>([]);
@@ -273,6 +275,14 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
       const national = getDefaultNationalKeywords(activeTemplate);
       if (national) setPredNationalKeywords(national);
     }
+    // Auto-enable Electoral College for US presidential templates
+    const electionType = (activeTemplate as any)?.election?.type || (activeTemplate as any)?.electionType || "";
+    if (isUs && electionType === "presidential") {
+      setUseElectoralCollege(true);
+    }
+    // Auto-set Vote Weighting per template (presidential/senate/etc. → Likely Voter mixed_73)
+    const tplSamplingModality = getDefaultSamplingModality(activeTemplate);
+    setSamplingModality(tplSamplingModality);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTemplate]);
 
@@ -827,6 +837,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
       if (cfg.baseUndecided !== undefined) setBaseUndecided(cfg.baseUndecided);
       if (cfg.maxUndecided !== undefined) setMaxUndecided(cfg.maxUndecided);
       if (cfg.samplingModality) setSamplingModality(cfg.samplingModality);
+      if (cfg.useElectoralCollege !== undefined) setUseElectoralCollege(cfg.useElectoralCollege);
       if (cfg.pollOptions) setPollOptions(cfg.pollOptions);
       if (cfg.pollGroups) setPollGroups(cfg.pollGroups);
       if (cfg.maxChoices) setMaxChoices(cfg.maxChoices);
@@ -1625,6 +1636,18 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
         if (popSettings?.surveyMethod) _surveyMethod = popSettings.surveyMethod;
       } catch {}
 
+      // 4b. Collect enabled agent-LLM vendor IDs so predictor can round-robin
+      // across all configured vendors (mirrors EvolutionQuickStartPanel logic).
+      let _enabledVendors: string[] | undefined;
+      try {
+        const settingsRes = await apiFetch("/api/settings");
+        const allVendors: any[] = settingsRes?.llm_vendors || [];
+        const agentVendorIds = allVendors
+          .filter((v: any) => v.role !== "system" && v.id)
+          .map((v: any) => v.id as string);
+        if (agentVendorIds.length) _enabledVendors = agentVendorIds;
+      } catch {}
+
       // 5. Create prediction
       const scoringParams: Record<string, any> = {
         survey_method: _surveyMethod,
@@ -1654,13 +1677,17 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
         shift_anx_threshold_high: shiftAnxHigh,
         shift_consecutive_days_req: shiftDaysReq,
         combine_mode: pollGroups.length > 1 ? "weighted" : "independent",
+        // LLM negativity-bias corrections — must match evolution defaults so
+        // prediction and evolution use identical emotional update logic.
+        negativity_dampen: 0.70,
+        positivity_boost: 1.30,
       };
       const autoQuestion = predictionMode === "satisfaction"
         ? "Satisfaction survey: " + surveyItems.filter(s => s.name.trim()).map(s => s.name).join(", ")
         : pollGroups.length > 0
           ? pollGroups.map(g => g.name).join(" / ")
           : "選情預測";
-      const result = await createPrediction(autoQuestion, selectedSnap, mergedScenarios, simDays, concurrency, enableKol, kolRatio, kolReach, samplingModality, pollOptions, maxChoices, enrichedPollGroups, scoringParams, predictionMacroContext, undefined, useCalibResultLeaning, useDynamicSearch ? searchInterval : 0, predLocalKeywords, predNationalKeywords, predCounty, predStartDate, predEndDate, predictionMode, enableNewsSearch);
+      const result = await createPrediction(autoQuestion, selectedSnap, mergedScenarios, simDays, concurrency, enableKol, kolRatio, kolReach, samplingModality, pollOptions, maxChoices, enrichedPollGroups, scoringParams, predictionMacroContext, _enabledVendors, useCalibResultLeaning, useDynamicSearch ? searchInterval : 0, predLocalKeywords, predNationalKeywords, predCounty, predStartDate, predEndDate, predictionMode, enableNewsSearch, useElectoralCollege);
       // Auto-create a recording for this prediction run so Dashboard can pull
       // playback steps and generate a downloadable HTML replay. Reuse the
       // existing recordingId if the user manually set one, else auto-create.
@@ -1931,6 +1958,53 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                   </div>
                 </div>
               )}
+
+              {/* Electoral College results (US presidential only) */}
+              {r.electoral_college_results && Object.keys(r.electoral_college_results).length > 0 && (() => {
+                const ecr = r.electoral_college_results;
+                const firstGroup = Object.values(ecr)[0] as any;
+                if (!firstGroup) return null;
+                const ev = firstGroup.electoral_votes as Record<string, number>;
+                const coveredEv = firstGroup.covered_ev as number;
+                const totalEv = firstGroup.total_ev as number;
+                const evToWin = firstGroup.ev_to_win as number;
+                const candidates = Object.entries(ev).sort(([,a], [,b]) => (b as number) - (a as number));
+                const winner = candidates[0]?.[0];
+                const winnerEv = candidates[0]?.[1] as number;
+                return (
+                  <div style={{ marginBottom: 16, padding: "12px 16px", borderRadius: 10, background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.2)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+                      <span style={{ color: "#fbbf24", fontSize: 11, fontWeight: 700 }}>🗳️ {en ? "Electoral College Result" : "選舉人票結果"}</span>
+                      <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 10 }}>
+                        {en ? `Coverage: ${coveredEv}/${totalEv} EV (${Math.round(coveredEv/totalEv*100)}% of states have agents)` : `覆蓋率：${coveredEv}/${totalEv} EV（${Math.round(coveredEv/totalEv*100)}% 州有 agent）`}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8 }}>
+                      {candidates.map(([name, evCount]) => {
+                        const isWinner = (evCount as number) >= evToWin;
+                        return (
+                          <div key={name} style={{ padding: "8px 16px", borderRadius: 8, background: isWinner ? "rgba(251,191,36,0.15)" : "rgba(255,255,255,0.04)", border: `1px solid ${isWinner ? "rgba(251,191,36,0.5)" : "rgba(255,255,255,0.1)"}` }}>
+                            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginBottom: 2 }}>{name}</div>
+                            <div style={{ fontSize: 20, fontWeight: 700, color: isWinner ? "#fbbf24" : "rgba(255,255,255,0.8)" }}>
+                              {evCount} <span style={{ fontSize: 12, fontWeight: 400 }}>EV</span>
+                              {isWinner && <span style={{ fontSize: 10, marginLeft: 6, color: "#fbbf24" }}>✓ {en ? "wins" : "勝出"}</span>}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {winnerEv >= evToWin ? (
+                      <div style={{ fontSize: 11, color: "#fbbf24" }}>
+                        {en ? `🏆 ${winner} projected to win the Electoral College with ${winnerEv} electoral votes (need ${evToWin})` : `🏆 ${winner} 預計以 ${winnerEv} 選舉人票勝出（需 ${evToWin}）`}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 11, color: "rgba(245,158,11,0.7)" }}>
+                        {en ? `⚠️ No candidate has reached ${evToWin} EV threshold from covered states. Result incomplete — ${totalEv - coveredEv} EV from states without agents.` : `⚠️ 尚無候選人達到 ${evToWin} EV 門檻（被覆蓋州），有 ${totalEv - coveredEv} EV 來自無 agent 的州未計入。`}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Contrast-style (對比式) comparison result */}
               {r.contrast_comparison && (() => {
@@ -2458,6 +2532,156 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
               {/* === 區塊二：預測分組 / 調查對象 === */}
               <div style={{ display: activeTab === "scenario" ? "block" : "none" }}>
 
+              {/* Vote Counting Method — top of Scenario tab */}
+              {predictionMode === "election" && (
+                <div style={{ ...card, marginBottom: 16 }}>
+                  <h3 style={{ color: "#fff", fontSize: 14, fontWeight: 700, margin: "0 0 6px 0", fontFamily: "var(--font-cjk)" }}>
+                    {en ? "Vote Counting Method" : "計票方式"}
+                  </h3>
+                  <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, margin: "0 0 14px 0", lineHeight: 1.6, fontFamily: "var(--font-cjk)" }}>
+                    {en
+                      ? "Choose how each agent's vote is weighted and whether to compute state-by-state Electoral College. Different methods simulate different real-world polling/voting scenarios."
+                      : "選擇每位 agent 的票數加權方式，以及是否按州計算選舉人票。不同方式模擬不同的真實投票/民調情境。"}
+                  </p>
+
+                  {/* === 3 voting method cards (clickable radio style) === */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 10, marginBottom: 16 }}>
+                    {[
+                      {
+                        id: "unweighted",
+                        icon: "🗳️",
+                        title: en ? "Unweighted (National Popular Vote)" : "等重（全國得票率）",
+                        short: en ? "Every agent = 1 vote" : "每位 agent 一票等重",
+                        weights: [
+                          { age: "<30", w: "1.0" },
+                          { age: "30s", w: "1.0" },
+                          { age: "40s", w: "1.0" },
+                          { age: "50s", w: "1.0" },
+                          { age: "60+", w: "1.0" },
+                        ],
+                        desc: en
+                          ? "Pure popular vote: what if every citizen's vote counted the same? Like Clinton 2016 winning 3M more votes than Trump, or Gore 2000 winning 500K more than Bush."
+                          : "純普選票：假設每個公民的票一樣重。類似 2016 年 Clinton 比 Trump 多得 300 萬票、2000 年 Gore 比 Bush 多 50 萬票的情境。",
+                        use: en
+                          ? "Best for: 'Who is more popular?' research, ignoring turnout disparities."
+                          : "適合：研究「誰比較受歡迎」，不考慮投票率差異。",
+                        color: "#8b5cf6",
+                      },
+                      {
+                        id: "mixed_73",
+                        icon: "📊",
+                        title: en ? "Likely Voter (Age-Weighted, 70/30 Mix)" : "可能選民（年齡加權，70/30 混合）",
+                        short: en ? "Seniors count more (modern polling standard)" : "長者權重較高（現代民調標準）",
+                        weights: [
+                          { age: "<30", w: "0.7" },
+                          { age: "30s", w: "0.8" },
+                          { age: "40s", w: "0.9" },
+                          { age: "50s", w: "1.1" },
+                          { age: "60+", w: "1.2" },
+                        ],
+                        desc: en
+                          ? "Models actual US turnout: young voters ~50% turnout, seniors ~75%. Named after the 70% cell / 30% landline hybrid sample used by Pew, NYT/Siena, and most modern pollsters."
+                          : "對準真實美國投票率：青年 ~50%，長者 ~75%。名稱源自 Pew、NYT/Siena 等現代民調常用的 70% 手機 + 30% 市話 混合抽樣法。",
+                        use: en
+                          ? "Best for: Matching real election results (2024 backtesting, forecasting)."
+                          : "適合：對準真實選舉結果（2024 回測、預測）。",
+                        color: "#22c55e",
+                      },
+                      {
+                        id: "landline_only",
+                        icon: "☎️",
+                        title: en ? "Landline-biased (Senior-Heavy)" : "傳統市話民調（嚴重偏年長）",
+                        short: en ? "Extreme age skew (old-school polling)" : "年齡偏差極大（老派民調）",
+                        weights: [
+                          { age: "<30", w: "0.3" },
+                          { age: "30s", w: "0.5" },
+                          { age: "40s", w: "0.8" },
+                          { age: "50s", w: "1.2" },
+                          { age: "60+", w: "1.8" },
+                        ],
+                        desc: en
+                          ? "Simulates pre-2000s landline-only polls (e.g., old Gallup, Rasmussen). Landlines skew heavily older and Republican, systematically underestimating young/Democratic voters. The '2016 polls miss' cautionary tale."
+                          : "模擬 2000 年前只打市話的民調（如舊蓋洛普、Rasmussen）。市話族群嚴重偏向年長與共和黨，系統性低估青年/民主黨選民。就是「2016 年民調翻車」的經典教材。",
+                        use: en
+                          ? "Best for: Teaching/research on sampling bias; sensitivity analysis."
+                          : "適合：教學/研究抽樣偏差；敏感度分析。",
+                        color: "#f59e0b",
+                      },
+                    ].map(opt => {
+                      const selected = samplingModality === opt.id;
+                      const tplRecommended = getDefaultSamplingModality(activeTemplate) === opt.id;
+                      return (
+                        <div
+                          key={opt.id}
+                          onClick={() => !running && setSamplingModality(opt.id)}
+                          style={{
+                            padding: 12,
+                            borderRadius: 10,
+                            border: selected ? `2px solid ${opt.color}` : "1px solid rgba(255,255,255,0.08)",
+                            background: selected ? `${opt.color}15` : "rgba(255,255,255,0.02)",
+                            cursor: running ? "not-allowed" : "pointer",
+                            opacity: running ? 0.6 : 1,
+                            transition: "all 0.15s",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6, flexWrap: "wrap" }}>
+                            <input type="radio" checked={selected} readOnly style={{ accentColor: opt.color, margin: 0 }} />
+                            <span style={{ fontSize: 16 }}>{opt.icon}</span>
+                            <span style={{ color: selected ? opt.color : "rgba(255,255,255,0.85)", fontSize: 13, fontWeight: 700, fontFamily: "var(--font-cjk)" }}>
+                              {opt.title}
+                            </span>
+                            {tplRecommended && (
+                              <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 4, background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.4)", color: "#4ade80", fontWeight: 700, letterSpacing: 0.3, fontFamily: "var(--font-cjk)" }}>
+                                ⭐ {en ? "Template Default" : "模板推薦"}
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 11, marginBottom: 6, fontFamily: "var(--font-cjk)" }}>
+                            {opt.short}
+                          </div>
+                          <div style={{ background: "rgba(0,0,0,0.25)", padding: "6px 8px", borderRadius: 6, marginBottom: 8 }}>
+                            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.35)", marginBottom: 3, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                              {en ? "Weight by age" : "各年齡權重"}
+                            </div>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 2 }}>
+                              {opt.weights.map((w: any) => (
+                                <div key={w.age} style={{ textAlign: "center" }}>
+                                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-mono)" }}>{w.age}</div>
+                                  <div style={{ fontSize: 12, color: Number(w.w) > 1 ? "#fbbf24" : Number(w.w) < 1 ? "#60a5fa" : "rgba(255,255,255,0.7)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>×{w.w}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 11, lineHeight: 1.6, marginBottom: 6, fontFamily: "var(--font-cjk)" }}>
+                            {opt.desc}
+                          </div>
+                          <div style={{ color: `${opt.color}cc`, fontSize: 10, lineHeight: 1.5, fontFamily: "var(--font-cjk)", fontStyle: "italic" }}>
+                            {opt.use}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* === Electoral College toggle === */}
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 12 }}>
+                    <label style={{ display: "flex", alignItems: "flex-start", gap: 8, cursor: running ? "not-allowed" : "pointer" }}>
+                      <input type="checkbox" checked={useElectoralCollege} onChange={(e) => setUseElectoralCollege(e.target.checked)} disabled={running} style={{ accentColor: "#fbbf24", width: 16, height: 16, marginTop: 2 }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ color: useElectoralCollege ? "#fbbf24" : "rgba(255,255,255,0.75)", fontSize: 13, fontWeight: 700, fontFamily: "var(--font-cjk)" }}>
+                          🗳️ {en ? "Electoral College (538 EV · winner-take-all per state)" : "選舉人票 Electoral College（538張 · 各州勝者全得）"}
+                        </div>
+                        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 4, lineHeight: 1.6, fontFamily: "var(--font-cjk)" }}>
+                          {en
+                            ? "US presidential elections only. First candidate to 270 EV wins. With this enabled, the system aggregates agent votes per-state, assigns all that state's EVs to the winner, and reports both popular vote % AND Electoral College tallies. Auto-enabled for US presidential templates. A candidate can win EV while losing popular vote (Trump 2016, Bush 2000)."
+                            : "僅適用於美國總統大選。第一個拿到 270 張選舉人票者獲勝。勾選後系統會按州聚合 agent 票數，該州所有 EV 歸給該州贏家，結果同時呈現全國得票率與選舉人票。US 總統選舉模板自動勾選。候選人可能輸掉普選票但贏選舉人票（Trump 2016、Bush 2000）。"}
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              )}
+
               {/* Satisfaction survey items (when in satisfaction mode) */}
               {predictionMode === "satisfaction" && (
                 <div style={card}>
@@ -2735,6 +2959,15 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                             style={{ padding: "4px 10px", borderRadius: 6, border: "1px solid rgba(124,58,237,0.4)", background: wikiLoadingKey === `auto_${gi}_${ci}` ? "rgba(124,58,237,0.2)" : "rgba(124,58,237,0.08)", color: "#a78bfa", fontSize: 11, cursor: wikiLoadingKey !== null ? "wait" : "pointer", whiteSpace: "nowrap", flexShrink: 0, fontFamily: "var(--font-cjk)", fontWeight: 600 }}
                           >{wikiLoadingKey === `auto_${gi}_${ci}` ? t("prediction.s2.election.auto_btn_loading") : t("prediction.s2.election.auto_btn")}</button>
                           </div>
+                          {/* Historical backtest warning: if simulation dates are in the past,
+                              warn the user not to include post-election outcome in the description */}
+                          {predStartDate && new Date(predStartDate) < new Date() && (
+                            <div style={{ fontSize: 10, color: "#fbbf24", background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.25)", borderRadius: 4, padding: "4px 8px", marginTop: 4, lineHeight: 1.5 }}>
+                              {en
+                                ? `⚠️ Historical backtest (${predStartDate}) — description must only include information available before that date. Remove any post-election outcome text.`
+                                : `⚠️ 歷史回測（${predStartDate}）— 描述只能包含該日期之前已公開的資訊，請移除選後結果文字。`}
+                            </div>
+                          )}
                           {/* Visibility & Origin Districts */}
                           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 6 }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 4, flex: "1 1 180px" }}>
@@ -2789,6 +3022,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
               </div>
             </div>
           )}
+
           </div>
 
           {/* === 區塊三：進階模擬參數 === */}
@@ -2887,7 +3121,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                     <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 11 }}>{t("prediction.s3.macro.hint")}</span>
                   </div>
 
-                  <div style={{ display: "flex", gap: 20 }}>
+                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
                 <div>
                   <label style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, display: "block", marginBottom: 4 }}>{t("prediction.s3.sim_days")}</label>
                   <input type="number" min={1} max={90} value={simDays} onChange={(e) => setSimDays(Number(e.target.value))} disabled={running} style={{ width: 80, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", color: "#fff", fontSize: 13, outline: "none" }} />

@@ -41,6 +41,72 @@ except ImportError:
         is_admin_keyword as us_is_admin,
     )
 
+# ── US Electoral College data ─────────────────────────────────────────
+# 2024 apportionment (538 total).  Maine and Nebraska technically use the
+# congressional-district method; we simplify to winner-take-all here.
+STATE_ELECTORAL_VOTES: dict[str, int] = {
+    "AL": 9,  "AK": 3,  "AZ": 11, "AR": 6,  "CA": 54,
+    "CO": 10, "CT": 7,  "DE": 3,  "DC": 3,  "FL": 30,
+    "GA": 16, "HI": 4,  "ID": 4,  "IL": 19, "IN": 11,
+    "IA": 6,  "KS": 6,  "KY": 8,  "LA": 8,  "ME": 4,
+    "MD": 10, "MA": 11, "MI": 15, "MN": 10, "MS": 6,
+    "MO": 10, "MT": 4,  "NE": 5,  "NV": 6,  "NH": 4,
+    "NJ": 14, "NM": 5,  "NY": 28, "NC": 16, "ND": 3,
+    "OH": 17, "OK": 7,  "OR": 8,  "PA": 19, "RI": 4,
+    "SC": 9,  "SD": 3,  "TN": 11, "TX": 40, "UT": 6,
+    "VT": 3,  "VA": 13, "WA": 12, "WV": 4,  "WI": 10,
+    "WY": 3,
+}
+_TOTAL_EV = sum(STATE_ELECTORAL_VOTES.values())  # 538
+
+def _compute_electoral_college(
+    group_district_candidate: dict,   # {"Likely Voters": {"CA": {"Harris": 52.1, "Trump": 47.9}, ...}}
+    poll_group_name: str,
+) -> dict:
+    """Convert per-state popular vote shares into Electoral College result.
+
+    Returns:
+        {
+          "electoral_votes": {"Kamala Harris": 226, "Donald Trump": 312},
+          "state_results":   {"CA": "Kamala Harris", "TX": "Donald Trump", ...},
+          "total_ev": 538,
+          "ev_to_win": 270,
+          "covered_ev": 448,   # EV represented by states with agents
+          "uncovered_states": ["WY", "VT", ...],
+        }
+    """
+    state_data = group_district_candidate.get(poll_group_name, {})
+    ev_totals: dict[str, int] = {}
+    state_results: dict[str, str] = {}
+    covered_ev = 0
+    uncovered: list[str] = []
+
+    for state_abbr, ev in STATE_ELECTORAL_VOTES.items():
+        cand_pcts = state_data.get(state_abbr, {})
+        if not cand_pcts:
+            uncovered.append(state_abbr)
+            continue
+        # Filter out non-candidate keys
+        cand_pcts_clean = {k: v for k, v in cand_pcts.items()
+                           if k not in ("Undecided", "_count")}
+        if not cand_pcts_clean:
+            uncovered.append(state_abbr)
+            continue
+        winner = max(cand_pcts_clean, key=lambda c: cand_pcts_clean[c])
+        state_results[state_abbr] = winner
+        ev_totals[winner] = ev_totals.get(winner, 0) + ev
+        covered_ev += ev
+
+    return {
+        "electoral_votes": ev_totals,
+        "state_results": state_results,
+        "total_ev": _TOTAL_EV,
+        "ev_to_win": 270,
+        "covered_ev": covered_ev,
+        "uncovered_states": uncovered,
+    }
+
+
 # ── Prediction storage ───────────────────────────────────────────────
 
 def _ensure_dir():
@@ -73,6 +139,7 @@ def save_prediction(
     end_date: str = "",
     prediction_mode: str = "election",
     enable_news_search: bool = True,
+    use_electoral_college: bool = False,
 ) -> dict:
     """Create a new prediction record."""
     _ensure_dir()
@@ -81,6 +148,18 @@ def save_prediction(
     effective_groups = poll_groups or []
     if not effective_groups and poll_options:
         effective_groups = [{"name": "default", "candidates": poll_options}]
+
+    from .evolver import _augment_party_detection
+    _cand_names: list[str] = []
+    _cand_descs: dict[str, str] = {}
+    for _g in effective_groups:
+        for _c in _g.get("candidates", []) or []:
+            _n = _c.get("name")
+            if _n and _n not in _cand_names:
+                _cand_names.append(_n)
+                _cand_descs[_n] = _c.get("description", "") or ""
+    _auto_pd = _augment_party_detection({}, _cand_names, _cand_descs)
+
     pred = {
         "prediction_id": pred_id,
         "question": question,
@@ -100,6 +179,8 @@ def save_prediction(
         "enabled_vendors": enabled_vendors,
         "use_calibration_result_leaning": use_calibration_result_leaning,
         "prediction_mode": prediction_mode,
+        "use_electoral_college": use_electoral_college,
+        "_party_detection": _auto_pd,
         # Cycle-based dynamic news search
         "search_interval": search_interval,
         "local_keywords": local_keywords,
@@ -478,7 +559,8 @@ def _redistribute_leaning_by_ground_truth(
                 else:
                     name_to_code[str(k).lower()] = str(v)
 
-        def _leaning_for(cand_key: str) -> str:
+        def _party_code_for(cand_key: str) -> str:
+            """Return 'D', 'R', 'I', or '' for a candidate key."""
             key_l = (cand_key or "").lower()
             code = name_to_code.get(key_l)
             if not code:
@@ -486,19 +568,33 @@ def _redistribute_leaning_by_ground_truth(
                     if any(k and k in key_l for k in kws):
                         code = c
                         break
-            if code == "D":
-                return "Lean Dem"
-            if code == "R":
-                return "Lean Rep"
-            if code == "I":
-                return "Tossup"
-            return _get_leaning_for_candidate(cand_key)
+            return code or ""
 
-        # Map leaning → desired proportion
+        # Map leaning → desired proportion using the full 5-bucket Cook PVI system.
+        # D voters → split ~52% Solid Dem / 48% Lean Dem (US national average ratio)
+        # R voters → split ~57% Solid Rep / 43% Lean Rep (US national average ratio)
+        # I / unknown → Tossup
+        # This preserves party strength information and avoids collapsing everyone
+        # into just two buckets when there is no third-party candidate.
+        _D_SOLID_RATIO = 0.52  # Solid Dem share of all Dem-leaning agents
+        _R_SOLID_RATIO = 0.57  # Solid Rep share of all Rep-leaning agents
+
         leaning_share: dict[str, float] = {}
         for cand, votes in ground_truth.items():
-            ln = _leaning_for(cand)
-            leaning_share[ln] = leaning_share.get(ln, 0.0) + _extract_numeric(votes) / total_votes
+            code = _party_code_for(cand)
+            share = _extract_numeric(votes) / total_votes
+            if code == "D":
+                leaning_share["Solid Dem"] = leaning_share.get("Solid Dem", 0.0) + share * _D_SOLID_RATIO
+                leaning_share["Lean Dem"]  = leaning_share.get("Lean Dem",  0.0) + share * (1 - _D_SOLID_RATIO)
+            elif code == "R":
+                leaning_share["Solid Rep"] = leaning_share.get("Solid Rep", 0.0) + share * _R_SOLID_RATIO
+                leaning_share["Lean Rep"]  = leaning_share.get("Lean Rep",  0.0) + share * (1 - _R_SOLID_RATIO)
+            elif code == "I":
+                leaning_share["Tossup"] = leaning_share.get("Tossup", 0.0) + share
+            else:
+                # Unknown party — fall back to single-label inference
+                ln = _get_leaning_for_candidate(cand)
+                leaning_share[ln] = leaning_share.get(ln, 0.0) + share
 
         n = len(agents)
         if n == 0:
@@ -1955,6 +2051,16 @@ async def _run_prediction_bg(
                 logger.warning(f"LLM voting failed (non-fatal): {e}")
                 _push_pred_live(job, f"⚠️ LLM voting failed (heuristic results unaffected): {e}")
 
+            # Electoral College results (US presidential elections only)
+            electoral_college_results: dict = {}
+            if pred.get("use_electoral_college") and poll_group_results:
+                gdc = last_day_data.get("group_district_candidate", {})
+                if gdc:
+                    for group_name in poll_group_results:
+                        ec = _compute_electoral_college(gdc, group_name)
+                        electoral_college_results[group_name] = ec
+                    _push_pred_live(job, f"🗳️ Electoral College: {electoral_college_results}")
+
             scenario_result = {
                 "scenario_id": scenario_id,
                 "scenario_name": scenario_name,
@@ -1967,6 +2073,7 @@ async def _run_prediction_bg(
                 "vote_prediction": first_group_results if first_group_results else vote_prediction,
                 "poll_group_results": poll_group_results,
                 "llm_poll_group_results": llm_poll_group_results,
+                "electoral_college_results": electoral_college_results,
                 "per_agent_timeline": agent_timeline,
             }
             job["scenario_results"].append(scenario_result)

@@ -23,6 +23,22 @@ POOL_FILE = os.path.join(DATA_DIR, "news_pool.json")  # legacy global
 POOLS_DIR = os.path.join(DATA_DIR, "news_pools")
 MAX_POOL_SIZE = 1000  # FIFO cap — oldest articles are trimmed first
 
+
+def _parse_crawled_ts(val: Any) -> float:
+    if not val:
+        return 0.0
+    if isinstance(val, (int, float)):
+        return float(val)
+    s = str(val)
+    try:
+        return float(s)
+    except ValueError:
+        pass
+    try:
+        return datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp()
+    except (ValueError, TypeError):
+        return 0.0
+
 # ── Active workspace tracking ───────────────────────────────────────
 _active_workspace_id: str = ""
 
@@ -203,7 +219,7 @@ def _trim_pool():
     for a in _pool:
         buckets[a.get("channel", "") or "_unknown"].append(a)
     for ch in buckets:
-        buckets[ch].sort(key=lambda a: float(a.get("crawled_at", 0) or 0), reverse=True)
+        buckets[ch].sort(key=lambda a: _parse_crawled_ts(a.get("crawled_at")), reverse=True)
 
     kept: list = []
     cursors = {ch: 0 for ch in buckets}

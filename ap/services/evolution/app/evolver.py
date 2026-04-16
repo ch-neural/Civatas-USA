@@ -2262,6 +2262,54 @@ def _push_live(job: dict, msg: str):
 
 # ── Background job runner ────────────────────────────────────────────
 
+_D_DESC_KWS = ("democrat", "democratic", "(d)", "progressive", "liberal",
+               "left-leaning", "reproductive rights")
+_R_DESC_KWS = ("republican", "gop", "(r)", "conservative", "right-leaning",
+               "anti-woke", "anti woke")
+_I_DESC_KWS = ("independent", "libertarian", "green party", "(i)", "no party",
+               "unaffiliated")
+_NAME_SUFFIXES = {"jr", "sr", "ii", "iii", "iv"}
+
+
+def _augment_party_detection(
+    pd: dict | None,
+    cand_names: list[str] | None,
+    cand_descs: dict | None,
+) -> dict:
+    out = {k: list((pd or {}).get(k, [])) for k in ("D", "R", "I")}
+    existing = {str(s).lower() for bucket in out.values() for s in bucket}
+    added: list[tuple[str, str]] = []
+    for cname in (cand_names or []):
+        if not cname or not str(cname).strip():
+            continue
+        tokens = [t.rstrip(",.'") for t in str(cname).strip().split() if t]
+        if not tokens:
+            continue
+        surname = tokens[-1].lower()
+        if surname in _NAME_SUFFIXES and len(tokens) >= 2:
+            surname = tokens[-2].lower()
+        if len(surname) < 2 or surname in existing:
+            continue
+        desc = str((cand_descs or {}).get(cname, "")).lower()
+        bucket = None
+        if any(k in desc for k in _D_DESC_KWS):
+            bucket = "D"
+        elif any(k in desc for k in _R_DESC_KWS):
+            bucket = "R"
+        elif any(k in desc for k in _I_DESC_KWS):
+            bucket = "I"
+        if bucket:
+            out[bucket].append(surname)
+            existing.add(surname)
+            added.append((surname, bucket))
+    if added:
+        logger.info(
+            "Party detection auto-augmented from descriptions: "
+            + ", ".join(f"{s}→{b}" for s, b in added)
+        )
+    return out
+
+
 async def start_evolution(
     agents: list[dict],
     days: int = 30,
@@ -2279,6 +2327,10 @@ async def start_evolution(
     job_id = uuid.uuid4().hex[:8]
     pool = news_pool or get_pool()
 
+    augmented_pd = _augment_party_detection(
+        party_detection, candidate_names, candidate_descriptions
+    )
+
     job = {
         "job_id": job_id,
         "status": "pending",
@@ -2294,7 +2346,7 @@ async def start_evolution(
         "candidate_names": candidate_names or [],
         "scoring_params": scoring_params or {},
         "candidate_descriptions": candidate_descriptions or {},
-        "_party_detection": party_detection or {},
+        "_party_detection": augmented_pd,
         "enabled_vendors": enabled_vendors or [],
     }
     _jobs[job_id] = job
@@ -2392,8 +2444,8 @@ async def _run_evolution_bg(
 
             global_day = global_day_offset + day
 
-            # Append to global history with injection marker
-            history.append({
+            # Append to global history with injection marker + detail for dashboard replay
+            _hist_entry: dict = {
                 "global_day": global_day,
                 "run_day": day,
                 "job_id": job["job_id"],
@@ -2403,7 +2455,26 @@ async def _run_evolution_bg(
                 "is_injection_point": day == 1,  # first day of each run = new news injection
                 "pool_article_count": pool_article_count if day == 1 else None,
                 "timestamp": time.time(),
-            })
+                # Extended fields for post-hoc analysis and dashboard replay
+                "candidate_names": job.get("candidate_names", []),
+                "enabled_vendors": job.get("enabled_vendors", []),
+            }
+            if found_summary:
+                # Preserve candidate estimates and by-leaning breakdown so the
+                # dashboard can still plot candidate_trends after jobs are cleared.
+                ce = found_summary.get("candidate_estimate")
+                if ce:
+                    _hist_entry["candidate_estimate"] = ce
+                bl = found_summary.get("by_leaning")
+                if bl:
+                    _hist_entry["by_leaning"] = {
+                        ln: {"avg_sat": st.get("avg_sat"), "avg_anx": st.get("avg_anx"), "count": st.get("count")}
+                        for ln, st in bl.items()
+                    }
+                by_lc = found_summary.get("by_leaning_candidate")
+                if by_lc:
+                    _hist_entry["by_leaning_candidate"] = by_lc
+            history.append(_hist_entry)
             _save_history(history)
 
             # Small delay between days to avoid flooding the LLM

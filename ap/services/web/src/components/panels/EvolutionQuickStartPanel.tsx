@@ -338,9 +338,18 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
                   } catch { /* keep polling */ }
                 }
                 if (abortRef.current) { setRunning(false); return; }
-                // Current round done — continue from next round
+                // Current round done — continue from next round, or mark done if final round
                 setRunning(false);
-                handleStart((cr || 0) + 1, nc || 0);
+                if ((cr || 0) >= (tr || 0)) {
+                  // Final round just finished while we were polling — mark complete
+                  setCurrentRound(tr || 0);
+                  setTotalRounds(tr || 0);
+                  setPhase("done");
+                  setPhaseLabel(en ? "Evolution complete!" : "演化完成！");
+                  saveProgress({ ...saved, status: "done", activeJobId: null });
+                } else {
+                  handleStart((cr || 0) + 1, nc || 0);
+                }
               })();
               return;
             } else if (jobStatus.status === "done" || jobStatus.status === "completed") {
@@ -643,7 +652,9 @@ export default function EvolutionQuickStartPanel({ wsId }: { wsId: string }) {
   // Main evolution loop
   const handleStart = useCallback(async (resumeFromRound = 0, resumeNewsCount = 0) => {
     if (running) return;
-    if (!personas.length) {
+    // Skip persona check on resume — personas existed when the run started.
+    // On fresh start (resumeFromRound === 0), enforce the check.
+    if (resumeFromRound === 0 && !personas.length) {
       setError(en ? "No personas found. Generate personas first." : "找不到 Persona，請先生成。");
       return;
     }

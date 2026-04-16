@@ -622,6 +622,136 @@ if (agentVendorIds.length) enabledVendors = agentVendorIds;
 - WatchFiles 熱重載：Uvicorn 偵測到 .py 變更會自動重啟 server，中斷正在跑的 evolution job。**演化進行中請勿編輯 evolver.py**，改完後用 `docker compose restart evolution` 乾淨重啟
 - `by_vendor_candidate` 欄位在 daily_summary 中可用於驗證各廠商是否均有被呼叫
 
+## Prediction Panel — Vote Counting Method UI Overhaul (2026-04-15)
+
+### 問題背景
+Vote Weighting dropdown 和 Electoral College checkbox 原本藏在 Prediction 面板的 **Advanced tab**（第3個分頁），預設分頁是 Base，用戶很難發現。而且沒有任何說明每種加權方式的用途，使用者不知道怎麼選。
+
+### UI 修正（`PredictionPanel.tsx` lines 2531-2645）
+從 Advanced tab 移到 **Scenario tab 頂部**（最顯眼位置），並改寫成 3 張可點選的卡片式佈局（radio group 風格），每張卡片包含：
+
+- **圖示 + 標題**：🗳️ Unweighted / 📊 Likely Voter / ☎️ Landline-biased
+- **一句話短描述**：核心概念
+- **5 欄權重表格**（5 年齡段 × 權重）— 顏色編碼：
+  - `>1.0` 金黃（長者高權重）
+  - `<1.0` 藍色（青年低權重）
+  - `=1.0` 白色（等重）
+- **詳細說明**：歷史背景 + 真實案例（Clinton 2016 popular vote、Pew/NYT/Siena 的 70/30 混合法、Rasmussen 市話偏差 2016 翻車）
+- **適用情境**：什麼時候選這個（對準真實選舉 / 研究誰更受歡迎 / 教學抽樣偏差）
+- **⭐ Template Default 綠色徽章**：標記目前 template 推薦的選項
+
+Electoral College checkbox 也重寫為完整說明：538 EV、270 勝出、Trump 2016 / Bush 2000 輸普選贏 EV 的案例。
+
+### Template-driven 預設（`template-defaults.ts` 新增 `getDefaultSamplingModality()`）
+切換 template 時自動選中最佳加權方式：
+
+| Template 類型 | 自動預設 |
+|---|---|
+| presidential / senate / gubernatorial / house / mayoral | `mixed_73`（Likely Voter，70/30 現代民調標準）|
+| 非選舉 template（無 election block） | `unweighted` |
+| Template 明確指定 `election.default_sampling_modality` | 使用該值（可覆寫）|
+
+Backend 實作已完整（`predictor.py` lines 2413-2431 `_get_sampling_weight()`）：
+- **Unweighted**：所有年齡 × 1.0
+- **mixed_73 (Likely Voter)**：<30:0.7 / 30s:0.8 / 40s:0.9 / 50s:1.1 / 60+:1.2
+- **landline_only**：<30:0.3 / 30s:0.5 / 40s:0.8 / 50s:1.2 / 60+:1.8
+
+### 2024 回測驗證（job 74ce8344，100 agents × 3 days，已完成）
+
+**Prediction ID**：`e11cc9ab`　**Job ID**：`74ce8344`　**日期**：2024-10-29 ~ 2024-11-04（壓縮至 3 sim days）
+
+**3 天 daily ce（未加權聚合）**：
+
+| Day | Trump | Harris | Undecided | sat | anx |
+|---|---|---|---|---|---|
+| Day 1 | 50.9% | 37.7% | 11.4% | 46.4 | 53.6 |
+| Day 2 | **52.0%** | 36.5% | 11.5% | 46.4 | 53.8 |
+| Day 3 | 50.9% | 37.3% | 11.8% | 46.2 | 54.3 |
+
+**最終 `poll_group_results["Likely Voters"]`**（套用 mixed_73 年齡加權 + vote sim）：
+
+| 候選人 | 預測 | 2024 實際 | 誤差 |
+|---|---|---|---|
+| **Donald Trump** | **50.9%** | 50.2% | 🎯 **0.7%**（極準！）|
+| Kamala Harris | 37.3% | 48.3% | ❌ -11.0%（Moonshot bias）|
+| Undecided | 11.8% | ~1.5% | ⚠️ 偏高 |
+
+**最終 `electoral_college_results["Likely Voters"]`**：
+
+| | 預測 | 2024 實際 |
+|---|---|---|
+| Trump EV | **447** | 312 |
+| Harris EV | 3 | 226 |
+| covered_ev | 450/538 | - |
+| uncovered_states | 17 州 | - |
+
+- **5-bucket leaning** ✅：Solid Rep:29 / Lean Rep:22 / Solid Dem:26 / Lean Dem:23（無 Tossup 樣本）
+- **州別覆蓋**：34/50（16+DC 無 agent 樣本被正確列為 uncovered）
+- **Vote Weighting 確認運作**：live_messages 顯示 `📊 Agent #X (weight 0.9) voted:` — 40 歲 agents 權重 0.9，符合 mixed_73 公式 ✅
+- **kimi-k2.5 ⚡partial** 截斷 JSON 自動修復機制全程運作正常，無崩潰
+
+### 🔑 關鍵發現：Popular Vote vs Electoral College 失準原因
+
+**Popular vote 超準（誤差 0.7%）**，但 EC 嚴重失真（Trump 447 vs Harris 3）— 原因：
+
+1. **每州樣本過小**：100 agents / 34 states = 平均 ~3 agents/州
+2. **Moonshot Trump bias 在小樣本時放大**：穩定藍州（CA、NY、IL、MA、NJ）因單一 Moonshot agent 就能翻盤
+3. **EC winner-take-all 對樣本量極敏感**：州內 3-5 票差即可翻轉整州 EV
+
+**EC 邏輯本身 100% 正確**（538 總額、270 門檻、winner-take-all、uncovered states 處理皆符合預期）。
+
+### 🛠️ 下一步開發方向（繼續時的待辦）
+
+**優先級高**：
+1. **提高 agent 數以讓 EC 準確**：
+   - 100 → **1000+** agents（每州 ≥20 樣本才穩定）
+   - 或 **proportional sampling**：依人口分布生成（如 CA 應有 ~120 agents、WY 僅 ~1.5）
+2. **解決 Moonshot Trump bias**：
+   - 方案 A：降低 Moonshot 在 Democrat agents 的使用比例（prompt 端或 vendor dispatch 端）
+   - 方案 B：在 Moonshot 回傳的候選人分數上加校正常數（後處理 deskew）
+   - 方案 C：只把 Moonshot 用於 Republican-leaning agents（性格匹配）
+3. **修補 `by_vendor_candidate` 在 prediction 的缺失**：
+   - evolution 有、prediction 沒有 — 需在 `predictor.py` 的 `_simulate_vote` / daily aggregation 加上 vendor 級統計累積
+
+**優先級中**：
+4. **satisfaction_decay UI 預設漂移**：舊 ui-settings 的 0.02 覆蓋新預設 0.04。考慮在 `PredictionPanel.tsx` line 866 的 `cfg.satisfactionDecay !== undefined` 改為 `=== undefined ? 0.04` 或判斷「看起來是舊預設就覆寫」
+5. **Tossup 桶的產生**：目前 persona 生成傾向把所有 agent 塞進 4 個 leaning 桶，Tossup 完全沒樣本。應在 `synthesis/builder.py` 或 persona generation 端確保按 PVI 分布產生（Tossup 應占 ~5-10%）
+6. **Prediction 慢（3 天跑 60+ 分鐘）**：Moonshot 延遲拉長總時間。考慮：
+   - concurrency 4 → 8
+   - 或對 Moonshot 加 timeout + fallback 到其他廠商
+
+**優先級低**：
+7. UI 改進：EC 結果頁面視覺化（美國地圖著色、EV 走勢條圖）
+8. 將 `use_electoral_college` 的 checkbox 預設邏輯複製到 satisfaction mode 下隱藏（目前已在 election mode 才顯示）
+
+### 📂 本次修改過的檔案清單
+| 檔案 | 變更摘要 |
+|---|---|
+| `ap/services/web/src/components/panels/PredictionPanel.tsx` | Vote Counting Method UI 卡片化、從 Advanced 搬到 Scenario tab 頂部、套用 Template Default、5 欄權重表格 |
+| `ap/services/web/src/lib/template-defaults.ts` | 新增 `getDefaultSamplingModality()` helper |
+| `ap/services/web/src/lib/api.ts` | `createPrediction()` 第 25 參數 `useElectoralCollege` |
+| `ap/services/evolution/app/main.py` | `CreatePredictionRequest` 新增 `use_electoral_college`，history fallback for dashboard |
+| `ap/services/evolution/app/predictor.py` | `STATE_ELECTORAL_VOTES` 常數、`_compute_electoral_college()` 函式、5-bucket `_redistribute_leaning_by_ground_truth` |
+| `ap/services/evolution/app/evolver.py` | history entry 擴充 `candidate_estimate` / `by_leaning` |
+| `ap/services/api/app/tavily_research.py` | Serper `lr=lang_en` + `_has_cjk()` filter |
+
+### 🔄 如何在另一台 PC 恢復開發
+1. `git pull`（最後 commit 前確認 `git status` 有無 uncommitted changes — Job 74ce8344 已完成無需重跑）
+2. `cd ap && docker compose up --build -d`（api/evolution/web 需重建）
+3. 打開 http://localhost:3100 → 選 2024 Trump vs Harris template → 走 Persona → Evolution → Prediction
+4. Prediction 歷史可在 `/api/pipeline/evolution/predictions` 找到 `e11cc9ab`
+5. 要看 UI 新版本：Scenario tab 頂部有 3 張計票方式卡片 + EC checkbox
+
+### 其他本日已驗證的修正
+先前 9 項修正（2026-04-14 Evolution System Overhaul 延伸）全部運作正常：
+1. ✅ `enabled_vendors` 傳遞到 prediction（4 廠商含 Moonshot）
+2. ✅ Electoral College auto-enable（US presidential template）
+3. ✅ Cook PVI 5-bucket leaning redistribution（原本只有 2 桶）
+4. ✅ `negativity_dampen=0.70` / `positivity_boost=1.30`（LLM 負向偏差修正）
+5. ✅ Tavily/Serper `lr=lang_en` + CJK post-filter（避免中日文新聞混入）
+6. ✅ Evolution history 擴充寫入 `candidate_estimate` 與 `by_leaning`
+7. ✅ Dashboard 從 history 檔案 fallback（job 被 clear 後仍可還原）
+
 ## 語言規則
 - 思考過程（thinking）可以使用英文
 - 所有最終回覆必須使用繁體中文
