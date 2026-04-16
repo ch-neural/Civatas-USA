@@ -157,7 +157,7 @@ export function parseSettingsToProvidersAndRoles(settings: {
   system_vendor_id?: string;
 }): ParsedSettings {
   const vendors = settings.llm_vendors ?? [];
-  const activeIds = new Set(settings.active_vendors ?? []);
+  const activeIds = Array.from(new Set(settings.active_vendors ?? []));
   const systemId = settings.system_vendor_id ?? "";
 
   // Deduplicate vendors by (vendor_type, api_key, base_url)

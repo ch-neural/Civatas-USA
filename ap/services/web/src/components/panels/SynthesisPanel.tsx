@@ -477,7 +477,7 @@ export default function SynthesisPanel({ wsId }: { wsId: string }) {
             }, 2000);
           } else if (personaRes?.agents) {
             // Template strategy returns immediately
-            setPersonas(personaRes.agents);
+            setPersons(personaRes.agents);
             setPersonaRunning(false);
             setPersonaDone(true);
           }

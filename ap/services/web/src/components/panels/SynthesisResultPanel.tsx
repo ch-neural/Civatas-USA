@@ -237,7 +237,7 @@ export default function SynthesisResultPanel({ wsId }: { wsId: string }) {
                   <ResponsiveContainer width="100%" height={130}>
                     <PieChart>
                       <Pie data={toPie(stats.leanCount)} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={48}
-                        label={({ name, percent }) => `${name} ${(percent*100).toFixed(0)}%`} labelLine={false}>
+                        label={({ name, percent }: any) => `${name ?? ""} ${((percent ?? 0)*100).toFixed(0)}%`} labelLine={false}>
                         {toPie(stats.leanCount).map((d, i) => <Cell key={i} fill={LEAN_COLORS[d.name] || COLORS[i%COLORS.length]} />)}
                       </Pie>
                       <Tooltip contentStyle={tooltipStyle} />

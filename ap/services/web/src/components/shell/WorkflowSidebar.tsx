@@ -164,8 +164,7 @@ export function WorkflowSidebar() {
                 {step.key === "evolution" && workflowStatus.evolutionRunning && (
                   <span
                     className="ml-1 inline-block w-3.5 h-3.5 rounded-full border-2"
-                    style={{ borderColor: "var(--accent-border)", borderTopColor: "var(--accent)" }}
-                    style={{ animation: "spin 1s linear infinite" }}
+                    style={{ borderColor: "var(--accent-border)", borderTopColor: "var(--accent)", animation: "spin 1s linear infinite" }}
                   />
                 )}
                 {getStatusBadge(status, step)}
