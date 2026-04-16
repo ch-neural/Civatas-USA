@@ -252,7 +252,37 @@ Open **http://localhost:3100** — the onboarding wizard walks you through every
 | **2028 Who's Next?** | 6 (Vance/Newsom/DeSantis/Whitmer/Haley/Shapiro) | 2020+2024 | Current forward-looking simulation |
 
 ### State Templates (51 total)
-Every US state + DC — with state-level PVI, county distributions, and local news focus. Run Pennsylvania alone, Michigan vs Wisconsin, or all 50 states at once.
+
+Every US state + DC ships with its own template — state-level Cook PVI, county-weighted demographics, and Alabama-specific (or Michigan-specific, or California-specific) local news keywords. The simulation understands that a Houston call-center worker and a Mesa retiree should read different news and react differently to the same headline.
+
+**The six decisive battlegrounds** — similar PVI, radically different internal voter geography:
+
+| State | PVI | Pop | Solid Dem | Tossup | Solid Rep | Character |
+|-------|-----|-----|:---------:|:------:|:---------:|-----------|
+| Pennsylvania | R+1 | 13.1M | 10% | 19% | 24% | Polarized; Philadelphia suburbs vs. rural north |
+| Michigan | R+1 | 10.1M | 21% | 20% | 14% | Unionized Midwest vs. outstate conservative |
+| Wisconsin | R+1 | 6.0M | 24% | 24% | 12% | College towns vs. WOW-county exurbs |
+| Arizona | R+2 | 7.6M | 0% | **61%** | 9% | Sun Belt growth state — majority genuinely undecided |
+| Georgia | R+2 | 11.2M | 23% | 3% | 35% | Deeply polarized; tiny true center |
+| Nevada | R+1 | 3.3M | 0% | **87%** | 11% | Tourism/service economy — almost all persuadable |
+
+Note how **Arizona and Nevada** (both R+1) look nothing alike internally — Arizona's 61% Tossup and Nevada's 87% Tossup produce very different simulation dynamics from Wisconsin's polarized 24%/24% split.
+
+**Solid-state anchors** — useful for calibrating partisan baselines:
+
+| State | PVI | Solid Dem | Solid Rep | Best For |
+|-------|-----|:---------:|:---------:|----------|
+| Vermont | D+17 | 62% | 0% | Pure blue-state baseline |
+| California | D+12 | 46% | 1% | Large Dem coalition dynamics |
+| Alabama | R+15 | 2% | 52% | Deep South Republican base |
+| Wyoming | R+24 | 5% | 88% | Maximum red-state signal |
+
+**Scenario ideas:**
+
+- **Blue Wall stress test** — Run PA + MI + WI simultaneously. Which state flips first on bad economic news?
+- **Sun Belt shift** — AZ + GA + NV: can Democrats hold all three with 1,000 agents and 60 days of news?
+- **National with state resolution** — All 50 states at once for Electoral College projection (recommend 500+ agents for stable per-state samples)
+- **Single-state deep dive** — Alabama alone with 200 agents: run a generic D vs R race and see how R+15 plays out day by day
 
 ### Custom Templates
 Define your own candidates, party affiliations, incumbency, local keywords, and calibration parameters. Supports presidential, senate, gubernatorial, house, and mayoral elections.
