@@ -1969,7 +1969,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
 
                   // ── Election mode: vote share bars ──
                   const entries = Object.entries(cands).filter(([k]) => k !== "Undecided" && k !== "不表態").sort(([,a]: any, [,b]: any) => b - a);
-                  const undecided = (cands as any)["Undecided"] ?? (cands as any)["不表態"] || 0;
+                  const undecided = ((cands as any)["Undecided"] ?? (cands as any)["不表態"]) || 0;
                   const winner = entries[0]; const runnerUp = entries[1];
                   const gap = winner && runnerUp ? ((winner[1] as number) - (runnerUp[1] as number)).toFixed(1) : "0";
                   return (
@@ -2021,7 +2021,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                         const vb = typeof b === "number" ? b : 0;
                         return vb - va;
                       });
-                      const undecided = gr["Undecided"] ?? gr["不表態"] || 0;
+                      const undecided = (gr["Undecided"] ?? gr["不表態"]) || 0;
                       return (
                         <div key={gi} style={{ flex: "1 1 280px", padding: 12, borderRadius: 10, background: "rgba(139,92,246,0.04)", border: "1px solid rgba(139,92,246,0.15)" }}>
                           <div style={{ color: "#a78bfa", fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "var(--font-cjk)" }}>🗳️ {gn}</div>
@@ -5320,9 +5320,9 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
                                       if (!leanData) return null;
                                       const leanColor = leaning.includes("Dem") ? "#3b82f6" : leaning.includes("藍") || leaning.includes("右") ? "#3b82f6" : "#f59e0b";
                                       const displayCount = leanData.total || stats?.total_count || stats?.count || 0;
-                                      const satPct = (leanData["Very satisfied_pct"] ?? leanData["非常滿意_pct"] || 0) + (leanData["Fairly satisfied_pct"] ?? leanData["還算滿意_pct"] || 0);
-                                      const disPct = (leanData["Somewhat dissatisfied_pct"] ?? leanData["不太滿意_pct"] || 0) + (leanData["Very dissatisfied_pct"] ?? leanData["非常不滿意_pct"] || 0);
-                                      const undPct = leanData["Undecided_pct"] ?? leanData["未表態_pct"] || 0;
+                                      const satPct = ((leanData["Very satisfied_pct"] ?? leanData["非常滿意_pct"]) || 0) + ((leanData["Fairly satisfied_pct"] ?? leanData["還算滿意_pct"]) || 0);
+                                      const disPct = ((leanData["Somewhat dissatisfied_pct"] ?? leanData["不太滿意_pct"]) || 0) + ((leanData["Very dissatisfied_pct"] ?? leanData["非常不滿意_pct"]) || 0);
+                                      const undPct = (leanData["Undecided_pct"] ?? leanData["未表態_pct"]) || 0;
                                       return (
                                         <div key={leaning} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
                                           <div style={{ color: leanColor, fontSize: 9, width: 75, textAlign: "right", fontWeight: 600, fontFamily: "var(--font-cjk)" }}>{leaning} ({Math.round(displayCount)})</div>
