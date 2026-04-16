@@ -275,9 +275,12 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
       const national = getDefaultNationalKeywords(activeTemplate);
       if (national) setPredNationalKeywords(national);
     }
-    // Auto-enable Electoral College for US presidential templates
+    // Auto-enable Electoral College only for national-scope US presidential templates.
+    // State-scope templates (e.g. Alabama) only produce agents for one state; enabling
+    // EC there would show 9 covered EVs and 529 uncovered — meaningless.
     const electionType = (activeTemplate as any)?.election?.type || (activeTemplate as any)?.electionType || "";
-    if (isUs && electionType === "presidential") {
+    const electionScope = (activeTemplate as any)?.election?.scope || "national";
+    if (isUs && electionType === "presidential" && electionScope !== "state") {
       setUseElectoralCollege(true);
     }
     // Auto-set Vote Weighting per template (presidential/senate/etc. → Likely Voter mixed_73)

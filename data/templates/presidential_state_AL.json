@@ -687,9 +687,9 @@
       }
     ],
     "party_base_scores": {
-      "D": 50,
-      "R": 50,
-      "I": 25
+      "D": 35,
+      "R": 65,
+      "I": 20
     },
     "default_evolution_params": {
       "sim_days": 60,
