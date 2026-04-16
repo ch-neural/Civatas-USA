@@ -156,12 +156,6 @@ export function OnboardingWizard() {
     (async () => {
       try {
         const settings = await apiFetch("/api/settings");
-        if (settings?.llm_vendors?.length) {
-          const parsed = parseSettingsToProvidersAndRoles(settings);
-          if (parsed.providers.length > 0) setProviders(parsed.providers);
-          if (parsed.systemLlm.provider_id) setSystemLlm(parsed.systemLlm);
-          if (parsed.agentLlms.length > 0) setAgentLlms(parsed.agentLlms);
-        }
         if (settings?.serper_api_key) setSerperKey(settings.serper_api_key);
       } catch { /* first run — no settings yet */ }
       setInitialLoading(false);
