@@ -1,131 +1,288 @@
-# Civatas-USA
+# 🗳️ Civatas USA — AI Political Simulation Platform
 
-Localization data and ingest scripts for porting **Civatas** (a Taiwan-focused
-LLM social-simulation platform) to the **United States**.
+> **What if you could run the 2028 presidential election before it happens?**  
+> Civatas USA simulates thousands of real American voters, feeds them real news, watches their opinions evolve — and then calls the election.
 
-This directory is **Stage 0** of the localization effort: it contains only
-public, redistributable data plus the scripts that built it. **No Civatas
-application code is modified by anything in here.** When the localization is
-ready to be cut as a separate project, this folder can be lifted out and used
-as the data backbone of `Civatas-USA`.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-ready-blue)](ap/docker-compose.yml)
+[![Demo](https://img.shields.io/badge/Live_Demo-2028_Election-purple)](https://ch-neural.github.io/Civatas-USA/demo/)
 
-## What's inside
+---
 
-```
-Civatas-USA/
-├── data/
-│   ├── geo/                    US state + county boundaries (GeoJSON)
-│   ├── census/                 ACS demographic data (51 states + 3142 counties)
-│   ├── elections/              MEDSL 2020+2024 county results + Cook PVI
-│   └── templates/              Pennsylvania-shaped Civatas template (Stage 1 demo)
-├── scripts/                    Idempotent fetch + transform scripts
-└── docs/                       Inventory and design notes
-```
+## 🎯 Live Demo — 2028 Presidential Election
 
-Run any script with `python3 scripts/<name>.py` from this directory. They are
-idempotent — re-running uses cached raw responses under each subdirectory's
-`raw/`. Delete the `raw/` directory to force a clean re-fetch.
+We ran a full simulation of the **2028 US Presidential Race** (*JD Vance vs Gavin Newsom vs Ron DeSantis vs Gretchen Whitmer vs Nikki Haley vs Josh Shapiro*) using 100 AI-powered voter agents and 30 days of real news.
 
-## Stage 1 scope
+| | |
+|---|---|
+| 📈 **[Evolution Playback](https://ch-neural.github.io/Civatas-USA/demo/2028-evolution.html)** | Watch 100 voters' opinions shift day by day as real news breaks |
+| 🗳️ **[Prediction Results](https://ch-neural.github.io/Civatas-USA/demo/2028-prediction.html)** | Final Electoral College result: who wins in 2028? |
 
-| Decision               | Choice                                                       |
-| ---------------------- | ------------------------------------------------------------ |
-| Granularity            | County (3,143 counties × 50 states + DC)                     |
-| Stage 1 demo state     | **Pennsylvania** (67 counties, swing state, R+1 in 2024)     |
-| Political spectrum     | **Cook PVI** as continuous float, plus 5-bucket discretization |
-| Election cycles        | 2020 and 2024 only                                           |
-| UI language            | Bilingual (English default, Traditional Chinese opt-in)      |
+---
 
-A user will be able to select **one state, multiple states, or all 50 states**
-as the agent generation scope once the application code is updated.
+## 🧠 How It Works
 
-## Data sources and licensing
-
-| Dataset                | Source                                                                | License        |
-| ---------------------- | --------------------------------------------------------------------- | -------------- |
-| County boundaries      | [us-atlas](https://github.com/topojson/us-atlas) v3 `counties-10m`    | CC0 1.0        |
-| State boundaries       | us-atlas v3 `states-10m`                                              | CC0 1.0        |
-| Demographics (ACS)     | US Census Bureau ACS 2024 1yr/5yr via [censusreporter.org](https://censusreporter.org) | Public Domain  |
-| Election results       | [MEDSL countypres 2000-2024](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ) | CC0 1.0        |
-| Cook PVI               | Computed locally from MEDSL                                            | derived        |
-
-`api.census.gov` was unreachable from the build network, so ACS data was
-fetched via censusreporter.org's mirror, which auto-falls-back from
-`acs2024_1yr` to `acs2024_5yr` for geographies under 65,000 population. All
-3,143 counties are covered (1 missing FIPS — see "Known data issues" below).
-
-## Known data issues
-
-- **Alaska FIPS 02261** (Valdez-Cordova Census Area, dissolved in 2019 into
-  02063 Chugach + 02066 Copper River) is present in the older us-atlas geojson
-  but not in the modern ACS release. It is currently dropped. Fix in Stage 2:
-  patch the geojson, or merge old/new boundaries.
-- **Connecticut** switched from 8 counties to 9 *planning regions* in 2022.
-  The fetch scripts use the new planning-region FIPS (`09110..09190`) when
-  pulling ACS, but the us-atlas geojson still draws the old 8 counties.
-  Fix in Stage 2: replace CT polygons with the planning-region shapes from
-  Census TIGER.
-- **MEDSL 2020 vs 2024 mode rows.** Some states report only `mode == TOTAL`
-  rows in MEDSL, others report only per-mode rows (`ELECTION DAY`, `ABSENTEE`,
-  …) without a TOTAL. `compute_pvi.py` handles both cases.
-- **National two-party share** matches official numbers exactly:
-  2020 D = 52.27% (Biden 51.31% / Trump 46.85%), 2024 D = 49.25%.
-
-## How the data flows
+Civatas USA is a **three-stage pipeline** that transforms US Census data into election predictions:
 
 ```
-fetch_geo.py             → data/geo/us-{counties,states}.geojson
-fetch_elections.py       → data/elections/president_{2020,2024}_county.csv
-fetch_census.py          → data/census/{states,counties}.json
-                            (uses us-counties.geojson to enumerate FIPS)
-compute_pvi.py           → data/elections/leaning_profile_us.json
-                            (consumes the two president CSVs)
-build_national_template.py  → data/templates/presidential_{national_generic,2024}.json
-build_state_template.py     → data/templates/presidential_state_<XX>.json (× 51)
-                            (both consume census + leaning_profile)
+📊 Census Data (ACS)
+      ↓
+👥 Stage 1 — PERSONA GENERATION
+   Synthesize realistic American voters (demographics, income, race, education, location)
+      ↓
+📰 Stage 2 — OPINION EVOLUTION
+   Feed agents real news daily. Watch them react, write diaries, shift political leanings.
+      ↓
+🗳️ Stage 3 — PREDICTION
+   Simulate voting day. Aggregate by Electoral College. Call the winner.
 ```
 
-To rebuild from scratch:
+Every agent is a **fully realized American**:
+- Drawn from ACS 2024 census distributions (gender, age, race, income, education, geography)
+- Assigned a personality (stable vs. anxious, optimistic vs. pessimistic, conformist vs. independent)
+- Given a political leaning calibrated to **Cook Political Report PVI** county data
+- Powered by an LLM that reads news, writes daily diary entries, and votes
+
+---
+
+## 🗓️ The 2028 Story: From First Headlines to Election Night
+
+*This is not a poll. This is a simulation. 100 Americans woke up every morning, read the news, argued with themselves in their diaries — and eventually voted.*
+
+### Meet the Voters
+
+![Persona Explorer](docs/images/personas-explorer.png)
+
+Among our 100 simulated Americans:
+
+**Maria, 34, Houston TX** — Second-generation Mexican-American, call center supervisor, \$50k–\$75k income. Every morning she clocks in at the call center. She reads about immigration enforcement and feels torn — her family's story, her American identity. By Day 15, her anxiety is climbing toward 63.
+
+**James, 58, Mesa AZ** — White, retired electrician, Lean Republican. Scorching Mesa mornings, coffee before the news. Reads about JD Vance's Michigan visit and nods along. Local satisfaction: 42. National? He's watching.
+
+**Priya, 27, New York NY** — Asian-American, graduate student, Q-train commuter. Reads about Josh Shapiro's AI deepfake legislation in Pennsylvania. Finds it surprisingly reasonable. Writes: *"Another morning pressed against strangers on the Q train..."*
+
+**Earl, 67, rural Indiana** — White, fixed income, Solid Republican. I-69 commuter, same route every Tuesday. When Whitmer's name comes up in Michigan news, he pays attention — and not favorably.
+
+**Sofia, 22, Fresno CA** — Hispanic, community college student. Local satisfaction: 16 (housing crisis). National satisfaction: 94 (excited about federal politics). Shapiro's bipartisan record resonates.
+
+---
+
+### Stage 1: Building the Population
+
+![Population Setup](docs/images/population-setup.png)
+
+![Synthesis Result](docs/images/synthesis-result.png)
+
+Civatas generates synthetic Americans from real Census distributions — not random profiles, but statistically accurate cross-sections of the US population. Select a template and the system builds your voter pool from ACS data: the right proportions of age, race, income, education, and geography.
+
+For the 2028 simulation, 100 agents spanning all political leanings:
+- **Solid Dem**: 22 agents (CA, NY, IL strongholds)
+- **Lean Dem**: 22 agents (college-educated suburbs)
+- **Tossup**: 25 agents (the true battleground)
+- **Lean Rep**: 12 agents (exurban Midwest)
+- **Solid Rep**: 19 agents (deep South, rural)
+
+---
+
+### Stage 2: 30 Days of Real News
+
+![Evolution Quick Start](docs/images/Evolution_Quick-start.png)
+
+Every simulation day, Civatas searches for **real news** using the Serper API — headlines about each candidate, national policy, local issues, international events. Each agent reads 3 articles matched to their media habits and political diet.
+
+Then comes the diary.
+
+**Day 7 — James (Mesa AZ, Lean Rep):**
+> *"Another scorching Mesa morning. Got the news on while making eggs. Vance was up in Michigan talking about election integrity — that's exactly the kind of thing I want to hear from someone in the White House. Local 42, National 47."*
+
+**Day 12 — Maria (Houston TX, Tossup):**
+> *"Another long shift at the call center. On break, saw the news about the SAVE America Act. The voting restrictions stuff scares me. My abuela had such a hard time getting her ID renewed last year. Anxiety creeping up."*
+
+**Day 18 — Priya (NYC, Lean Dem):**
+> *"The Shapiro deepfake bill passed committee. I know it's Pennsylvania, not federal, but it feels like someone actually understands technology for once. Sat 61, Anxiety 44 — lower than usual. Hopeful day."*
+
+![Agent Explorer](docs/images/Evolution_Agent-explorer.png)
+
+**Three political shifts occurred** during our 30-day evolution:
+
+| Agent | Shift | Trigger |
+|-------|-------|---------|
+| Voter #41 | Tossup → **Lean Rep** | Strong approval of local Republican governance |
+| Voter #53 | Solid Rep → **Tossup** | Local satisfaction collapsed to 17; couldn't reconcile party loyalty with local failures |
+| Voter #57 | Tossup → **Lean Dem** | Federal policy news consistently resonated positively |
+
+![Evolution Dashboard](docs/images/Prediction-dashboard.png)
+
+**Candidate awareness** over 30 days:
+
+| Candidate | Day 1 | Day 30 | Trend |
+|-----------|-------|--------|-------|
+| JD Vance | 18.7% | 24.6% | 📈 Rising — incumbent VP visibility |
+| Gavin Newsom | 17.1% | 17.4% | ➡️ Steady |
+| Gretchen Whitmer | 9.8% | 10.6% | 📈 Late surge — Michigan news cycle |
+| Josh Shapiro | 7.3% | 7.1% | ➡️ Steady — PA-focused |
+| Ron DeSantis | 6.1% | 6.2% | ➡️ Flat |
+| Nikki Haley | 6.6% | 6.0% | 📉 Fading |
+
+![News Sources](docs/images/News-Sources.png)
+
+**Key headlines that moved the needle:**
+- *"VP JD Vance talks federal election involvement during Michigan visit"* → awareness spike, anxiety in Tossup voters
+- *"Gov. Gretchen Whitmer seeks tax relief for Michigan families"* → late Whitmer surge on Day 28
+- *"U.S. added 178,000 jobs in March"* → satisfaction bump across income brackets
+- *"Pentagon considers diverting funds..."* → anxiety spike, especially in military-adjacent households
+- *"A messy governor's race in California"* → Newsom watchers pay close attention
+
+**National mood** stabilized at:
+- Satisfaction: **42.9 / 100** *(real news is rarely cheerful)*
+- Anxiety: **54.8 / 100** *(election season tension is real)*
+
+---
+
+### Stage 3: Voting Day
+
+![Prediction Start](docs/images/Prediction-start.png)
+
+After 30 days of evolution, we ran a **4-day prediction window** using the latest real news. Each agent voted based on their evolved opinions, personality, and candidate awareness.
+
+![Prediction Analysis](docs/images/Prediction-analysis.png)
+
+**🏆 Final Results — 2028 Presidential Prediction:**
+
+| Candidate | Party | Popular Vote | Electoral Votes |
+|-----------|-------|:-----------:|:--------------:|
+| 🏆 **JD Vance** | Republican | **15.1%** | **308 EV ✓ wins** |
+| Gavin Newsom | Democrat | 13.9% | 147 EV |
+| Gretchen Whitmer | Democrat | 12.5% | 16 EV |
+| Josh Shapiro | Democrat | 11.9% | 3 EV |
+| Ron DeSantis | Republican | 11.1% | — |
+| Nikki Haley | Republican | 11.1% | — |
+| ⚪ Undecided | — | 24.5% | — |
+
+*Coverage: 474/538 Electoral Votes (88% of states have agents)*
+
+> **Bottom line: JD Vance wins with 308 Electoral Votes.**
+>
+> But 24.5% of voters remain undecided — in a six-way race, that's the real story. The Democratic vote is split three ways between Newsom, Whitmer, and Shapiro. Whitmer's late surge and Shapiro's bipartisan appeal are real — but fragmented Democratic support hands the race to Vance.
+
+---
+
+## ⚠️ Want More Accurate Results?
+
+Our 100-agent demo is a **proof of concept**. For reliable Electoral College predictions:
+
+| Parameter | Demo Run | Recommended |
+|-----------|:--------:|:-----------:|
+| **Agent count** | 100 | **1,000+** |
+| **Why** | ~3 agents/state → one model response flips a state | ≥20 agents/state stabilizes results |
+| **Evolution days** | 30 | 60–90 (full campaign cycle) |
+| **Prediction days** | 4 | 7–14 (capture late-breaking news) |
+| **LLM vendors** | 2–3 | 3–4 (reduces individual model bias) |
+
+With 1,000+ agents, each major state gets sufficient sample size to make Electoral College projections meaningful. Popular vote accuracy is already strong at 100 agents — Electoral College accuracy requires volume.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker & Docker Compose
+- LLM API key (OpenAI, DeepSeek, or any OpenAI-compatible API)
+- [Serper API key](https://serper.dev) (for real news search — free tier available)
+
+### Install & Run
 
 ```bash
-python3 scripts/fetch_geo.py
-python3 scripts/fetch_elections.py
-python3 scripts/fetch_census.py             # ~60 seconds, 63 batches
-python3 scripts/compute_pvi.py
-python3 scripts/build_national_template.py  # 2 national templates
-python3 scripts/build_state_template.py --all  # 51 state templates
+git clone https://github.com/ch-neural/Civatas-USA.git
+cd Civatas-USA/ap
+cp .env.example .env
+cp shared/settings.example.json shared/settings.json
+# Edit shared/settings.json — add your LLM and Serper API keys
+docker compose up --build
 ```
 
-## Pennsylvania template summary
+Open **http://localhost:3100** — the onboarding wizard walks you through everything.
 
-`data/templates/presidential_state_PA.json` is the per-state Pennsylvania
-template, generated by `build_state_template.py --state PA`.
+### Onboarding Wizard (5 minutes)
+1. **API Keys** — Add LLM provider + Serper key. Click **Test** to verify each.
+2. **Create Project** — Pick a template (try *2028 Who's Next?*)
+3. **Generate Personas** — Watch Americans come to life
+4. **Quick Start Evolution** → **Prediction** — See who wins
 
-| Dimension          | Source         | Notes                                                                 |
-| ------------------ | -------------- | --------------------------------------------------------------------- |
-| `gender`           | ACS B01001     | Male / Female (binary as ACS reports)                                 |
-| `age`              | ACS B01001     | 7 bins: Under 18 / 18-24 / 25-34 / 35-44 / 45-54 / 55-64 / 65+        |
-| `county`           | ACS B01001     | All 67 PA counties weighted by population                              |
-| `education`        | ACS B15003     | 4 levels (25+): <HS, HS, Some College/Assoc, BA+                      |
-| `party_lean`       | Cook PVI + 2024 turnout | 5 buckets: Solid Dem, Lean Dem, Tossup, Lean Rep, Solid Rep |
-| `employment_status`| ACS B23025     | Employed / Unemployed / Armed Forces / Not in Labor Force             |
-| `household_tenure` | ACS B25003     | Owner / Renter                                                        |
-| `media_habit`      | Pew defaults   | Placeholder; tune in Stage 2 with real US media-mix data              |
+---
 
-State-level computed PVI for PA (turnout-weighted across all 67 counties):
-**R+1** (-0.0104 continuous), with PVI bucket distribution
-Solid D 10.2% / Lean D 26.9% / Tossup 19.0% / Lean R 19.8% / Solid R 24.0%.
+## 🗺️ Available Templates
 
-## What is NOT in here yet (deferred to Stage 1+)
+### National Templates
 
-- US-context LLM prompts (English rewrite of `evolver.py`, `predictor.py`, `calibrator.py`)
-- US news source taxonomy and media bias map (replaces PTT/Dcard/Mobile01)
-- News search localization (`gl=us, hl=en` + English keyword templates)
-- Election DB schema redesign (replaces `roc_year` etc.)
-- Frontend i18n hookup and map component (`taiwan-counties.json` → `us-counties.geojson`)
-- Scope: `Civatas-USA/` is *only* the data backbone right now.
+| Template | Candidates | PVI Source | Best For |
+|----------|------------|-----------|----------|
+| **Generic D vs R vs I** | Configurable | 2020+2024 | Custom candidate scenarios |
+| **2024 Trump vs Harris** | 2 | 2016+2020 (no data leakage) | Backtesting against real results |
+| **2028 Who's Next?** | 6 (Vance/Newsom/DeSantis/Whitmer/Haley/Shapiro) | 2020+2024 | Current forward-looking simulation |
 
-## License
+### State Templates (51 total)
+Every US state + DC — with state-level PVI, county distributions, and local news focus. Run Pennsylvania alone, Michigan vs Wisconsin, or all 50 states at once.
 
-Data files are redistributed under their original licenses (see table above).
-The fetch and transform scripts in `scripts/` are released under MIT.
+### Custom Templates
+Define your own candidates, party affiliations, incumbency, local keywords, and calibration parameters. Supports presidential, senate, gubernatorial, house, and mayoral elections.
+
+---
+
+## ⚙️ Advanced Configuration
+
+![Advanced Parameters](docs/images/Evolution_advanced-parameters.png)
+
+Fine-tune 24 parameters across 6 categories in the **Advanced Parameters** panel:
+
+| Category | Key Parameters |
+|----------|---------------|
+| **Political Leaning Shifts** | Satisfaction/anxiety thresholds for when voters change party lean |
+| **News Impact & Echo Chamber** | How much each article moves opinion; serendipity rate |
+| **Emotional Response** | Satisfaction/anxiety decay; negativity bias correction |
+| **Undecided & Party Effects** | Base undecided rate; incumbency bonus; party alignment strength |
+| **Life Events** | Random life events (job loss, health scare, community news) |
+| **News Category Mix** | % split: candidate / national / local / international news |
+
+---
+
+## 🏗️ Architecture
+
+9 Docker services, fully self-hosted:
+
+```
+upload → ingestion(8001) → synthesis(8002) → persona(8003) → social(8004)
+       → adapter(8005) → simulation(8006) → analytics(8007)
+              ↑                                    ↑
+         api(8000) FastAPI              web(3000) Next.js
+```
+
+All data stays on your machine. No telemetry. No cloud dependency beyond LLM API calls.
+
+---
+
+## 📊 Data Sources
+
+| Data | Source | Coverage |
+|------|--------|----------|
+| Demographics | US Census ACS 2024 (via censusreporter.org) | 50 states + DC, 3,000+ counties |
+| Elections | MEDSL 2016/2020/2024 | County-level presidential results |
+| Political lean | Cook Political Report PVI methodology | 5 buckets: Solid D → Solid R |
+| News | Serper (Google News API) | Real-time, configurable date range |
+| Geography | US Atlas / TIGER shapefiles | County and state boundaries |
+
+---
+
+## 📄 License
+
+MIT — free to use, modify, and distribute.
+
+---
+
+<div align="center">
+
+**Civatas USA** — Built with US Census data, real news, and a lot of LLM tokens.
+
+[🎮 Live Demo](https://ch-neural.github.io/Civatas-USA/demo/) · [📖 App Docs](ap/README.md) · [🐛 Issues](https://github.com/ch-neural/Civatas-USA/issues)
+
+</div>
