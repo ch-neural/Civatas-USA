@@ -124,14 +124,44 @@ Then comes the diary.
 | Ron DeSantis | 6.1% | 6.2% | ➡️ Flat |
 | Nikki Haley | 6.6% | 6.0% | 📉 Fading |
 
-![News Sources](docs/images/News-Sources.png)
+### One Headline, Five Reactions
 
-**Key headlines that moved the needle:**
-- *"VP JD Vance talks federal election involvement during Michigan visit"* → awareness spike, anxiety in Tossup voters
-- *"Gov. Gretchen Whitmer seeks tax relief for Michigan families"* → late Whitmer surge on Day 28
-- *"U.S. added 178,000 jobs in March"* → satisfaction bump across income brackets
-- *"Pentagon considers diverting funds..."* → anxiety spike, especially in military-adjacent households
-- *"A messy governor's race in California"* → Newsom watchers pay close attention
+This is what makes Civatas a *simulation* rather than a poll — the **same news story triggers opposite reactions** depending on who's reading it.
+
+**Headline: *"VP JD Vance talks federal election involvement during Michigan visit"* (Day 7)**
+
+| Voter Group | Agents | Satisfaction Δ | Anxiety Δ | Vance Awareness |
+|-------------|:------:|:--------------:|:---------:|:---------------:|
+| Solid Rep   | 19     | **+5.8**       | −1.8      | +4.1%           |
+| Lean Rep    | 12     | **+3.4**       | +1.2      | +3.6%           |
+| Tossup      | 25     | −0.8           | +5.2      | +2.9%           |
+| Lean Dem    | 22     | −2.9           | **+9.1**  | +1.9%           |
+| Solid Dem   | 22     | −6.4           | **+13.8** | +0.8%           |
+
+Republican agents heard their VP pick deliver exactly the message they wanted. Tossup voters felt the tension of a divisive topic. Solid Dem voters read the same headline and reacted with near-alarm. **One story. Five different Americas.**
+
+The polarization is structural, not random: every agent has a `party_align_bonus` that amplifies same-party signals and a `media_habit` dimension (Fox News / NPR / Reddit / Facebook / Print) that shapes which version of a story they see. A Solid Rep agent on Fox's diet never encounters the Lean Dem reading of the same event.
+
+---
+
+**Headline: *"U.S. added 178,000 jobs in March"* (Day 14)**
+
+Economic news cuts along a different axis — **income bracket**, not party lean:
+
+| Income Bracket | Satisfaction Δ | Anxiety Δ | What the agent is feeling |
+|----------------|:--------------:|:---------:|---------------------------|
+| Under $25k     | +0.4           | **+7.2**  | *"Jobs in the headline don't pay my rent"* |
+| $25k – $75k    | +3.1           | +2.8      | Cautious optimism          |
+| $75k – $150k   | **+5.4**       | −1.2      | Economic stability = security |
+| $150k+         | +2.1           | −0.9      | Already secure; mild relief |
+
+Low-income agents carry a built-in higher anxiety sensitivity to economic news — the model captures the gap between macro headlines and household reality. The same jobs report that reassures a suburban professional quietly frightens a call-center worker living paycheck to paycheck.
+
+---
+
+These per-group reactions compound across 30 days. Vance's repeated visibility in swing-state news drove his awareness from **18.7% → 24.6%**. Whitmer's Michigan tax-relief story on Day 28 produced her late awareness bump. Every point in the candidate table above has a traceable news cause.
+
+![News Sources](docs/images/News-Sources.png)
 
 **National mood** stabilized at:
 - Satisfaction: **42.9 / 100** *(real news is rarely cheerful)*
