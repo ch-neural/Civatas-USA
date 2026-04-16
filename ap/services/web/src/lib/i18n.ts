@@ -46,6 +46,7 @@ export const STRINGS = {
 
   // ── PopulationSetupPanel (US branch) ──
   "popsetup.title":              { en: "Population Setup (US)",    "zh-TW": "人口設定（美國）" },
+  "popsetup.agents_exist":       { en: "agents generated",          "zh-TW": "位 Agent 已生成" },
   "popsetup.subtitle":           {
     en: "Pick an election template, then click Generate to synthesize the population.",
     "zh-TW": "選擇選舉範本，然後點擊 Generate 來合成人口。",
