@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Civatas Prediction Playback — US Presidential — 2028 (Who's Next?) — 04/16 下午07:28</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, "PingFang TC", sans-serif; background: #0a0a1a; color: #e0e0e0; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  h1 { color: #a855f7; font-size: 28px; margin-bottom: 4px; }
+  h2 { color: #fff; font-size: 16px; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .subtitle { color: #888; font-size: 13px; margin-bottom: 20px; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; text-align: center; }
+  .stat-card .value { font-size: 22px; font-weight: 700; color: #fff; }
+  .stat-card .label { font-size: 11px; color: #888; margin-top: 4px; }
+  .section { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .section.accent { background: rgba(168,85,247,0.06); border-color: rgba(168,85,247,0.25); }
+  .section h2 { margin-top: 0; color: #a78bfa; }
+  canvas { max-height: 260px; width: 100% !important; }
+  .controls { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; }
+  .btn { padding: 8px 18px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-primary { background: #a855f7; color: #fff; }
+  .btn-primary:hover { background: #9333ea; }
+  .progress-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #a855f7; border-radius: 3px; transition: width 0.3s; }
+  .day-label { color: #a855f7; font-size: 13px; font-weight: 600; min-width: 80px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  table.standings { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.standings th { text-align: left; color: #888; font-weight: 500; padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 11px; }
+  table.standings td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: ui-monospace, monospace; }
+  table.standings td:nth-child(1) { font-weight: 700; color: #fbbf24; }
+  table.standings td:nth-child(2) { font-family: inherit; font-weight: 600; color: #fff; }
+  table.standings td:nth-child(3) { color: #fff; font-weight: 700; }
+  .num-right { text-align: right; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .delta-up { color: #22c55e; }
+  .delta-down { color: #ef4444; }
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .demo-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 12px; }
+  .demo-card h3 { font-size: 12px; color: #a78bfa; margin-bottom: 6px; }
+  .demo-row { display: grid; grid-template-columns: 1fr 80px 40px; gap: 6px; align-items: center; padding: 3px 0; font-size: 11px; }
+  .demo-bar { height: 5px; border-radius: 2px; background: rgba(167,139,250,0.65); }
+  .demo-bar-bg { height: 5px; border-radius: 2px; background: rgba(255,255,255,0.05); overflow: hidden; }
+  .footer { text-align: center; color: #555; font-size: 11px; margin-top: 30px; padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Civatas Prediction Playback</h1>
+  <div class="subtitle">US Presidential — 2028 (Who's Next?) — 04/16 下午07:28 &middot; 100 agents &middot; 4 days &middot; 1 scenarios</div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="value">100</div><div class="label">Agents</div></div>
+    <div class="stat-card"><div class="value">4</div><div class="label">Sim Days</div></div>
+    <div class="stat-card"><div class="value">6</div><div class="label">Candidates</div></div>
+    <div class="stat-card"><div class="value">JD Vance</div><div class="label">Winner (predicted)</div></div>
+    <div class="stat-card"><div class="value">15.1%</div><div class="label">Top Share</div></div>
+    <div class="stat-card"><div class="value">1.2%</div><div class="label">Margin</div></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" id="playBtn" onclick="togglePlay()">&#9654; Play</button>
+    <div class="day-label" id="dayLabel">Day 0</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <input type="range" id="speedSlider" min="100" max="2000" value="500" style="width:80px" title="Speed">
+  </div>
+
+  
+  <div class="section accent">
+    <h2>🏆 Final Predicted Standings</h2>
+    <table class="standings">
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th>Candidate</th>
+          <th class="num-right">Support</th>
+          <th class="num-right">Δ vs Day 1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>#1</td>
+            <td><span class="dot" style="background:#8b5cf6"></span>JD Vance</td>
+            <td class="num-right">15.1%</td>
+            <td class="num-right ">— 0.0</td>
+          </tr><tr>
+            <td>#2</td>
+            <td><span class="dot" style="background:#22c55e"></span>Gavin Newsom</td>
+            <td class="num-right">13.9%</td>
+            <td class="num-right ">— 0.0</td>
+          </tr><tr>
+            <td>#3</td>
+            <td><span class="dot" style="background:#f59e0b"></span>Gretchen Whitmer</td>
+            <td class="num-right">12.5%</td>
+            <td class="num-right ">— 0.0</td>
+          </tr><tr>
+            <td>#4</td>
+            <td><span class="dot" style="background:#ec4899"></span>Josh Shapiro</td>
+            <td class="num-right">11.9%</td>
+            <td class="num-right ">— 0.0</td>
+          </tr><tr>
+            <td>#5</td>
+            <td><span class="dot" style="background:#3b82f6"></span>Ron DeSantis</td>
+            <td class="num-right">11.1%</td>
+            <td class="num-right ">— 0.0</td>
+          </tr><tr>
+            <td>#6</td>
+            <td><span class="dot" style="background:#ef4444"></span>Nikki Haley</td>
+            <td class="num-right">11.1%</td>
+            <td class="num-right ">— 0.0</td>
+          </tr>
+        <tr>
+          <td>—</td><td style="font-style:italic;color:#888">Undecided</td>
+          <td class="num-right">24.5%</td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <h2>🥧 Final Vote Share (Weighted)</h2>
+      <canvas id="finalPieChart" style="max-height:300px"></canvas>
+    </div>
+    <div class="section">
+      <h2>🤖 LLM-Simulated Vote</h2>
+      <canvas id="llmPieChart" style="max-height:300px"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📊 Vote Method Comparison</h2>
+    <canvas id="voteCompareChart" style="max-height:220px"></canvas>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <h2>😀 Satisfaction & Anxiety</h2>
+      <canvas id="satAnxChart"></canvas>
+    </div>
+    <div class="section">
+      <h2>🎚️ Political Leaning (%)</h2>
+      <canvas id="leaningChart"></canvas>
+    </div>
+  </div>
+
+  
+  <div class="two-col">
+    <div class="section">
+      <h2>🧑‍💼 Candidate Awareness (per-day)</h2>
+      <canvas id="candAwarenessChart"></canvas>
+    </div>
+    <div class="section">
+      <h2>❤️ Candidate Sentiment (per-day)</h2>
+      <canvas id="candSentimentChart"></canvas>
+    </div>
+  </div>
+
+  
+
+  
+  <div class="section">
+    <h2>👥 Voter Demographics</h2>
+    <div class="demo-grid" id="demoGrid"></div>
+  </div>
+
+  
+  <div class="section">
+    <h2>💬 Agent Activity</h2>
+    <div id="activityFeed" style="max-height:260px;overflow-y:auto;font-size:11px;line-height:1.7;color:#bbb;background:rgba(0,0,0,0.25);border-radius:6px;padding:10px 14px"></div>
+  </div>
+
+  <div class="footer">
+    Generated by <strong>Civatas USA</strong> Social Simulation Agent Platform &middot; 4/16/2026
+  </div>
+</div>
+
+<script>
+const DATA = {
+  dailyTrends: [{"day":1,"local_satisfaction":43.1,"national_satisfaction":42.7,"anxiety":54.8},{"day":2,"local_satisfaction":43.4,"national_satisfaction":42.9,"anxiety":54.5},{"day":3,"local_satisfaction":43.7,"national_satisfaction":42.5,"anxiety":54.7},{"day":4,"local_satisfaction":43.8,"national_satisfaction":42.6,"anxiety":54.8}],
+  leaningTrends: [{"day":1,"left":44,"center":25,"right":31},{"day":2,"left":44,"center":25,"right":31},{"day":3,"left":44,"center":25,"right":31},{"day":4,"left":45,"center":25,"right":30}],
+  candidateTrends: [],
+  candAwarenessTrends: [{"day":1,"JD Vance_awareness":0.187,"Gavin Newsom_awareness":0.171,"Ron DeSantis_awareness":0.061,"Gretchen Whitmer_awareness":0.098,"Nikki Haley_awareness":0.066,"Josh Shapiro_awareness":0.073},{"day":2,"JD Vance_awareness":0.23,"Gavin Newsom_awareness":0.175,"Ron DeSantis_awareness":0.062,"Gretchen Whitmer_awareness":0.093,"Nikki Haley_awareness":0.063,"Josh Shapiro_awareness":0.078},{"day":3,"JD Vance_awareness":0.242,"Gavin Newsom_awareness":0.174,"Ron DeSantis_awareness":0.063,"Gretchen Whitmer_awareness":0.085,"Nikki Haley_awareness":0.059,"Josh Shapiro_awareness":0.073},{"day":4,"JD Vance_awareness":0.246,"Gavin Newsom_awareness":0.174,"Ron DeSantis_awareness":0.062,"Gretchen Whitmer_awareness":0.106,"Nikki Haley_awareness":0.06,"Josh Shapiro_awareness":0.071}],
+  candSentimentTrends: [{"day":1,"JD Vance_sentiment":0.003,"Gavin Newsom_sentiment":0,"Ron DeSantis_sentiment":0,"Gretchen Whitmer_sentiment":0,"Nikki Haley_sentiment":0,"Josh Shapiro_sentiment":0.033},{"day":2,"JD Vance_sentiment":-0.001,"Gavin Newsom_sentiment":0,"Ron DeSantis_sentiment":0.001,"Gretchen Whitmer_sentiment":0,"Nikki Haley_sentiment":0,"Josh Shapiro_sentiment":0.035},{"day":3,"JD Vance_sentiment":-0.002,"Gavin Newsom_sentiment":0,"Ron DeSantis_sentiment":0.001,"Gretchen Whitmer_sentiment":0,"Nikki Haley_sentiment":0,"Josh Shapiro_sentiment":0.03},{"day":4,"JD Vance_sentiment":-0.002,"Gavin Newsom_sentiment":0,"Ron DeSantis_sentiment":0,"Gretchen Whitmer_sentiment":0,"Nikki Haley_sentiment":0,"Josh Shapiro_sentiment":0.024}],
+  candidateNames: ["JD Vance","Gavin Newsom","Ron DeSantis","Gretchen Whitmer","Nikki Haley","Josh Shapiro"],
+  finalVote: {"JD Vance":15.1,"Gavin Newsom":13.9,"Ron DeSantis":11.1,"Gretchen Whitmer":12.5,"Nikki Haley":11.1,"Josh Shapiro":11.9,"Undecided":24.5},
+  llmVote: {"JD Vance":14,"Gavin Newsom":7,"Ron DeSantis":0,"Gretchen Whitmer":3,"Nikki Haley":0,"Josh Shapiro":5},
+  liveMessages: ["📝 Agent #90 wrote diary: \"Wednesday morning started like any other...\"  Local 43 Nat'l 44 😌46 [high]","📝 Agent #92 wrote diary: \"This morning started off pretty great, s...\"  Local 73 Nat'l 28 😰61 [high]","📝 Agent #91 wrote diary: \"Woke up this morning feeling the usual s...\"  Local 36 Nat'l 27 😌67","📝 Agent #94 wrote diary: \"This morning, I took my usual stroll to ...\"  Local 46 Nat'l 42 😌48 [high]","📝 Agent #95 wrote diary: \"Today was another typical Saturday, star...\"  Local 48 Nat'l 24 😰69 [high]","📝 Agent #93 wrote diary: \"Another morning on the Parkway, same tra...\"  Local 41 Nat'l 43 😌49","📝 Agent #98 wrote diary: \"Another long shift at H-E-B today. Saw t...\"  Local 52 Nat'l 41 😌51","📝 Agent #96 wrote diary: \"Woke up early to help Abuela make breakf...\"  Local 40 Nat'l 39 😌51","📝 Agent #97 wrote diary: \"This morning started off like any other,...\"  Local 64 Nat'l 35 😰58 [high]","📝 Agent #99 wrote diary: \"Today started off like any other weekday...\"  Local 49 Nat'l 35 😌62 [high]","👤 Progress: 100/100 done (100%)","📖 Day 1 完成 — 平均每人讀 3.0 篇，實際使用 36 篇不同文章","📝 Agent #89 wrote diary: \"Wednesday morning started like any other...\"  Local 38 Nat'l 44 😌56","📝 Agent #92 wrote diary: \"This morning started off well, as usual,...\"  Local 74 Nat'l 30 😌60 [high]","📝 Agent #91 wrote diary: \"Woke up with that same ache in my lower ...\"  Local 29 Nat'l 17 😰70 [high]","📝 Agent #94 wrote diary: \"This morning, I took my usual stroll to ...\"  Local 46 Nat'l 41 😌48","📝 Agent #95 wrote diary: \"Today started off like any other Saturda...\"  Local 49 Nat'l 28 😌66 [high]","📝 Agent #93 wrote diary: \"Another morning on the Parkway, same tra...\"  Local 42 Nat'l 43 😌49","📝 Agent #98 wrote diary: \"Another Tuesday at H-E-B. Clocked in at ...\"  Local 51 Nat'l 41 😌51","📝 Agent #97 wrote diary: \"This morning was another familiar chaos,...\"  Local 65 Nat'l 38 😌56 [high]","📝 Agent #96 wrote diary: \"Woke up to Abuela already in the kitchen...\"  Local 41 Nat'l 39 😌50 [low]","📝 Agent #99 wrote diary: \"Today started with my usual morning rout...\"  Local 53 Nat'l 34 😌61","👤 Progress: 100/100 done (100%)","📖 Day 2 完成 — 平均每人讀 3.0 篇，實際使用 79 篇不同文章","📝 Agent #89 wrote diary: \"Thursday morning started with my usual r...\"  Local 39 Nat'l 43 😰57 [high]","📝 Agent #91 wrote diary: \"Woke up with that same stiffness in my b...\"  Local 26 Nat'l 16 😌70 [high]","📝 Agent #92 wrote diary: \"Today started like any other, with my be...\"  Local 72 Nat'l 30 😰61 [high]","📝 Agent #93 wrote diary: \"Saturday morning, I slept in a bit. Made...\"  Local 42 Nat'l 43 😰50","📝 Agent #95 wrote diary: \"This Saturday started like any other, wi...\"  Local 47 Nat'l 21 😌66 [high]","📝 Agent #94 wrote diary: \"Today started like any other, with my us...\"  Local 46 Nat'l 41 😌48 [high]","📝 Agent #97 wrote diary: \"This morning was a whirlwind, as usual. ...\"  Local 61 Nat'l 37 😌54 [high]","📝 Agent #96 wrote diary: \"Woke up to Abuela already sweeping the p...\"  Local 41 Nat'l 40 😌49 [low]","📝 Agent #98 wrote diary: \"Another Wednesday at H-E-B. Clocked in a...\"  Local 51 Nat'l 41 😌51","📝 Agent #99 wrote diary: \"Today was like any other typical weekday...\"  Local 56 Nat'l 39 😌61 [high]","👤 Progress: 100/100 done (100%)","📖 Day 3 完成 — 平均每人讀 3.0 篇，實際使用 82 篇不同文章","📝 Agent #90 wrote diary: \"Saturday morning - no commute today, tha...\"  Local 43 Nat'l 42 😌47","📝 Agent #91 wrote diary: \"Woke up with that same stiffness—this ol...\"  Local 24 Nat'l 18 😌66 [low]","📝 Agent #92 wrote diary: \"This morning was pretty typical; I grabb...\"  Local 74 Nat'l 30 😌61 [high]","📝 Agent #94 wrote diary: \"This morning started with my usual routi...\"  Local 46 Nat'l 41 😌48 [high]","📝 Agent #93 wrote diary: \"Sunday morning. Slept later than usual, ...\"  Local 43 Nat'l 43 😌49 [low]","📝 Agent #95 wrote diary: \"This Saturday was yet another picture-pe...\"  Local 51 Nat'l 22 😌66","📝 Agent #97 wrote diary: \"This morning started with my usual chaos...\"  Local 61 Nat'l 35 😰56 [high]","📝 Agent #98 wrote diary: \"Another Thursday at H-E-B. Clocked in at...\"  Local 50 Nat'l 40 😌51 [low]","📝 Agent #99 wrote diary: \"This morning felt like a typical weekday...\"  Local 54 Nat'l 35 😰65 [high]","📝 Agent #96 wrote diary: \"Woke up to Abuela already making café co...\"  Local 41 Nat'l 40 😌49 [low]","👤 Progress: 100/100 done (100%)","📖 Day 4 完成 — 平均每人讀 3.0 篇，實際使用 93 篇不同文章"],
+  demoCounts: {"gender":{"Male":53,"Female":47},"race":{"Black or African American":8,"White":59,"Two or More Races":16,"Other":9,"Asian":8},"education":{"High School Graduate":23,"Bachelor's or Higher":33,"Some College / Associate":31,"Less than High School":13},"age_group":{"45-54":11,"25-34":20,"35-44":15,"55-64":14,"65+":22,"18-24":18},"household_income":{"$100k–$150k":19,"Under $25k":20,"$50k–$75k":18,"$75k–$100k":13,"$200k+":8,"$25k–$50k":15,"$150k–$200k":7}},
+  totalDays: 4,
+};
+const EN = true;
+const CAND_COLORS = ["#8b5cf6", "#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#ec4899"];
+let playing = false, currentDay = 0, timer = null;
+Chart.defaults.color = '#888';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.size = 10;
+
+const colorFor = n => {
+  if (n === 'Undecided' || n === '不表態') return '#6b7280';
+  const i = DATA.candidateNames.indexOf(n);
+  return CAND_COLORS[(i >= 0 ? i : 0) % CAND_COLORS.length];
+};
+const mkPie = (id, voteObj) => {
+  const el = document.getElementById(id);
+  if (!el || !Object.keys(voteObj || {}).length) return;
+  const labels = Object.keys(voteObj);
+  new Chart(el.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: labels.map(k => voteObj[k]),
+        backgroundColor: labels.map(colorFor),
+        borderWidth: 2, borderColor: '#0a0a1a',
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'right', labels: { color: '#ccc' } },
+      tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(1) + '%' } } } }
+  });
+};
+mkPie('finalPieChart', DATA.finalVote);
+mkPie('llmPieChart', DATA.llmVote);
+
+// Side-by-side comparison chart: Weighted vs LLM per candidate
+if (Object.keys(DATA.finalVote).length && document.getElementById('voteCompareChart')) {
+  const names = Array.from(new Set([...Object.keys(DATA.finalVote), ...Object.keys(DATA.llmVote)]));
+  new Chart(document.getElementById('voteCompareChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [
+        { label: EN ? 'Weighted poll (heuristic)' : '加權民調（啟發式）', data: names.map(n => DATA.finalVote[n] ?? 0), backgroundColor: '#a855f7' },
+        ...(Object.keys(DATA.llmVote).length ? [{ label: EN ? 'LLM voting' : 'LLM 投票', data: names.map(n => DATA.llmVote[n] ?? 0), backgroundColor: '#22c55e' }] : []),
+      ]
+    },
+    options: { responsive: true, scales: { y: { suggestedMin: 0, suggestedMax: 100, ticks: { callback: v => v + '%' } } },
+      plugins: { tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y || 0).toFixed(1) + '%' } } } }
+  });
+}
+
+// Sat/Anx
+const satAnxChart = new Chart(document.getElementById('satAnxChart').getContext('2d'), {
+  type: 'line',
+  data: { labels: [], datasets: [
+    { label: EN ? 'Local Sat' : '地方滿意', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3, pointRadius: 0 },
+    { label: EN ? 'National Sat' : '全國滿意', data: [], borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.1)', fill: true, tension: 0.3, pointRadius: 0 },
+    { label: EN ? 'Anxiety' : '焦慮度', data: [], borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true, tension: 0.3, pointRadius: 0 },
+  ]},
+  options: { responsive: true, scales: { y: { min: 0, max: 100 } }, animation: { duration: 250 } }
+});
+// Stacked bar so Dem / Tossup / Rep are always visible even when values coincide.
+const leanChart = new Chart(document.getElementById('leaningChart').getContext('2d'), {
+  type: 'bar',
+  data: { labels: [], datasets: [
+    { label: EN ? 'Dem-leaning' : '偏藍', data: [], backgroundColor: '#3b82f6', stack: 'a' },
+    { label: EN ? 'Tossup' : '搖擺', data: [], backgroundColor: '#94a3b8', stack: 'a' },
+    { label: EN ? 'Rep-leaning' : '偏紅', data: [], backgroundColor: '#ef4444', stack: 'a' },
+  ]},
+  options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true, min: 0, max: 100, ticks: { callback: v => v + '%' } } }, animation: { duration: 250 } }
+});
+const mkLine = (id, yMin, yMax, yFmt) => {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const yScale = {};
+  if (yMin !== null && yMin !== undefined) yScale.min = yMin;
+  if (yMax !== null && yMax !== undefined) yScale.max = yMax;
+  if (yFmt) yScale.ticks = { callback: yFmt };
+  return new Chart(el.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: DATA.candidateNames.map((n, i) => ({
+        label: n, data: [],
+        borderColor: colorFor(n),
+        backgroundColor: colorFor(n) + '22',
+        tension: 0.3, pointRadius: 0,
+      })),
+    },
+    options: { responsive: true, scales: { y: yScale }, animation: { duration: 250 } }
+  });
+};
+let candSupportChart = null;
+if (DATA.candidateNames.length && DATA.candidateTrends.length) candSupportChart = mkLine('candSupportChart', 0, 100, v => v + '%');
+// Awareness: backend stores 0..1, display as 0..100%.
+let candAwarenessChart = null;
+if (DATA.candidateNames.length && DATA.candAwarenessTrends.length) candAwarenessChart = mkLine('candAwarenessChart', 0, 100, v => v + '%');
+// Sentiment: backend stores ~ -1..1 but most runs are near 0. Auto-scale Y.
+let candSentimentChart = null;
+if (DATA.candidateNames.length && DATA.candSentimentTrends.length) candSentimentChart = mkLine('candSentimentChart', null, null, null);
+
+// Demographics
+const demoGrid = document.getElementById('demoGrid');
+if (demoGrid) {
+  const LABELS = { gender: EN?'Gender':'性別', race: EN?'Race':'族裔', education: EN?'Education':'教育', age_group: EN?'Age':'年齡', household_income: EN?'Income':'收入' };
+  Object.entries(DATA.demoCounts).forEach(([dim, counts]) => {
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    if (!entries.length) return;
+    const max = Math.max(...entries.map(e => e[1]));
+    const total = entries.reduce((s, e) => s + e[1], 0);
+    const html = '<h3>' + (LABELS[dim] || dim) + '</h3>' + entries.map(([name, cnt]) => {
+      const pct = total > 0 ? (cnt / total * 100).toFixed(0) : '0';
+      const w = max > 0 ? (cnt / max * 100) : 0;
+      return '<div class="demo-row"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + name + '">' + name + '</span><div class="demo-bar-bg"><div class="demo-bar" style="width:' + w + '%"></div></div><span style="text-align:right;color:#666">' + pct + '%</span></div>';
+    }).join('');
+    const card = document.createElement('div'); card.className = 'demo-card'; card.innerHTML = html; demoGrid.appendChild(card);
+  });
+}
+
+// Activity feed
+const feed = document.getElementById('activityFeed');
+if (feed) {
+  feed.innerHTML = DATA.liveMessages.slice(-60).map(t =>
+    '<div style="padding:2px 0"><span style="color:#a78bfa">◆</span> ' + String(t).slice(0, 400) + '</div>'
+  ).join('');
+}
+
+// Playback engine
+function reset() {
+  currentDay = 0;
+  [satAnxChart, leanChart, candSupportChart, candAwarenessChart, candSentimentChart].forEach(c => {
+    if (!c) return;
+    c.data.labels = []; c.data.datasets.forEach(ds => ds.data = []); c.update('none');
+  });
+}
+function step(day) {
+  const d = DATA.dailyTrends[day]; if (!d) return;
+  const label = (EN ? 'Day ' : '第 ') + (day + 1) + (EN ? '' : ' 天');
+  satAnxChart.data.labels.push(label);
+  satAnxChart.data.datasets[0].data.push(d.local_satisfaction);
+  satAnxChart.data.datasets[1].data.push(d.national_satisfaction);
+  satAnxChart.data.datasets[2].data.push(d.anxiety);
+  satAnxChart.update('none');
+  const l = DATA.leaningTrends[day];
+  if (l) {
+    leanChart.data.labels.push(label);
+    leanChart.data.datasets[0].data.push(l.left);
+    leanChart.data.datasets[1].data.push(l.center);
+    leanChart.data.datasets[2].data.push(l.right);
+    leanChart.update('none');
+  }
+  if (candSupportChart && DATA.candidateTrends[day]) {
+    const ct = DATA.candidateTrends[day];
+    candSupportChart.data.labels.push(label);
+    DATA.candidateNames.forEach((n, i) => candSupportChart.data.datasets[i].data.push(ct[n + '_support'] ?? 0));
+    candSupportChart.update('none');
+  }
+  if (candAwarenessChart && DATA.candAwarenessTrends[day]) {
+    const aw = DATA.candAwarenessTrends[day];
+    candAwarenessChart.data.labels.push(label);
+    DATA.candidateNames.forEach((n, i) => candAwarenessChart.data.datasets[i].data.push(Math.round(((aw[n + '_awareness'] ?? 0)) * 1000) / 10));
+    candAwarenessChart.update('none');
+  }
+  if (candSentimentChart && DATA.candSentimentTrends[day]) {
+    const se = DATA.candSentimentTrends[day];
+    candSentimentChart.data.labels.push(label);
+    DATA.candidateNames.forEach((n, i) => candSentimentChart.data.datasets[i].data.push(se[n + '_sentiment'] ?? 0));
+    candSentimentChart.update('none');
+  }
+  document.getElementById('dayLabel').textContent = label;
+  document.getElementById('progressFill').style.width = ((day + 1) / DATA.totalDays * 100) + '%';
+}
+function togglePlay() {
+  if (playing) { clearInterval(timer); playing = false;
+    document.getElementById('playBtn').innerHTML = '&#9654; ' + (EN ? 'Play' : '播放'); return; }
+  if (currentDay >= DATA.totalDays) reset();
+  playing = true;
+  document.getElementById('playBtn').innerHTML = '&#9646;&#9646; ' + (EN ? 'Pause' : '暫停');
+  timer = setInterval(() => {
+    if (currentDay >= DATA.totalDays) { clearInterval(timer); playing = false;
+      document.getElementById('playBtn').innerHTML = '&#8634; ' + (EN ? 'Replay' : '重播'); return; }
+    step(currentDay); currentDay++;
+  }, parseInt(document.getElementById('speedSlider').value));
+}
+document.getElementById('speedSlider').addEventListener('input', () => {
+  if (playing) { clearInterval(timer);
+    timer = setInterval(() => {
+      if (currentDay >= DATA.totalDays) { clearInterval(timer); playing = false; return; }
+      step(currentDay); currentDay++;
+    }, parseInt(document.getElementById('speedSlider').value));
+  }
+});
+</script>
+</body>
+</html>
