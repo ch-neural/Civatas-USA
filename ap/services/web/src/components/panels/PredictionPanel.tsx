@@ -1185,7 +1185,7 @@ export default function PredictionPanel({ wsId }: { wsId: string }) {
             setPredEndDate(today);
             applied.push(`predDates→${startIso}~${today}`);
           }
-        } else if (tplIsHistorical && tplStart) {
+        } else if (tplIsHistorical && tplStart && tplEnd) {
           setPredStartDate(tplStart);
           setPredEndDate(tplEnd);
           applied.push(`predDates→${tplStart}~${tplEnd}`);
