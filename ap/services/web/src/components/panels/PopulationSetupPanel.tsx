@@ -136,7 +136,7 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
         setCounties(censusRes.counties || []);
         const elecs = elecRes.elections || [];
         setElections(elecs);
-        setLeanCounties([...new Set(elecs.map((e: any) => e.scope).filter(Boolean))].sort() as string[]);
+        setLeanCounties(Array.from(new Set(elecs.map((e: any) => e.scope).filter(Boolean))).sort() as string[]);
       } catch { }
     })();
   }, []);
@@ -188,9 +188,9 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   }, [selCounty]);
 
   // ── Leaning type options based on leanCounty ──
-  const leanTypes = [...new Set(
+  const leanTypes = Array.from(new Set(
     elections.filter(e => e.scope === leanCounty || e.scope === "United States").map((e: any) => e.election_type)
-  )] as string[];
+  )) as string[];
 
   useEffect(() => {
     if (leanTypes.length > 0 && !leanTypes.includes(leanType)) setLeanType(leanTypes[0]);
@@ -200,7 +200,7 @@ export default function PopulationSetupPanel({ wsId }: { wsId: string }) {
   useEffect(() => {
     if (!leanCounty) { setLeanYears([]); return; }
     const filtered = elections.filter(e => (e.scope === leanCounty || e.scope === "United States") && e.election_type === leanType);
-    const yrs = [...new Set(filtered.map((e: any) => e.ad_year))].sort((a: any, b: any) => b - a);
+    const yrs = Array.from(new Set(filtered.map((e: any) => e.ad_year))).sort((a: any, b: any) => b - a);
     setLeanYears(yrs as number[]);
     if (yrs.length > 0 && !yrs.includes(leanYear)) setLeanYear(yrs[0] as number);
   }, [leanCounty, leanType, elections]);

@@ -75,7 +75,7 @@ export default function AgentExplorerPanel({ wsId, recordingId = "" }: { wsId: s
   if (selectedIds.length > 0) {
     const allDays = new Set<number>();
     for (const id of selectedIds) for (const e of (diaries[id] || [])) allDays.add(e.day);
-    for (const day of [...allDays].sort((a, b) => a - b)) {
+    for (const day of Array.from(allDays).sort((a, b) => a - b)) {
       const row: any = { day: `D${day}`, _dayNum: day };
       for (const id of selectedIds) {
         const e = (diaries[id] || []).find((x: any) => x.day === day);
