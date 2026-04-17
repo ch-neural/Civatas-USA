@@ -1,7 +1,7 @@
 # 🗳️ Civatas USA
 
 > **Civatas is SimCity for elections.**  
-> Build 1,000 Americans from Census data. Feed them 30 days of real news. Watch their opinions shift. Run the 2028 race — before it happens.
+> Build 1,000 Americans from Census data. Feed them 30 days of *real, recent* news. Watch their opinions shift. **If the 2028 field ran today, who would win?**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue)](ap/docker-compose.yml)
@@ -9,14 +9,16 @@
 
 ---
 
-## 🎯 Live Demo — 2028 Presidential Election
+## 🎯 Live Demo — If the Election Were Tomorrow (2028 Candidate Field)
 
-We ran a full simulation of the **2028 US Presidential Race** (*JD Vance vs Gavin Newsom vs Ron DeSantis vs Gretchen Whitmer vs Nikki Haley vs Josh Shapiro*) using 100 AI-powered voter agents and 30 days of real news.
+> ⚠️ This is a **nowcast, not a forecast.** We take the hypothetical 2028 candidate field (*JD Vance vs Gavin Newsom vs Ron DeSantis vs Gretchen Whitmer vs Nikki Haley vs Josh Shapiro*) and ask: **if the election were held today, driven by the news voters are reading *right now*, who wins?** We are *not* predicting November 2028 — 2.5 years of future events (economy, wars, dropouts, scandals) are not simulated.
+
+We ran a full simulation using 100 AI-powered voter agents and 30 days of *recent* real news.
 
 | | |
 |---|---|
 | 📈 **[Evolution Playback](https://ch-neural.github.io/Civatas-USA/demo/2028-evolution.html)** | Watch 100 voters' opinions shift day by day as real news breaks |
-| 🗳️ **[Prediction Results](https://ch-neural.github.io/Civatas-USA/demo/2028-prediction.html)** | Final Electoral College result: who wins in 2028? |
+| 🗳️ **[Prediction Results](https://ch-neural.github.io/Civatas-USA/demo/2028-prediction.html)** | "If today were election day" — Electoral College snapshot |
 
 ---
 
@@ -45,7 +47,7 @@ Every agent is a **fully realized American**:
 
 ---
 
-## 🗓️ The 2028 Story: From First Headlines to Election Night
+## 🗓️ The 2028 Story: What 30 Days of Recent News Reveals About the 2028 Field
 
 *This is not a poll. This is a simulation. 100 Americans woke up every morning, read the news, argued with themselves in their diaries — and eventually voted.*
 
@@ -169,15 +171,15 @@ These per-group reactions compound across 30 days. Vance's repeated visibility i
 
 ---
 
-### Stage 3: Voting Day
+### Stage 3: "If Today Were Election Day"
 
 ![Prediction Start](docs/images/Prediction-start.png)
 
-After 30 days of evolution, we ran a **4-day prediction window** using the latest real news. Each agent voted based on their evolved opinions, personality, and candidate awareness.
+After 30 days of evolution on **current news**, we ran a **4-day prediction window** using the very latest real headlines. Each agent voted based on their evolved opinions, personality, and candidate awareness — as if the polls opened tomorrow. This is a **nowcast of the 2028 candidate field against today's political climate**, not a forecast of November 2028.
 
 ![Prediction Analysis](docs/images/Prediction-analysis.png)
 
-**🏆 Final Results — 2028 Presidential Prediction:**
+**🏆 Final Results — "If the Election Were Today" (2028 Candidate Field):**
 
 | Candidate | Party | Popular Vote | Electoral Votes |
 |-----------|-------|:-----------:|:--------------:|
@@ -191,9 +193,13 @@ After 30 days of evolution, we ran a **4-day prediction window** using the lates
 
 *Coverage: 474/538 Electoral Votes (88% of states have agents)*
 
-> **Bottom line: JD Vance wins with 308 Electoral Votes.**
+> **Bottom line: if the election were held today, JD Vance wins with 308 Electoral Votes.**
 >
-> But 24.5% of voters remain undecided — in a six-way race, that's the real story. The Democratic vote is split three ways between Newsom, Whitmer, and Shapiro. Whitmer's late surge and Shapiro's bipartisan appeal are real — but fragmented Democratic support hands the race to Vance.
+> But read this carefully: **this is a nowcast, not a forecast.** It answers *"given the news Americans are reading this month, how would the hypothetical 2028 field split the vote?"* — not *"who will win in November 2028."* The 2.5 years between now and election day (primaries, debates, economic shocks, geopolitical events, candidates dropping out) are **not** simulated.
+>
+> Within that scope, 24.5% undecided is the real story. The Democratic vote splits three ways between Newsom, Whitmer, and Shapiro. Whitmer's late surge and Shapiro's bipartisan appeal are real — but fragmented Democratic support hands a same-day race to Vance.
+>
+> 🔬 Also: 100 agents across 35 states is ~3 agents/state, so the Electoral College result is sensitive to single-agent flips. The popular-vote spread (Vance 15.1% vs Newsom 13.9%) is the more reliable read at this sample size. See [Want More Accurate Results?](#-want-more-accurate-results) below.
 
 ---
 
